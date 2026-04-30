@@ -21,6 +21,8 @@ Capture these views before release:
 - DNS Record Checker: `1280x900`.
 - Domain Health Checker empty form: `1280x900`.
 - Log Troubleshooting Assistant with Azure unavailable state: `1280x900`.
+- Roadmap & Feedback desktop: `1440x1000`.
+- Roadmap & Feedback mobile: `390x900`.
 
 Optional captures when local Azure secrets are available:
 
@@ -41,6 +43,12 @@ Tool pages:
 - Shared page header, form panel, empty state, and result panel are consistent.
 - Form labels and buttons are not clipped.
 - Text-heavy pages have no horizontal scroll or overlapping content.
+
+Roadmap & Feedback:
+
+- Board summary cards, search, filters, four columns, and submit-idea links are visible.
+- GitHub feedback links open outside Streamlit and no in-app persistence UI is implied.
+- Static AI Recommended items are clearly labeled as curated recommendations, not live AI output.
 
 Log Troubleshooting Assistant:
 

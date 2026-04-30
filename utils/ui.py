@@ -4,11 +4,12 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from html import escape
-import os
 from typing import Any, Iterable
 
 import pandas as pd
 import streamlit as st
+
+from utils.project_links import github_repository_url
 
 
 @dataclass(frozen=True)
@@ -132,6 +133,12 @@ def render_sidebar(active_page: str) -> None:
             unsafe_allow_html=True,
         )
         _sidebar_link("Home", "app.py", active_page == "Home", ":material/home:")
+        _sidebar_link(
+            "Roadmap & Feedback",
+            "pages/10_Roadmap_Feedback.py",
+            active_page == "Roadmap & Feedback",
+            ":material/route:",
+        )
         for tool in TOOLS:
             _sidebar_link(tool.short_title, tool.path, active_page == tool.title, _material_icon_for(tool.slug))
 
@@ -378,8 +385,7 @@ def tool_by_title(title: str) -> ToolMeta | None:
 
 
 def github_url() -> str | None:
-    value = os.getenv("ITOPS_GITHUB_URL", "").strip()
-    return value or None
+    return github_repository_url()
 
 
 def _sidebar_link(label: str, path: str, active: bool, icon: str) -> None:
@@ -505,13 +511,46 @@ def _inject_global_css() -> None:
 
         #MainMenu,
         footer,
-        header,
-        [data-testid="stHeader"],
-        [data-testid="stToolbar"],
         [data-testid="stDecoration"],
         [data-testid="stStatusWidget"],
         [data-testid="stSidebarNav"] {
             display: none !important;
+        }
+
+        [data-testid="stHeader"] {
+            display: block !important;
+            height: 0 !important;
+            min-height: 0 !important;
+            background: transparent !important;
+            pointer-events: none;
+        }
+
+        [data-testid="stToolbar"] {
+            display: block !important;
+            background: transparent !important;
+            pointer-events: none;
+        }
+
+        [data-testid="stExpandSidebarButton"] {
+            position: fixed !important;
+            top: 0.85rem !important;
+            left: 0.85rem !important;
+            width: 2.45rem !important;
+            height: 2.45rem !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            border-radius: 8px !important;
+            color: #ffffff !important;
+            background: linear-gradient(135deg, #2487ff, #0f66ee) !important;
+            box-shadow: 0 12px 26px rgba(13, 103, 242, 0.26) !important;
+            pointer-events: auto !important;
+            z-index: 1000000 !important;
+        }
+
+        [data-testid="stExpandSidebarButton"] * {
+            color: inherit !important;
+            fill: currentColor !important;
         }
 
         h1, h2, h3, p, label, div, span {
@@ -539,6 +578,15 @@ def _inject_global_css() -> None:
         [data-testid="stSidebarCollapseButton"] {
             background: transparent !important;
             color: #dceaff !important;
+        }
+
+        [data-testid="stSidebarCollapseButton"] {
+            visibility: visible !important;
+        }
+
+        [data-testid="stSidebarCollapseButton"] button {
+            color: #dceaff !important;
+            border-radius: 8px !important;
         }
 
         [data-testid="stSkeleton"],
@@ -1318,6 +1366,329 @@ def _inject_global_css() -> None:
             border-radius: 8px;
         }
 
+        .roadmap-hero {
+            display: flex;
+            justify-content: space-between;
+            gap: 1.25rem;
+            align-items: flex-start;
+            padding: 1.25rem 0 1rem;
+            border-bottom: 1px solid var(--itops-line);
+            margin-bottom: 1rem;
+        }
+
+        .roadmap-kicker {
+            color: var(--itops-blue);
+            font-size: 0.74rem;
+            font-weight: 900;
+            text-transform: uppercase;
+        }
+
+        .roadmap-hero h1 {
+            margin: 0.2rem 0 0.45rem;
+            font-size: clamp(2rem, 4vw, 3.45rem);
+            line-height: 1;
+            font-weight: 800;
+        }
+
+        .roadmap-hero p {
+            max-width: 42rem;
+            margin: 0;
+            color: #4b5d7b;
+            font-size: 1rem;
+            line-height: 1.65;
+        }
+
+        .roadmap-tab-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: center;
+            margin-top: 1rem;
+        }
+
+        .roadmap-tab-row span,
+        .roadmap-tab-row a {
+            color: #52637f;
+            text-decoration: none !important;
+            font-size: 0.9rem;
+            font-weight: 800;
+        }
+
+        .roadmap-tab-row .roadmap-tab-active {
+            color: var(--itops-blue);
+        }
+
+        .roadmap-actions {
+            display: flex;
+            gap: 0.7rem;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            padding-top: 0.2rem;
+        }
+
+        .roadmap-actions a,
+        .roadmap-footer-note a {
+            min-height: 2.55rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            padding: 0 1rem;
+            text-decoration: none !important;
+            font-size: 0.88rem;
+            font-weight: 900;
+            white-space: nowrap;
+        }
+
+        .roadmap-submit-link {
+            color: #ffffff !important;
+            background: linear-gradient(135deg, #2487ff, #0f66ee);
+            box-shadow: 0 12px 24px rgba(13, 103, 242, 0.2);
+        }
+
+        .roadmap-secondary-link {
+            color: var(--itops-ink) !important;
+            background: rgba(255, 255, 255, 0.85);
+            border: 1px solid #cddaf0;
+        }
+
+        .roadmap-board-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 0.85rem;
+            margin: 1rem 0 1.1rem;
+        }
+
+        .roadmap-board-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            min-height: 3.4rem;
+            padding: 0.9rem 1rem;
+            border-radius: 8px;
+            border: 1px solid #cddaf0;
+            background: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 10px 24px rgba(36, 79, 135, 0.04);
+        }
+
+        .roadmap-board-card span {
+            color: var(--itops-ink);
+            font-size: 0.92rem;
+            font-weight: 800;
+        }
+
+        .roadmap-board-card strong {
+            color: #667790;
+            font-size: 0.88rem;
+            font-weight: 900;
+        }
+
+        .roadmap-summary-line {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            margin: 0.6rem 0 1rem;
+            color: #52637f;
+            font-size: 0.88rem;
+        }
+
+        .roadmap-summary-line strong {
+            color: var(--itops-ink);
+        }
+
+        .roadmap-column {
+            min-height: 33rem;
+            max-height: 42rem;
+            overflow-y: auto;
+            padding: 0.95rem;
+            border: 1px solid #cddaf0;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.72);
+        }
+
+        .roadmap-column-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 2;
+            margin: -0.95rem -0.95rem 0.8rem;
+            padding: 0.95rem;
+            border-bottom: 1px solid #d7e2f5;
+            background: rgba(251, 253, 255, 0.96);
+        }
+
+        .roadmap-column-title span {
+            width: 0.52rem;
+            height: 0.52rem;
+            flex: 0 0 0.52rem;
+            border-radius: 50%;
+            background: #2e8bff;
+        }
+
+        .roadmap-column-title h2 {
+            margin: 0;
+            flex: 1;
+            color: var(--itops-ink);
+            font-size: 0.95rem;
+            line-height: 1.25;
+            font-weight: 900;
+        }
+
+        .roadmap-column-title strong {
+            color: #667790;
+            font-size: 0.82rem;
+            font-weight: 900;
+        }
+
+        .roadmap-column-planned .roadmap-column-title span { background: #2e8bff; }
+        .roadmap-column-progress .roadmap-column-title span { background: #8a61f2; }
+        .roadmap-column-done .roadmap-column-title span { background: #22ba4f; }
+        .roadmap-column-ai .roadmap-column-title span { background: #11aab8; }
+
+        .roadmap-item-card {
+            display: grid;
+            grid-template-columns: 2.5rem minmax(0, 1fr);
+            gap: 0.85rem;
+            padding: 0.85rem 0;
+            border-bottom: 1px solid #e1e9f7;
+        }
+
+        .roadmap-item-card:last-child {
+            border-bottom: 0;
+        }
+
+        .roadmap-vote-pill {
+            min-height: 2.65rem;
+            border: 1px solid #d4e0f2;
+            border-radius: 8px;
+            display: grid;
+            place-items: center;
+            align-content: center;
+            color: #3d4f68;
+            background: rgba(255, 255, 255, 0.78);
+            font-size: 0.75rem;
+            font-weight: 850;
+            line-height: 1.1;
+        }
+
+        .roadmap-vote-pill span {
+            color: #667790;
+            font-weight: 900;
+        }
+
+        .roadmap-item-body {
+            min-width: 0;
+        }
+
+        .roadmap-item-body h3 {
+            margin: 0;
+            color: var(--itops-ink);
+            font-size: 0.96rem;
+            line-height: 1.35;
+            font-weight: 900;
+            overflow-wrap: anywhere;
+        }
+
+        .roadmap-card-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            align-items: center;
+            margin-top: 0.35rem;
+        }
+
+        .roadmap-item-category,
+        .roadmap-status-badge {
+            display: inline-flex;
+            align-items: center;
+            min-height: 1.35rem;
+            border-radius: 8px;
+            padding: 0 0.45rem;
+            color: #667790;
+            font-size: 0.74rem;
+            line-height: 1.2;
+            font-weight: 900;
+            text-transform: uppercase;
+        }
+
+        .roadmap-item-category {
+            padding-left: 0;
+        }
+
+        .roadmap-status-badge {
+            color: #0d4fbd;
+            background: rgba(18, 107, 255, 0.1);
+        }
+
+        .roadmap-item-body p {
+            margin: 0.5rem 0 0;
+            color: #334765;
+            font-size: 0.86rem;
+            line-height: 1.5;
+        }
+
+        .roadmap-item-body small {
+            display: block;
+            margin-top: 0.45rem;
+            color: #64758e;
+            font-size: 0.78rem;
+            line-height: 1.45;
+        }
+
+        .roadmap-empty-column {
+            padding: 1rem;
+            border: 1px dashed #bdd0ef;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.56);
+        }
+
+        .roadmap-empty-column strong {
+            color: var(--itops-ink);
+            font-size: 0.92rem;
+        }
+
+        .roadmap-empty-column p {
+            margin: 0.25rem 0 0;
+            color: #52637f;
+            font-size: 0.84rem;
+            line-height: 1.45;
+        }
+
+        .roadmap-footer-note {
+            display: flex;
+            gap: 0.8rem;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 1.2rem;
+            padding: 0.9rem 1rem;
+            border: 1px solid rgba(18, 107, 255, 0.2);
+            border-radius: 8px;
+            background: linear-gradient(135deg, rgba(231, 240, 255, 0.94), rgba(255, 255, 255, 0.84));
+        }
+
+        .roadmap-footer-note strong {
+            color: var(--itops-ink);
+            font-size: 0.94rem;
+            white-space: nowrap;
+        }
+
+        .roadmap-footer-note span {
+            flex: 1;
+            color: #334765;
+            font-size: 0.88rem;
+            line-height: 1.45;
+        }
+
+        .roadmap-footer-note a {
+            color: #ffffff !important;
+            background: linear-gradient(135deg, #2487ff, #0f66ee);
+        }
+
         button[kind="primary"],
         button[kind="secondary"],
         .stDownloadButton button,
@@ -1338,6 +1709,16 @@ def _inject_global_css() -> None:
 
             .hero-visual {
                 min-height: 280px;
+            }
+
+            .roadmap-board-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .roadmap-column {
+                min-height: 24rem;
+                max-height: none;
+                margin-bottom: 0.9rem;
             }
         }
 
@@ -1379,6 +1760,26 @@ def _inject_global_css() -> None:
             .tool-page-header,
             .tool-status-note {
                 align-items: flex-start;
+            }
+
+            .roadmap-hero,
+            .roadmap-summary-line,
+            .roadmap-footer-note {
+                display: block;
+            }
+
+            .roadmap-actions {
+                justify-content: flex-start;
+                margin-top: 1rem;
+            }
+
+            .roadmap-board-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .roadmap-footer-note span {
+                display: block;
+                margin: 0.35rem 0 0.8rem;
             }
         }
         </style>

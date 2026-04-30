@@ -1,0 +1,49 @@
+name: Feature request
+description: Suggest a public-safe idea for ITOps Toolkit.
+title: "[Idea]: "
+labels:
+  - idea
+  - feedback
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping improve ITOps Toolkit.
+
+        Do not include passwords, private keys, tokens, customer logs, internal hostnames, or any sensitive data.
+  - type: textarea
+    id: idea
+    attributes:
+      label: What should be added or improved?
+      description: Describe the tool, workflow, report, integration, or UX improvement.
+      placeholder: Add a public-safe feature idea.
+    validations:
+      required: true
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category
+      options:
+        - Tools
+        - Reports
+        - Security
+        - AI Ideas
+        - UX / Design
+        - Integrations
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: use_case
+    attributes:
+      label: Who benefits and why?
+      description: Explain the user, workflow, and outcome this would improve.
+      placeholder: IT admins need this because...
+    validations:
+      required: true
+  - type: textarea
+    id: public_safe_notes
+    attributes:
+      label: Public-safe notes
+      description: Mention any privacy, security, or data-handling constraints.
+      placeholder: This should not store user input, should avoid secrets, etc.

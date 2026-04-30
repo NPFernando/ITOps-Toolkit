@@ -15,6 +15,7 @@ ITOps Toolkit is a public-safe Streamlit dashboard for common troubleshooting ta
 - JWT Decoder that reads header and payload without verifying or sending the token externally.
 - Cron Explainer for common 5-field cron expressions.
 - Log Troubleshooting Assistant with rule-based, public-safe analysis and optional Azure AI summaries.
+- Roadmap & Feedback board with implemented work, planned items, curated AI recommendations, and GitHub Issue submissions.
 
 ## Local Setup
 
@@ -62,6 +63,10 @@ The example includes placeholders for direct OpenAI and Azure AI Foundry/Azure O
 
 Only Azure AI Foundry/Azure OpenAI is wired today. Direct `OPENAI_API_KEY` support is reserved and does not enable AI summaries. Azure AI summaries are opt-in per Log Troubleshooting submission and send only sanitized log text to the configured Azure OpenAI deployment.
 
+Optional public links:
+
+- `ITOPS_GITHUB_URL` overrides the default repository URL used by the GitHub button and Roadmap & Feedback issue links. It is not a secret.
+
 For setup and manual validation steps, see [docs/azure-ai-setup.md](docs/azure-ai-setup.md).
 
 ## Tests
@@ -80,7 +85,8 @@ This app is ready for Streamlit Community Cloud:
 1. Push the project to a public or private GitHub repository.
 2. Create a new Streamlit Community Cloud app.
 3. Set the main file path to `app.py`.
-4. Do not add secrets unless optional Azure AI summaries are needed. See [docs/azure-ai-setup.md](docs/azure-ai-setup.md) for the required keys and smoke checks.
+4. Optionally set `ITOPS_GITHUB_URL` if deploying a fork and directing feedback to a different repository.
+5. Do not add secrets unless optional Azure AI summaries are needed. See [docs/azure-ai-setup.md](docs/azure-ai-setup.md) for the required keys and smoke checks.
 
 No database or background worker is required. Azure OpenAI is optional and used only when configured and explicitly enabled on a log-analysis submission.
 
@@ -107,6 +113,8 @@ The dashboard shell, tool metadata, navigation, and reusable visual components l
 Use [docs/screenshot-guide.md](docs/screenshot-guide.md) for release QA capture targets. Save temporary screenshots outside the repository, such as `/tmp/itops-screenshots`.
 
 ## Future Roadmap
+
+The in-app Roadmap & Feedback page is the source of truth for public planned items and curated AI recommendations. V1 feedback submission opens GitHub Issues and does not store ideas in Streamlit.
 
 - Add downloadable HTML reports.
 - Add more DNS and email security checks.

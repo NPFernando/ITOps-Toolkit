@@ -8,7 +8,7 @@
 - Build: Streamlit Community Cloud runs the app from `app.py`
 - Env/config:
   - Required env vars: none
-  - Optional env vars: `AZURE_OPENAI_API_KEY`, `AZURE_OPENAI_ENDPOINT`, and `AZURE_OPENAI_DEPLOYMENT` enable opt-in Azure AI log summaries; `AZURE_OPENAI_API_VERSION` and `OPENAI_API_KEY` are reserved compatibility placeholders
+  - Optional env vars: `AZURE_OPENAI_API_KEY`, `AZURE_OPENAI_ENDPOINT`, and `AZURE_OPENAI_DEPLOYMENT` enable opt-in Azure AI log summaries; `AZURE_OPENAI_API_VERSION` and `OPENAI_API_KEY` are reserved compatibility placeholders; `ITOPS_GITHUB_URL` overrides public GitHub and feedback links
   - Local env file: do not commit `.env` or `.streamlit/secrets.toml`
 
 ## Structure
@@ -24,6 +24,7 @@
 - Domain/Core must not import UI/Adapters.
 - Do not log or persist user-entered domains, URLs, logs, JWTs, JSON, or encoded text.
 - AI features must stay opt-in per submission, send sanitized text only, and use mocked adapters in automated tests.
+- Roadmap and feedback ideas must stay public and backend-free in v1: use static roadmap data plus GitHub Issue links, with no in-app persistence or AI calls.
 - Azure AI setup and manual QA guidance lives in `docs/azure-ai-setup.md`; keep it accurate when changing AI configuration behavior.
 - UI pages must use the shared shell in `utils/ui.py` after `st.set_page_config`.
 - Reuse the central tool metadata in `utils/ui.py`; do not duplicate tool titles, paths, icons, descriptions, or accent colors.
