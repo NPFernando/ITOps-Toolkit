@@ -4,15 +4,7 @@ from html import escape
 
 import streamlit as st
 
-from utils.roadmap import (
-    ROADMAP_STATUSES,
-    category_counts,
-    filter_roadmap_items,
-    github_feature_request_url,
-    github_repository_url,
-    roadmap_categories,
-    roadmap_items_by_status,
-)
+from utils import roadmap
 from utils.ui import apply_app_shell, render_status_note
 
 
@@ -24,40 +16,76 @@ def _status_tone(status: str) -> str:
     return {
         "Planned": "planned",
         "In Progress": "progress",
-        "Implemented": "done",
+        "Complete": "done",
         "AI Recommended": "ai",
     }.get(status, "planned")
 
 
 def _board_card(label: str, count: int) -> str:
-    return f"""
-    <div class="roadmap-board-card">
-        <span>{escape(label)}</span>
-        <strong>{count}</strong>
-    </div>
-    """
+    return (
+        '<div class="roadmap-board-card">'
+        f"<span>{escape(label)}</span>"
+        f"<strong>{count}</strong>"
+        "</div>"
+    )
 
 
-def _roadmap_card(item) -> str:
+def _roadmap_card(item: roadmap.RoadmapItem) -> str:
     tone = _status_tone(item.status)
-    return f"""
-    <article class="roadmap-item-card roadmap-item-{tone}">
-        <div class="roadmap-vote-pill"><span>^</span>{item.votes}</div>
-        <div class="roadmap-item-body">
-            <h3>{escape(item.title)}</h3>
-            <div class="roadmap-card-meta">
-                <span class="roadmap-item-category">{escape(item.category)}</span>
-                <span class="roadmap-status-badge">{escape(item.status)}</span>
-            </div>
-            <p>{escape(item.description)}</p>
-            <small>{escape(item.rationale)}</small>
-        </div>
-    </article>
-    """
+    title_html = escape(item.title)
+    if item.url:
+        title_html = f'<a href="{escape(item.url)}" target="_blank" rel="noopener noreferrer">{title_html}</a>'
+    source_label = "Seed"
+    if item.source == "github":
+        source_label = f"GitHub #{item.number}" if item.number else "GitHub"
+    return (
+        f'<article class="roadmap-item-card roadmap-item-{tone}">'
+        f'<div class="roadmap-vote-pill"><span>^</span>{item.votes}</div>'
+        '<div class="roadmap-item-body">'
+        f'<div class="roadmap-card-title">{title_html}</div>'
+        '<div class="roadmap-card-meta">'
+        f'<span class="roadmap-item-category">{escape(item.category)}</span>'
+        f'<span class="roadmap-status-badge">{escape(item.status)}</span>'
+        f'<span class="roadmap-source-badge roadmap-source-{escape(item.source)}">{escape(source_label)}</span>'
+        "</div>"
+        f"<p>{escape(item.description)}</p>"
+        f"<small>{escape(item.rationale)}</small>"
+        "</div>"
+        "</article>"
+    )
 
 
-feedback_url = github_feature_request_url()
-repo_url = github_repository_url()
+def _empty_column() -> str:
+    return (
+        '<div class="roadmap-empty-column">'
+        "<strong>No matches</strong>"
+        "<p>Try another search or category filter.</p>"
+        "</div>"
+    )
+
+
+def _roadmap_column(status: str, status_items: tuple[roadmap.RoadmapItem, ...]) -> str:
+    cards = "".join(_roadmap_card(item) for item in status_items) or _empty_column()
+    return (
+        f'<section class="roadmap-column roadmap-column-{_status_tone(status)}">'
+        '<div class="roadmap-column-title">'
+        '<span class="roadmap-status-dot"></span>'
+        f'<div class="roadmap-column-name">{escape(status)}</div>'
+        f"<strong>{len(status_items)}</strong>"
+        "</div>"
+        f'<div class="roadmap-column-list">{cards}</div>'
+        "</section>"
+    )
+
+
+@st.cache_data(ttl=300, show_spinner=False)
+def _cached_roadmap_board(repo_url: str, loader_token: int) -> roadmap.RoadmapBoard:
+    return roadmap.load_roadmap_board(repo_url=repo_url)
+
+
+feedback_url = roadmap.github_feature_request_url()
+repo_url = roadmap.github_repository_url()
+board = _cached_roadmap_board(repo_url, id(roadmap.load_roadmap_board))
 
 st.markdown(
     f"""
@@ -65,7 +93,7 @@ st.markdown(
         <div>
             <div class="roadmap-kicker">Public roadmap</div>
             <h1>Roadmap & Feedback</h1>
-            <p>Track what is implemented, what is planned, and which safe AI ideas fit the toolkit direction.</p>
+            <p>Track curated roadmap items and public GitHub feature requests from the ITOps Toolkit repository.</p>
             <div class="roadmap-tab-row">
                 <span class="roadmap-tab-active">Roadmap</span>
                 <a href="{escape(feedback_url)}" target="_blank" rel="noopener noreferrer">Feedback via GitHub</a>
@@ -92,9 +120,16 @@ render_status_note(
     tone="ai",
 )
 
-counts = category_counts()
+if board.github_error:
+    render_status_note(
+        "GitHub unavailable, showing seed data",
+        board.github_error,
+        tone="neutral",
+    )
+
+counts = roadmap.category_counts(board.items)
 st.markdown(
-    "<div class=\"roadmap-board-grid\">"
+    '<div class="roadmap-board-grid">'
     + "".join(_board_card(label, count) for label, count in counts.items())
     + "</div>",
     unsafe_allow_html=True,
@@ -106,53 +141,31 @@ with search_col:
 with filter_col:
     category = st.pills(
         "Filter category",
-        options=("All", *roadmap_categories()),
+        options=("All", *roadmap.roadmap_categories()),
         default="All",
         label_visibility="collapsed",
     )
 
 selected_category = category or "All"
-filtered_items = filter_roadmap_items(query, selected_category)
-items_by_status = roadmap_items_by_status(filtered_items)
+filtered_items = roadmap.filter_roadmap_items(query, selected_category, board.items)
+items_by_status = roadmap.roadmap_items_by_status(filtered_items)
 
 st.markdown(
     f"""
     <div class="roadmap-summary-line">
         <strong>{len(filtered_items)}</strong> roadmap items shown
-        <span>Feedback opens GitHub; no ideas are stored by Streamlit.</span>
+        <span>Seed items are merged with public GitHub Issues; Streamlit does not store feedback.</span>
     </div>
     """,
     unsafe_allow_html=True,
 )
 
-columns = st.columns(4, gap="large")
-for index, status in enumerate(ROADMAP_STATUSES):
-    status_items = items_by_status[status]
-    with columns[index]:
-        st.markdown(
-            f"""
-            <section class="roadmap-column roadmap-column-{_status_tone(status)}">
-                <div class="roadmap-column-title">
-                    <span></span>
-                    <h2>{escape(status)}</h2>
-                    <strong>{len(status_items)}</strong>
-                </div>
-            """,
-            unsafe_allow_html=True,
-        )
-        if not status_items:
-            st.markdown(
-                """
-                <div class="roadmap-empty-column">
-                    <strong>No matches</strong>
-                    <p>Try another search or category filter.</p>
-                </div>
-                """,
-                unsafe_allow_html=True,
-            )
-        for item in status_items:
-            st.markdown(_roadmap_card(item), unsafe_allow_html=True)
-        st.markdown("</section>", unsafe_allow_html=True)
+st.markdown(
+    '<div class="roadmap-columns-grid">'
+    + "".join(_roadmap_column(status, items_by_status[status]) for status in roadmap.ROADMAP_STATUSES)
+    + "</div>",
+    unsafe_allow_html=True,
+)
 
 st.markdown(
     f"""

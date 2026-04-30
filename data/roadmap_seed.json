@@ -1,0 +1,139 @@
+{
+  "items": [
+    {
+      "title": "Domain Health Checker",
+      "category": "Tools",
+      "status": "Complete",
+      "votes": 92,
+      "description": "DNS, TLS, HTTP, email security, recommendations, and exports.",
+      "rationale": "Core troubleshooting workflow for IT admins and MSP engineers.",
+      "updated_at": "2026-04-30"
+    },
+    {
+      "title": "DNS Record Checker",
+      "category": "Tools",
+      "status": "Complete",
+      "votes": 74,
+      "description": "A, AAAA, MX, TXT, NS, CNAME, SOA, SPF, and DMARC lookups.",
+      "rationale": "Fast public DNS inspection without storing queried domains.",
+      "updated_at": "2026-04-30"
+    },
+    {
+      "title": "SSL Certificate Checker",
+      "category": "Security",
+      "status": "Complete",
+      "votes": 68,
+      "description": "Certificate subject, issuer, SANs, dates, and expiration status.",
+      "rationale": "Helps catch certificate incidents before renewal windows are missed.",
+      "updated_at": "2026-04-30"
+    },
+    {
+      "title": "HTTP Status Checker",
+      "category": "Tools",
+      "status": "Complete",
+      "votes": 63,
+      "description": "Status, redirects, response timing, headers, and security hints.",
+      "rationale": "Useful first-pass check for public websites and APIs.",
+      "updated_at": "2026-04-30"
+    },
+    {
+      "title": "JSON Formatter, Base64, JWT, and Cron tools",
+      "category": "Tools",
+      "status": "Complete",
+      "votes": 58,
+      "description": "Everyday text utilities for public-safe troubleshooting.",
+      "rationale": "Keeps common admin tasks in one fast toolkit.",
+      "updated_at": "2026-04-30"
+    },
+    {
+      "title": "Azure AI log summaries",
+      "category": "AI Ideas",
+      "status": "Complete",
+      "votes": 51,
+      "description": "Optional Azure AI summary for sanitized log troubleshooting submissions.",
+      "rationale": "Adds contextual help while preserving opt-in, sanitized-only behavior.",
+      "updated_at": "2026-04-30"
+    },
+    {
+      "title": "GitHub-connected roadmap board",
+      "category": "UX / Design",
+      "status": "In Progress",
+      "votes": 47,
+      "description": "Public board that merges curated seeds with public GitHub feature requests.",
+      "rationale": "Makes priorities visible and gives users a clear path to suggest improvements.",
+      "updated_at": "2026-04-30"
+    },
+    {
+      "title": "Downloadable HTML reports",
+      "category": "Reports",
+      "status": "Planned",
+      "votes": 83,
+      "description": "Export polished standalone HTML reports from health checks.",
+      "rationale": "MSPs can share findings with customers without extra formatting work.",
+      "updated_at": "2026-04-30"
+    },
+    {
+      "title": "More DNS and email security checks",
+      "category": "Security",
+      "status": "Planned",
+      "votes": 79,
+      "description": "Expand SPF, DMARC, MX, DNSSEC, MTA-STS, and TLS reporting.",
+      "rationale": "Email security posture is a recurring operational need.",
+      "updated_at": "2026-04-30"
+    },
+    {
+      "title": "One-off uptime and latency trend visualization",
+      "category": "Reports",
+      "status": "Planned",
+      "votes": 61,
+      "description": "Show short-lived trend charts without storing historical checks.",
+      "rationale": "Gives context during incident checks while keeping the app persistence-free.",
+      "updated_at": "2026-04-30"
+    },
+    {
+      "title": "GitHub reaction-based voting",
+      "category": "Integrations",
+      "status": "Planned",
+      "votes": 44,
+      "description": "Use GitHub issue reactions as the real vote source for feature ideas.",
+      "rationale": "Keeps feedback public and avoids adding a custom database.",
+      "updated_at": "2026-04-30"
+    },
+    {
+      "title": "AI-generated remediation checklists",
+      "category": "AI Ideas",
+      "status": "AI Recommended",
+      "votes": 72,
+      "description": "Turn safe rule-based findings into short action checklists.",
+      "rationale": "Recommended because it builds on existing findings without requiring raw secret input.",
+      "updated_at": "2026-04-30"
+    },
+    {
+      "title": "AI-assisted feature triage for maintainers",
+      "category": "AI Ideas",
+      "status": "AI Recommended",
+      "votes": 55,
+      "description": "Summarize GitHub feature requests for maintainers in an admin workflow.",
+      "rationale": "Could help prioritize user ideas later, but should remain opt-in and secret-safe.",
+      "updated_at": "2026-04-30"
+    },
+    {
+      "title": "Tool bundle recommendations",
+      "category": "UX / Design",
+      "status": "AI Recommended",
+      "votes": 49,
+      "description": "Suggest the next tool to run based on current troubleshooting context.",
+      "rationale": "Helps users move from DNS to SSL to HTTP checks without a heavy workflow engine.",
+      "updated_at": "2026-04-30"
+    },
+    {
+      "title": "ConnectWise and PSA export ideas",
+      "category": "Integrations",
+      "status": "AI Recommended",
+      "votes": 37,
+      "description": "Explore lightweight exports that can be pasted into ticketing systems.",
+      "rationale": "MSP users often need customer-ready notes after troubleshooting.",
+      "updated_at": "2026-04-30"
+    }
+  ]
+}

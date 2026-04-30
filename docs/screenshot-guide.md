@@ -47,7 +47,8 @@ Tool pages:
 Roadmap & Feedback:
 
 - Board summary cards, search, filters, four columns, and submit-idea links are visible.
-- GitHub feedback links open outside Streamlit and no in-app persistence UI is implied.
+- GitHub feedback links open outside Streamlit, live public issue cards link back to GitHub, and no in-app persistence UI is implied.
+- If GitHub is unavailable or rate-limited, the seed-only fallback note is subdued and does not look like a failure.
 - Static AI Recommended items are clearly labeled as curated recommendations, not live AI output.
 
 Log Troubleshooting Assistant:

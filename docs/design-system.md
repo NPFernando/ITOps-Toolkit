@@ -18,9 +18,9 @@ This guide documents the UI direction used for the Streamlit dashboard and tool 
   - Important notice band for sensitive-data handling.
 - Roadmap & Feedback page structure:
   - Header with public roadmap context, Roadmap/Feedback tabs, and GitHub actions.
-  - Board summary cards for static public categories.
-  - Search and category filters above four roadmap columns: Implemented, Planned, In Progress, and AI Recommended.
-  - Static vote-style numbers are display only in v1; real feedback opens GitHub Issues.
+  - Board summary cards for public categories across seed and GitHub issue items.
+  - Search and category filters above four roadmap columns: Planned, In Progress, Complete, and AI Recommended.
+  - Seed vote-style numbers are curated display values; GitHub issue numbers use public reaction totals.
 - Tool pages use a compact page header and keep the form-first workflow visible above results.
 - Native Streamlit multipage navigation is disabled with `client.showSidebarNavigation = false`; use the shared sidebar shell instead.
 - Streamlit native theme tokens in `.streamlit/config.toml` must stay aligned with the shared shell. They control the first loading frame before `utils/ui.py` CSS is injected, including sidebar color, app background, and toolbar visibility.
@@ -63,9 +63,11 @@ This guide documents the UI direction used for the Streamlit dashboard and tool 
 - Notices:
   - Use `render_important_notice` for the home-page sensitive-data message.
 - Roadmap board:
-  - Use `utils/roadmap.py` for category counts, roadmap items, filtering, and GitHub feedback URLs.
+  - Use `utils/roadmap.py` for seed loading, GitHub issue normalization, category counts, filtering, and GitHub feedback URLs.
+  - Use `utils/github_issues.py` for read-only anonymous GitHub Issues API calls.
   - Label curated AI suggestions as static recommendations based on the toolkit direction. Do not call Azure/OpenAI from the roadmap page.
   - Keep feedback public-safe copy visible near submit links.
+  - Show GitHub issue source badges and links for live public requests; show seed badges for curated local items.
 
 ## Responsive Rules
 
@@ -80,7 +82,7 @@ This guide documents the UI direction used for the Streamlit dashboard and tool 
 - Do not duplicate tool titles, descriptions, paths, or accent colors outside `utils/ui.py`.
 - Do not add a separate navigation library unless Streamlit page links no longer support the required behavior.
 - Do not log or persist user-entered domains, URLs, logs, JWTs, JSON, or encoded text.
-- Do not store roadmap feedback in Streamlit. New ideas should leave the app through GitHub Issues unless a future backend is explicitly designed and documented.
+- Do not store roadmap feedback in Streamlit. New ideas should leave the app through GitHub Issues; curated defaults belong in `data/roadmap_seed.json`.
 - Any new user-facing page should call `apply_app_shell` immediately after `st.set_page_config`.
 - Any new preloader, spinner, skeleton, or transition styling must use the light blue/white work area and dark sidebar tokens. Avoid default gray loading surfaces.
 - Any material change to the shell, home layout, or tool navigation should update this file and `docs/architecture.md` when boundaries change.

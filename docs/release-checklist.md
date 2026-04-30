@@ -52,7 +52,7 @@ Check these pages manually:
 - Home page: dark sidebar, light workspace, hero, search, tool cards, feature strip, and notice render cleanly.
 - Sidebar navigation: every item opens the correct page and no native Streamlit page list appears.
 - Tool cards: each card opens the correct tool page.
-- Roadmap & Feedback: board cards, search, filters, roadmap columns, public-safe warning, and GitHub issue links render cleanly.
+- Roadmap & Feedback: seed cards, GitHub issue cards when public issues exist, search, filters, roadmap columns, public-safe warning, fallback note, and GitHub issue links render cleanly.
 - Domain Health Checker: empty form renders without exceptions.
 - DNS Record Checker: form renders and does not show Streamlit form warnings.
 - JSON Formatter or Log Troubleshooting Assistant: text-heavy layout has no clipped controls.

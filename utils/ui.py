@@ -1499,30 +1499,38 @@ def _inject_global_css() -> None:
             color: var(--itops-ink);
         }
 
+        .roadmap-columns-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 1rem;
+            align-items: stretch;
+            margin-bottom: 1.1rem;
+        }
+
         .roadmap-column {
-            min-height: 33rem;
-            max-height: 42rem;
-            overflow-y: auto;
-            padding: 0.95rem;
+            height: 40rem;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            padding: 0;
             border: 1px solid #cddaf0;
             border-radius: 8px;
-            background: rgba(255, 255, 255, 0.72);
+            background: rgba(255, 255, 255, 0.82);
+            box-shadow: 0 12px 30px rgba(36, 79, 135, 0.035);
         }
 
         .roadmap-column-title {
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            position: sticky;
-            top: 0;
-            z-index: 2;
-            margin: -0.95rem -0.95rem 0.8rem;
-            padding: 0.95rem;
+            flex: 0 0 auto;
+            min-height: 3.45rem;
+            padding: 0.9rem 1rem;
             border-bottom: 1px solid #d7e2f5;
             background: rgba(251, 253, 255, 0.96);
         }
 
-        .roadmap-column-title span {
+        .roadmap-column-title > .roadmap-status-dot {
             width: 0.52rem;
             height: 0.52rem;
             flex: 0 0 0.52rem;
@@ -1530,8 +1538,9 @@ def _inject_global_css() -> None:
             background: #2e8bff;
         }
 
-        .roadmap-column-title h2 {
+        .roadmap-column-name {
             margin: 0;
+            padding: 0 !important;
             flex: 1;
             color: var(--itops-ink);
             font-size: 0.95rem;
@@ -1545,16 +1554,24 @@ def _inject_global_css() -> None:
             font-weight: 900;
         }
 
-        .roadmap-column-planned .roadmap-column-title span { background: #2e8bff; }
-        .roadmap-column-progress .roadmap-column-title span { background: #8a61f2; }
-        .roadmap-column-done .roadmap-column-title span { background: #22ba4f; }
-        .roadmap-column-ai .roadmap-column-title span { background: #11aab8; }
+        .roadmap-column-planned .roadmap-status-dot { background: #2e8bff; }
+        .roadmap-column-progress .roadmap-status-dot { background: #8a61f2; }
+        .roadmap-column-done .roadmap-status-dot { background: #22ba4f; }
+        .roadmap-column-ai .roadmap-status-dot { background: #11aab8; }
+
+        .roadmap-column-list {
+            flex: 1;
+            min-height: 0;
+            overflow-y: auto;
+            padding: 0 1rem;
+        }
 
         .roadmap-item-card {
             display: grid;
-            grid-template-columns: 2.5rem minmax(0, 1fr);
-            gap: 0.85rem;
-            padding: 0.85rem 0;
+            grid-template-columns: 2.35rem minmax(0, 1fr);
+            gap: 0.8rem;
+            align-items: start;
+            padding: 1rem 0;
             border-bottom: 1px solid #e1e9f7;
         }
 
@@ -1563,7 +1580,9 @@ def _inject_global_css() -> None:
         }
 
         .roadmap-vote-pill {
-            min-height: 2.65rem;
+            width: 2.35rem;
+            min-height: 2.5rem;
+            align-self: start;
             border: 1px solid #d4e0f2;
             border-radius: 8px;
             display: grid;
@@ -1585,32 +1604,44 @@ def _inject_global_css() -> None:
             min-width: 0;
         }
 
-        .roadmap-item-body h3 {
+        .roadmap-card-title {
             margin: 0;
+            padding: 0 !important;
             color: var(--itops-ink);
-            font-size: 0.96rem;
-            line-height: 1.35;
+            font-size: 0.92rem;
+            line-height: 1.32;
             font-weight: 900;
             overflow-wrap: anywhere;
+        }
+
+        .roadmap-card-title a {
+            color: inherit !important;
+            text-decoration: none !important;
+        }
+
+        .roadmap-card-title a:hover {
+            color: var(--itops-blue) !important;
+            text-decoration: underline !important;
         }
 
         .roadmap-card-meta {
             display: flex;
             flex-wrap: wrap;
-            gap: 0.4rem;
+            gap: 0.35rem;
             align-items: center;
-            margin-top: 0.35rem;
+            margin-top: 0.5rem;
         }
 
         .roadmap-item-category,
-        .roadmap-status-badge {
+        .roadmap-status-badge,
+        .roadmap-source-badge {
             display: inline-flex;
             align-items: center;
-            min-height: 1.35rem;
+            min-height: 1.25rem;
             border-radius: 8px;
             padding: 0 0.45rem;
             color: #667790;
-            font-size: 0.74rem;
+            font-size: 0.68rem;
             line-height: 1.2;
             font-weight: 900;
             text-transform: uppercase;
@@ -1625,10 +1656,21 @@ def _inject_global_css() -> None:
             background: rgba(18, 107, 255, 0.1);
         }
 
+        .roadmap-source-badge {
+            color: #23663b;
+            background: rgba(34, 186, 79, 0.1);
+        }
+
+        .roadmap-source-github {
+            color: #4b3bb0;
+            background: rgba(109, 85, 233, 0.12);
+        }
+
         .roadmap-item-body p {
             margin: 0.5rem 0 0;
+            padding: 0 !important;
             color: #334765;
-            font-size: 0.86rem;
+            font-size: 0.82rem;
             line-height: 1.5;
         }
 
@@ -1636,11 +1678,12 @@ def _inject_global_css() -> None:
             display: block;
             margin-top: 0.45rem;
             color: #64758e;
-            font-size: 0.78rem;
+            font-size: 0.74rem;
             line-height: 1.45;
         }
 
         .roadmap-empty-column {
+            margin: 1rem 0;
             padding: 1rem;
             border: 1px dashed #bdd0ef;
             border-radius: 8px;
@@ -1715,10 +1758,18 @@ def _inject_global_css() -> None:
                 grid-template-columns: repeat(2, minmax(0, 1fr));
             }
 
+            .roadmap-columns-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
             .roadmap-column {
+                height: auto;
                 min-height: 24rem;
-                max-height: none;
                 margin-bottom: 0.9rem;
+            }
+
+            .roadmap-column-list {
+                overflow: visible;
             }
         }
 
@@ -1775,6 +1826,14 @@ def _inject_global_css() -> None:
 
             .roadmap-board-grid {
                 grid-template-columns: 1fr;
+            }
+
+            .roadmap-columns-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .roadmap-column-title {
+                padding-left: 3.75rem;
             }
 
             .roadmap-footer-note span {

@@ -2,8 +2,7 @@ name: Feature request
 description: Suggest a public-safe idea for ITOps Toolkit.
 title: "[Idea]: "
 labels:
-  - idea
-  - feedback
+  - enhancement
 body:
   - type: markdown
     attributes:

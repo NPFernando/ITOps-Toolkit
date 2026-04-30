@@ -15,7 +15,7 @@ ITOps Toolkit is a public-safe Streamlit dashboard for common troubleshooting ta
 - JWT Decoder that reads header and payload without verifying or sending the token externally.
 - Cron Explainer for common 5-field cron expressions.
 - Log Troubleshooting Assistant with rule-based, public-safe analysis and optional Azure AI summaries.
-- Roadmap & Feedback board with implemented work, planned items, curated AI recommendations, and GitHub Issue submissions.
+- Roadmap & Feedback board with curated seed items, live public GitHub Issues, planned work, completed work, and static AI recommendations.
 
 ## Local Setup
 
@@ -65,7 +65,7 @@ Only Azure AI Foundry/Azure OpenAI is wired today. Direct `OPENAI_API_KEY` suppo
 
 Optional public links:
 
-- `ITOPS_GITHUB_URL` overrides the default repository URL used by the GitHub button and Roadmap & Feedback issue links. It is not a secret.
+- `ITOPS_GITHUB_URL` overrides the default repository URL used by the GitHub button, Roadmap & Feedback issue links, and read-only public GitHub Issues feed. It is not a secret.
 
 For setup and manual validation steps, see [docs/azure-ai-setup.md](docs/azure-ai-setup.md).
 
@@ -76,7 +76,7 @@ python -m compileall app.py pages utils
 python -m pytest
 ```
 
-The pytest suite uses fakes for DNS, HTTP, and TLS adapter tests. It does not require external network access, browser automation, secrets, or OpenAI credentials.
+The pytest suite uses fakes for DNS, HTTP, TLS, GitHub Issues, and Azure/OpenAI adapter tests. It does not require external network access, browser automation, secrets, or OpenAI credentials.
 
 ## Deployment Notes
 
@@ -88,7 +88,7 @@ This app is ready for Streamlit Community Cloud:
 4. Optionally set `ITOPS_GITHUB_URL` if deploying a fork and directing feedback to a different repository.
 5. Do not add secrets unless optional Azure AI summaries are needed. See [docs/azure-ai-setup.md](docs/azure-ai-setup.md) for the required keys and smoke checks.
 
-No database or background worker is required. Azure OpenAI is optional and used only when configured and explicitly enabled on a log-analysis submission.
+No database or background worker is required. Roadmap feedback reads public GitHub Issues anonymously. Azure OpenAI is optional and used only when configured and explicitly enabled on a log-analysis submission.
 
 ## Release Readiness
 
@@ -97,6 +97,17 @@ Before deployment, use [docs/release-checklist.md](docs/release-checklist.md). F
 ## UI Design Notes
 
 The dashboard shell, tool metadata, navigation, and reusable visual components live in `utils/ui.py`. Future UI changes should follow `docs/design-system.md`.
+
+## Roadmap Feedback
+
+The Roadmap & Feedback page merges curated seed data from `data/roadmap_seed.json` with public GitHub Issues from the configured repository. User ideas are submitted through GitHub Issues; Streamlit does not store or write feedback.
+
+Maintainer labels:
+
+- `enhancement`: include the issue as a feature request.
+- `status:in-progress` or `in progress`: show an open issue in the In Progress column.
+- `status:complete` or `complete`: show an open issue in the Complete column. Closed issues also show as Complete.
+- Optional category labels can match `Tools`, `Reports`, `Security`, `AI Ideas`, `UX / Design`, or `Integrations`; otherwise the issue form's Category field is used.
 
 ## Security Notes
 
@@ -114,7 +125,7 @@ Use [docs/screenshot-guide.md](docs/screenshot-guide.md) for release QA capture 
 
 ## Future Roadmap
 
-The in-app Roadmap & Feedback page is the source of truth for public planned items and curated AI recommendations. V1 feedback submission opens GitHub Issues and does not store ideas in Streamlit.
+The in-app Roadmap & Feedback page is the source of truth for public planned items, completed items, live GitHub feature requests, and curated AI recommendations. Feedback submission opens GitHub Issues and does not store ideas in Streamlit.
 
 - Add downloadable HTML reports.
 - Add more DNS and email security checks.
