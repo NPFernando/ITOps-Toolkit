@@ -84,6 +84,10 @@ This app is ready for Streamlit Community Cloud:
 
 No database or background worker is required. Azure OpenAI is optional and used only when configured and explicitly enabled on a log-analysis submission.
 
+## Release Readiness
+
+Before deployment, use [docs/release-checklist.md](docs/release-checklist.md). For release summaries, use [docs/release-notes-template.md](docs/release-notes-template.md).
+
 ## UI Design Notes
 
 The dashboard shell, tool metadata, navigation, and reusable visual components live in `utils/ui.py`. Future UI changes should follow `docs/design-system.md`.
@@ -98,14 +102,9 @@ The dashboard shell, tool metadata, navigation, and reusable visual components l
 - JWTs are decoded locally without signature verification and are not sent externally.
 - The log assistant uses rule-based analysis by default and sends sanitized logs to Azure OpenAI only when Azure settings are configured and the user opts in for that submission.
 
-## Screenshot Placeholders
+## Screenshots
 
-Add screenshots after deployment:
-
-- Home page
-- Domain Health Checker
-- DNS Record Checker
-- Log Troubleshooting Assistant
+Use [docs/screenshot-guide.md](docs/screenshot-guide.md) for release QA capture targets. Save temporary screenshots outside the repository, such as `/tmp/itops-screenshots`.
 
 ## Future Roadmap
 

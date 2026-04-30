@@ -39,6 +39,7 @@
 - Keep README accurate.
 - Keep `docs/architecture.md` updated for behavior or architecture changes.
 - Keep `docs/design-system.md` updated for shell, navigation, and visual system changes.
+- Use `docs/release-checklist.md` as the standard pre-deploy checklist and keep release docs current when deployment or QA steps change.
 
 ## Definition of Done
 - No new duplication introduced.
