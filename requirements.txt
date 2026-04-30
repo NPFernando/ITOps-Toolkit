@@ -1,0 +1,8 @@
+streamlit
+requests
+dnspython
+pandas
+plotly
+pyjwt
+croniter
+openai

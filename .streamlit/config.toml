@@ -1,0 +1,38 @@
+[server]
+fileWatcherType = "none"
+runOnSave = false
+
+[client]
+showSidebarNavigation = false
+toolbarMode = "minimal"
+
+[browser]
+gatherUsageStats = false
+
+[theme]
+base = "light"
+primaryColor = "#126bff"
+backgroundColor = "#f6f9ff"
+secondaryBackgroundColor = "#fbfdff"
+textColor = "#07142f"
+baseRadius = "0.5rem"
+font = "sans-serif"
+blueColor = "#126bff"
+blueBackgroundColor = "#e7f0ff"
+greenColor = "#22ba4f"
+greenBackgroundColor = "#e7f8ee"
+orangeColor = "#ff6a13"
+orangeBackgroundColor = "#fff0e7"
+violetColor = "#6d55e9"
+violetBackgroundColor = "#f0edff"
+grayColor = "#52637f"
+grayBackgroundColor = "#edf3fb"
+
+[theme.sidebar]
+primaryColor = "#126bff"
+backgroundColor = "#071a33"
+secondaryBackgroundColor = "#0b2748"
+textColor = "#dceaff"
+borderColor = "#18365d"
+baseRadius = "0.5rem"
+buttonRadius = "0.5rem"
