@@ -5,7 +5,7 @@ from html import escape
 import streamlit as st
 
 from utils import roadmap
-from utils.ui import apply_app_shell, render_status_note
+from utils.ui import apply_app_shell
 
 
 st.set_page_config(page_title="Roadmap & Feedback", page_icon=":material/route:", layout="wide")
@@ -26,6 +26,18 @@ def _board_card(label: str, count: int) -> str:
         '<div class="roadmap-board-card">'
         f"<span>{escape(label)}</span>"
         f"<strong>{count}</strong>"
+        "</div>"
+    )
+
+
+def _roadmap_notice(title: str, description: str, tone: str, mark: str) -> str:
+    return (
+        f'<div class="roadmap-notice roadmap-notice-{escape(tone)}">'
+        f'<div class="roadmap-notice-mark">{escape(mark)}</div>'
+        '<div>'
+        f"<strong>{escape(title)}</strong>"
+        f"<p>{escape(description)}</p>"
+        "</div>"
         "</div>"
     )
 
@@ -108,26 +120,32 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-render_status_note(
-    "Public-safe feedback only",
-    "Submit ideas through GitHub Issues. Do not include secrets, internal hostnames, customer logs, tokens, keys, or private data.",
-    tone="warning",
-)
-
-render_status_note(
-    "AI Recommended is curated",
-    "These ideas are static recommendations based on the current toolkit direction. This page does not call Azure/OpenAI or send feedback to an AI model.",
-    tone="ai",
+st.markdown(
+    '<div class="roadmap-notice-grid">'
+    + _roadmap_notice(
+        "Public-safe feedback only",
+        "Submit ideas through GitHub Issues. Do not include secrets, internal hostnames, customer logs, tokens, keys, or private data.",
+        "warning",
+        "!",
+    )
+    + _roadmap_notice(
+        "AI Recommended is curated",
+        "Static recommendations only. This page does not call Azure/OpenAI or send feedback to an AI model.",
+        "ai",
+        "AI",
+    )
+    + "</div>",
+    unsafe_allow_html=True,
 )
 
 if board.github_error:
-    render_status_note(
-        "GitHub unavailable, showing seed data",
-        board.github_error,
-        tone="neutral",
+    st.markdown(
+        _roadmap_notice("GitHub unavailable, showing seed data", board.github_error, "neutral", "IT"),
+        unsafe_allow_html=True,
     )
 
 counts = roadmap.category_counts(board.items)
+st.markdown('<div class="roadmap-section-label">Boards</div>', unsafe_allow_html=True)
 st.markdown(
     '<div class="roadmap-board-grid">'
     + "".join(_board_card(label, count) for label, count in counts.items())
@@ -153,7 +171,7 @@ items_by_status = roadmap.roadmap_items_by_status(filtered_items)
 st.markdown(
     f"""
     <div class="roadmap-summary-line">
-        <strong>{len(filtered_items)}</strong> roadmap items shown
+        <strong>{len(filtered_items)} roadmap items shown</strong>
         <span>Seed items are merged with public GitHub Issues; Streamlit does not store feedback.</span>
     </div>
     """,

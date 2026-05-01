@@ -114,6 +114,12 @@ def resolve_records(domain: str, record_type: str) -> dict[str, Any]:
     if requested_type == "DMARC":
         query_type = "TXT"
         query_name = f"_dmarc.{normalized}"
+    elif requested_type == "MTA_STS":
+        query_type = "TXT"
+        query_name = f"_mta-sts.{normalized}"
+    elif requested_type == "TLS_RPT":
+        query_type = "TXT"
+        query_name = f"_smtp._tls.{normalized}"
     elif requested_type == "SPF":
         query_type = "TXT"
 
@@ -143,9 +149,19 @@ def resolve_records(domain: str, record_type: str) -> dict[str, Any]:
         records = [record for record in records if str(record.get("value", "")).lower().startswith("v=spf1")]
     elif requested_type == "DMARC":
         records = [record for record in records if str(record.get("value", "")).lower().startswith("v=dmarc1")]
+    elif requested_type == "MTA_STS":
+        records = [record for record in records if str(record.get("value", "")).lower().startswith("v=stsv1")]
+    elif requested_type == "TLS_RPT":
+        records = [record for record in records if str(record.get("value", "")).lower().startswith("v=tlsrptv1")]
 
     if not records:
-        label = "SPF" if requested_type == "SPF" else "DMARC" if requested_type == "DMARC" else requested_type
+        labels = {
+            "SPF": "SPF",
+            "DMARC": "DMARC",
+            "MTA_STS": "MTA-STS",
+            "TLS_RPT": "TLS-RPT",
+        }
+        label = labels.get(requested_type, requested_type)
         return _error_result(normalized, requested_type, query_name, "No Answer", f"No {label} record was found.")
 
     result["ok"] = True
@@ -153,6 +169,116 @@ def resolve_records(domain: str, record_type: str) -> dict[str, Any]:
     result["raw_values"] = [str(record.get("value", "")) for record in records]
     result["status"] = "Healthy"
     return result
+
+
+def _first_raw_value(lookup: dict[str, Any] | None) -> str:
+    values = (lookup or {}).get("raw_values") or []
+    return str(values[0]) if values else ""
+
+
+def _policy_value(record: str, key: str) -> str | None:
+    prefix = f"{key.lower()}="
+    for part in record.split(";"):
+        value = part.strip()
+        if value.lower().startswith(prefix):
+            return value.split("=", 1)[1].strip().lower()
+    return None
+
+
+def _posture_row(check: str, value: str, status: str, recommendation: str = "") -> dict[str, str]:
+    return {
+        "check": check,
+        "value": value,
+        "status": status,
+        "recommendation": recommendation,
+    }
+
+
+def analyze_email_security_posture(lookups: dict[str, dict[str, Any]], include_dmarc: bool = True) -> dict[str, Any]:
+    """Analyze DNS-only email security posture from existing lookup results."""
+    rows: list[dict[str, str]] = []
+    recommendations: list[str] = []
+
+    def add_row(check: str, value: str, status: str, recommendation: str = "") -> None:
+        rows.append(_posture_row(check, value, status, recommendation))
+        if recommendation:
+            recommendations.append(recommendation)
+
+    dnssec_present = bool((lookups.get("DS") or {}).get("records") or (lookups.get("DNSKEY") or {}).get("records"))
+    add_row(
+        "DNSSEC",
+        "DS or DNSKEY found" if dnssec_present else "No DS or DNSKEY found",
+        "Healthy" if dnssec_present else "Warning",
+        "" if dnssec_present else "Publish DNSSEC DS records at the registrar and DNSKEY records in the zone.",
+    )
+
+    spf_lookup = lookups.get("SPF") or {}
+    spf_records = [str(value) for value in (spf_lookup.get("raw_values") or [])]
+    if not spf_records:
+        add_row("SPF policy", "Missing", "Warning", "Publish an SPF record for authorized mail senders.")
+    elif len(spf_records) > 1:
+        add_row("SPF policy", "Multiple SPF records", "Warning", "Keep exactly one SPF record; multiple SPF records can fail validation.")
+    else:
+        spf_value = spf_records[0].lower()
+        if "+all" in spf_value:
+            add_row("SPF policy", "+all allows any sender", "Critical", "Replace SPF +all with a restrictive all mechanism after validating senders.")
+        elif "?all" in spf_value:
+            add_row("SPF policy", "?all neutral policy", "Warning", "Use ~all or -all instead of ?all after validating authorized senders.")
+        elif "~all" in spf_value:
+            add_row("SPF policy", "~all softfail", "Warning", "Consider moving SPF from ~all to -all after validating all authorized senders.")
+        elif "-all" in spf_value:
+            add_row("SPF policy", "-all hardfail", "Healthy")
+        else:
+            add_row("SPF policy", "No all mechanism", "Warning", "Add an SPF all mechanism such as ~all or -all.")
+
+    if include_dmarc:
+        dmarc_value = _first_raw_value(lookups.get("DMARC"))
+        if not dmarc_value:
+            add_row("DMARC policy", "Missing", "Warning", "Publish a DMARC record at _dmarc with at least p=none and reporting.")
+        else:
+            policy = _policy_value(dmarc_value, "p")
+            if policy == "reject":
+                add_row("DMARC policy", "p=reject", "Healthy")
+            elif policy == "quarantine":
+                add_row("DMARC policy", "p=quarantine", "Healthy")
+            elif policy == "none":
+                add_row("DMARC policy", "p=none monitoring", "Warning", "Move DMARC from p=none toward quarantine or reject after reviewing reports.")
+            else:
+                add_row("DMARC policy", "Missing p= policy", "Warning", "Add a DMARC p= policy value such as p=none, p=quarantine, or p=reject.")
+
+            rua = _policy_value(dmarc_value, "rua")
+            add_row(
+                "DMARC aggregate reports",
+                "rua present" if rua else "rua missing",
+                "Healthy" if rua else "Warning",
+                "" if rua else "Add a DMARC rua= mailbox so aggregate reports can be reviewed.",
+            )
+    else:
+        add_row("DMARC policy", "Not checked", "Unknown")
+
+    mta_sts_value = _first_raw_value(lookups.get("MTA_STS"))
+    add_row(
+        "MTA-STS TXT",
+        "v=STSv1 found" if mta_sts_value.lower().startswith("v=stsv1") else "Missing",
+        "Healthy" if mta_sts_value.lower().startswith("v=stsv1") else "Warning",
+        "" if mta_sts_value.lower().startswith("v=stsv1") else "Publish _mta-sts TXT with v=STSv1 and host the HTTPS policy file.",
+    )
+
+    tls_rpt_value = _first_raw_value(lookups.get("TLS_RPT"))
+    add_row(
+        "SMTP TLS reporting",
+        "v=TLSRPTv1 found" if tls_rpt_value.lower().startswith("v=tlsrptv1") else "Missing",
+        "Healthy" if tls_rpt_value.lower().startswith("v=tlsrptv1") else "Warning",
+        "" if tls_rpt_value.lower().startswith("v=tlsrptv1") else "Publish _smtp._tls TXT with v=TLSRPTv1 to receive SMTP TLS reports.",
+    )
+
+    statuses = {row["status"] for row in rows}
+    status = "Critical" if "Critical" in statuses else "Warning" if "Warning" in statuses else "Healthy"
+    return {
+        "status": status,
+        "rows": rows,
+        "recommendations": list(dict.fromkeys(recommendations)),
+    }
 
 
 def get_dns_summary(domain: str, include_dmarc: bool = True) -> dict[str, Any]:
@@ -164,6 +290,10 @@ def get_dns_summary(domain: str, include_dmarc: bool = True) -> dict[str, Any]:
         "MX": resolve_records(normalized, "MX"),
         "TXT": resolve_records(normalized, "TXT"),
         "SPF": resolve_records(normalized, "SPF"),
+        "DS": resolve_records(normalized, "DS"),
+        "DNSKEY": resolve_records(normalized, "DNSKEY"),
+        "MTA_STS": resolve_records(normalized, "MTA_STS"),
+        "TLS_RPT": resolve_records(normalized, "TLS_RPT"),
     }
     if include_dmarc:
         lookups["DMARC"] = resolve_records(normalized, "DMARC")
@@ -190,6 +320,7 @@ def get_dns_summary(domain: str, include_dmarc: bool = True) -> dict[str, Any]:
     else:
         email_status = "Critical"
 
+    email_security_posture = analyze_email_security_posture(lookups, include_dmarc=include_dmarc)
     return {
         "domain": normalized,
         "lookups": lookups,
@@ -200,4 +331,5 @@ def get_dns_summary(domain: str, include_dmarc: bool = True) -> dict[str, Any]:
         "mx_found": mx_found,
         "spf_found": spf_found,
         "dmarc_found": dmarc_found,
+        "email_security_posture": email_security_posture,
     }

@@ -66,20 +66,20 @@
     {
       "title": "Downloadable HTML reports",
       "category": "Reports",
-      "status": "Planned",
+      "status": "Complete",
       "votes": 83,
-      "description": "Export polished standalone HTML reports from health checks.",
+      "description": "Export polished standalone HTML reports from Domain Health checks.",
       "rationale": "MSPs can share findings with customers without extra formatting work.",
       "updated_at": "2026-04-30"
     },
     {
       "title": "More DNS and email security checks",
       "category": "Security",
-      "status": "Planned",
+      "status": "Complete",
       "votes": 79,
-      "description": "Expand SPF, DMARC, MX, DNSSEC, MTA-STS, and TLS reporting.",
+      "description": "Expand SPF, DMARC, DNSSEC, MTA-STS, and SMTP TLS reporting in Domain Health.",
       "rationale": "Email security posture is a recurring operational need.",
-      "updated_at": "2026-04-30"
+      "updated_at": "2026-05-01"
     },
     {
       "title": "One-off uptime and latency trend visualization",

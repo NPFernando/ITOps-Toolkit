@@ -6,7 +6,7 @@ ITOps Toolkit is a public-safe Streamlit dashboard for common troubleshooting ta
 
 ## Features
 
-- Domain Health Checker with DNS, SSL, HTTP, email security, recommendations, CSV export, and Markdown export.
+- Domain Health Checker with DNS, SSL, HTTP, DNSSEC, SPF/DMARC posture, MTA-STS, TLS-RPT, recommendations, CSV, Markdown, and standalone HTML exports.
 - DNS Record Checker for A, AAAA, MX, TXT, NS, CNAME, SOA, SPF, and DMARC records.
 - SSL Certificate Checker with subject, issuer, SANs, validity dates, and expiration status.
 - HTTP Status Checker with redirects, response time, selected headers, and security recommendations.
@@ -127,6 +127,4 @@ Use [docs/screenshot-guide.md](docs/screenshot-guide.md) for release QA capture 
 
 The in-app Roadmap & Feedback page is the source of truth for public planned items, completed items, live GitHub feature requests, and curated AI recommendations. Feedback submission opens GitHub Issues and does not store ideas in Streamlit.
 
-- Add downloadable HTML reports.
-- Add more DNS and email security checks.
 - Add uptime and latency trend visualization for one-off checks without persistence.

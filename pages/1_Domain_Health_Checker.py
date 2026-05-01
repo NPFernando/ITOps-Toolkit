@@ -9,6 +9,7 @@ import streamlit as st
 
 from utils.dns_tools import MAX_DOMAIN_LENGTH, get_dns_summary, normalize_domain
 from utils.http_tools import check_http_status
+from utils.reporting import build_domain_health_html_report
 from utils.scoring import calculate_risk_score
 from utils.ssl_tools import get_certificate_info
 from utils.text_tools import validate_length
@@ -73,6 +74,7 @@ def _score_gauge(score: int, status: str) -> go.Figure:
 
 def _csv_rows(dns_summary: dict[str, Any], ssl_result: dict[str, Any], http_result: dict[str, Any], risk: dict[str, Any]) -> list[dict[str, Any]]:
     lookups = dns_summary["lookups"]
+    posture = dns_summary.get("email_security_posture", {})
     rows = [
         {"section": "Summary", "check": "Risk score", "value": risk["score"], "status": risk["status"]},
         {"section": "DNS", "check": "DNS status", "value": dns_summary["status"], "status": dns_summary["status"]},
@@ -95,11 +97,23 @@ def _csv_rows(dns_summary: dict[str, Any], ssl_result: dict[str, Any], http_resu
                 "status": "Healthy" if dns_summary["dmarc_found"] else "Warning",
             }
         )
+    for item in posture.get("rows", []):
+        rows.append(
+            {
+                "section": "Email Security",
+                "check": item.get("check", "Unknown"),
+                "value": item.get("value", "Unknown"),
+                "status": item.get("status", "Unknown"),
+            }
+        )
     return rows
 
 
 def _markdown_summary(domain: str, dns_summary: dict[str, Any], ssl_result: dict[str, Any], http_result: dict[str, Any], risk: dict[str, Any]) -> str:
-    recommendations = risk["recommendations"] or ["No critical recommendations from the current checks."]
+    posture = dns_summary.get("email_security_posture", {})
+    recommendations = list(
+        dict.fromkeys(risk["recommendations"] + http_result.get("recommendations", []) + posture.get("recommendations", []))
+    ) or ["No critical recommendations from the current checks."]
     return "\n".join(
         [
             f"# Domain Health Summary: {domain}",
@@ -107,6 +121,7 @@ def _markdown_summary(domain: str, dns_summary: dict[str, Any], ssl_result: dict
             f"- Risk score: {risk['score']} ({risk['status']})",
             f"- DNS status: {dns_summary['status']}",
             f"- Email security status: {dns_summary['email_status']}",
+            f"- Email posture status: {posture.get('status', 'Unknown')}",
             f"- HTTP status: {http_result.get('status_code') or 'Unknown'}",
             f"- Response time: {http_result.get('response_time_ms') or 'Unknown'} ms",
             f"- SSL days remaining: {ssl_result.get('days_remaining') if ssl_result.get('days_remaining') is not None else 'Unknown'}",
@@ -199,6 +214,22 @@ if submitted:
             "Found" if dns_summary["dmarc_found"] else "Missing" if include_dmarc else "Not checked",
         )
 
+        posture = dns_summary.get("email_security_posture", {"rows": [], "recommendations": [], "status": "Unknown"})
+        render_section_heading(
+            "Email Security Posture",
+            "DNS-only checks for DNSSEC, SPF, DMARC, MTA-STS, and SMTP TLS reporting.",
+        )
+        _display_status(posture["status"])
+        if posture["rows"]:
+            st.dataframe(pd.DataFrame(posture["rows"]), width="stretch", hide_index=True)
+        else:
+            st.caption("No email security posture rows were generated.")
+        if posture["recommendations"]:
+            for item in posture["recommendations"]:
+                st.warning(item)
+        else:
+            st.success("No email security posture recommendations from the current DNS checks.")
+
         render_section_heading("SSL", "Certificate validity, issuer, subject, and expiration state.")
         _display_status(ssl_result["tls_status"])
         if ssl_result["error"]:
@@ -239,7 +270,7 @@ if submitted:
                     st.warning(www_http["error"])
 
         render_section_heading("Recommendations", "Prioritized fixes from the current checks.", eyebrow="Actions")
-        combined_recommendations = list(dict.fromkeys(risk["recommendations"] + http_result["recommendations"]))
+        combined_recommendations = list(dict.fromkeys(risk["recommendations"] + http_result["recommendations"] + posture["recommendations"]))
         if combined_recommendations:
             for item in combined_recommendations:
                 st.warning(item)
@@ -249,13 +280,20 @@ if submitted:
         rows = _csv_rows(dns_summary, ssl_result, http_result, risk)
         csv_data = pd.DataFrame(rows).to_csv(index=False).encode("utf-8")
         markdown_data = _markdown_summary(normalized, dns_summary, ssl_result, http_result, risk)
+        html_data = build_domain_health_html_report(normalized, dns_summary, ssl_result, http_result, risk, rows)
         with tool_download_panel("domain_exports"):
             render_section_heading("Export", "Download the current in-memory results.", eyebrow="Downloads")
-            export_col_a, export_col_b = st.columns(2)
+            export_col_a, export_col_b, export_col_c = st.columns(3)
             export_col_a.download_button("Download results as CSV", csv_data, file_name=f"{normalized}-health.csv", mime="text/csv")
             export_col_b.download_button(
                 "Download summary as Markdown",
                 markdown_data,
                 file_name=f"{normalized}-health.md",
                 mime="text/markdown",
+            )
+            export_col_c.download_button(
+                "Download HTML report",
+                html_data,
+                file_name=f"{normalized}-health-report.html",
+                mime="text/html",
             )
