@@ -1,5 +1,12 @@
 # ITOps Toolkit
 
+[![QA](https://github.com/NPFernando/ITOps-Toolkit/actions/workflows/qa.yml/badge.svg)](https://github.com/NPFernando/ITOps-Toolkit/actions/workflows/qa.yml)
+![Python](https://img.shields.io/badge/python-3.11%2B-blue)
+![Streamlit](https://img.shields.io/badge/built%20with-Streamlit-ff4b4b)
+![Status](https://img.shields.io/badge/status-public--safe-brightgreen)
+![Data](https://img.shields.io/badge/data-no%20persistent%20storage-success)
+![License](https://img.shields.io/badge/license-MIT-lightgrey)
+
 Free public tools for IT admins, automation engineers, MSP engineers, and DevOps users.
 
 ITOps Toolkit is a public-safe Streamlit dashboard for common troubleshooting tasks. It does not require login, does not use a database, and does not permanently store user-entered domains, logs, JSON, JWTs, or encoded text.
@@ -21,6 +28,30 @@ ITOps Toolkit is a public-safe Streamlit dashboard for common troubleshooting ta
 
 Use Python 3.11 or newer.
 
+### Makefile workflow
+
+```bash
+make setup
+make run
+```
+
+Then open the local Streamlit URL shown in the terminal. By default, `make run` starts Streamlit on port `8502`. Override it when needed:
+
+```bash
+make run PORT=8503
+```
+
+Useful local commands:
+
+```bash
+make help       # list available commands
+make qa         # compile Python files and run tests
+make test       # run pytest only
+make clean      # remove local Python caches
+```
+
+### Manual workflow
+
 ```bash
 python3 -m venv .venv
 . .venv/bin/activate
@@ -34,6 +65,14 @@ pip install -r requirements-dev.txt
 ```
 
 ## How to Run
+
+With the Makefile:
+
+```bash
+make run
+```
+
+Or manually after activating the virtual environment:
 
 ```bash
 streamlit run app.py
@@ -70,6 +109,14 @@ Optional public links:
 For setup and manual validation steps, see [docs/azure-ai-setup.md](docs/azure-ai-setup.md).
 
 ## Tests
+
+With the Makefile:
+
+```bash
+make qa
+```
+
+Or manually:
 
 ```bash
 python -m compileall app.py pages utils
