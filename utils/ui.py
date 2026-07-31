@@ -472,18 +472,23 @@ def _inject_global_css() -> None:
         @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
 
         :root {
-            --itops-blue: #126bff;
-            --itops-blue-dark: #0a47c9;
-            --itops-ink: #07142f;
-            --itops-muted: #52637f;
-            --itops-line: #d7e2f5;
-            --itops-bg: #f6f9ff;
-            --itops-panel: #fbfdff;
-            --itops-sidebar: #071a33;
-            --itops-sidebar-2: #0b2748;
-            --itops-green: #22ba4f;
-            --itops-purple: #6d55e9;
-            --itops-orange: #ff6a13;
+            /* Matches the shared dark palette reused across cloudscope,
+               odysseus, and hermes-workspace. Only these tokens are
+               remapped in this pass -- decorative one-off gradients and
+               shadows elsewhere in this file still reference the old
+               light-theme literals and were intentionally left alone. */
+            --itops-blue: #e06c75;
+            --itops-blue-dark: #c65861;
+            --itops-ink: #9cdef2;
+            --itops-muted: #6b8a94;
+            --itops-line: #355a66;
+            --itops-bg: #282c34;
+            --itops-panel: #1e2228;
+            --itops-sidebar: #1e2228;
+            --itops-sidebar-2: #111111;
+            --itops-green: #50fa7b;
+            --itops-purple: #c678dd;
+            --itops-orange: #f0ad4e;
             --card-radius: 8px;
         }
 
