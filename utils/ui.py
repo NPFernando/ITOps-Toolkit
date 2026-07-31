@@ -111,9 +111,14 @@ POPULAR_TOOLS = TOOLS[:5]
 
 
 def apply_app_shell(active_page: str) -> None:
-    """Apply global theme CSS and render the shared sidebar shell."""
-    _inject_global_css()
+    """Apply global theme CSS and render the shared sidebar shell.
+
+    Sidebar renders first so the theme-toggle widget resolves this run's
+    value into session_state before CSS is injected -- injecting CSS first
+    would use last run's stale mode and make a mode switch lag by one click.
+    """
     render_sidebar(active_page)
+    _inject_global_css(current_theme_mode())
 
 
 def render_sidebar(active_page: str) -> None:
@@ -128,10 +133,11 @@ def render_sidebar(active_page: str) -> None:
                     <div class="brand-subtitle">Free tools for IT admins, MSP engineers, and DevOps pros.</div>
                 </div>
             </div>
-            <div class="sidebar-section-label">Navigation</div>
             """,
             unsafe_allow_html=True,
         )
+        _render_theme_toggle()
+        st.markdown('<div class="sidebar-section-label">Navigation</div>', unsafe_allow_html=True)
         _sidebar_link("Home", "app.py", active_page == "Home", ":material/home:")
         _sidebar_link(
             "Roadmap & Feedback",
@@ -214,7 +220,8 @@ def render_tool_section(tools: Iterable[ToolMeta], query: str = "") -> None:
     for index, tool in enumerate(tools):
         with cols[index % len(cols)]:
             with st.container(key=f"tool_card_{tool.slug}"):
-                st.markdown(_tool_card_html(tool), unsafe_allow_html=True)
+                delay_ms = min(index, 9) * 45
+                st.markdown(_tool_card_html(tool, delay_ms=delay_ms), unsafe_allow_html=True)
                 _safe_page_link(tool.path, label="Open Tool", icon=":material/arrow_forward:", stretch_width=True)
 
 
@@ -414,9 +421,9 @@ def _fallback_href(path: str) -> str:
     return f"/{page_name}"
 
 
-def _tool_card_html(tool: ToolMeta) -> str:
+def _tool_card_html(tool: ToolMeta, delay_ms: int = 0) -> str:
     return f"""
-    <div class="tool-card-shell" style="--tool-accent: {tool.accent};">
+    <div class="tool-card-shell" style="--tool-accent: {tool.accent}; animation-delay: {delay_ms}ms;">
         <div class="tool-card-icon">{escape(tool.icon)}</div>
         <h3>{escape(tool.title)}</h3>
         <p>{escape(tool.description)}</p>
@@ -465,31 +472,90 @@ def _key_slug(value: str) -> str:
     return "".join(char.lower() if char.isalnum() else "_" for char in value).strip("_")
 
 
-def _inject_global_css() -> None:
-    st.markdown(
-        """
+THEME_MODE_KEY = "itops_theme_mode"
+
+# Dark matches the shared palette reused across cloudscope, odysseus, and
+# hermes-workspace. Light restores this app's original palette. Only these
+# central tokens switch between modes -- decorative one-off gradients and
+# shadows elsewhere in this file are not mode-aware (see THEME.md note in
+# the PR/commit history) and keep their original literal values in both
+# modes, since there's no way to visually verify a full per-mode conversion
+# of ~150 one-off values in this environment.
+_THEME_TOKENS = {
+    "dark": {
+        "blue": "#e06c75",
+        "blue-dark": "#c65861",
+        "ink": "#9cdef2",
+        "muted": "#6b8a94",
+        "line": "#355a66",
+        "bg": "#282c34",
+        "panel": "#1e2228",
+        "sidebar": "#1e2228",
+        "sidebar-2": "#111111",
+        "green": "#50fa7b",
+        "purple": "#c678dd",
+        "orange": "#f0ad4e",
+    },
+    "light": {
+        "blue": "#126bff",
+        "blue-dark": "#0a47c9",
+        "ink": "#07142f",
+        "muted": "#52637f",
+        "line": "#d7e2f5",
+        "bg": "#f6f9ff",
+        "panel": "#fbfdff",
+        "sidebar": "#071a33",
+        "sidebar-2": "#0b2748",
+        "green": "#22ba4f",
+        "purple": "#6d55e9",
+        "orange": "#ff6a13",
+    },
+}
+
+
+def current_theme_mode() -> str:
+    """Return the active theme mode, defaulting to dark."""
+    mode = st.session_state.get(THEME_MODE_KEY, "dark")
+    return mode if mode in _THEME_TOKENS else "dark"
+
+
+def _render_theme_toggle() -> None:
+    """Sidebar control letting visitors switch between the dark (default) and light palette."""
+    current_label = "Dark" if current_theme_mode() == "dark" else "Light"
+    selection = st.segmented_control(
+        "Theme",
+        options=["Dark", "Light"],
+        default=current_label,
+        label_visibility="collapsed",
+        key="itops_theme_toggle_control",
+        persist_state="session",
+    )
+    st.session_state[THEME_MODE_KEY] = "dark" if selection == "Dark" else "light"
+
+
+def _inject_global_css(mode: str) -> None:
+    # NOTE: the CSS below is a plain (non f-string) template with a single
+    # literal placeholder substituted via str.replace(). It is deliberately
+    # NOT an f-string/`.format()` call, since the block contains thousands of
+    # literal `{`/`}` CSS rule braces that would otherwise need escaping.
+    tokens = _THEME_TOKENS[mode]
+    root_vars = "\n            ".join(f"--itops-{name}: {value};" for name, value in tokens.items())
+    css = """
         <style>
         @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
 
         :root {
-            /* Matches the shared dark palette reused across cloudscope,
-               odysseus, and hermes-workspace. Only these tokens are
-               remapped in this pass -- decorative one-off gradients and
-               shadows elsewhere in this file still reference the old
-               light-theme literals and were intentionally left alone. */
-            --itops-blue: #e06c75;
-            --itops-blue-dark: #c65861;
-            --itops-ink: #9cdef2;
-            --itops-muted: #6b8a94;
-            --itops-line: #355a66;
-            --itops-bg: #282c34;
-            --itops-panel: #1e2228;
-            --itops-sidebar: #1e2228;
-            --itops-sidebar-2: #111111;
-            --itops-green: #50fa7b;
-            --itops-purple: #c678dd;
-            --itops-orange: #f0ad4e;
+            __ITOPS_ROOT_VARS__
             --card-radius: 8px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
         }
 
         html,
@@ -916,6 +982,7 @@ def _inject_global_css() -> None:
             background: linear-gradient(145deg, #126cff, #074bc8);
             clip-path: polygon(50% 0, 94% 16%, 86% 72%, 50% 100%, 14% 72%, 6% 16%);
             filter: drop-shadow(0 18px 20px rgba(18, 107, 255, 0.25));
+            animation: itops-pulse 2.6s ease-in-out infinite;
         }
 
         .hero-globe {
@@ -930,6 +997,8 @@ def _inject_global_css() -> None:
                 linear-gradient(transparent 45%, rgba(255, 255, 255, 0.95) 46% 54%, transparent 55%),
                 radial-gradient(circle, #8eb8ff, #387bff);
             box-shadow: 0 16px 28px rgba(18, 107, 255, 0.18);
+            animation: itops-pulse 3.4s ease-in-out infinite;
+            animation-delay: 0.6s;
         }
 
         .hero-globe span {
@@ -1018,10 +1087,39 @@ def _inject_global_css() -> None:
             height: 100%;
             display: flex;
             flex-direction: column;
+            transition: transform 200ms cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 200ms ease;
+        }
+
+        [class*="st-key-tool_card_"] > div:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 18px 36px rgba(0, 0, 0, 0.28);
         }
 
         .tool-card-shell {
             min-height: 15.1rem;
+            animation: itops-fade-up 0.45s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+        }
+
+        @keyframes itops-fade-up {
+            from {
+                opacity: 0;
+                transform: translateY(14px);
+            }
+            to {
+                opacity: 1;
+                transform: none;
+            }
+        }
+
+        @keyframes itops-pulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.06);
+                opacity: 0.88;
+            }
         }
 
         .tool-card-icon {
@@ -1114,6 +1212,11 @@ def _inject_global_css() -> None:
             font-weight: 900;
             border: 2px solid currentColor;
             background: #ffffff;
+            transition: transform 180ms cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .feature-item:hover .feature-icon {
+            transform: scale(1.08) rotate(-3deg);
         }
 
         .feature-blue { color: var(--itops-blue); }
@@ -1973,6 +2076,6 @@ def _inject_global_css() -> None:
             }
         }
         </style>
-        """,
-        unsafe_allow_html=True,
-    )
+        """
+    css = css.replace("__ITOPS_ROOT_VARS__", root_vars)
+    st.markdown(css, unsafe_allow_html=True)
