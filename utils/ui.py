@@ -105,6 +105,51 @@ TOOLS: tuple[ToolMeta, ...] = (
         accent="#1d78f0",
         slug="log_troubleshooting",
     ),
+    ToolMeta(
+        title="Subnet Calculator",
+        short_title="Subnet Calculator",
+        description="Calculate network, broadcast, host range, and usable hosts from a CIDR block.",
+        path="pages/11_Subnet_Calculator.py",
+        icon="NET",
+        accent="#0e9f6e",
+        slug="subnet_calculator",
+    ),
+    ToolMeta(
+        title="Hash Generator",
+        short_title="Hash Generator",
+        description="Generate MD5/SHA/SHA-3 digests and HMAC signatures from text.",
+        path="pages/12_Hash_Generator.py",
+        icon="#",
+        accent="#9333ea",
+        slug="hash_generator",
+    ),
+    ToolMeta(
+        title="MAC Address Tool",
+        short_title="MAC Address Tool",
+        description="Validate a MAC address and view colon, hyphen, dot, and bare formats.",
+        path="pages/13_MAC_Address_Tool.py",
+        icon="MAC",
+        accent="#dc6803",
+        slug="mac_address_tool",
+    ),
+    ToolMeta(
+        title="Email Header Analyzer",
+        short_title="Email Header Analyzer",
+        description="Parse raw email headers into a summary, hop chain, and auth results.",
+        path="pages/14_Email_Header_Analyzer.py",
+        icon="EML",
+        accent="#e03f6e",
+        slug="email_header_analyzer",
+    ),
+    ToolMeta(
+        title="Port Reference",
+        short_title="Port Reference",
+        description="Look up common network ports by number, protocol, or service name.",
+        path="pages/15_Port_Reference.py",
+        icon="P/T",
+        accent="#0891b2",
+        slug="port_reference",
+    ),
 )
 
 POPULAR_TOOLS = TOOLS[:5]
@@ -464,6 +509,11 @@ def _material_icon_for(slug: str) -> str:
         "jwt_decoder": ":material/verified_user:",
         "cron_explainer": ":material/schedule:",
         "log_troubleshooting": ":material/list_alt:",
+        "subnet_calculator": ":material/lan:",
+        "hash_generator": ":material/tag:",
+        "mac_address_tool": ":material/settings_ethernet:",
+        "email_header_analyzer": ":material/mail:",
+        "port_reference": ":material/router:",
     }
     return icons.get(slug, ":material/build:")
 
