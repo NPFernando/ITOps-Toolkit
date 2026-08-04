@@ -31,6 +31,52 @@ def test_format_json_text_rejects_oversized_input():
     assert "longer than" in result["error"]
 
 
+def test_format_json_text_supports_custom_indent():
+    result = text_tools.format_json_text('{"a": 1}', indent=4)
+
+    assert result["result"] == '{\n    "a": 1\n}'
+
+
+def test_format_json_text_handles_deeply_nested_input_without_crashing():
+    deeply_nested = "[" * 50_000 + "]" * 50_000
+
+    result = text_tools.format_json_text(deeply_nested)
+
+    assert result["ok"] is False
+    assert "nested too deeply" in result["error"]
+
+
+def test_json_stats_reports_type_size_depth_and_node_count():
+    stats = text_tools.json_stats({"a": 1, "b": {"c": [1, 2, 3]}})
+
+    assert stats["type"] == "object"
+    assert stats["top_level_count"] == 2
+    assert stats["max_depth"] == 4
+    assert stats["node_count"] == 7
+
+    scalar_stats = text_tools.json_stats(42)
+    assert scalar_stats["type"] == "int"
+    assert scalar_stats["top_level_count"] is None
+    assert scalar_stats["max_depth"] == 1
+    assert scalar_stats["node_count"] == 1
+
+
+def test_search_json_paths_matches_keys_and_values_and_caps_results():
+    data = {"status": "ok", "items": [{"name": "alpha"}, {"name": "beta"}]}
+
+    key_matches = text_tools.search_json_paths(data, "status")
+    value_matches = text_tools.search_json_paths(data, "alpha")
+    no_query = text_tools.search_json_paths(data, "")
+
+    assert key_matches == [{"path": "$.status", "match": "key", "value": "ok"}]
+    assert value_matches == [{"path": "$.items[0].name", "match": "value", "value": "alpha"}]
+    assert no_query == []
+
+    huge = {f"key{i}": "needle" for i in range(text_tools.MAX_JSON_SEARCH_RESULTS + 50)}
+    capped = text_tools.search_json_paths(huge, "needle")
+    assert len(capped) == text_tools.MAX_JSON_SEARCH_RESULTS
+
+
 def test_base64_encode_decode_and_invalid_input():
     encoded = text_tools.encode_base64_text("hello")
     decoded = text_tools.decode_base64_text(encoded)
