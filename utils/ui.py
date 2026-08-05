@@ -211,6 +211,30 @@ TOOLS: tuple[ToolMeta, ...] = (
         category="Reference",
         is_new=True,
     ),
+    ToolMeta(
+        title="Password Generator",
+        short_title="Password Generator",
+        description="Generate a strong random password or a diceware-style passphrase.",
+        path="pages/16_Password_Generator.py",
+        icon="PWD",
+        accent="#be123c",
+        slug="password_generator",
+        professions=("Security Engineer", "Support Engineer", "Helpdesk / L1", "Sysadmin / DevOps"),
+        category="Security",
+        is_new=True,
+    ),
+    ToolMeta(
+        title="URL Encoder/Decoder",
+        short_title="URL Encoder/Decoder",
+        description="Percent-encode or decode URL components and query strings.",
+        path="pages/17_URL_Encoder_Decoder.py",
+        icon="URL",
+        accent="#0284c7",
+        slug="url_encoder_decoder",
+        professions=("Web Developer", "Automation Engineer", "Support Engineer"),
+        category="Web & Dev",
+        is_new=True,
+    ),
 )
 
 POPULAR_TOOLS = TOOLS[:5]
@@ -812,6 +836,8 @@ def _material_icon_for(slug: str) -> str:
         "mac_address_tool": ":material/settings_ethernet:",
         "email_header_analyzer": ":material/mail:",
         "port_reference": ":material/router:",
+        "password_generator": ":material/password:",
+        "url_encoder_decoder": ":material/link:",
     }
     return icons.get(slug, ":material/build:")
 

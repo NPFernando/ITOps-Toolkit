@@ -7,6 +7,7 @@ import binascii
 import json
 from datetime import UTC, datetime
 from typing import Any
+from urllib.parse import quote, quote_plus, unquote, unquote_plus
 
 import jwt
 from croniter import croniter
@@ -14,6 +15,7 @@ from croniter import croniter
 
 MAX_LOG_LENGTH = 20_000
 MAX_JSON_LENGTH = 100_000
+MAX_URL_LENGTH = 20_000
 
 
 def validate_length(value: str, max_length: int, label: str) -> tuple[bool, str | None]:
@@ -135,6 +137,24 @@ def decode_base64_text(value: str) -> dict[str, Any]:
     except (UnicodeEncodeError, binascii.Error) as exc:
         return {"ok": False, "error": f"Invalid Base64 input: {exc}", "result": None}
     return {"ok": True, "error": None, "result": decoded.decode("utf-8", errors="replace")}
+
+
+def encode_url_text(value: str, plus_for_space: bool = False) -> dict[str, Any]:
+    """Percent-encode ``value``. ``plus_for_space`` uses application/x-www-form-urlencoded rules."""
+    ok, error = validate_length(value, MAX_URL_LENGTH, "Input")
+    if not ok:
+        return {"ok": False, "error": error, "result": None}
+    encoder = quote_plus if plus_for_space else quote
+    return {"ok": True, "error": None, "result": encoder(value or "", safe="")}
+
+
+def decode_url_text(value: str, plus_for_space: bool = False) -> dict[str, Any]:
+    """Percent-decode ``value``. ``plus_for_space`` treats literal ``+`` as a space."""
+    ok, error = validate_length(value, MAX_URL_LENGTH, "Input")
+    if not ok:
+        return {"ok": False, "error": error, "result": None}
+    decoder = unquote_plus if plus_for_space else unquote
+    return {"ok": True, "error": None, "result": decoder(value or "", errors="replace")}
 
 
 def datetime_from_timestamp(value: Any) -> str | None:
