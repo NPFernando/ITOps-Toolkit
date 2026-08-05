@@ -1,11 +1,16 @@
 from __future__ import annotations
 
+from pathlib import Path
+
 from streamlit.testing.v1 import AppTest
 
 from utils import roadmap
 
 
-ROADMAP_PAGE = "pages/10_Roadmap_Feedback.py"
+# Newer streamlit resolves AppTest.from_file()'s relative paths against the
+# file that calls it (this test file's directory), not the working
+# directory -- an absolute path avoids that resolution entirely.
+ROADMAP_PAGE = str(Path(__file__).resolve().parent.parent / "pages" / "10_Roadmap_Feedback.py")
 ROADMAP_PAGE_TIMEOUT = 60
 
 

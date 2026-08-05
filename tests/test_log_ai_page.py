@@ -1,11 +1,16 @@
 from __future__ import annotations
 
+from pathlib import Path
+
 from streamlit.testing.v1 import AppTest
 
 from utils import ai_tools
 
 
-LOG_PAGE = "pages/9_Log_Troubleshooting_Assistant.py"
+# Newer streamlit resolves AppTest.from_file()'s relative paths against the
+# file that calls it (this test file's directory), not the working
+# directory -- an absolute path avoids that resolution entirely.
+LOG_PAGE = str(Path(__file__).resolve().parent.parent / "pages" / "9_Log_Troubleshooting_Assistant.py")
 SAMPLE_LOG = "token=secret certificate verify failed"
 
 
