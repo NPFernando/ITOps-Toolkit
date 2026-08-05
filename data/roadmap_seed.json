@@ -291,7 +291,7 @@
     {
       "title": "IPv6 address compressor/expander",
       "category": "Tools",
-      "status": "AI Recommended",
+      "status": "Complete",
       "votes": 7,
       "description": "Convert an IPv6 address between its compressed (::) and fully expanded form.",
       "rationale": "Small, frequently-needed complement to the Subnet Calculator and CIDR Aggregator.",
@@ -300,7 +300,7 @@
     {
       "title": "Cron next-run calendar export",
       "category": "Tools",
-      "status": "AI Recommended",
+      "status": "Complete",
       "votes": 6,
       "description": "Export the Cron Explainer's next-run times as a downloadable .ics calendar file.",
       "rationale": "Lets users drop scheduled job times straight into their calendar instead of re-reading the explainer each time.",
@@ -309,10 +309,28 @@
     {
       "title": "Slugify / case converter",
       "category": "Tools",
-      "status": "AI Recommended",
+      "status": "Complete",
       "votes": 8,
       "description": "Convert text between slug-case, camelCase, snake_case, kebab-case, and Title Case.",
       "rationale": "Everyday utility for developers naming files, variables, and URLs.",
+      "updated_at": "2026-08-05"
+    },
+    {
+      "title": "MAC vendor (OUI) lookup",
+      "category": "Tools",
+      "status": "AI Recommended",
+      "votes": 10,
+      "description": "Show the registered vendor/manufacturer for a MAC address's OUI prefix.",
+      "rationale": "Natural extension of the existing MAC Address Tool -- the OUI is already parsed out, just not looked up.",
+      "updated_at": "2026-08-05"
+    },
+    {
+      "title": "Color code converter",
+      "category": "Tools",
+      "status": "AI Recommended",
+      "votes": 7,
+      "description": "Convert colors between HEX, RGB, and HSL, with a live swatch preview.",
+      "rationale": "Common small utility for anyone touching CSS/UI work alongside the IT-focused tools.",
       "updated_at": "2026-08-05"
     }
   ]

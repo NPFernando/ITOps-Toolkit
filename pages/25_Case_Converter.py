@@ -1,0 +1,47 @@
+from __future__ import annotations
+
+import streamlit as st
+
+from utils.case_tools import MAX_INPUT_LENGTH, convert_case
+from utils.ui import (
+    apply_app_shell,
+    render_empty_state,
+    render_form_intro,
+    render_page_header,
+    render_section_heading,
+    tool_form_panel,
+    tool_result_panel,
+)
+
+
+st.set_page_config(page_title="Case Converter", layout="wide")
+apply_app_shell(active_page="Case Converter")
+
+
+render_page_header(
+    "Case Converter",
+    "Convert text between slug-case, snake_case, camelCase, PascalCase, and Title Case.",
+)
+
+with tool_form_panel("case_converter"):
+    render_form_intro("Enter text", "Words are detected from spaces, dashes, underscores, and camelCase boundaries.")
+    with st.form("case-form"):
+        text_input = st.text_input("Text", max_chars=MAX_INPUT_LENGTH, placeholder="helloWorld_fooBar")
+        submitted = st.form_submit_button("Convert")
+
+if not submitted:
+    render_empty_state("Ready to convert", "Every case variant appears here after you submit some text.")
+
+if submitted:
+    result = convert_case(text_input)
+    with tool_result_panel("case_result"):
+        render_section_heading("Converted forms", eyebrow="Result")
+        if not result["ok"]:
+            st.error(result["error"])
+        else:
+            st.text_input("slug-case", value=result["slug_case"], disabled=True)
+            st.text_input("snake_case", value=result["snake_case"], disabled=True)
+            st.text_input("SCREAMING_SNAKE_CASE", value=result["upper_snake_case"], disabled=True)
+            st.text_input("camelCase", value=result["camel_case"], disabled=True)
+            st.text_input("PascalCase", value=result["pascal_case"], disabled=True)
+            st.text_input("Title Case", value=result["title_case"], disabled=True)

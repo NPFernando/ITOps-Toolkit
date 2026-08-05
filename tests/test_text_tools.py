@@ -127,6 +127,42 @@ def test_explain_cron_valid_and_invalid_paths():
     assert invalid["error"] == "Cron expression is not valid."
 
 
+def test_cron_ics_export_produces_valid_calendar_structure():
+    result = text_tools.cron_ics_export("*/15 * * * *", count=3)
+
+    assert result["ok"] is True
+    ics = result["ics"]
+    assert ics.startswith("BEGIN:VCALENDAR\r\n")
+    assert ics.rstrip("\r\n").endswith("END:VCALENDAR")
+    assert ics.count("BEGIN:VEVENT") == 3
+    assert ics.count("END:VEVENT") == 3
+    assert "VERSION:2.0" in ics
+    assert "SUMMARY:Cron: */15 * * * *" in ics
+
+
+def test_cron_ics_export_dtstart_increments_match_schedule():
+    result = text_tools.cron_ics_export("0 * * * *", count=2)
+
+    dtstarts = [line.split(":", 1)[1] for line in result["ics"].splitlines() if line.startswith("DTSTART:")]
+    assert len(dtstarts) == 2
+    assert dtstarts[0] != dtstarts[1]
+
+
+def test_cron_ics_export_rejects_invalid_expression():
+    result = text_tools.cron_ics_export("not a cron")
+
+    assert result["ok"] is False
+    assert "valid 5-field cron" in result["error"]
+
+
+def test_cron_ics_export_rejects_out_of_range_count():
+    too_many = text_tools.cron_ics_export("*/15 * * * *", count=text_tools.MAX_ICS_RUNS + 1)
+    too_few = text_tools.cron_ics_export("*/15 * * * *", count=0)
+
+    assert too_many["ok"] is False
+    assert too_few["ok"] is False
+
+
 def test_encode_url_text_percent_encodes_reserved_characters():
     result = text_tools.encode_url_text("hello world/test?a=b&c=d")
 

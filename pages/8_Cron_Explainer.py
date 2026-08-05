@@ -3,13 +3,14 @@ from __future__ import annotations
 import pandas as pd
 import streamlit as st
 
-from utils.text_tools import explain_cron
+from utils.text_tools import cron_ics_export, explain_cron
 from utils.ui import (
     apply_app_shell,
     render_empty_state,
     render_form_intro,
     render_page_header,
     render_section_heading,
+    tool_download_panel,
     tool_form_panel,
     tool_result_panel,
 )
@@ -47,3 +48,17 @@ if submitted:
             st.dataframe(pd.DataFrame({"run_time": result["next_runs"]}), width="stretch", hide_index=True)
         else:
             st.caption("No run times available for invalid input.")
+
+        if result["ok"]:
+            ics_result = cron_ics_export(expression, count=10)
+            if ics_result["ok"]:
+                with tool_download_panel("cron_ics_export"):
+                    render_section_heading(
+                        "Export", "Download the next 10 run times as a calendar file.", eyebrow="Downloads"
+                    )
+                    st.download_button(
+                        "Download .ics",
+                        ics_result["ics"],
+                        file_name="cron-schedule.ics",
+                        mime="text/calendar",
+                    )
