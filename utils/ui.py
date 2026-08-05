@@ -27,6 +27,7 @@ class ToolMeta:
     accent: str
     slug: str
     professions: tuple[str, ...]
+    category: str
     is_new: bool = False
 
 
@@ -41,6 +42,14 @@ PROFESSIONS: tuple[str, ...] = (
     "Web Developer",
 )
 
+SIDEBAR_CATEGORIES: tuple[str, ...] = (
+    "Network",
+    "Security",
+    "Web & Dev",
+    "Ops & Automation",
+    "Reference",
+)
+
 
 TOOLS: tuple[ToolMeta, ...] = (
     ToolMeta(
@@ -52,6 +61,7 @@ TOOLS: tuple[ToolMeta, ...] = (
         accent="#1668f4",
         slug="domain_health",
         professions=("Network Engineer", "Security Engineer", "Sysadmin / DevOps", "Web Developer"),
+        category="Network",
     ),
     ToolMeta(
         title="DNS Record Checker",
@@ -62,6 +72,7 @@ TOOLS: tuple[ToolMeta, ...] = (
         accent="#23b84d",
         slug="dns_records",
         professions=("Network Engineer", "Sysadmin / DevOps", "Web Developer"),
+        category="Network",
     ),
     ToolMeta(
         title="SSL Certificate Checker",
@@ -72,6 +83,7 @@ TOOLS: tuple[ToolMeta, ...] = (
         accent="#7047e8",
         slug="ssl_certificate",
         professions=("Security Engineer", "Web Developer", "Sysadmin / DevOps"),
+        category="Security",
     ),
     ToolMeta(
         title="HTTP Status Checker",
@@ -82,6 +94,7 @@ TOOLS: tuple[ToolMeta, ...] = (
         accent="#ff6b13",
         slug="http_status",
         professions=("Web Developer", "Sysadmin / DevOps", "Support Engineer"),
+        category="Web & Dev",
     ),
     ToolMeta(
         title="JSON Formatter",
@@ -92,6 +105,7 @@ TOOLS: tuple[ToolMeta, ...] = (
         accent="#11aab8",
         slug="json_formatter",
         professions=("Automation Engineer", "Web Developer", "Cloud Engineer"),
+        category="Web & Dev",
     ),
     ToolMeta(
         title="Base64 Tool",
@@ -102,6 +116,7 @@ TOOLS: tuple[ToolMeta, ...] = (
         accent="#0f7ff0",
         slug="base64_tool",
         professions=("Automation Engineer", "Web Developer", "Support Engineer"),
+        category="Web & Dev",
     ),
     ToolMeta(
         title="JWT Decoder",
@@ -112,6 +127,7 @@ TOOLS: tuple[ToolMeta, ...] = (
         accent="#3d5be9",
         slug="jwt_decoder",
         professions=("Web Developer", "Security Engineer", "Automation Engineer"),
+        category="Security",
     ),
     ToolMeta(
         title="Cron Explainer",
@@ -122,6 +138,7 @@ TOOLS: tuple[ToolMeta, ...] = (
         accent="#6f55e9",
         slug="cron_explainer",
         professions=("Automation Engineer", "Sysadmin / DevOps", "Cloud Engineer"),
+        category="Ops & Automation",
     ),
     ToolMeta(
         title="Log Troubleshooting Assistant",
@@ -132,6 +149,7 @@ TOOLS: tuple[ToolMeta, ...] = (
         accent="#1d78f0",
         slug="log_troubleshooting",
         professions=("Support Engineer", "Helpdesk / L1", "Sysadmin / DevOps"),
+        category="Ops & Automation",
     ),
     ToolMeta(
         title="Subnet Calculator",
@@ -142,6 +160,7 @@ TOOLS: tuple[ToolMeta, ...] = (
         accent="#0e9f6e",
         slug="subnet_calculator",
         professions=("Network Engineer", "Sysadmin / DevOps", "Cloud Engineer"),
+        category="Network",
         is_new=True,
     ),
     ToolMeta(
@@ -153,6 +172,7 @@ TOOLS: tuple[ToolMeta, ...] = (
         accent="#9333ea",
         slug="hash_generator",
         professions=("Security Engineer", "Automation Engineer"),
+        category="Security",
         is_new=True,
     ),
     ToolMeta(
@@ -164,6 +184,7 @@ TOOLS: tuple[ToolMeta, ...] = (
         accent="#dc6803",
         slug="mac_address_tool",
         professions=("Network Engineer", "Sysadmin / DevOps"),
+        category="Network",
         is_new=True,
     ),
     ToolMeta(
@@ -175,6 +196,7 @@ TOOLS: tuple[ToolMeta, ...] = (
         accent="#e03f6e",
         slug="email_header_analyzer",
         professions=("Security Engineer", "Support Engineer", "Helpdesk / L1"),
+        category="Security",
         is_new=True,
     ),
     ToolMeta(
@@ -186,6 +208,7 @@ TOOLS: tuple[ToolMeta, ...] = (
         accent="#0891b2",
         slug="port_reference",
         professions=("Network Engineer", "Security Engineer", "Helpdesk / L1"),
+        category="Reference",
         is_new=True,
     ),
 )
@@ -325,8 +348,7 @@ def render_sidebar(active_page: str) -> None:
             active_page == "Roadmap & Feedback",
             ":material/route:",
         )
-        for tool in TOOLS:
-            _sidebar_link(tool.short_title, tool.path, active_page == tool.title, _material_icon_for(tool.slug))
+        _render_grouped_tool_links(active_page)
 
         st.markdown(
             """
@@ -653,6 +675,32 @@ def tool_by_title(title: str) -> ToolMeta | None:
 
 def github_url() -> str | None:
     return github_repository_url()
+
+
+def _render_grouped_tool_links(active_page: str) -> None:
+    """Render the sidebar's tool links grouped by category.
+
+    A category with more than one tool gets a collapsible st.expander
+    (its own widget state persists each visitor's collapse/expand choice
+    across reruns); a category with exactly one tool renders that tool's
+    link directly with no group header -- same rule killer-tools-site
+    uses for its single-tool categories.
+    """
+    by_category: dict[str, list[ToolMeta]] = {category: [] for category in SIDEBAR_CATEGORIES}
+    for tool in TOOLS:
+        by_category.setdefault(tool.category, []).append(tool)
+
+    for category in SIDEBAR_CATEGORIES:
+        tools = by_category.get(category, [])
+        if not tools:
+            continue
+        if len(tools) == 1:
+            tool = tools[0]
+            _sidebar_link(tool.short_title, tool.path, active_page == tool.title, _material_icon_for(tool.slug))
+            continue
+        with st.expander(category, expanded=True, icon=None, key=f"sidebar_cat_{_key_slug(category)}"):
+            for tool in tools:
+                _sidebar_link(tool.short_title, tool.path, active_page == tool.title, _material_icon_for(tool.slug))
 
 
 def _sidebar_link(label: str, path: str, active: bool, icon: str) -> None:

@@ -2,6 +2,7 @@ from utils import ui
 from utils.ui import (
     POPULAR_TOOLS,
     PROFESSIONS,
+    SIDEBAR_CATEGORIES,
     TITLE_TO_SLUG,
     TOOLS,
     display_rows_frame,
@@ -173,3 +174,29 @@ def test_favorite_tools_reads_query_params_and_skips_unknown(monkeypatch):
     monkeypatch.setattr(ui.st, "query_params", {"fav": f"not-a-real-slug,{slug}"})
 
     assert favorite_tools() == (TOOLS[2],)
+
+
+def test_every_tool_has_a_valid_sidebar_category():
+    for tool in TOOLS:
+        assert tool.category in SIDEBAR_CATEGORIES, f"{tool.slug} has unknown category {tool.category!r}"
+
+
+def test_sidebar_category_partition_matches_expected_grouping():
+    by_category: dict[str, list[str]] = {category: [] for category in SIDEBAR_CATEGORIES}
+    for tool in TOOLS:
+        by_category[tool.category].append(tool.slug)
+
+    assert by_category == {
+        "Network": ["domain_health", "dns_records", "subnet_calculator", "mac_address_tool"],
+        "Security": ["ssl_certificate", "jwt_decoder", "hash_generator", "email_header_analyzer"],
+        "Web & Dev": ["http_status", "json_formatter", "base64_tool"],
+        "Ops & Automation": ["cron_explainer", "log_troubleshooting"],
+        "Reference": ["port_reference"],
+    }
+
+
+def test_every_tool_covered_exactly_once_across_categories():
+    all_slugs = [tool.slug for category in SIDEBAR_CATEGORIES for tool in TOOLS if tool.category == category]
+
+    assert sorted(all_slugs) == sorted(tool.slug for tool in TOOLS)
+    assert len(all_slugs) == len(TOOLS)
