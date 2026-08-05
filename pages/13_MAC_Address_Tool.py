@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import streamlit as st
 
-from utils.mac_tools import analyze_mac
+from utils.mac_tools import analyze_mac, lookup_vendor
 from utils.ui import (
     apply_app_shell,
     render_empty_state,
@@ -52,3 +52,11 @@ if submitted:
                 {"Format": "NIC (device)", "Value": result["nic"]},
             ]
             st.table(rows)
+
+            if st.button("Look up vendor", key="mac_vendor_lookup_button"):
+                with st.spinner("Looking up vendor..."):
+                    vendor_result = lookup_vendor(result["oui"])
+                if not vendor_result["ok"]:
+                    st.warning(vendor_result["error"])
+                else:
+                    st.success(f"Vendor: {vendor_result['vendor']}")
