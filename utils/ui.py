@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass
 from html import escape
 from typing import Any, Iterable
@@ -10,6 +11,10 @@ import pandas as pd
 import streamlit as st
 
 from utils.project_links import github_repository_url
+
+
+RECENT_TOOLS_STORAGE_KEY = "itops_recent_tools"
+MAX_RECENT_TOOLS = 5
 
 
 @dataclass(frozen=True)
@@ -21,6 +26,19 @@ class ToolMeta:
     icon: str
     accent: str
     slug: str
+    professions: tuple[str, ...]
+
+
+PROFESSIONS: tuple[str, ...] = (
+    "Support Engineer",
+    "Network Engineer",
+    "Automation Engineer",
+    "Security Engineer",
+    "Sysadmin / DevOps",
+    "Cloud Engineer",
+    "Helpdesk / L1",
+    "Web Developer",
+)
 
 
 TOOLS: tuple[ToolMeta, ...] = (
@@ -32,6 +50,7 @@ TOOLS: tuple[ToolMeta, ...] = (
         icon="GLB",
         accent="#1668f4",
         slug="domain_health",
+        professions=("Network Engineer", "Security Engineer", "Sysadmin / DevOps", "Web Developer"),
     ),
     ToolMeta(
         title="DNS Record Checker",
@@ -41,6 +60,7 @@ TOOLS: tuple[ToolMeta, ...] = (
         icon="DNS",
         accent="#23b84d",
         slug="dns_records",
+        professions=("Network Engineer", "Sysadmin / DevOps", "Web Developer"),
     ),
     ToolMeta(
         title="SSL Certificate Checker",
@@ -50,6 +70,7 @@ TOOLS: tuple[ToolMeta, ...] = (
         icon="LOCK",
         accent="#7047e8",
         slug="ssl_certificate",
+        professions=("Security Engineer", "Web Developer", "Sysadmin / DevOps"),
     ),
     ToolMeta(
         title="HTTP Status Checker",
@@ -59,6 +80,7 @@ TOOLS: tuple[ToolMeta, ...] = (
         icon="HTTP",
         accent="#ff6b13",
         slug="http_status",
+        professions=("Web Developer", "Sysadmin / DevOps", "Support Engineer"),
     ),
     ToolMeta(
         title="JSON Formatter",
@@ -68,6 +90,7 @@ TOOLS: tuple[ToolMeta, ...] = (
         icon="{ }",
         accent="#11aab8",
         slug="json_formatter",
+        professions=("Automation Engineer", "Web Developer", "Cloud Engineer"),
     ),
     ToolMeta(
         title="Base64 Tool",
@@ -77,6 +100,7 @@ TOOLS: tuple[ToolMeta, ...] = (
         icon="64",
         accent="#0f7ff0",
         slug="base64_tool",
+        professions=("Automation Engineer", "Web Developer", "Support Engineer"),
     ),
     ToolMeta(
         title="JWT Decoder",
@@ -86,6 +110,7 @@ TOOLS: tuple[ToolMeta, ...] = (
         icon="JWT",
         accent="#3d5be9",
         slug="jwt_decoder",
+        professions=("Web Developer", "Security Engineer", "Automation Engineer"),
     ),
     ToolMeta(
         title="Cron Explainer",
@@ -95,6 +120,7 @@ TOOLS: tuple[ToolMeta, ...] = (
         icon="CLK",
         accent="#6f55e9",
         slug="cron_explainer",
+        professions=("Automation Engineer", "Sysadmin / DevOps", "Cloud Engineer"),
     ),
     ToolMeta(
         title="Log Troubleshooting Assistant",
@@ -104,6 +130,7 @@ TOOLS: tuple[ToolMeta, ...] = (
         icon="LOG",
         accent="#1d78f0",
         slug="log_troubleshooting",
+        professions=("Support Engineer", "Helpdesk / L1", "Sysadmin / DevOps"),
     ),
     ToolMeta(
         title="Subnet Calculator",
@@ -113,6 +140,7 @@ TOOLS: tuple[ToolMeta, ...] = (
         icon="NET",
         accent="#0e9f6e",
         slug="subnet_calculator",
+        professions=("Network Engineer", "Sysadmin / DevOps", "Cloud Engineer"),
     ),
     ToolMeta(
         title="Hash Generator",
@@ -122,6 +150,7 @@ TOOLS: tuple[ToolMeta, ...] = (
         icon="#",
         accent="#9333ea",
         slug="hash_generator",
+        professions=("Security Engineer", "Automation Engineer"),
     ),
     ToolMeta(
         title="MAC Address Tool",
@@ -131,6 +160,7 @@ TOOLS: tuple[ToolMeta, ...] = (
         icon="MAC",
         accent="#dc6803",
         slug="mac_address_tool",
+        professions=("Network Engineer", "Sysadmin / DevOps"),
     ),
     ToolMeta(
         title="Email Header Analyzer",
@@ -140,6 +170,7 @@ TOOLS: tuple[ToolMeta, ...] = (
         icon="EML",
         accent="#e03f6e",
         slug="email_header_analyzer",
+        professions=("Security Engineer", "Support Engineer", "Helpdesk / L1"),
     ),
     ToolMeta(
         title="Port Reference",
@@ -149,10 +180,12 @@ TOOLS: tuple[ToolMeta, ...] = (
         icon="P/T",
         accent="#0891b2",
         slug="port_reference",
+        professions=("Network Engineer", "Security Engineer", "Helpdesk / L1"),
     ),
 )
 
 POPULAR_TOOLS = TOOLS[:5]
+TITLE_TO_SLUG: dict[str, str] = {tool.title: tool.slug for tool in TOOLS}
 
 
 def apply_app_shell(active_page: str) -> None:
@@ -164,6 +197,73 @@ def apply_app_shell(active_page: str) -> None:
     """
     render_sidebar(active_page)
     _inject_global_css(current_theme_mode())
+    _sync_recent_tools(active_page)
+
+
+def _sync_recent_tools(active_page: str) -> None:
+    """Record a tool visit, or (on Home) pull recents from localStorage into the URL.
+
+    Runs client-side JS in a same-origin sandboxed iframe (confirmed via the
+    installed streamlit static bundle: HTML-string iframes carry
+    `allow-same-origin`, so they share the page's real localStorage).
+
+    - On a tool page: writes the visited slug to the front of the stored
+      recents list. No URL changes -- keeps tool-page URLs clean.
+    - On Home: reads the stored recents list and, if it differs from the
+      current `?recent=` query param, updates the URL (one reload, only
+      when the value actually changed) so Python can read it via
+      st.query_params. This is the only way to get data out of an st.iframe
+      HTML string, which has no return channel to Python.
+    """
+    slug = TITLE_TO_SLUG.get(active_page)
+    if slug is not None:
+        st.iframe(
+            f"""
+            <script>
+            (function() {{
+                var KEY = {json.dumps(RECENT_TOOLS_STORAGE_KEY)};
+                var slug = {json.dumps(slug)};
+                var stored = [];
+                try {{
+                    stored = JSON.parse(localStorage.getItem(KEY) || "[]");
+                    if (!Array.isArray(stored)) stored = [];
+                }} catch (e) {{ stored = []; }}
+                stored = [slug].concat(stored.filter(function(s) {{ return s !== slug; }}));
+                stored = stored.slice(0, {MAX_RECENT_TOOLS});
+                try {{ localStorage.setItem(KEY, JSON.stringify(stored)); }} catch (e) {{}}
+            }})();
+            </script>
+            """,
+            height=1,
+        )
+    elif active_page == "Home":
+        st.iframe(
+            f"""
+            <script>
+            (function() {{
+                var KEY = {json.dumps(RECENT_TOOLS_STORAGE_KEY)};
+                var stored = [];
+                try {{
+                    stored = JSON.parse(localStorage.getItem(KEY) || "[]");
+                    if (!Array.isArray(stored)) stored = [];
+                }} catch (e) {{ stored = []; }}
+                var joined = stored.join(",");
+                var params = new URLSearchParams(window.top.location.search);
+                if (params.get("recent") !== joined) {{
+                    if (joined) {{
+                        params.set("recent", joined);
+                    }} else {{
+                        params.delete("recent");
+                    }}
+                    var search = params.toString();
+                    var newUrl = window.top.location.pathname + (search ? "?" + search : "") + window.top.location.hash;
+                    window.top.location.replace(newUrl);
+                }}
+            }})();
+            </script>
+            """,
+            height=1,
+        )
 
 
 def render_sidebar(active_page: str) -> None:
@@ -245,13 +345,29 @@ def render_home_hero() -> str:
     return query
 
 
-def render_tool_section(tools: Iterable[ToolMeta], query: str = "") -> None:
-    """Render the home page tool card grid."""
+def render_tool_section(
+    tools: Iterable[ToolMeta],
+    query: str = "",
+    heading: str | None = None,
+    section_id: str | None = "all-tools",
+    key_prefix: str = "tools",
+) -> None:
+    """Render a home page tool card grid.
+
+    ``heading`` overrides the default label ("Matching Tools" when ``query``
+    is set, otherwise "Popular Tools") -- used for e.g. the personalized
+    "Recently Used" row. ``section_id`` sets the heading div's HTML id; pass
+    None when rendering more than one section on the same page so IDs stay
+    unique. ``key_prefix`` must also be unique per section on a page since
+    the same tool can appear in more than one grid (e.g. recents + all
+    tools) and Streamlit container keys must be unique.
+    """
     tools = tuple(tools)
-    section_label = "Matching Tools" if query.strip() else "Popular Tools"
+    section_label = heading if heading is not None else ("Matching Tools" if query.strip() else "Popular Tools")
+    id_attr = f' id="{escape(section_id)}"' if section_id else ""
     st.markdown(
         f"""
-        <div class="section-heading" id="all-tools">
+        <div class="section-heading"{id_attr}>
             <div><span class="section-bolt">IT</span><h2>{escape(section_label)}</h2></div>
         </div>
         """,
@@ -264,7 +380,7 @@ def render_tool_section(tools: Iterable[ToolMeta], query: str = "") -> None:
     cols = st.columns(min(len(tools), 5), gap="large")
     for index, tool in enumerate(tools):
         with cols[index % len(cols)]:
-            with st.container(key=f"tool_card_{tool.slug}"):
+            with st.container(key=f"tool_card_{key_prefix}_{tool.slug}"):
                 delay_ms = min(index, 9) * 45
                 st.markdown(_tool_card_html(tool, delay_ms=delay_ms), unsafe_allow_html=True)
                 _safe_page_link(tool.path, label="Open Tool", icon=":material/arrow_forward:", stretch_width=True)
@@ -418,18 +534,53 @@ def render_status_note(title: str, description: str, tone: str = "info") -> None
     )
 
 
-def filter_tools(query: str) -> tuple[ToolMeta, ...]:
+def filter_tools(query: str = "", profession: str = "All") -> tuple[ToolMeta, ...]:
+    """Return every tool matching both the search text and the profession filter."""
     value = query.strip().lower()
-    if not value:
-        return POPULAR_TOOLS
-    return tuple(
-        tool
-        for tool in TOOLS
-        if value in tool.title.lower()
-        or value in tool.short_title.lower()
-        or value in tool.description.lower()
-        or value in tool.slug.replace("_", " ")
+    matches_query = (
+        (lambda tool: True)
+        if not value
+        else (
+            lambda tool: value in tool.title.lower()
+            or value in tool.short_title.lower()
+            or value in tool.description.lower()
+            or value in tool.slug.replace("_", " ")
+        )
     )
+    matches_profession = (
+        (lambda tool: True) if profession not in PROFESSIONS else (lambda tool: profession in tool.professions)
+    )
+    return tuple(tool for tool in TOOLS if matches_query(tool) and matches_profession(tool))
+
+
+def recent_or_popular_tools(recent_slugs: Iterable[str]) -> tuple[ToolMeta, ...]:
+    """Map recently-visited tool slugs (most-recent-first) to ToolMeta, padded with POPULAR_TOOLS.
+
+    Unknown/stale slugs are skipped silently. Falls back entirely to
+    POPULAR_TOOLS for a visitor with no recorded recents yet.
+    """
+    by_slug = {tool.slug: tool for tool in TOOLS}
+    resolved: list[ToolMeta] = []
+    seen_slugs: set[str] = set()
+    for slug in recent_slugs:
+        tool = by_slug.get(slug)
+        if tool is None or tool.slug in seen_slugs:
+            continue
+        resolved.append(tool)
+        seen_slugs.add(tool.slug)
+        if len(resolved) >= 5:
+            break
+
+    if len(resolved) < 5:
+        for tool in POPULAR_TOOLS:
+            if tool.slug in seen_slugs:
+                continue
+            resolved.append(tool)
+            seen_slugs.add(tool.slug)
+            if len(resolved) >= 5:
+                break
+
+    return tuple(resolved)
 
 
 def tool_by_title(title: str) -> ToolMeta | None:

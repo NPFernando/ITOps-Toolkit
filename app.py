@@ -3,9 +3,11 @@ from __future__ import annotations
 import streamlit as st
 
 from utils.ui import (
+    PROFESSIONS,
     apply_app_shell,
     filter_tools,
     github_url,
+    recent_or_popular_tools,
     render_feature_strip,
     render_home_hero,
     render_important_notice,
@@ -24,6 +26,33 @@ if repo_url:
         st.link_button("GitHub", repo_url, icon=":material/code:", width="stretch")
 
 search_query = render_home_hero()
-render_tool_section(filter_tools(search_query), query=search_query)
+
+recent_param = st.query_params.get("recent", "")
+recent_slugs = [slug for slug in recent_param.split(",") if slug]
+recent_tools = recent_or_popular_tools(recent_slugs)
+recents_heading = "Recently Used" if recent_slugs else "Popular Tools"
+render_tool_section(recent_tools, heading=recents_heading, section_id=None, key_prefix="recent")
+
+profession = st.pills(
+    "Filter by profession",
+    options=("All", *PROFESSIONS),
+    default="All",
+    label_visibility="collapsed",
+    key="home_profession_filter",
+)
+show_all_clicked = st.button("Show all tools", icon=":material/apps:")
+if show_all_clicked:
+    st.session_state["home_show_all"] = True
+show_all = st.session_state.get("home_show_all", False) or bool(search_query.strip()) or profession != "All"
+
+if show_all:
+    if search_query.strip():
+        all_heading = "Matching Tools"
+    elif profession != "All":
+        all_heading = f"{profession} Tools"
+    else:
+        all_heading = "All Tools"
+    render_tool_section(filter_tools(search_query, profession), heading=all_heading, key_prefix="all")
+
 render_feature_strip()
 render_important_notice()
