@@ -1065,6 +1065,7 @@ def _inject_global_css(mode: str) -> None:
                 linear-gradient(180deg, var(--itops-app-gradient-top) 0%, var(--itops-bg) 48%, var(--itops-app-gradient-bottom) 100%);
             color: var(--itops-ink);
             font-family: 'Manrope', 'Segoe UI', sans-serif;
+            transition: background-color 220ms ease, color 220ms ease, background-image 260ms ease;
         }
 
         [data-testid="stAppViewContainer"] {
@@ -1135,6 +1136,7 @@ def _inject_global_css(mode: str) -> None:
             border-right: 1px solid rgba(125, 161, 217, 0.18);
             top: 0;
             height: 100vh;
+            transition: background-color 220ms ease, background-image 260ms ease, border-color 220ms ease;
         }
 
         [data-testid="stSidebar"] > div:first-child {
@@ -1594,7 +1596,7 @@ def _inject_global_css(mode: str) -> None:
         .tool-card-shell {
             position: relative;
             min-height: 15.1rem;
-            animation: itops-fade-up 0.45s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+            animation: itops-fade-up 0.38s cubic-bezier(0.22, 0.61, 0.36, 1) both;
         }
 
         .tool-card-badge-new {
