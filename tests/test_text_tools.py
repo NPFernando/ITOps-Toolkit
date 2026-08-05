@@ -125,3 +125,46 @@ def test_explain_cron_valid_and_invalid_paths():
     assert "5-field" in wrong_fields["error"]
     assert invalid["ok"] is False
     assert invalid["error"] == "Cron expression is not valid."
+
+
+def test_encode_url_text_percent_encodes_reserved_characters():
+    result = text_tools.encode_url_text("hello world/test?a=b&c=d")
+
+    assert result["ok"] is True
+    assert result["result"] == "hello%20world%2Ftest%3Fa%3Db%26c%3Dd"
+
+
+def test_encode_url_text_plus_for_space_uses_form_encoding():
+    result = text_tools.encode_url_text("a b+c", plus_for_space=True)
+
+    assert result["ok"] is True
+    assert result["result"] == "a+b%2Bc"
+
+
+def test_decode_url_text_reverses_encoding():
+    encoded = text_tools.encode_url_text("hello world/test?a=b")["result"]
+    result = text_tools.decode_url_text(encoded)
+
+    assert result["ok"] is True
+    assert result["result"] == "hello world/test?a=b"
+
+
+def test_decode_url_text_plus_for_space_converts_plus_to_space():
+    result = text_tools.decode_url_text("a+b%2Bc", plus_for_space=True)
+
+    assert result["ok"] is True
+    assert result["result"] == "a b+c"
+
+
+def test_decode_url_text_without_plus_for_space_keeps_literal_plus():
+    result = text_tools.decode_url_text("a+b", plus_for_space=False)
+
+    assert result["ok"] is True
+    assert result["result"] == "a+b"
+
+
+def test_url_tools_reject_oversized_input():
+    oversized = "a" * (text_tools.MAX_URL_LENGTH + 1)
+
+    assert text_tools.encode_url_text(oversized)["ok"] is False
+    assert text_tools.decode_url_text(oversized)["ok"] is False

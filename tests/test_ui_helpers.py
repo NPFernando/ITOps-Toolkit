@@ -124,7 +124,7 @@ def test_sort_tools_default_and_unknown_mode_preserve_order():
     assert sort_tools(subset, "not-a-real-mode") == subset
 
 
-def test_exactly_five_tools_are_tagged_new():
+def test_expected_tools_are_tagged_new():
     new_slugs = {tool.slug for tool in TOOLS if tool.is_new}
 
     assert new_slugs == {
@@ -133,6 +133,8 @@ def test_exactly_five_tools_are_tagged_new():
         "mac_address_tool",
         "email_header_analyzer",
         "port_reference",
+        "password_generator",
+        "url_encoder_decoder",
     }
 
 
@@ -188,8 +190,8 @@ def test_sidebar_category_partition_matches_expected_grouping():
 
     assert by_category == {
         "Network": ["domain_health", "dns_records", "subnet_calculator", "mac_address_tool"],
-        "Security": ["ssl_certificate", "jwt_decoder", "hash_generator", "email_header_analyzer"],
-        "Web & Dev": ["http_status", "json_formatter", "base64_tool"],
+        "Security": ["ssl_certificate", "jwt_decoder", "hash_generator", "email_header_analyzer", "password_generator"],
+        "Web & Dev": ["http_status", "json_formatter", "base64_tool", "url_encoder_decoder"],
         "Ops & Automation": ["cron_explainer", "log_troubleshooting"],
         "Reference": ["port_reference"],
     }
