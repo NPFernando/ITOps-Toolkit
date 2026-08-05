@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import multiprocessing as mp
 import re
+from queue import Empty
 from typing import Any
 
 MAX_PATTERN_LENGTH = 500
@@ -81,25 +82,33 @@ def test_regex(pattern: str, text: str, flag_names: tuple[str, ...] = ()) -> dic
     queue: mp.Queue = ctx.Queue()
     process = ctx.Process(target=_match_worker, args=(pattern, flags_value, text, queue))
     process.start()
-    process.join(timeout=MATCH_TIMEOUT_SECONDS)
 
-    if process.is_alive():
-        process.terminate()
-        process.join(timeout=1.0)
+    # queue.get() first, THEN join -- not the other way around. A child that
+    # finishes fast but writes a large result (e.g. MAX_MATCHES long matches)
+    # can block on queue.put() once the pipe's OS buffer fills, and if the
+    # parent is sitting in process.join() instead of draining the queue,
+    # neither side can proceed. Reading first avoids that deadlock. (Found
+    # via the equivalent bug in utils/diff_tools.py, where a fast-but-large
+    # result reliably hung for the full timeout with the join-first order.)
+    try:
+        worker_result = queue.get(timeout=MATCH_TIMEOUT_SECONDS)
+    except Empty:
+        worker_result = None
+
+    if worker_result is None:
         if process.is_alive():
-            process.kill()
-            process.join()
+            process.terminate()
+            process.join(timeout=1.0)
+            if process.is_alive():
+                process.kill()
+        process.join()
         result["error"] = (
             f"Pattern took longer than {MATCH_TIMEOUT_SECONDS:g}s to evaluate "
             "(possible catastrophic backtracking) and was stopped."
         )
         return result
 
-    if queue.empty():
-        result["error"] = "Pattern evaluation failed unexpectedly."
-        return result
-
-    worker_result = queue.get()
+    process.join(timeout=1.0)
     if not worker_result["ok"]:
         result["error"] = worker_result["error"]
         return result
