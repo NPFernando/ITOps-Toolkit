@@ -168,3 +168,41 @@ def test_url_tools_reject_oversized_input():
 
     assert text_tools.encode_url_text(oversized)["ok"] is False
     assert text_tools.decode_url_text(oversized)["ok"] is False
+
+
+def test_encode_jwt_round_trips_with_decode_jwt_unverified():
+    encoded = text_tools.encode_jwt('{"sub": "user123", "iat": 1735689600}', "my-secret", "HS256")
+
+    assert encoded["ok"] is True
+    decoded = text_tools.decode_jwt_unverified(encoded["token"])
+    assert decoded["ok"] is True
+    assert decoded["payload"] == {"sub": "user123", "iat": 1735689600}
+    assert decoded["header"]["alg"] == "HS256"
+
+
+def test_encode_jwt_rejects_invalid_payload_json():
+    result = text_tools.encode_jwt("not json", "secret", "HS256")
+
+    assert result["ok"] is False
+    assert "Invalid payload JSON" in result["error"]
+
+
+def test_encode_jwt_rejects_non_object_payload():
+    result = text_tools.encode_jwt("[1, 2, 3]", "secret", "HS256")
+
+    assert result["ok"] is False
+    assert "must be an object" in result["error"]
+
+
+def test_encode_jwt_requires_a_secret():
+    result = text_tools.encode_jwt('{"a": 1}', "", "HS256")
+
+    assert result["ok"] is False
+    assert "Enter a secret key" in result["error"]
+
+
+def test_encode_jwt_rejects_unsupported_algorithm():
+    result = text_tools.encode_jwt('{"a": 1}', "secret", "RS256")
+
+    assert result["ok"] is False
+    assert "Unsupported algorithm" in result["error"]

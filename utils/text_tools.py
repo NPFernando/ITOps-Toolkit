@@ -16,6 +16,7 @@ from croniter import croniter
 MAX_LOG_LENGTH = 20_000
 MAX_JSON_LENGTH = 100_000
 MAX_URL_LENGTH = 20_000
+JWT_ENCODE_ALGORITHMS = ("HS256", "HS384", "HS512")
 
 
 def validate_length(value: str, max_length: int, label: str) -> tuple[bool, str | None]:
@@ -196,6 +197,44 @@ def decode_jwt_unverified(token: str) -> dict[str, Any]:
         "issuer": payload.get("iss"),
         "audience": payload.get("aud"),
     }
+
+
+def encode_jwt(payload_json: str, secret: str, algorithm: str) -> dict[str, Any]:
+    """Build and sign a JWT from a JSON payload using an HMAC algorithm and shared secret.
+
+    HMAC-only (HS256/HS384/HS512) -- asymmetric algorithms would need key-pair
+    input, which is out of scope for a quick local testing tool.
+    """
+    result: dict[str, Any] = {"ok": False, "error": None, "token": None}
+    if algorithm not in JWT_ENCODE_ALGORITHMS:
+        result["error"] = f"Unsupported algorithm: {algorithm}."
+        return result
+    if not secret:
+        result["error"] = "Enter a secret key."
+        return result
+
+    ok, error = validate_length(payload_json, MAX_JSON_LENGTH, "Payload")
+    if not ok:
+        result["error"] = error
+        return result
+
+    try:
+        payload = json.loads(payload_json)
+    except json.JSONDecodeError as exc:
+        result["error"] = f"Invalid payload JSON at line {exc.lineno}, column {exc.colno}: {exc.msg}"
+        return result
+    if not isinstance(payload, dict):
+        result["error"] = "Payload JSON must be an object."
+        return result
+
+    try:
+        token = jwt.encode(payload, secret, algorithm=algorithm)
+    except jwt.PyJWTError as exc:
+        result["error"] = f"Could not encode JWT: {exc}"
+        return result
+
+    result.update({"ok": True, "token": token})
+    return result
 
 
 def _field_description(name: str, value: str) -> str:
