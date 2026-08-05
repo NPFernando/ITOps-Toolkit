@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import pytest
+import streamlit as st
 from streamlit.testing.v1 import AppTest
 
 from utils import roadmap
@@ -12,6 +14,23 @@ from utils import roadmap
 # directory -- an absolute path avoids that resolution entirely.
 ROADMAP_PAGE = str(Path(__file__).resolve().parent.parent / "pages" / "10_Roadmap_Feedback.py")
 ROADMAP_PAGE_TIMEOUT = 60
+
+
+@pytest.fixture(autouse=True)
+def _clear_roadmap_cache():
+    """Clear st.cache_data before each test in this file.
+
+    pages/10_Roadmap_Feedback.py busts its cache on a monkeypatched
+    load_roadmap_board by keying on id(roadmap.load_roadmap_board). That's
+    reliable in production (the loader is never monkeypatched, so the id
+    never changes), but not across tests in one process: each test defines
+    its own short-lived local `fake_board` closure, and CPython can reuse a
+    garbage-collected function's id for the next one. When that happens,
+    st.cache_data (a process-global cache, not reset between separate
+    AppTest runs) serves a *different* test's cached RoadmapBoard, and this
+    test fails on stale content instead of what it just monkeypatched in.
+    """
+    st.cache_data.clear()
 
 
 def _page_text(app: AppTest) -> str:
