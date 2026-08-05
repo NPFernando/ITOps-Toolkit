@@ -843,6 +843,17 @@ _THEME_TOKENS = {
         "green": "#50fa7b",
         "purple": "#c678dd",
         "orange": "#f0ad4e",
+        # Card/panel surfaces on the main content area (not the sidebar,
+        # which is always dark in both modes). Distinct from "panel" above,
+        # which theme-toggle-era code already uses for a couple of other
+        # things -- these back the tool-card / result-panel glass surfaces.
+        "surface": "rgba(30, 34, 40, 0.82)",
+        "surface-strong": "#1e2228",
+        "surface-border": "rgba(53, 90, 102, 0.45)",
+        "text-secondary": "#a9c2ce",
+        "input-bg": "#20242b",
+        "app-gradient-top": "#2a2e36",
+        "app-gradient-bottom": "#1f232a",
     },
     "light": {
         "blue": "#126bff",
@@ -857,6 +868,13 @@ _THEME_TOKENS = {
         "green": "#22ba4f",
         "purple": "#6d55e9",
         "orange": "#ff6a13",
+        "surface": "rgba(255, 255, 255, 0.84)",
+        "surface-strong": "#ffffff",
+        "surface-border": "#d4e0f2",
+        "text-secondary": "#334765",
+        "input-bg": "#ffffff",
+        "app-gradient-top": "#fbfdff",
+        "app-gradient-bottom": "#eef5ff",
     },
 }
 
@@ -914,7 +932,7 @@ def _inject_global_css(mode: str) -> None:
         .stApp {
             background:
                 radial-gradient(circle at 70% 0%, rgba(18, 107, 255, 0.12), transparent 30%),
-                linear-gradient(180deg, #fbfdff 0%, var(--itops-bg) 48%, #eef5ff 100%);
+                linear-gradient(180deg, var(--itops-app-gradient-top) 0%, var(--itops-bg) 48%, var(--itops-app-gradient-bottom) 100%);
             color: var(--itops-ink);
             font-family: 'Manrope', 'Segoe UI', sans-serif;
         }
@@ -1158,7 +1176,7 @@ def _inject_global_css(mode: str) -> None:
         }
 
         .home-hero-copy p {
-            color: #4b5d7b;
+            color: var(--itops-text-secondary);
             margin: 0;
             max-width: 40rem;
             font-size: clamp(1rem, 1.7vw, 1.24rem);
@@ -1170,8 +1188,8 @@ def _inject_global_css(mode: str) -> None:
         [data-testid="stSelectbox"] div[data-baseweb="select"] > div,
         [data-testid="stNumberInput"] input {
             border-radius: 8px;
-            border: 1px solid #b9c9e5;
-            background: #ffffff;
+            border: 1px solid var(--itops-surface-border);
+            background: var(--itops-input-bg);
             color: var(--itops-ink);
             box-shadow: 0 12px 36px rgba(37, 86, 153, 0.07);
         }
@@ -1196,11 +1214,11 @@ def _inject_global_css(mode: str) -> None:
             min-height: 2.45rem;
             padding: 0 1.1rem;
             border-radius: 8px;
-            color: #0d1b36;
+            color: var(--itops-ink);
             font-size: 0.92rem;
             font-weight: 700;
-            background: rgba(255, 255, 255, 0.88);
-            border: 1px solid #cddaf0;
+            background: var(--itops-surface);
+            border: 1px solid var(--itops-surface-border);
             box-shadow: 0 8px 24px rgba(43, 88, 150, 0.06);
         }
 
@@ -1426,8 +1444,8 @@ def _inject_global_css(mode: str) -> None:
             height: 100%;
             border-radius: 8px;
             padding: 1.05rem;
-            background: rgba(255, 255, 255, 0.84);
-            border: 1px solid #d4e0f2;
+            background: var(--itops-surface);
+            border: 1px solid var(--itops-surface-border);
             box-shadow: 0 12px 32px rgba(36, 79, 135, 0.06);
         }
 
@@ -1507,7 +1525,7 @@ def _inject_global_css(mode: str) -> None:
 
         .tool-card-shell p {
             margin: 0;
-            color: #334765;
+            color: var(--itops-text-secondary);
             font-size: 0.92rem;
             line-height: 1.55;
         }
@@ -1532,9 +1550,9 @@ def _inject_global_css(mode: str) -> None:
             grid-template-columns: repeat(5, minmax(0, 1fr));
             gap: 0;
             margin: 1.6rem 0 1.2rem;
-            border: 1px solid #d4e0f2;
+            border: 1px solid var(--itops-surface-border);
             border-radius: 8px;
-            background: rgba(255, 255, 255, 0.82);
+            background: var(--itops-surface);
             overflow: hidden;
         }
 
@@ -1542,7 +1560,7 @@ def _inject_global_css(mode: str) -> None:
             display: flex;
             gap: 0.9rem;
             padding: 1.15rem 1rem;
-            border-right: 1px solid #dbe5f5;
+            border-right: 1px solid var(--itops-surface-border);
         }
 
         .feature-item:last-child {
@@ -1558,7 +1576,7 @@ def _inject_global_css(mode: str) -> None:
 
         .feature-item p {
             margin: 0;
-            color: #334765;
+            color: var(--itops-text-secondary);
             font-size: 0.82rem;
             line-height: 1.45;
         }
@@ -1573,7 +1591,7 @@ def _inject_global_css(mode: str) -> None:
             font-size: 0.74rem;
             font-weight: 900;
             border: 2px solid currentColor;
-            background: #ffffff;
+            background: var(--itops-surface-strong);
             transition: transform 180ms cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
@@ -1593,7 +1611,7 @@ def _inject_global_css(mode: str) -> None:
             padding: 1rem 1.15rem;
             border-radius: 8px;
             border: 1px solid #f0d08a;
-            background: linear-gradient(135deg, rgba(255, 189, 24, 0.13), rgba(255, 255, 255, 0.88));
+            background: linear-gradient(135deg, rgba(255, 189, 24, 0.13), var(--itops-surface));
         }
 
         .important-notice strong {
@@ -1603,7 +1621,7 @@ def _inject_global_css(mode: str) -> None:
 
         .important-notice p {
             margin: 0.2rem 0 0;
-            color: #334765;
+            color: var(--itops-text-secondary);
             font-size: 0.9rem;
             line-height: 1.45;
         }
@@ -1627,8 +1645,8 @@ def _inject_global_css(mode: str) -> None:
             padding: 1rem 1.1rem;
             margin-bottom: 1rem;
             border-radius: 8px;
-            border: 1px solid #d4e0f2;
-            background: rgba(255, 255, 255, 0.82);
+            border: 1px solid var(--itops-surface-border);
+            background: var(--itops-surface);
             box-shadow: 0 12px 32px rgba(36, 79, 135, 0.05);
         }
 
@@ -1653,15 +1671,15 @@ def _inject_global_css(mode: str) -> None:
 
         .tool-page-header p {
             margin: 0.35rem 0 0;
-            color: #52637f;
+            color: var(--itops-text-secondary);
             line-height: 1.5;
         }
 
         [class*="st-key-tool_form_panel_"],
         [class*="st-key-tool_result_panel_"] {
-            border: 1px solid #d4e0f2;
+            border: 1px solid var(--itops-surface-border);
             border-radius: 8px;
-            background: rgba(255, 255, 255, 0.78);
+            background: var(--itops-surface);
             box-shadow: 0 12px 32px rgba(36, 79, 135, 0.045);
             padding: 1rem 1rem 1.1rem;
             margin: 1rem 0;
@@ -1669,7 +1687,7 @@ def _inject_global_css(mode: str) -> None:
 
         [class*="st-key-tool_form_panel_"] {
             background:
-                linear-gradient(135deg, rgba(255, 255, 255, 0.92), rgba(242, 247, 255, 0.84));
+                linear-gradient(135deg, var(--itops-surface), color-mix(in srgb, var(--itops-surface), var(--itops-blue) 6%));
         }
 
         .tool-form-intro,
@@ -1690,7 +1708,7 @@ def _inject_global_css(mode: str) -> None:
         .tool-section-heading p {
             margin: 0;
             max-width: 44rem;
-            color: #52637f;
+            color: var(--itops-muted);
             font-size: 0.92rem;
             line-height: 1.55;
         }
@@ -1707,9 +1725,9 @@ def _inject_global_css(mode: str) -> None:
             display: flex;
             gap: 0.9rem;
             align-items: center;
-            border: 1px dashed #bdd0ef;
+            border: 1px dashed var(--itops-surface-border);
             border-radius: 8px;
-            background: rgba(255, 255, 255, 0.58);
+            background: var(--itops-surface);
             padding: 0.95rem 1rem;
             margin: 1rem 0;
         }
@@ -1736,7 +1754,7 @@ def _inject_global_css(mode: str) -> None:
         .tool-empty-state p,
         .tool-safe-note p {
             margin: 0.18rem 0 0;
-            color: #52637f;
+            color: var(--itops-muted);
             font-size: 0.88rem;
             line-height: 1.45;
         }
@@ -1756,8 +1774,8 @@ def _inject_global_css(mode: str) -> None:
             border-radius: 8px;
             padding: 0.9rem 1rem;
             margin: 0.85rem 0 1rem;
-            border: 1px solid #cddaf0;
-            background: rgba(255, 255, 255, 0.76);
+            border: 1px solid var(--itops-surface-border);
+            background: var(--itops-surface);
         }
 
         .tool-status-mark {
@@ -1780,7 +1798,7 @@ def _inject_global_css(mode: str) -> None:
 
         .tool-status-note p {
             margin: 0.18rem 0 0;
-            color: #334765;
+            color: var(--itops-text-secondary);
             font-size: 0.9rem;
             line-height: 1.55;
             overflow-wrap: anywhere;
@@ -1789,7 +1807,7 @@ def _inject_global_css(mode: str) -> None:
         .tool-status-note-ai,
         .tool-status-note-info {
             border-color: rgba(18, 107, 255, 0.22);
-            background: linear-gradient(135deg, rgba(231, 240, 255, 0.94), rgba(255, 255, 255, 0.84));
+            background: linear-gradient(135deg, rgba(231, 240, 255, 0.94), var(--itops-surface));
         }
 
         .tool-status-note-ai .tool-status-mark,
@@ -1799,7 +1817,7 @@ def _inject_global_css(mode: str) -> None:
 
         .tool-status-note-success {
             border-color: rgba(34, 186, 79, 0.24);
-            background: linear-gradient(135deg, rgba(231, 248, 238, 0.9), rgba(255, 255, 255, 0.84));
+            background: linear-gradient(135deg, rgba(231, 248, 238, 0.9), var(--itops-surface));
         }
 
         .tool-status-note-success .tool-status-mark {
@@ -1808,7 +1826,7 @@ def _inject_global_css(mode: str) -> None:
 
         .tool-status-note-warning {
             border-color: rgba(255, 106, 19, 0.25);
-            background: linear-gradient(135deg, rgba(255, 240, 231, 0.9), rgba(255, 255, 255, 0.86));
+            background: linear-gradient(135deg, rgba(255, 240, 231, 0.9), var(--itops-surface));
         }
 
         .tool-status-note-warning .tool-status-mark {
@@ -1816,8 +1834,8 @@ def _inject_global_css(mode: str) -> None:
         }
 
         .tool-status-note-neutral {
-            border-color: #d4e0f2;
-            background: rgba(255, 255, 255, 0.7);
+            border-color: var(--itops-surface-border);
+            background: var(--itops-surface);
         }
 
         .tool-status-note-neutral .tool-status-mark {
@@ -1825,9 +1843,9 @@ def _inject_global_css(mode: str) -> None:
         }
 
         [class*="st-key-tool_download_panel_"] {
-            border: 1px solid #d4e0f2;
+            border: 1px solid var(--itops-surface-border);
             border-radius: 8px;
-            background: rgba(255, 255, 255, 0.72);
+            background: var(--itops-surface);
             padding: 1rem;
             margin-top: 1rem;
         }
@@ -1863,7 +1881,7 @@ def _inject_global_css(mode: str) -> None:
         .roadmap-hero p {
             max-width: 42rem;
             margin: 0;
-            color: #4b5d7b;
+            color: var(--itops-text-secondary);
             font-size: 0.98rem;
             line-height: 1.55;
         }
@@ -1878,7 +1896,7 @@ def _inject_global_css(mode: str) -> None:
 
         .roadmap-tab-row span,
         .roadmap-tab-row a {
-            color: #52637f;
+            color: var(--itops-muted);
             text-decoration: none !important;
             font-size: 0.9rem;
             font-weight: 800;
@@ -1926,8 +1944,8 @@ def _inject_global_css(mode: str) -> None:
 
         .roadmap-secondary-link {
             color: var(--itops-ink) !important;
-            background: rgba(255, 255, 255, 0.85);
-            border: 1px solid #cddaf0;
+            background: var(--itops-surface);
+            border: 1px solid var(--itops-surface-border);
         }
 
         .roadmap-secondary-link:hover {
@@ -1949,9 +1967,9 @@ def _inject_global_css(mode: str) -> None:
             align-items: start;
             min-height: 4.2rem;
             padding: 0.85rem 0.95rem;
-            border: 1px solid #cddaf0;
+            border: 1px solid var(--itops-surface-border);
             border-radius: 8px;
-            background: rgba(255, 255, 255, 0.74);
+            background: var(--itops-surface);
         }
 
         .roadmap-notice-mark {
@@ -1975,14 +1993,14 @@ def _inject_global_css(mode: str) -> None:
 
         .roadmap-notice p {
             margin: 0.18rem 0 0;
-            color: #334765;
+            color: var(--itops-text-secondary);
             font-size: 0.82rem;
             line-height: 1.45;
         }
 
         .roadmap-notice-warning {
             border-color: rgba(255, 106, 19, 0.28);
-            background: linear-gradient(135deg, rgba(255, 244, 238, 0.9), rgba(255, 255, 255, 0.8));
+            background: linear-gradient(135deg, rgba(255, 244, 238, 0.9), var(--itops-surface));
         }
 
         .roadmap-notice-warning .roadmap-notice-mark {
@@ -1991,7 +2009,7 @@ def _inject_global_css(mode: str) -> None:
 
         .roadmap-notice-ai {
             border-color: rgba(18, 107, 255, 0.24);
-            background: linear-gradient(135deg, rgba(232, 241, 255, 0.92), rgba(255, 255, 255, 0.8));
+            background: linear-gradient(135deg, rgba(232, 241, 255, 0.92), var(--itops-surface));
         }
 
         .roadmap-notice-ai .roadmap-notice-mark {
@@ -2000,8 +2018,8 @@ def _inject_global_css(mode: str) -> None:
 
         .roadmap-notice-neutral {
             margin: 0.85rem 0 0.9rem;
-            border-color: #d4e0f2;
-            background: rgba(255, 255, 255, 0.72);
+            border-color: var(--itops-surface-border);
+            background: var(--itops-surface);
         }
 
         .roadmap-notice-neutral .roadmap-notice-mark {
@@ -2030,8 +2048,8 @@ def _inject_global_css(mode: str) -> None:
             min-height: 3.15rem;
             padding: 0.8rem 0.95rem;
             border-radius: 8px;
-            border: 1px solid #cddaf0;
-            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid var(--itops-surface-border);
+            background: var(--itops-surface);
             box-shadow: 0 10px 24px rgba(36, 79, 135, 0.04);
             transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
         }
@@ -2039,7 +2057,7 @@ def _inject_global_css(mode: str) -> None:
         .roadmap-board-card:hover {
             transform: translateY(-1px);
             border-color: rgba(18, 107, 255, 0.32);
-            background: rgba(255, 255, 255, 0.94);
+            background: var(--itops-surface);
         }
 
         .roadmap-board-card span {
@@ -2060,7 +2078,7 @@ def _inject_global_css(mode: str) -> None:
             align-items: center;
             gap: 1rem;
             margin: 0.45rem 0 0.85rem;
-            color: #52637f;
+            color: var(--itops-muted);
             font-size: 0.88rem;
         }
 
@@ -2082,9 +2100,9 @@ def _inject_global_css(mode: str) -> None:
             flex-direction: column;
             overflow: hidden;
             padding: 0;
-            border: 1px solid #cddaf0;
+            border: 1px solid var(--itops-surface-border);
             border-radius: 8px;
-            background: rgba(255, 255, 255, 0.82);
+            background: var(--itops-surface);
             box-shadow: 0 12px 30px rgba(36, 79, 135, 0.035);
         }
 
@@ -2163,13 +2181,13 @@ def _inject_global_css(mode: str) -> None:
             width: 2.35rem;
             min-height: 2.5rem;
             align-self: start;
-            border: 1px solid #d4e0f2;
+            border: 1px solid var(--itops-surface-border);
             border-radius: 8px;
             display: grid;
             place-items: center;
             align-content: center;
             color: #3d4f68;
-            background: rgba(255, 255, 255, 0.78);
+            background: var(--itops-surface);
             font-size: 0.75rem;
             font-weight: 850;
             line-height: 1.1;
@@ -2253,7 +2271,7 @@ def _inject_global_css(mode: str) -> None:
         .roadmap-item-body p {
             margin: 0.42rem 0 0;
             padding: 0 !important;
-            color: #334765;
+            color: var(--itops-text-secondary);
             font-size: 0.8rem;
             line-height: 1.45;
             display: -webkit-box;
@@ -2277,9 +2295,9 @@ def _inject_global_css(mode: str) -> None:
         .roadmap-empty-column {
             margin: 1rem 0;
             padding: 1rem;
-            border: 1px dashed #bdd0ef;
+            border: 1px dashed var(--itops-surface-border);
             border-radius: 8px;
-            background: rgba(255, 255, 255, 0.56);
+            background: var(--itops-surface);
         }
 
         .roadmap-empty-column strong {
@@ -2289,7 +2307,7 @@ def _inject_global_css(mode: str) -> None:
 
         .roadmap-empty-column p {
             margin: 0.25rem 0 0;
-            color: #52637f;
+            color: var(--itops-muted);
             font-size: 0.84rem;
             line-height: 1.45;
         }
@@ -2303,7 +2321,7 @@ def _inject_global_css(mode: str) -> None:
             padding: 0.85rem 0.95rem;
             border: 1px solid rgba(18, 107, 255, 0.2);
             border-radius: 8px;
-            background: linear-gradient(135deg, rgba(231, 240, 255, 0.94), rgba(255, 255, 255, 0.84));
+            background: linear-gradient(135deg, rgba(231, 240, 255, 0.94), var(--itops-surface));
         }
 
         .roadmap-footer-note strong {
@@ -2314,7 +2332,7 @@ def _inject_global_css(mode: str) -> None:
 
         .roadmap-footer-note span {
             flex: 1;
-            color: #334765;
+            color: var(--itops-text-secondary);
             font-size: 0.88rem;
             line-height: 1.45;
         }
@@ -2339,7 +2357,7 @@ def _inject_global_css(mode: str) -> None:
 
             .feature-item {
                 border-right: 0;
-                border-bottom: 1px solid #dbe5f5;
+                border-bottom: 1px solid var(--itops-surface-border);
             }
 
             .hero-visual {
