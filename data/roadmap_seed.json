@@ -273,7 +273,7 @@
     {
       "title": "CIDR / IP range aggregator",
       "category": "Tools",
-      "status": "AI Recommended",
+      "status": "Complete",
       "votes": 9,
       "description": "Summarize a list of IPs or CIDR blocks into the minimal set of covering supernets.",
       "rationale": "Extends the existing Subnet Calculator for firewall-rule and ACL cleanup work.",
@@ -282,10 +282,37 @@
     {
       "title": "User-Agent string parser",
       "category": "Tools",
-      "status": "AI Recommended",
+      "status": "Complete",
       "votes": 11,
       "description": "Break a User-Agent header down into browser, OS, and device details.",
       "rationale": "Common companion lookup alongside HTTP Status Checker and Email Header Analyzer.",
+      "updated_at": "2026-08-05"
+    },
+    {
+      "title": "IPv6 address compressor/expander",
+      "category": "Tools",
+      "status": "AI Recommended",
+      "votes": 7,
+      "description": "Convert an IPv6 address between its compressed (::) and fully expanded form.",
+      "rationale": "Small, frequently-needed complement to the Subnet Calculator and CIDR Aggregator.",
+      "updated_at": "2026-08-05"
+    },
+    {
+      "title": "Cron next-run calendar export",
+      "category": "Tools",
+      "status": "AI Recommended",
+      "votes": 6,
+      "description": "Export the Cron Explainer's next-run times as a downloadable .ics calendar file.",
+      "rationale": "Lets users drop scheduled job times straight into their calendar instead of re-reading the explainer each time.",
+      "updated_at": "2026-08-05"
+    },
+    {
+      "title": "Slugify / case converter",
+      "category": "Tools",
+      "status": "AI Recommended",
+      "votes": 8,
+      "description": "Convert text between slug-case, camelCase, snake_case, kebab-case, and Title Case.",
+      "rationale": "Everyday utility for developers naming files, variables, and URLs.",
       "updated_at": "2026-08-05"
     }
   ]
