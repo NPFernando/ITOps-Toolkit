@@ -343,6 +343,18 @@ TOOLS: tuple[ToolMeta, ...] = (
         category="Web & Dev",
         is_new=True,
     ),
+    ToolMeta(
+        title="WHOIS Lookup",
+        short_title="WHOIS Lookup",
+        description="Look up domain registration details (registrar, key dates, name servers) via RDAP.",
+        path="pages/27_WHOIS_Lookup.py",
+        icon="WHO",
+        accent="#0d9488",
+        slug="whois_lookup",
+        professions=("Network Engineer", "Security Engineer", "Sysadmin / DevOps", "Web Developer"),
+        category="Network",
+        is_new=True,
+    ),
 )
 
 POPULAR_TOOLS = TOOLS[:5]
@@ -955,6 +967,7 @@ def _material_icon_for(slug: str) -> str:
         "ipv6_compressor": ":material/compress:",
         "case_converter": ":material/text_fields:",
         "color_converter": ":material/palette:",
+        "whois_lookup": ":material/badge:",
     }
     return icons.get(slug, ":material/build:")
 
