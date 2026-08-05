@@ -246,7 +246,7 @@
     {
       "title": "Timestamp / epoch converter",
       "category": "Tools",
-      "status": "In Progress",
+      "status": "Complete",
       "votes": 20,
       "description": "Convert between Unix epoch, ISO 8601, and human-readable timestamps across timezones, plus a live \"now\" reference.",
       "rationale": "One of the most common everyday IT utilities; surprisingly missing given the toolkit already has a Cron Explainer.",
@@ -255,7 +255,7 @@
     {
       "title": "Text diff checker",
       "category": "Tools",
-      "status": "In Progress",
+      "status": "Complete",
       "votes": 16,
       "description": "Side-by-side or unified diff between two blocks of text, highlighting additions and removals.",
       "rationale": "Frequently needed alongside JSON/config troubleshooting to spot what changed between two versions.",
@@ -264,9 +264,9 @@
     {
       "title": "JWT encoder",
       "category": "Security",
-      "status": "AI Recommended",
+      "status": "Complete",
       "votes": 12,
-      "description": "Build and sign a JWT from a header/payload/secret, complementing the existing decode-only JWT Decoder.",
+      "description": "Build and sign a JWT from a JSON payload and secret using an HMAC algorithm, complementing the existing decode-only JWT Decoder.",
       "rationale": "Decoding already exists; encoding is the natural other half for testing auth flows locally.",
       "updated_at": "2026-08-05"
     },
