@@ -156,7 +156,7 @@
     {
       "title": "WHOIS lookup tool",
       "category": "Tools",
-      "status": "AI Recommended",
+      "status": "Complete",
       "votes": 22,
       "description": "Public WHOIS/RDAP registration lookup alongside the existing DNS and SSL checkers.",
       "rationale": "A natural companion to Domain Health and DNS tools for the same troubleshooting workflow.",
@@ -192,9 +192,9 @@
     {
       "title": "Certificate chain validator",
       "category": "Security",
-      "status": "AI Recommended",
+      "status": "Complete",
       "votes": 17,
-      "description": "Show the full intermediate/root trust chain and flag missing or expiring intermediates.",
+      "description": "Diagnose chain trust issues (missing intermediate, self-signed, expired, hostname mismatch) on the SSL Certificate Checker. Scoped to OpenSSL verify-code diagnosis rather than full leaf-to-root enumeration, since Python's stdlib ssl module can't walk the full chain before 3.13.",
       "rationale": "Extends the existing SSL Certificate Checker beyond leaf-certificate details.",
       "updated_at": "2026-08-05"
     },
@@ -331,24 +331,6 @@
       "votes": 7,
       "description": "Convert colors between HEX, RGB, and HSL, with a live swatch preview.",
       "rationale": "Common small utility for anyone touching CSS/UI work alongside the IT-focused tools.",
-      "updated_at": "2026-08-05"
-    },
-    {
-      "title": "WHOIS lookup tool",
-      "category": "Tools",
-      "status": "AI Recommended",
-      "votes": 22,
-      "description": "Look up domain registration details (registrar, creation/expiry dates, name servers) via RDAP.",
-      "rationale": "Complements the existing Domain Health Checker and DNS Record Checker with registration/ownership context they don't cover.",
-      "updated_at": "2026-08-05"
-    },
-    {
-      "title": "Certificate chain validator",
-      "category": "Tools",
-      "status": "AI Recommended",
-      "votes": 17,
-      "description": "Show the full certificate chain (leaf to root) for a host and flag any missing intermediates.",
-      "rationale": "Extends the existing SSL Certificate Checker, which only surfaces the leaf certificate today -- chain issues are a common real-world outage cause.",
       "updated_at": "2026-08-05"
     }
   ]

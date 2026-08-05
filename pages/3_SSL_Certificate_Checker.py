@@ -69,10 +69,13 @@ if submitted:
             if result["error"]:
                 st.error(result["error"])
 
-            c1, c2, c3 = st.columns(3)
+            c1, c2, c3, c4 = st.columns(4)
             c1.metric("TLS connection", "OK" if result["verification_ok"] else "Failed")
             c2.metric("Days remaining", result["days_remaining"] if result["days_remaining"] is not None else "Unknown")
             c3.metric("Port", result["port"])
+            c4.metric("Chain status", result["chain_status"])
+            if result["chain_explanation"]:
+                st.caption(result["chain_explanation"])
 
             rows = [
                 {"field": "Subject", "value": result["subject"].get("commonName", "Unknown")},

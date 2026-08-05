@@ -144,6 +144,7 @@ def test_expected_tools_are_tagged_new():
         "ipv6_compressor",
         "case_converter",
         "color_converter",
+        "whois_lookup",
     }
 
 
@@ -205,6 +206,7 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "mac_address_tool",
             "cidr_aggregator",
             "ipv6_compressor",
+            "whois_lookup",
         ],
         "Security": ["ssl_certificate", "jwt_decoder", "hash_generator", "email_header_analyzer", "password_generator", "jwt_encoder"],
         "Web & Dev": [
