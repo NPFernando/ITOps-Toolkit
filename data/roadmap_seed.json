@@ -201,7 +201,7 @@
     {
       "title": "Bulk Domain Health checks via CSV upload",
       "category": "Reports",
-      "status": "AI Recommended",
+      "status": "Complete",
       "votes": 14,
       "description": "Upload a list of domains and run Domain Health across all of them, exporting one combined report.",
       "rationale": "MSPs managing many client domains currently have to run checks one at a time.",
