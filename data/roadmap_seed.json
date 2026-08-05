@@ -134,6 +134,114 @@
       "description": "Explore lightweight exports that can be pasted into ticketing systems.",
       "rationale": "MSP users often need customer-ready notes after troubleshooting.",
       "updated_at": "2026-04-30"
+    },
+    {
+      "title": "Command palette / quick-jump launcher",
+      "category": "UX / Design",
+      "status": "Planned",
+      "votes": 18,
+      "description": "A keyboard-triggered launcher to jump straight to any tool, complementing the sidebar quick-search.",
+      "rationale": "Power users on killer-tools-style sites expect a Ctrl+K-style jump; the sidebar search covers most of this need today but isn't reachable by keyboard shortcut.",
+      "updated_at": "2026-08-05"
+    },
+    {
+      "title": "Drag-to-reorder favorites",
+      "category": "UX / Design",
+      "status": "AI Recommended",
+      "votes": 9,
+      "description": "Let visitors reorder their favorited tools instead of using favorite-order only.",
+      "rationale": "Favorites currently keep insertion order; manual reordering is a small, self-contained UX add-on once favorites are already shipped.",
+      "updated_at": "2026-08-05"
+    },
+    {
+      "title": "WHOIS lookup tool",
+      "category": "Tools",
+      "status": "AI Recommended",
+      "votes": 22,
+      "description": "Public WHOIS/RDAP registration lookup alongside the existing DNS and SSL checkers.",
+      "rationale": "A natural companion to Domain Health and DNS tools for the same troubleshooting workflow.",
+      "updated_at": "2026-08-05"
+    },
+    {
+      "title": "Regex tester",
+      "category": "Tools",
+      "status": "AI Recommended",
+      "votes": 19,
+      "description": "Test a pattern against sample text with match highlighting, entirely client-side/public-safe.",
+      "rationale": "Common everyday utility that fits the existing text-tools family (JSON, Base64, JWT).",
+      "updated_at": "2026-08-05"
+    },
+    {
+      "title": "URL encoder/decoder",
+      "category": "Tools",
+      "status": "AI Recommended",
+      "votes": 15,
+      "description": "Encode/decode URL components and query strings, similar to the existing Base64 tool.",
+      "rationale": "Frequently needed alongside Base64/JWT when debugging webhooks and API calls.",
+      "updated_at": "2026-08-05"
+    },
+    {
+      "title": "Password / passphrase generator",
+      "category": "Security",
+      "status": "AI Recommended",
+      "votes": 24,
+      "description": "Generate strong random passwords or diceware-style passphrases locally, never transmitted.",
+      "rationale": "High-demand, low-risk addition that fits the public-safe, no-storage positioning well.",
+      "updated_at": "2026-08-05"
+    },
+    {
+      "title": "Certificate chain validator",
+      "category": "Security",
+      "status": "AI Recommended",
+      "votes": 17,
+      "description": "Show the full intermediate/root trust chain and flag missing or expiring intermediates.",
+      "rationale": "Extends the existing SSL Certificate Checker beyond leaf-certificate details.",
+      "updated_at": "2026-08-05"
+    },
+    {
+      "title": "Bulk Domain Health checks via CSV upload",
+      "category": "Reports",
+      "status": "AI Recommended",
+      "votes": 14,
+      "description": "Upload a list of domains and run Domain Health across all of them, exporting one combined report.",
+      "rationale": "MSPs managing many client domains currently have to run checks one at a time.",
+      "updated_at": "2026-08-05"
+    },
+    {
+      "title": "Shareable favorites link",
+      "category": "UX / Design",
+      "status": "AI Recommended",
+      "votes": 8,
+      "description": "Turn the current favorites list into a copyable URL so a curated toolkit can be shared or bookmarked.",
+      "rationale": "Favorites already live in the URL's query params client-side; surfacing a share/copy action is a small extension of that mechanism.",
+      "updated_at": "2026-08-05"
+    },
+    {
+      "title": "Installable PWA / offline app shell",
+      "category": "UX / Design",
+      "status": "AI Recommended",
+      "votes": 11,
+      "description": "Add a web app manifest and service worker so the toolkit can be installed and its shell used offline.",
+      "rationale": "Matches the \"works everywhere\" positioning already in the trust chips and feature strip.",
+      "updated_at": "2026-08-05"
+    },
+    {
+      "title": "Accessibility audit pass",
+      "category": "UX / Design",
+      "status": "AI Recommended",
+      "votes": 13,
+      "description": "Review color contrast, ARIA labeling, and keyboard navigation across the tool grid, forms, and sidebar.",
+      "rationale": "The site has grown a lot of custom CSS/components this cycle; a dedicated accessibility pass hasn't happened yet.",
+      "updated_at": "2026-08-05"
+    },
+    {
+      "title": "Webhook / HTTP request tester",
+      "category": "Integrations",
+      "status": "AI Recommended",
+      "votes": 10,
+      "description": "A RequestBin-style ephemeral endpoint to inspect incoming webhook payloads, with no persistent storage.",
+      "rationale": "Common need when debugging integrations; fits the toolkit's no-storage, public-safe model if payloads are ephemeral and session-scoped.",
+      "updated_at": "2026-08-05"
     }
   ]
 }
