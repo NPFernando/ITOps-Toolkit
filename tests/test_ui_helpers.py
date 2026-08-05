@@ -1,5 +1,18 @@
 from utils import ui
-from utils.ui import display_rows_frame
+from utils.ui import (
+    POPULAR_TOOLS,
+    PROFESSIONS,
+    SIDEBAR_CATEGORIES,
+    TITLE_TO_SLUG,
+    TOOLS,
+    display_rows_frame,
+    favorite_tools,
+    filter_tools,
+    record_recent_visit,
+    recent_or_popular_tools,
+    sort_tools,
+    toggle_favorite,
+)
 
 
 def test_display_rows_frame_stringifies_mixed_values():
@@ -30,3 +43,160 @@ def test_render_status_note_escapes_description_and_normalizes_tone(monkeypatch)
     assert "AI &lt;summary&gt;" in html
     assert "&lt;script&gt;alert(1)&lt;/script&gt;<br>line" in html
     assert "<script>" not in html
+
+
+def test_title_to_slug_covers_every_tool():
+    assert len(TITLE_TO_SLUG) == len(TOOLS)
+    for tool in TOOLS:
+        assert TITLE_TO_SLUG[tool.title] == tool.slug
+
+
+def test_filter_tools_empty_query_and_profession_returns_everything():
+    assert filter_tools() == TOOLS
+    assert filter_tools("", "All") == TOOLS
+
+
+def test_filter_tools_profession_narrows_results():
+    results = filter_tools(profession="Network Engineer")
+
+    assert results
+    assert all("Network Engineer" in tool.professions for tool in results)
+    assert len(results) < len(TOOLS)
+
+
+def test_filter_tools_query_and_profession_combine_with_and():
+    results = filter_tools(query="hash", profession="Network Engineer")
+
+    assert results == ()
+
+
+def test_filter_tools_unknown_profession_behaves_like_all():
+    assert filter_tools(profession="Not A Real Profession") == TOOLS
+
+
+def test_filter_tools_covers_every_declared_profession():
+    for profession in PROFESSIONS:
+        assert filter_tools(profession=profession), f"no tool tagged with {profession!r}"
+
+
+def test_recent_or_popular_tools_falls_back_to_popular_when_empty():
+    assert recent_or_popular_tools([]) == POPULAR_TOOLS
+
+
+def test_recent_or_popular_tools_skips_unknown_slugs_and_dedupes():
+    slug = TOOLS[-1].slug
+    result = recent_or_popular_tools(["not-a-real-slug", slug, slug])
+
+    assert result[0] == TOOLS[-1]
+    assert result.count(TOOLS[-1]) == 1
+
+
+def test_recent_or_popular_tools_pads_to_five_with_popular_tools_in_order():
+    slug = TOOLS[-1].slug
+    result = recent_or_popular_tools([slug])
+
+    assert len(result) == 5
+    assert result[0] == TOOLS[-1]
+    assert result[1:] == tuple(t for t in POPULAR_TOOLS if t.slug != slug)[:4]
+
+
+def test_recent_or_popular_tools_no_padding_when_five_valid_recents():
+    slugs = [tool.slug for tool in TOOLS[:5]][::-1]
+    result = recent_or_popular_tools(slugs)
+
+    assert [tool.slug for tool in result] == slugs
+
+
+def test_sort_tools_az_and_za_sort_by_title_case_insensitively():
+    subset = (TOOLS[3], TOOLS[0], TOOLS[1])
+
+    az = sort_tools(subset, "az")
+    za = sort_tools(subset, "za")
+
+    assert [t.title for t in az] == sorted((t.title for t in subset), key=str.lower)
+    assert [t.title for t in za] == sorted((t.title for t in subset), key=str.lower, reverse=True)
+
+
+def test_sort_tools_default_and_unknown_mode_preserve_order():
+    subset = (TOOLS[3], TOOLS[0], TOOLS[1])
+
+    assert sort_tools(subset, "default") == subset
+    assert sort_tools(subset, "not-a-real-mode") == subset
+
+
+def test_exactly_five_tools_are_tagged_new():
+    new_slugs = {tool.slug for tool in TOOLS if tool.is_new}
+
+    assert new_slugs == {
+        "subnet_calculator",
+        "hash_generator",
+        "mac_address_tool",
+        "email_header_analyzer",
+        "port_reference",
+    }
+
+
+def test_record_recent_visit_prepends_dedupes_and_caps(monkeypatch):
+    monkeypatch.setattr(ui.st, "query_params", {})
+
+    record_recent_visit("hash_generator")
+    record_recent_visit("mac_address_tool")
+    record_recent_visit("hash_generator")
+
+    assert ui.st.query_params["recent"] == "hash_generator,mac_address_tool"
+
+
+def test_record_recent_visit_caps_at_max_recent_tools(monkeypatch):
+    monkeypatch.setattr(ui.st, "query_params", {})
+    slugs = [tool.slug for tool in TOOLS[:6]]
+
+    for slug in slugs:
+        record_recent_visit(slug)
+
+    stored = ui.st.query_params["recent"].split(",")
+    assert len(stored) == ui.MAX_RECENT_TOOLS
+    assert stored[0] == slugs[-1]
+
+
+def test_toggle_favorite_adds_and_removes(monkeypatch):
+    monkeypatch.setattr(ui.st, "query_params", {})
+    slug = TOOLS[0].slug
+
+    toggle_favorite(slug)
+    assert ui.st.query_params.get("fav") == slug
+
+    toggle_favorite(slug)
+    assert "fav" not in ui.st.query_params
+
+
+def test_favorite_tools_reads_query_params_and_skips_unknown(monkeypatch):
+    slug = TOOLS[2].slug
+    monkeypatch.setattr(ui.st, "query_params", {"fav": f"not-a-real-slug,{slug}"})
+
+    assert favorite_tools() == (TOOLS[2],)
+
+
+def test_every_tool_has_a_valid_sidebar_category():
+    for tool in TOOLS:
+        assert tool.category in SIDEBAR_CATEGORIES, f"{tool.slug} has unknown category {tool.category!r}"
+
+
+def test_sidebar_category_partition_matches_expected_grouping():
+    by_category: dict[str, list[str]] = {category: [] for category in SIDEBAR_CATEGORIES}
+    for tool in TOOLS:
+        by_category[tool.category].append(tool.slug)
+
+    assert by_category == {
+        "Network": ["domain_health", "dns_records", "subnet_calculator", "mac_address_tool"],
+        "Security": ["ssl_certificate", "jwt_decoder", "hash_generator", "email_header_analyzer"],
+        "Web & Dev": ["http_status", "json_formatter", "base64_tool"],
+        "Ops & Automation": ["cron_explainer", "log_troubleshooting"],
+        "Reference": ["port_reference"],
+    }
+
+
+def test_every_tool_covered_exactly_once_across_categories():
+    all_slugs = [tool.slug for category in SIDEBAR_CATEGORIES for tool in TOOLS if tool.category == category]
+
+    assert sorted(all_slugs) == sorted(tool.slug for tool in TOOLS)
+    assert len(all_slugs) == len(TOOLS)

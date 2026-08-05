@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass
 from html import escape
 from typing import Any, Iterable
@@ -10,6 +11,10 @@ import pandas as pd
 import streamlit as st
 
 from utils.project_links import github_repository_url
+
+
+MAX_RECENT_TOOLS = 5
+PERSISTED_LIST_PARAMS: tuple[str, ...] = ("recent", "fav")
 
 
 @dataclass(frozen=True)
@@ -21,6 +26,29 @@ class ToolMeta:
     icon: str
     accent: str
     slug: str
+    professions: tuple[str, ...]
+    category: str
+    is_new: bool = False
+
+
+PROFESSIONS: tuple[str, ...] = (
+    "Support Engineer",
+    "Network Engineer",
+    "Automation Engineer",
+    "Security Engineer",
+    "Sysadmin / DevOps",
+    "Cloud Engineer",
+    "Helpdesk / L1",
+    "Web Developer",
+)
+
+SIDEBAR_CATEGORIES: tuple[str, ...] = (
+    "Network",
+    "Security",
+    "Web & Dev",
+    "Ops & Automation",
+    "Reference",
+)
 
 
 TOOLS: tuple[ToolMeta, ...] = (
@@ -32,6 +60,8 @@ TOOLS: tuple[ToolMeta, ...] = (
         icon="GLB",
         accent="#1668f4",
         slug="domain_health",
+        professions=("Network Engineer", "Security Engineer", "Sysadmin / DevOps", "Web Developer"),
+        category="Network",
     ),
     ToolMeta(
         title="DNS Record Checker",
@@ -41,6 +71,8 @@ TOOLS: tuple[ToolMeta, ...] = (
         icon="DNS",
         accent="#23b84d",
         slug="dns_records",
+        professions=("Network Engineer", "Sysadmin / DevOps", "Web Developer"),
+        category="Network",
     ),
     ToolMeta(
         title="SSL Certificate Checker",
@@ -50,6 +82,8 @@ TOOLS: tuple[ToolMeta, ...] = (
         icon="LOCK",
         accent="#7047e8",
         slug="ssl_certificate",
+        professions=("Security Engineer", "Web Developer", "Sysadmin / DevOps"),
+        category="Security",
     ),
     ToolMeta(
         title="HTTP Status Checker",
@@ -59,6 +93,8 @@ TOOLS: tuple[ToolMeta, ...] = (
         icon="HTTP",
         accent="#ff6b13",
         slug="http_status",
+        professions=("Web Developer", "Sysadmin / DevOps", "Support Engineer"),
+        category="Web & Dev",
     ),
     ToolMeta(
         title="JSON Formatter",
@@ -68,6 +104,8 @@ TOOLS: tuple[ToolMeta, ...] = (
         icon="{ }",
         accent="#11aab8",
         slug="json_formatter",
+        professions=("Automation Engineer", "Web Developer", "Cloud Engineer"),
+        category="Web & Dev",
     ),
     ToolMeta(
         title="Base64 Tool",
@@ -77,6 +115,8 @@ TOOLS: tuple[ToolMeta, ...] = (
         icon="64",
         accent="#0f7ff0",
         slug="base64_tool",
+        professions=("Automation Engineer", "Web Developer", "Support Engineer"),
+        category="Web & Dev",
     ),
     ToolMeta(
         title="JWT Decoder",
@@ -86,6 +126,8 @@ TOOLS: tuple[ToolMeta, ...] = (
         icon="JWT",
         accent="#3d5be9",
         slug="jwt_decoder",
+        professions=("Web Developer", "Security Engineer", "Automation Engineer"),
+        category="Security",
     ),
     ToolMeta(
         title="Cron Explainer",
@@ -95,6 +137,8 @@ TOOLS: tuple[ToolMeta, ...] = (
         icon="CLK",
         accent="#6f55e9",
         slug="cron_explainer",
+        professions=("Automation Engineer", "Sysadmin / DevOps", "Cloud Engineer"),
+        category="Ops & Automation",
     ),
     ToolMeta(
         title="Log Troubleshooting Assistant",
@@ -104,16 +148,180 @@ TOOLS: tuple[ToolMeta, ...] = (
         icon="LOG",
         accent="#1d78f0",
         slug="log_troubleshooting",
+        professions=("Support Engineer", "Helpdesk / L1", "Sysadmin / DevOps"),
+        category="Ops & Automation",
+    ),
+    ToolMeta(
+        title="Subnet Calculator",
+        short_title="Subnet Calculator",
+        description="Calculate network, broadcast, host range, and usable hosts from a CIDR block.",
+        path="pages/11_Subnet_Calculator.py",
+        icon="NET",
+        accent="#0e9f6e",
+        slug="subnet_calculator",
+        professions=("Network Engineer", "Sysadmin / DevOps", "Cloud Engineer"),
+        category="Network",
+        is_new=True,
+    ),
+    ToolMeta(
+        title="Hash Generator",
+        short_title="Hash Generator",
+        description="Generate MD5/SHA/SHA-3 digests and HMAC signatures from text.",
+        path="pages/12_Hash_Generator.py",
+        icon="#",
+        accent="#9333ea",
+        slug="hash_generator",
+        professions=("Security Engineer", "Automation Engineer"),
+        category="Security",
+        is_new=True,
+    ),
+    ToolMeta(
+        title="MAC Address Tool",
+        short_title="MAC Address Tool",
+        description="Validate a MAC address and view colon, hyphen, dot, and bare formats.",
+        path="pages/13_MAC_Address_Tool.py",
+        icon="MAC",
+        accent="#dc6803",
+        slug="mac_address_tool",
+        professions=("Network Engineer", "Sysadmin / DevOps"),
+        category="Network",
+        is_new=True,
+    ),
+    ToolMeta(
+        title="Email Header Analyzer",
+        short_title="Email Header Analyzer",
+        description="Parse raw email headers into a summary, hop chain, and auth results.",
+        path="pages/14_Email_Header_Analyzer.py",
+        icon="EML",
+        accent="#e03f6e",
+        slug="email_header_analyzer",
+        professions=("Security Engineer", "Support Engineer", "Helpdesk / L1"),
+        category="Security",
+        is_new=True,
+    ),
+    ToolMeta(
+        title="Port Reference",
+        short_title="Port Reference",
+        description="Look up common network ports by number, protocol, or service name.",
+        path="pages/15_Port_Reference.py",
+        icon="P/T",
+        accent="#0891b2",
+        slug="port_reference",
+        professions=("Network Engineer", "Security Engineer", "Helpdesk / L1"),
+        category="Reference",
+        is_new=True,
     ),
 )
 
 POPULAR_TOOLS = TOOLS[:5]
+TITLE_TO_SLUG: dict[str, str] = {tool.title: tool.slug for tool in TOOLS}
 
 
 def apply_app_shell(active_page: str) -> None:
-    """Apply global theme CSS and render the shared sidebar shell."""
-    _inject_global_css()
+    """Apply global theme CSS and render the shared sidebar shell.
+
+    Sidebar renders first so the theme-toggle widget resolves this run's
+    value into session_state before CSS is injected -- injecting CSS first
+    would use last run's stale mode and make a mode switch lag by one click.
+    """
     render_sidebar(active_page)
+    _inject_global_css(current_theme_mode())
+    slug = TITLE_TO_SLUG.get(active_page)
+    if slug is not None:
+        record_recent_visit(slug)
+    _sync_local_storage_mirror(active_page)
+
+
+def _get_persisted_slugs(param: str) -> list[str]:
+    """Read a comma-separated slug list from the URL query params."""
+    return [slug for slug in st.query_params.get(param, "").split(",") if slug]
+
+
+def _set_persisted_slugs(param: str, slugs: list[str]) -> None:
+    """Write a slug list back into the URL query params (removing the key when empty)."""
+    if slugs:
+        st.query_params[param] = ",".join(slugs)
+    else:
+        st.query_params.pop(param, None)
+
+
+def record_recent_visit(slug: str) -> None:
+    """Prepend ``slug`` to the recents list (deduped, capped) and persist it."""
+    stored = _get_persisted_slugs("recent")
+    stored = [slug, *(s for s in stored if s != slug)][:MAX_RECENT_TOOLS]
+    _set_persisted_slugs("recent", stored)
+
+
+def toggle_favorite(slug: str) -> None:
+    """Add or remove ``slug`` from the favorites list."""
+    stored = _get_persisted_slugs("fav")
+    if slug in stored:
+        stored = [s for s in stored if s != slug]
+    else:
+        stored = [*stored, slug]
+    _set_persisted_slugs("fav", stored)
+
+
+def _sync_local_storage_mirror(active_page: str) -> None:
+    """Mirror the persisted-slug query params to/from browser localStorage.
+
+    Runs client-side JS in a same-origin sandboxed iframe (confirmed via the
+    installed streamlit static bundle: HTML-string iframes carry
+    `allow-same-origin`, so they share the page's real localStorage).
+
+    Python owns st.query_params as the live, in-session source of truth
+    (record_recent_visit/toggle_favorite write it directly, no reload
+    needed for those interactions). This function's jobs, run on every
+    page for every tracked param:
+    - Mirror Python's current value into localStorage (durable, one-way,
+      no reload -- keeps localStorage in sync with whatever Python just
+      wrote). Runs on every page: a tool page's record_recent_visit() only
+      updates st.query_params for that pageview, so this mirror step is
+      what actually makes it durable across sessions.
+    - On Home only: if Python has no value for a param yet (fresh
+      session/tab) but localStorage has one, seed the URL from localStorage
+      with a single reload so Python picks it up next run. This is the
+      only way to get data out of localStorage, since an iframe HTML
+      string has no return channel to Python. Restricted to Home so
+      tool-page URLs never get rewritten/reloaded just to carry a value
+      only Home displays.
+
+    NOTE: this assumes window.top.location.search already reflects this
+    run's st.query_params writes by the time the iframe's script executes.
+    That held in manual testing but is a real-browser timing assumption
+    AppTest cannot exercise (no JS execution) -- verify manually after deploy.
+    """
+    st.iframe(
+        f"""
+        <script>
+        (function() {{
+            var KEYS = {json.dumps(list(PERSISTED_LIST_PARAMS))};
+            var CAN_SEED = {json.dumps(active_page == "Home")};
+            var params = new URLSearchParams(window.top.location.search);
+            var changed = false;
+            KEYS.forEach(function(key) {{
+                var storageKey = "itops_" + key;
+                var stored = localStorage.getItem(storageKey) || "";
+                if (params.has(key)) {{
+                    var current = params.get(key);
+                    if (current !== stored) {{
+                        try {{ localStorage.setItem(storageKey, current); }} catch (e) {{}}
+                    }}
+                }} else if (CAN_SEED && stored) {{
+                    params.set(key, stored);
+                    changed = true;
+                }}
+            }});
+            if (changed) {{
+                var search = params.toString();
+                var newUrl = window.top.location.pathname + (search ? "?" + search : "") + window.top.location.hash;
+                window.top.location.replace(newUrl);
+            }}
+        }})();
+        </script>
+        """,
+        height=1,
+    )
 
 
 def render_sidebar(active_page: str) -> None:
@@ -128,19 +336,29 @@ def render_sidebar(active_page: str) -> None:
                     <div class="brand-subtitle">Free tools for IT admins, MSP engineers, and DevOps pros.</div>
                 </div>
             </div>
-            <div class="sidebar-section-label">Navigation</div>
             """,
             unsafe_allow_html=True,
         )
-        _sidebar_link("Home", "app.py", active_page == "Home", ":material/home:")
-        _sidebar_link(
-            "Roadmap & Feedback",
-            "pages/10_Roadmap_Feedback.py",
-            active_page == "Roadmap & Feedback",
-            ":material/route:",
+        _render_theme_toggle()
+        quick_search = st.text_input(
+            "Quick search",
+            placeholder="Jump to a tool...",
+            label_visibility="collapsed",
+            key="sidebar_quick_search",
+            icon=":material/search:",
         )
-        for tool in TOOLS:
-            _sidebar_link(tool.short_title, tool.path, active_page == tool.title, _material_icon_for(tool.slug))
+        if quick_search.strip():
+            _render_quick_search_results(active_page, quick_search)
+        else:
+            st.markdown('<div class="sidebar-section-label">Navigation</div>', unsafe_allow_html=True)
+            _sidebar_link("Home", "app.py", active_page == "Home", ":material/home:")
+            _sidebar_link(
+                "Roadmap & Feedback",
+                "pages/10_Roadmap_Feedback.py",
+                active_page == "Roadmap & Feedback",
+                ":material/route:",
+            )
+            _render_grouped_tool_links(active_page)
 
         st.markdown(
             """
@@ -194,13 +412,29 @@ def render_home_hero() -> str:
     return query
 
 
-def render_tool_section(tools: Iterable[ToolMeta], query: str = "") -> None:
-    """Render the home page tool card grid."""
+def render_tool_section(
+    tools: Iterable[ToolMeta],
+    query: str = "",
+    heading: str | None = None,
+    section_id: str | None = "all-tools",
+    key_prefix: str = "tools",
+) -> None:
+    """Render a home page tool card grid.
+
+    ``heading`` overrides the default label ("Matching Tools" when ``query``
+    is set, otherwise "Popular Tools") -- used for e.g. the personalized
+    "Recently Used" row. ``section_id`` sets the heading div's HTML id; pass
+    None when rendering more than one section on the same page so IDs stay
+    unique. ``key_prefix`` must also be unique per section on a page since
+    the same tool can appear in more than one grid (e.g. recents + all
+    tools) and Streamlit container keys must be unique.
+    """
     tools = tuple(tools)
-    section_label = "Matching Tools" if query.strip() else "Popular Tools"
+    section_label = heading if heading is not None else ("Matching Tools" if query.strip() else "Popular Tools")
+    id_attr = f' id="{escape(section_id)}"' if section_id else ""
     st.markdown(
         f"""
-        <div class="section-heading" id="all-tools">
+        <div class="section-heading"{id_attr}>
             <div><span class="section-bolt">IT</span><h2>{escape(section_label)}</h2></div>
         </div>
         """,
@@ -210,12 +444,23 @@ def render_tool_section(tools: Iterable[ToolMeta], query: str = "") -> None:
         st.info("No tools match your search.")
         return
 
+    favorite_slugs = set(_get_persisted_slugs("fav"))
     cols = st.columns(min(len(tools), 5), gap="large")
     for index, tool in enumerate(tools):
         with cols[index % len(cols)]:
-            with st.container(key=f"tool_card_{tool.slug}"):
-                st.markdown(_tool_card_html(tool), unsafe_allow_html=True)
-                _safe_page_link(tool.path, label="Open Tool", icon=":material/arrow_forward:", stretch_width=True)
+            with st.container(key=f"tool_card_{key_prefix}_{tool.slug}"):
+                delay_ms = min(index, 9) * 45
+                st.markdown(_tool_card_html(tool, delay_ms=delay_ms), unsafe_allow_html=True)
+                link_col, fav_col = st.columns([5, 1])
+                with link_col:
+                    _safe_page_link(tool.path, label="Open Tool", icon=":material/arrow_forward:", stretch_width=True)
+                with fav_col:
+                    is_fav = tool.slug in favorite_slugs
+                    fav_icon = ":material/star:" if is_fav else ":material/star_border:"
+                    fav_help = "Remove from favorites" if is_fav else "Add to favorites"
+                    if st.button("", icon=fav_icon, key=f"fav_toggle_{key_prefix}_{tool.slug}", help=fav_help):
+                        toggle_favorite(tool.slug)
+                        st.rerun()
 
 
 def render_feature_strip() -> None:
@@ -366,18 +611,72 @@ def render_status_note(title: str, description: str, tone: str = "info") -> None
     )
 
 
-def filter_tools(query: str) -> tuple[ToolMeta, ...]:
+def filter_tools(query: str = "", profession: str = "All") -> tuple[ToolMeta, ...]:
+    """Return every tool matching both the search text and the profession filter."""
     value = query.strip().lower()
-    if not value:
-        return POPULAR_TOOLS
-    return tuple(
-        tool
-        for tool in TOOLS
-        if value in tool.title.lower()
-        or value in tool.short_title.lower()
-        or value in tool.description.lower()
-        or value in tool.slug.replace("_", " ")
+    matches_query = (
+        (lambda tool: True)
+        if not value
+        else (
+            lambda tool: value in tool.title.lower()
+            or value in tool.short_title.lower()
+            or value in tool.description.lower()
+            or value in tool.slug.replace("_", " ")
+        )
     )
+    matches_profession = (
+        (lambda tool: True) if profession not in PROFESSIONS else (lambda tool: profession in tool.professions)
+    )
+    return tuple(tool for tool in TOOLS if matches_query(tool) and matches_profession(tool))
+
+
+def _resolve_slugs(slugs: Iterable[str]) -> list[ToolMeta]:
+    """Map slugs to ToolMeta, in order, skipping unknown/stale slugs and duplicates."""
+    by_slug = {tool.slug: tool for tool in TOOLS}
+    resolved: list[ToolMeta] = []
+    seen: set[str] = set()
+    for slug in slugs:
+        tool = by_slug.get(slug)
+        if tool is None or tool.slug in seen:
+            continue
+        resolved.append(tool)
+        seen.add(tool.slug)
+    return resolved
+
+
+def recent_or_popular_tools(recent_slugs: Iterable[str]) -> tuple[ToolMeta, ...]:
+    """Map recently-visited tool slugs (most-recent-first) to ToolMeta, padded with POPULAR_TOOLS.
+
+    Unknown/stale slugs are skipped silently. Falls back entirely to
+    POPULAR_TOOLS for a visitor with no recorded recents yet.
+    """
+    resolved = _resolve_slugs(recent_slugs)[:MAX_RECENT_TOOLS]
+    seen = {tool.slug for tool in resolved}
+
+    if len(resolved) < MAX_RECENT_TOOLS:
+        for tool in POPULAR_TOOLS:
+            if tool.slug in seen:
+                continue
+            resolved.append(tool)
+            seen.add(tool.slug)
+            if len(resolved) >= MAX_RECENT_TOOLS:
+                break
+
+    return tuple(resolved)
+
+
+def favorite_tools() -> tuple[ToolMeta, ...]:
+    """Return the visitor's favorited tools, in the order they were favorited. No padding."""
+    return tuple(_resolve_slugs(_get_persisted_slugs("fav")))
+
+
+def sort_tools(tools: tuple[ToolMeta, ...], mode: str) -> tuple[ToolMeta, ...]:
+    """Sort a tool grid. "az"/"za" sort by title; anything else keeps declared order."""
+    if mode == "az":
+        return tuple(sorted(tools, key=lambda tool: tool.title.lower()))
+    if mode == "za":
+        return tuple(sorted(tools, key=lambda tool: tool.title.lower(), reverse=True))
+    return tools
 
 
 def tool_by_title(title: str) -> ToolMeta | None:
@@ -386,6 +685,46 @@ def tool_by_title(title: str) -> ToolMeta | None:
 
 def github_url() -> str | None:
     return github_repository_url()
+
+
+MAX_QUICK_SEARCH_RESULTS = 8
+
+
+def _render_quick_search_results(active_page: str, query: str) -> None:
+    """Render sidebar quick-search matches for ``query``, replacing the full nav list."""
+    matches = filter_tools(query)[:MAX_QUICK_SEARCH_RESULTS]
+    st.markdown('<div class="sidebar-section-label">Search Results</div>', unsafe_allow_html=True)
+    if not matches:
+        st.caption("No tools match.")
+        return
+    for tool in matches:
+        _sidebar_link(tool.short_title, tool.path, active_page == tool.title, _material_icon_for(tool.slug))
+
+
+def _render_grouped_tool_links(active_page: str) -> None:
+    """Render the sidebar's tool links grouped by category.
+
+    A category with more than one tool gets a collapsible st.expander
+    (its own widget state persists each visitor's collapse/expand choice
+    across reruns); a category with exactly one tool renders that tool's
+    link directly with no group header -- same rule killer-tools-site
+    uses for its single-tool categories.
+    """
+    by_category: dict[str, list[ToolMeta]] = {category: [] for category in SIDEBAR_CATEGORIES}
+    for tool in TOOLS:
+        by_category.setdefault(tool.category, []).append(tool)
+
+    for category in SIDEBAR_CATEGORIES:
+        tools = by_category.get(category, [])
+        if not tools:
+            continue
+        if len(tools) == 1:
+            tool = tools[0]
+            _sidebar_link(tool.short_title, tool.path, active_page == tool.title, _material_icon_for(tool.slug))
+            continue
+        with st.expander(category, expanded=True, icon=None, key=f"sidebar_cat_{_key_slug(category)}"):
+            for tool in tools:
+                _sidebar_link(tool.short_title, tool.path, active_page == tool.title, _material_icon_for(tool.slug))
 
 
 def _sidebar_link(label: str, path: str, active: bool, icon: str) -> None:
@@ -414,9 +753,11 @@ def _fallback_href(path: str) -> str:
     return f"/{page_name}"
 
 
-def _tool_card_html(tool: ToolMeta) -> str:
+def _tool_card_html(tool: ToolMeta, delay_ms: int = 0) -> str:
+    new_badge = '<span class="tool-card-badge-new">NEW</span>' if tool.is_new else ""
     return f"""
-    <div class="tool-card-shell" style="--tool-accent: {tool.accent};">
+    <div class="tool-card-shell" style="--tool-accent: {tool.accent}; animation-delay: {delay_ms}ms;">
+        {new_badge}
         <div class="tool-card-icon">{escape(tool.icon)}</div>
         <h3>{escape(tool.title)}</h3>
         <p>{escape(tool.description)}</p>
@@ -457,6 +798,11 @@ def _material_icon_for(slug: str) -> str:
         "jwt_decoder": ":material/verified_user:",
         "cron_explainer": ":material/schedule:",
         "log_troubleshooting": ":material/list_alt:",
+        "subnet_calculator": ":material/lan:",
+        "hash_generator": ":material/tag:",
+        "mac_address_tool": ":material/settings_ethernet:",
+        "email_header_analyzer": ":material/mail:",
+        "port_reference": ":material/router:",
     }
     return icons.get(slug, ":material/build:")
 
@@ -465,26 +811,90 @@ def _key_slug(value: str) -> str:
     return "".join(char.lower() if char.isalnum() else "_" for char in value).strip("_")
 
 
-def _inject_global_css() -> None:
-    st.markdown(
-        """
+THEME_MODE_KEY = "itops_theme_mode"
+
+# Dark matches the shared palette reused across cloudscope, odysseus, and
+# hermes-workspace. Light restores this app's original palette. Only these
+# central tokens switch between modes -- decorative one-off gradients and
+# shadows elsewhere in this file are not mode-aware (see THEME.md note in
+# the PR/commit history) and keep their original literal values in both
+# modes, since there's no way to visually verify a full per-mode conversion
+# of ~150 one-off values in this environment.
+_THEME_TOKENS = {
+    "dark": {
+        "blue": "#e06c75",
+        "blue-dark": "#c65861",
+        "ink": "#9cdef2",
+        "muted": "#6b8a94",
+        "line": "#355a66",
+        "bg": "#282c34",
+        "panel": "#1e2228",
+        "sidebar": "#1e2228",
+        "sidebar-2": "#111111",
+        "green": "#50fa7b",
+        "purple": "#c678dd",
+        "orange": "#f0ad4e",
+    },
+    "light": {
+        "blue": "#126bff",
+        "blue-dark": "#0a47c9",
+        "ink": "#07142f",
+        "muted": "#52637f",
+        "line": "#d7e2f5",
+        "bg": "#f6f9ff",
+        "panel": "#fbfdff",
+        "sidebar": "#071a33",
+        "sidebar-2": "#0b2748",
+        "green": "#22ba4f",
+        "purple": "#6d55e9",
+        "orange": "#ff6a13",
+    },
+}
+
+
+def current_theme_mode() -> str:
+    """Return the active theme mode, defaulting to dark."""
+    mode = st.session_state.get(THEME_MODE_KEY, "dark")
+    return mode if mode in _THEME_TOKENS else "dark"
+
+
+def _render_theme_toggle() -> None:
+    """Sidebar control letting visitors switch between the dark (default) and light palette."""
+    current_label = "Dark" if current_theme_mode() == "dark" else "Light"
+    selection = st.segmented_control(
+        "Theme",
+        options=["Dark", "Light"],
+        default=current_label,
+        label_visibility="collapsed",
+        key="itops_theme_toggle_control",
+        persist_state="session",
+    )
+    st.session_state[THEME_MODE_KEY] = "dark" if selection == "Dark" else "light"
+
+
+def _inject_global_css(mode: str) -> None:
+    # NOTE: the CSS below is a plain (non f-string) template with a single
+    # literal placeholder substituted via str.replace(). It is deliberately
+    # NOT an f-string/`.format()` call, since the block contains thousands of
+    # literal `{`/`}` CSS rule braces that would otherwise need escaping.
+    tokens = _THEME_TOKENS[mode]
+    root_vars = "\n            ".join(f"--itops-{name}: {value};" for name, value in tokens.items())
+    css = """
         <style>
         @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
 
         :root {
-            --itops-blue: #126bff;
-            --itops-blue-dark: #0a47c9;
-            --itops-ink: #07142f;
-            --itops-muted: #52637f;
-            --itops-line: #d7e2f5;
-            --itops-bg: #f6f9ff;
-            --itops-panel: #fbfdff;
-            --itops-sidebar: #071a33;
-            --itops-sidebar-2: #0b2748;
-            --itops-green: #22ba4f;
-            --itops-purple: #6d55e9;
-            --itops-orange: #ff6a13;
+            __ITOPS_ROOT_VARS__
             --card-radius: 8px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
         }
 
         html,
@@ -911,6 +1321,7 @@ def _inject_global_css() -> None:
             background: linear-gradient(145deg, #126cff, #074bc8);
             clip-path: polygon(50% 0, 94% 16%, 86% 72%, 50% 100%, 14% 72%, 6% 16%);
             filter: drop-shadow(0 18px 20px rgba(18, 107, 255, 0.25));
+            animation: itops-pulse 2.6s ease-in-out infinite;
         }
 
         .hero-globe {
@@ -925,6 +1336,8 @@ def _inject_global_css() -> None:
                 linear-gradient(transparent 45%, rgba(255, 255, 255, 0.95) 46% 54%, transparent 55%),
                 radial-gradient(circle, #8eb8ff, #387bff);
             box-shadow: 0 16px 28px rgba(18, 107, 255, 0.18);
+            animation: itops-pulse 3.4s ease-in-out infinite;
+            animation-delay: 0.6s;
         }
 
         .hero-globe span {
@@ -1013,10 +1426,53 @@ def _inject_global_css() -> None:
             height: 100%;
             display: flex;
             flex-direction: column;
+            transition: transform 200ms cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 200ms ease;
+        }
+
+        [class*="st-key-tool_card_"] > div:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 18px 36px rgba(0, 0, 0, 0.28);
         }
 
         .tool-card-shell {
+            position: relative;
             min-height: 15.1rem;
+            animation: itops-fade-up 0.45s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+        }
+
+        .tool-card-badge-new {
+            position: absolute;
+            top: 0.75rem;
+            right: 0.75rem;
+            padding: 0.15rem 0.5rem;
+            border-radius: 99px;
+            font-size: 0.62rem;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+            color: #ffffff;
+            background: linear-gradient(135deg, var(--itops-green), color-mix(in srgb, var(--itops-green), #000 15%));
+        }
+
+        @keyframes itops-fade-up {
+            from {
+                opacity: 0;
+                transform: translateY(14px);
+            }
+            to {
+                opacity: 1;
+                transform: none;
+            }
+        }
+
+        @keyframes itops-pulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.06);
+                opacity: 0.88;
+            }
         }
 
         .tool-card-icon {
@@ -1109,6 +1565,11 @@ def _inject_global_css() -> None:
             font-weight: 900;
             border: 2px solid currentColor;
             background: #ffffff;
+            transition: transform 180ms cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .feature-item:hover .feature-icon {
+            transform: scale(1.08) rotate(-3deg);
         }
 
         .feature-blue { color: var(--itops-blue); }
@@ -1968,6 +2429,6 @@ def _inject_global_css() -> None:
             }
         }
         </style>
-        """,
-        unsafe_allow_html=True,
-    )
+        """
+    css = css.replace("__ITOPS_ROOT_VARS__", root_vars)
+    st.markdown(css, unsafe_allow_html=True)

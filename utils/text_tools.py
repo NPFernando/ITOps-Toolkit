@@ -22,7 +22,7 @@ def validate_length(value: str, max_length: int, label: str) -> tuple[bool, str 
     return True, None
 
 
-def format_json_text(value: str, minify: bool = False) -> dict[str, Any]:
+def format_json_text(value: str, minify: bool = False, indent: int = 2) -> dict[str, Any]:
     ok, error = validate_length(value, MAX_JSON_LENGTH, "JSON")
     if not ok:
         return {"ok": False, "error": error, "result": None}
@@ -36,12 +36,93 @@ def format_json_text(value: str, minify: bool = False) -> dict[str, Any]:
             "column": exc.colno,
             "result": None,
         }
+    except RecursionError:
+        # json.loads recurses per nesting level; deeply nested input (still
+        # well under MAX_JSON_LENGTH) can exceed Python's recursion limit.
+        return {
+            "ok": False,
+            "error": "JSON is nested too deeply to parse.",
+            "result": None,
+        }
 
     if minify:
         result = json.dumps(parsed, separators=(",", ":"), ensure_ascii=False)
     else:
-        result = json.dumps(parsed, indent=2, ensure_ascii=False)
+        result = json.dumps(parsed, indent=indent, ensure_ascii=False)
     return {"ok": True, "error": None, "result": result, "parsed": parsed}
+
+
+def json_stats(parsed: Any) -> dict[str, Any]:
+    """Compute type, top-level size, max nesting depth, and node count for parsed JSON.
+
+    Walks iteratively (not recursively) so it can't hit Python's recursion
+    limit on deeply nested input that already parsed successfully.
+    """
+    node_count = 0
+    max_depth = 1
+    stack: list[tuple[Any, int]] = [(parsed, 1)]
+    while stack:
+        node, depth = stack.pop()
+        node_count += 1
+        max_depth = max(max_depth, depth)
+        if isinstance(node, dict):
+            stack.extend((child, depth + 1) for child in node.values())
+        elif isinstance(node, list):
+            stack.extend((child, depth + 1) for child in node)
+
+    if isinstance(parsed, dict):
+        json_type, top_level_count = "object", len(parsed)
+    elif isinstance(parsed, list):
+        json_type, top_level_count = "array", len(parsed)
+    else:
+        json_type, top_level_count = type(parsed).__name__, None
+
+    return {
+        "type": json_type,
+        "top_level_count": top_level_count,
+        "max_depth": max_depth,
+        "node_count": node_count,
+    }
+
+
+MAX_JSON_SEARCH_RESULTS = 200
+
+
+def search_json_paths(parsed: Any, query: str) -> list[dict[str, Any]]:
+    """Find keys or scalar values containing ``query`` (case-insensitive) and return their paths.
+
+    Walks iteratively, capped at MAX_JSON_SEARCH_RESULTS matches, so a large
+    document with a common search term can't produce an unbounded result list.
+    """
+    needle = (query or "").strip().lower()
+    if not needle:
+        return []
+
+    matches: list[dict[str, Any]] = []
+    stack: list[tuple[Any, str]] = [(parsed, "$")]
+    while stack and len(matches) < MAX_JSON_SEARCH_RESULTS:
+        node, path = stack.pop()
+        if isinstance(node, dict):
+            for key, child in node.items():
+                child_path = f"{path}.{key}"
+                if needle in str(key).lower():
+                    matches.append({"path": child_path, "match": "key", "value": _json_preview(child)})
+                    if len(matches) >= MAX_JSON_SEARCH_RESULTS:
+                        break
+                stack.append((child, child_path))
+        elif isinstance(node, list):
+            for index, child in enumerate(node):
+                stack.append((child, f"{path}[{index}]"))
+        else:
+            if node is not None and needle in str(node).lower():
+                matches.append({"path": path, "match": "value", "value": _json_preview(node)})
+
+    return matches[:MAX_JSON_SEARCH_RESULTS]
+
+
+def _json_preview(value: Any, max_length: int = 80) -> str:
+    text = json.dumps(value, ensure_ascii=False) if isinstance(value, (dict, list)) else str(value)
+    return text if len(text) <= max_length else f"{text[:max_length]}..."
 
 
 def encode_base64_text(value: str) -> str:
