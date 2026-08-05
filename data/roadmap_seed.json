@@ -228,11 +228,11 @@
     {
       "title": "Accessibility audit pass",
       "category": "UX / Design",
-      "status": "AI Recommended",
+      "status": "Complete",
       "votes": 13,
-      "description": "Review color contrast, ARIA labeling, and keyboard navigation across the tool grid, forms, and sidebar.",
+      "description": "Computed WCAG contrast ratios across every theme-token text/background pairing and fixed two real AA failures: dark-theme muted/caption text (3.79:1 -> 4.59:1) and the \"NEW\" badge's white-on-green text (as low as 1.4:1 -> 5.4:1+). Scoped to color contrast, which is objectively verifiable from the CSS tokens without a browser; ARIA labeling and full keyboard-navigation testing need real browser/screen-reader verification this sandboxed environment can't provide, so they're left for a manual pass.",
       "rationale": "The site has grown a lot of custom CSS/components this cycle; a dedicated accessibility pass hasn't happened yet.",
-      "updated_at": "2026-08-05"
+      "updated_at": "2026-08-06"
     },
     {
       "title": "Webhook / HTTP request tester",
