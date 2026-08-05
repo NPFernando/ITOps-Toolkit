@@ -6,3 +6,4 @@ plotly
 pyjwt
 croniter
 openai
+tzdata
