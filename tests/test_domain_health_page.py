@@ -1,13 +1,17 @@
 from __future__ import annotations
 
 from datetime import UTC, datetime
+from pathlib import Path
 
 from streamlit.testing.v1 import AppTest
 
 from utils import dns_tools, http_tools, reporting, ssl_tools
 
 
-DOMAIN_PAGE = "pages/1_Domain_Health_Checker.py"
+# Newer streamlit resolves AppTest.from_file()'s relative paths against the
+# file that calls it (this test file's directory), not the working
+# directory -- an absolute path avoids that resolution entirely.
+DOMAIN_PAGE = str(Path(__file__).resolve().parent.parent / "pages" / "1_Domain_Health_Checker.py")
 
 
 def test_domain_health_submitted_page_shows_html_download(monkeypatch):
