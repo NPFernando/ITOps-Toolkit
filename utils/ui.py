@@ -1807,7 +1807,11 @@ def _inject_global_css(mode: str) -> None:
         .tool-status-note-ai,
         .tool-status-note-info {
             border-color: rgba(18, 107, 255, 0.22);
-            background: linear-gradient(135deg, rgba(231, 240, 255, 0.94), var(--itops-surface));
+            /* Fixed blue, not var(--itops-blue) -- that token is the
+               theme accent (coral/red in dark mode, matching odysseus),
+               not a literal blue, and would clash with the badge icon's
+               hardcoded blue gradient just below. */
+            background: color-mix(in srgb, var(--itops-surface), #126bff 12%);
         }
 
         .tool-status-note-ai .tool-status-mark,
@@ -1817,7 +1821,7 @@ def _inject_global_css(mode: str) -> None:
 
         .tool-status-note-success {
             border-color: rgba(34, 186, 79, 0.24);
-            background: linear-gradient(135deg, rgba(231, 248, 238, 0.9), var(--itops-surface));
+            background: color-mix(in srgb, var(--itops-surface), var(--itops-green) 12%);
         }
 
         .tool-status-note-success .tool-status-mark {
@@ -1826,7 +1830,7 @@ def _inject_global_css(mode: str) -> None:
 
         .tool-status-note-warning {
             border-color: rgba(255, 106, 19, 0.25);
-            background: linear-gradient(135deg, rgba(255, 240, 231, 0.9), var(--itops-surface));
+            background: color-mix(in srgb, var(--itops-surface), var(--itops-orange) 12%);
         }
 
         .tool-status-note-warning .tool-status-mark {
@@ -2000,7 +2004,7 @@ def _inject_global_css(mode: str) -> None:
 
         .roadmap-notice-warning {
             border-color: rgba(255, 106, 19, 0.28);
-            background: linear-gradient(135deg, rgba(255, 244, 238, 0.9), var(--itops-surface));
+            background: color-mix(in srgb, var(--itops-surface), var(--itops-orange) 12%);
         }
 
         .roadmap-notice-warning .roadmap-notice-mark {
@@ -2009,7 +2013,8 @@ def _inject_global_css(mode: str) -> None:
 
         .roadmap-notice-ai {
             border-color: rgba(18, 107, 255, 0.24);
-            background: linear-gradient(135deg, rgba(232, 241, 255, 0.92), var(--itops-surface));
+            /* Fixed blue, not var(--itops-blue) -- see .tool-status-note-ai. */
+            background: color-mix(in srgb, var(--itops-surface), #126bff 12%);
         }
 
         .roadmap-notice-ai .roadmap-notice-mark {
@@ -2321,7 +2326,8 @@ def _inject_global_css(mode: str) -> None:
             padding: 0.85rem 0.95rem;
             border: 1px solid rgba(18, 107, 255, 0.2);
             border-radius: 8px;
-            background: linear-gradient(135deg, rgba(231, 240, 255, 0.94), var(--itops-surface));
+            /* Fixed blue, not var(--itops-blue) -- see .tool-status-note-ai. */
+            background: color-mix(in srgb, var(--itops-surface), #126bff 12%);
         }
 
         .roadmap-footer-note strong {
