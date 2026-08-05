@@ -5,7 +5,11 @@ from __future__ import annotations
 import re
 from typing import Any
 
+import requests
+
 MAX_INPUT_LENGTH = 64
+VENDOR_LOOKUP_URL = "https://api.macvendors.com/{mac}"
+VENDOR_LOOKUP_TIMEOUT = 6
 
 _HEX_PAIR_RE = re.compile(r"^[0-9a-f]{12}$")
 
@@ -69,4 +73,42 @@ def analyze_mac(raw: str) -> dict[str, Any]:
             "is_local": is_local,
         }
     )
+    return result
+
+
+def lookup_vendor(oui: str) -> dict[str, Any]:
+    """Look up the registered vendor for a MAC address's OUI via a public API.
+
+    Not a bundled dataset -- the real IEEE OUI registry is far too large to
+    curate accurately by hand, and shipping wrong vendor attributions in a
+    "public-safe, factual" tool would be worse than a live (rate-limited)
+    lookup that can say "try again" when it's unsure.
+    """
+    result: dict[str, Any] = {"ok": False, "error": None, "vendor": None}
+    stripped = re.sub(r"[:\-.\s]", "", (oui or "").strip().lower())
+    # OUI-only input (6 hex chars) is padded with a dummy NIC portion just to
+    # reuse _extract_hex's full-MAC validation; only the OUI matters to the API.
+    hex_chars = _extract_hex(stripped if len(stripped) >= 12 else stripped + "0" * (12 - len(stripped)))
+    if hex_chars is None or len(stripped) < 6:
+        result["error"] = "Enter a valid MAC address or OUI (e.g. 00:1A:2B)."
+        return result
+
+    oui_only = hex_chars[:6]
+    try:
+        response = requests.get(VENDOR_LOOKUP_URL.format(mac=oui_only), timeout=VENDOR_LOOKUP_TIMEOUT)
+    except requests.RequestException as exc:
+        result["error"] = f"Vendor lookup failed: {exc}"
+        return result
+
+    if response.status_code == 404:
+        result["error"] = "No registered vendor found for that OUI."
+        return result
+    if response.status_code == 429:
+        result["error"] = "Vendor lookup is rate-limited right now. Try again in a moment."
+        return result
+    if not response.ok:
+        result["error"] = f"Vendor lookup failed with status {response.status_code}."
+        return result
+
+    result.update({"ok": True, "vendor": response.text.strip()})
     return result
