@@ -283,6 +283,30 @@ TOOLS: tuple[ToolMeta, ...] = (
         category="Security",
         is_new=True,
     ),
+    ToolMeta(
+        title="CIDR Aggregator",
+        short_title="CIDR Aggregator",
+        description="Summarize a list of IPs or CIDR blocks into the minimal set of covering supernets.",
+        path="pages/22_CIDR_Aggregator.py",
+        icon="AGG",
+        accent="#0e7490",
+        slug="cidr_aggregator",
+        professions=("Network Engineer", "Sysadmin / DevOps", "Cloud Engineer"),
+        category="Network",
+        is_new=True,
+    ),
+    ToolMeta(
+        title="User-Agent Parser",
+        short_title="User-Agent Parser",
+        description="Break a User-Agent header down into likely browser, OS, and device details.",
+        path="pages/23_User_Agent_Parser.py",
+        icon="UAP",
+        accent="#c026d3",
+        slug="user_agent_parser",
+        professions=("Support Engineer", "Web Developer", "Helpdesk / L1"),
+        category="Web & Dev",
+        is_new=True,
+    ),
 )
 
 POPULAR_TOOLS = TOOLS[:5]
@@ -890,6 +914,8 @@ def _material_icon_for(slug: str) -> str:
         "timestamp_converter": ":material/schedule:",
         "text_diff_checker": ":material/difference:",
         "jwt_encoder": ":material/verified_user:",
+        "cidr_aggregator": ":material/merge_type:",
+        "user_agent_parser": ":material/devices:",
     }
     return icons.get(slug, ":material/build:")
 
