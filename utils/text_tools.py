@@ -297,3 +297,59 @@ def explain_cron(expression: str, count: int = 5) -> dict[str, Any]:
         "description": describe_cron(value),
         "next_runs": [iterator.get_next(datetime).strftime("%Y-%m-%d %H:%M:%S") for _ in range(count)],
     }
+
+
+MAX_ICS_RUNS = 50
+
+
+def _ics_escape(value: str) -> str:
+    return value.replace("\\", "\\\\").replace(";", "\\;").replace(",", "\\,").replace("\n", "\\n")
+
+
+def cron_ics_export(expression: str, count: int = 10) -> dict[str, Any]:
+    """Build a downloadable .ics calendar with one event per upcoming cron run time."""
+    result: dict[str, Any] = {"ok": False, "error": None, "ics": None}
+    value = (expression or "").strip()
+    if len(value.split()) != 5 or not croniter.is_valid(value):
+        result["error"] = "Enter a valid 5-field cron expression first."
+        return result
+    if not (1 <= count <= MAX_ICS_RUNS):
+        result["error"] = f"Count must be between 1 and {MAX_ICS_RUNS}."
+        return result
+
+    now = datetime.now(UTC)
+    iterator = croniter(value, now)
+    summary = _ics_escape(f"Cron: {value}")
+    stamp = now.strftime("%Y%m%dT%H%M%SZ")
+
+    events = []
+    for index in range(count):
+        run_at = iterator.get_next(datetime)
+        run_at_utc = run_at if run_at.tzinfo else run_at.replace(tzinfo=UTC)
+        dtstart = run_at_utc.astimezone(UTC).strftime("%Y%m%dT%H%M%SZ")
+        events.append(
+            "\r\n".join(
+                [
+                    "BEGIN:VEVENT",
+                    f"UID:cron-{stamp}-{index}@itops-toolkit",
+                    f"DTSTAMP:{stamp}",
+                    f"DTSTART:{dtstart}",
+                    f"SUMMARY:{summary}",
+                    "END:VEVENT",
+                ]
+            )
+        )
+
+    ics = "\r\n".join(
+        [
+            "BEGIN:VCALENDAR",
+            "VERSION:2.0",
+            "PRODID:-//ITOps Toolkit//Cron Explainer//EN",
+            "CALSCALE:GREGORIAN",
+            *events,
+            "END:VCALENDAR",
+            "",
+        ]
+    )
+    result.update({"ok": True, "ics": ics})
+    return result
