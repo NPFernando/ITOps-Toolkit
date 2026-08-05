@@ -340,15 +340,25 @@ def render_sidebar(active_page: str) -> None:
             unsafe_allow_html=True,
         )
         _render_theme_toggle()
-        st.markdown('<div class="sidebar-section-label">Navigation</div>', unsafe_allow_html=True)
-        _sidebar_link("Home", "app.py", active_page == "Home", ":material/home:")
-        _sidebar_link(
-            "Roadmap & Feedback",
-            "pages/10_Roadmap_Feedback.py",
-            active_page == "Roadmap & Feedback",
-            ":material/route:",
+        quick_search = st.text_input(
+            "Quick search",
+            placeholder="Jump to a tool...",
+            label_visibility="collapsed",
+            key="sidebar_quick_search",
+            icon=":material/search:",
         )
-        _render_grouped_tool_links(active_page)
+        if quick_search.strip():
+            _render_quick_search_results(active_page, quick_search)
+        else:
+            st.markdown('<div class="sidebar-section-label">Navigation</div>', unsafe_allow_html=True)
+            _sidebar_link("Home", "app.py", active_page == "Home", ":material/home:")
+            _sidebar_link(
+                "Roadmap & Feedback",
+                "pages/10_Roadmap_Feedback.py",
+                active_page == "Roadmap & Feedback",
+                ":material/route:",
+            )
+            _render_grouped_tool_links(active_page)
 
         st.markdown(
             """
@@ -675,6 +685,20 @@ def tool_by_title(title: str) -> ToolMeta | None:
 
 def github_url() -> str | None:
     return github_repository_url()
+
+
+MAX_QUICK_SEARCH_RESULTS = 8
+
+
+def _render_quick_search_results(active_page: str, query: str) -> None:
+    """Render sidebar quick-search matches for ``query``, replacing the full nav list."""
+    matches = filter_tools(query)[:MAX_QUICK_SEARCH_RESULTS]
+    st.markdown('<div class="sidebar-section-label">Search Results</div>', unsafe_allow_html=True)
+    if not matches:
+        st.caption("No tools match.")
+        return
+    for tool in matches:
+        _sidebar_link(tool.short_title, tool.path, active_page == tool.title, _material_icon_for(tool.slug))
 
 
 def _render_grouped_tool_links(active_page: str) -> None:
