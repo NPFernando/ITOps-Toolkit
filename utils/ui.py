@@ -13,8 +13,8 @@ import streamlit as st
 from utils.project_links import github_repository_url
 
 
-RECENT_TOOLS_STORAGE_KEY = "itops_recent_tools"
 MAX_RECENT_TOOLS = 5
+PERSISTED_LIST_PARAMS: tuple[str, ...] = ("recent", "fav")
 
 
 @dataclass(frozen=True)
@@ -27,6 +27,7 @@ class ToolMeta:
     accent: str
     slug: str
     professions: tuple[str, ...]
+    is_new: bool = False
 
 
 PROFESSIONS: tuple[str, ...] = (
@@ -141,6 +142,7 @@ TOOLS: tuple[ToolMeta, ...] = (
         accent="#0e9f6e",
         slug="subnet_calculator",
         professions=("Network Engineer", "Sysadmin / DevOps", "Cloud Engineer"),
+        is_new=True,
     ),
     ToolMeta(
         title="Hash Generator",
@@ -151,6 +153,7 @@ TOOLS: tuple[ToolMeta, ...] = (
         accent="#9333ea",
         slug="hash_generator",
         professions=("Security Engineer", "Automation Engineer"),
+        is_new=True,
     ),
     ToolMeta(
         title="MAC Address Tool",
@@ -161,6 +164,7 @@ TOOLS: tuple[ToolMeta, ...] = (
         accent="#dc6803",
         slug="mac_address_tool",
         professions=("Network Engineer", "Sysadmin / DevOps"),
+        is_new=True,
     ),
     ToolMeta(
         title="Email Header Analyzer",
@@ -171,6 +175,7 @@ TOOLS: tuple[ToolMeta, ...] = (
         accent="#e03f6e",
         slug="email_header_analyzer",
         professions=("Security Engineer", "Support Engineer", "Helpdesk / L1"),
+        is_new=True,
     ),
     ToolMeta(
         title="Port Reference",
@@ -181,6 +186,7 @@ TOOLS: tuple[ToolMeta, ...] = (
         accent="#0891b2",
         slug="port_reference",
         professions=("Network Engineer", "Security Engineer", "Helpdesk / L1"),
+        is_new=True,
     ),
 )
 
@@ -197,73 +203,102 @@ def apply_app_shell(active_page: str) -> None:
     """
     render_sidebar(active_page)
     _inject_global_css(current_theme_mode())
-    _sync_recent_tools(active_page)
+    slug = TITLE_TO_SLUG.get(active_page)
+    if slug is not None:
+        record_recent_visit(slug)
+    _sync_local_storage_mirror(active_page)
 
 
-def _sync_recent_tools(active_page: str) -> None:
-    """Record a tool visit, or (on Home) pull recents from localStorage into the URL.
+def _get_persisted_slugs(param: str) -> list[str]:
+    """Read a comma-separated slug list from the URL query params."""
+    return [slug for slug in st.query_params.get(param, "").split(",") if slug]
+
+
+def _set_persisted_slugs(param: str, slugs: list[str]) -> None:
+    """Write a slug list back into the URL query params (removing the key when empty)."""
+    if slugs:
+        st.query_params[param] = ",".join(slugs)
+    else:
+        st.query_params.pop(param, None)
+
+
+def record_recent_visit(slug: str) -> None:
+    """Prepend ``slug`` to the recents list (deduped, capped) and persist it."""
+    stored = _get_persisted_slugs("recent")
+    stored = [slug, *(s for s in stored if s != slug)][:MAX_RECENT_TOOLS]
+    _set_persisted_slugs("recent", stored)
+
+
+def toggle_favorite(slug: str) -> None:
+    """Add or remove ``slug`` from the favorites list."""
+    stored = _get_persisted_slugs("fav")
+    if slug in stored:
+        stored = [s for s in stored if s != slug]
+    else:
+        stored = [*stored, slug]
+    _set_persisted_slugs("fav", stored)
+
+
+def _sync_local_storage_mirror(active_page: str) -> None:
+    """Mirror the persisted-slug query params to/from browser localStorage.
 
     Runs client-side JS in a same-origin sandboxed iframe (confirmed via the
     installed streamlit static bundle: HTML-string iframes carry
     `allow-same-origin`, so they share the page's real localStorage).
 
-    - On a tool page: writes the visited slug to the front of the stored
-      recents list. No URL changes -- keeps tool-page URLs clean.
-    - On Home: reads the stored recents list and, if it differs from the
-      current `?recent=` query param, updates the URL (one reload, only
-      when the value actually changed) so Python can read it via
-      st.query_params. This is the only way to get data out of an st.iframe
-      HTML string, which has no return channel to Python.
+    Python owns st.query_params as the live, in-session source of truth
+    (record_recent_visit/toggle_favorite write it directly, no reload
+    needed for those interactions). This function's jobs, run on every
+    page for every tracked param:
+    - Mirror Python's current value into localStorage (durable, one-way,
+      no reload -- keeps localStorage in sync with whatever Python just
+      wrote). Runs on every page: a tool page's record_recent_visit() only
+      updates st.query_params for that pageview, so this mirror step is
+      what actually makes it durable across sessions.
+    - On Home only: if Python has no value for a param yet (fresh
+      session/tab) but localStorage has one, seed the URL from localStorage
+      with a single reload so Python picks it up next run. This is the
+      only way to get data out of localStorage, since an iframe HTML
+      string has no return channel to Python. Restricted to Home so
+      tool-page URLs never get rewritten/reloaded just to carry a value
+      only Home displays.
+
+    NOTE: this assumes window.top.location.search already reflects this
+    run's st.query_params writes by the time the iframe's script executes.
+    That held in manual testing but is a real-browser timing assumption
+    AppTest cannot exercise (no JS execution) -- verify manually after deploy.
     """
-    slug = TITLE_TO_SLUG.get(active_page)
-    if slug is not None:
-        st.iframe(
-            f"""
-            <script>
-            (function() {{
-                var KEY = {json.dumps(RECENT_TOOLS_STORAGE_KEY)};
-                var slug = {json.dumps(slug)};
-                var stored = [];
-                try {{
-                    stored = JSON.parse(localStorage.getItem(KEY) || "[]");
-                    if (!Array.isArray(stored)) stored = [];
-                }} catch (e) {{ stored = []; }}
-                stored = [slug].concat(stored.filter(function(s) {{ return s !== slug; }}));
-                stored = stored.slice(0, {MAX_RECENT_TOOLS});
-                try {{ localStorage.setItem(KEY, JSON.stringify(stored)); }} catch (e) {{}}
-            }})();
-            </script>
-            """,
-            height=1,
-        )
-    elif active_page == "Home":
-        st.iframe(
-            f"""
-            <script>
-            (function() {{
-                var KEY = {json.dumps(RECENT_TOOLS_STORAGE_KEY)};
-                var stored = [];
-                try {{
-                    stored = JSON.parse(localStorage.getItem(KEY) || "[]");
-                    if (!Array.isArray(stored)) stored = [];
-                }} catch (e) {{ stored = []; }}
-                var joined = stored.join(",");
-                var params = new URLSearchParams(window.top.location.search);
-                if (params.get("recent") !== joined) {{
-                    if (joined) {{
-                        params.set("recent", joined);
-                    }} else {{
-                        params.delete("recent");
+    st.iframe(
+        f"""
+        <script>
+        (function() {{
+            var KEYS = {json.dumps(list(PERSISTED_LIST_PARAMS))};
+            var CAN_SEED = {json.dumps(active_page == "Home")};
+            var params = new URLSearchParams(window.top.location.search);
+            var changed = false;
+            KEYS.forEach(function(key) {{
+                var storageKey = "itops_" + key;
+                var stored = localStorage.getItem(storageKey) || "";
+                if (params.has(key)) {{
+                    var current = params.get(key);
+                    if (current !== stored) {{
+                        try {{ localStorage.setItem(storageKey, current); }} catch (e) {{}}
                     }}
-                    var search = params.toString();
-                    var newUrl = window.top.location.pathname + (search ? "?" + search : "") + window.top.location.hash;
-                    window.top.location.replace(newUrl);
+                }} else if (CAN_SEED && stored) {{
+                    params.set(key, stored);
+                    changed = true;
                 }}
-            }})();
-            </script>
-            """,
-            height=1,
-        )
+            }});
+            if (changed) {{
+                var search = params.toString();
+                var newUrl = window.top.location.pathname + (search ? "?" + search : "") + window.top.location.hash;
+                window.top.location.replace(newUrl);
+            }}
+        }})();
+        </script>
+        """,
+        height=1,
+    )
 
 
 def render_sidebar(active_page: str) -> None:
@@ -377,13 +412,23 @@ def render_tool_section(
         st.info("No tools match your search.")
         return
 
+    favorite_slugs = set(_get_persisted_slugs("fav"))
     cols = st.columns(min(len(tools), 5), gap="large")
     for index, tool in enumerate(tools):
         with cols[index % len(cols)]:
             with st.container(key=f"tool_card_{key_prefix}_{tool.slug}"):
                 delay_ms = min(index, 9) * 45
                 st.markdown(_tool_card_html(tool, delay_ms=delay_ms), unsafe_allow_html=True)
-                _safe_page_link(tool.path, label="Open Tool", icon=":material/arrow_forward:", stretch_width=True)
+                link_col, fav_col = st.columns([5, 1])
+                with link_col:
+                    _safe_page_link(tool.path, label="Open Tool", icon=":material/arrow_forward:", stretch_width=True)
+                with fav_col:
+                    is_fav = tool.slug in favorite_slugs
+                    fav_icon = ":material/star:" if is_fav else ":material/star_border:"
+                    fav_help = "Remove from favorites" if is_fav else "Add to favorites"
+                    if st.button("", icon=fav_icon, key=f"fav_toggle_{key_prefix}_{tool.slug}", help=fav_help):
+                        toggle_favorite(tool.slug)
+                        st.rerun()
 
 
 def render_feature_strip() -> None:
@@ -553,34 +598,53 @@ def filter_tools(query: str = "", profession: str = "All") -> tuple[ToolMeta, ..
     return tuple(tool for tool in TOOLS if matches_query(tool) and matches_profession(tool))
 
 
+def _resolve_slugs(slugs: Iterable[str]) -> list[ToolMeta]:
+    """Map slugs to ToolMeta, in order, skipping unknown/stale slugs and duplicates."""
+    by_slug = {tool.slug: tool for tool in TOOLS}
+    resolved: list[ToolMeta] = []
+    seen: set[str] = set()
+    for slug in slugs:
+        tool = by_slug.get(slug)
+        if tool is None or tool.slug in seen:
+            continue
+        resolved.append(tool)
+        seen.add(tool.slug)
+    return resolved
+
+
 def recent_or_popular_tools(recent_slugs: Iterable[str]) -> tuple[ToolMeta, ...]:
     """Map recently-visited tool slugs (most-recent-first) to ToolMeta, padded with POPULAR_TOOLS.
 
     Unknown/stale slugs are skipped silently. Falls back entirely to
     POPULAR_TOOLS for a visitor with no recorded recents yet.
     """
-    by_slug = {tool.slug: tool for tool in TOOLS}
-    resolved: list[ToolMeta] = []
-    seen_slugs: set[str] = set()
-    for slug in recent_slugs:
-        tool = by_slug.get(slug)
-        if tool is None or tool.slug in seen_slugs:
-            continue
-        resolved.append(tool)
-        seen_slugs.add(tool.slug)
-        if len(resolved) >= 5:
-            break
+    resolved = _resolve_slugs(recent_slugs)[:MAX_RECENT_TOOLS]
+    seen = {tool.slug for tool in resolved}
 
-    if len(resolved) < 5:
+    if len(resolved) < MAX_RECENT_TOOLS:
         for tool in POPULAR_TOOLS:
-            if tool.slug in seen_slugs:
+            if tool.slug in seen:
                 continue
             resolved.append(tool)
-            seen_slugs.add(tool.slug)
-            if len(resolved) >= 5:
+            seen.add(tool.slug)
+            if len(resolved) >= MAX_RECENT_TOOLS:
                 break
 
     return tuple(resolved)
+
+
+def favorite_tools() -> tuple[ToolMeta, ...]:
+    """Return the visitor's favorited tools, in the order they were favorited. No padding."""
+    return tuple(_resolve_slugs(_get_persisted_slugs("fav")))
+
+
+def sort_tools(tools: tuple[ToolMeta, ...], mode: str) -> tuple[ToolMeta, ...]:
+    """Sort a tool grid. "az"/"za" sort by title; anything else keeps declared order."""
+    if mode == "az":
+        return tuple(sorted(tools, key=lambda tool: tool.title.lower()))
+    if mode == "za":
+        return tuple(sorted(tools, key=lambda tool: tool.title.lower(), reverse=True))
+    return tools
 
 
 def tool_by_title(title: str) -> ToolMeta | None:
@@ -618,8 +682,10 @@ def _fallback_href(path: str) -> str:
 
 
 def _tool_card_html(tool: ToolMeta, delay_ms: int = 0) -> str:
+    new_badge = '<span class="tool-card-badge-new">NEW</span>' if tool.is_new else ""
     return f"""
     <div class="tool-card-shell" style="--tool-accent: {tool.accent}; animation-delay: {delay_ms}ms;">
+        {new_badge}
         <div class="tool-card-icon">{escape(tool.icon)}</div>
         <h3>{escape(tool.title)}</h3>
         <p>{escape(tool.description)}</p>
@@ -1297,8 +1363,22 @@ def _inject_global_css(mode: str) -> None:
         }
 
         .tool-card-shell {
+            position: relative;
             min-height: 15.1rem;
             animation: itops-fade-up 0.45s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+        }
+
+        .tool-card-badge-new {
+            position: absolute;
+            top: 0.75rem;
+            right: 0.75rem;
+            padding: 0.15rem 0.5rem;
+            border-radius: 99px;
+            font-size: 0.62rem;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+            color: #ffffff;
+            background: linear-gradient(135deg, var(--itops-green), color-mix(in srgb, var(--itops-green), #000 15%));
         }
 
         @keyframes itops-fade-up {

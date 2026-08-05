@@ -5,8 +5,12 @@ from utils.ui import (
     TITLE_TO_SLUG,
     TOOLS,
     display_rows_frame,
+    favorite_tools,
     filter_tools,
+    record_recent_visit,
     recent_or_popular_tools,
+    sort_tools,
+    toggle_favorite,
 )
 
 
@@ -100,3 +104,72 @@ def test_recent_or_popular_tools_no_padding_when_five_valid_recents():
     result = recent_or_popular_tools(slugs)
 
     assert [tool.slug for tool in result] == slugs
+
+
+def test_sort_tools_az_and_za_sort_by_title_case_insensitively():
+    subset = (TOOLS[3], TOOLS[0], TOOLS[1])
+
+    az = sort_tools(subset, "az")
+    za = sort_tools(subset, "za")
+
+    assert [t.title for t in az] == sorted((t.title for t in subset), key=str.lower)
+    assert [t.title for t in za] == sorted((t.title for t in subset), key=str.lower, reverse=True)
+
+
+def test_sort_tools_default_and_unknown_mode_preserve_order():
+    subset = (TOOLS[3], TOOLS[0], TOOLS[1])
+
+    assert sort_tools(subset, "default") == subset
+    assert sort_tools(subset, "not-a-real-mode") == subset
+
+
+def test_exactly_five_tools_are_tagged_new():
+    new_slugs = {tool.slug for tool in TOOLS if tool.is_new}
+
+    assert new_slugs == {
+        "subnet_calculator",
+        "hash_generator",
+        "mac_address_tool",
+        "email_header_analyzer",
+        "port_reference",
+    }
+
+
+def test_record_recent_visit_prepends_dedupes_and_caps(monkeypatch):
+    monkeypatch.setattr(ui.st, "query_params", {})
+
+    record_recent_visit("hash_generator")
+    record_recent_visit("mac_address_tool")
+    record_recent_visit("hash_generator")
+
+    assert ui.st.query_params["recent"] == "hash_generator,mac_address_tool"
+
+
+def test_record_recent_visit_caps_at_max_recent_tools(monkeypatch):
+    monkeypatch.setattr(ui.st, "query_params", {})
+    slugs = [tool.slug for tool in TOOLS[:6]]
+
+    for slug in slugs:
+        record_recent_visit(slug)
+
+    stored = ui.st.query_params["recent"].split(",")
+    assert len(stored) == ui.MAX_RECENT_TOOLS
+    assert stored[0] == slugs[-1]
+
+
+def test_toggle_favorite_adds_and_removes(monkeypatch):
+    monkeypatch.setattr(ui.st, "query_params", {})
+    slug = TOOLS[0].slug
+
+    toggle_favorite(slug)
+    assert ui.st.query_params.get("fav") == slug
+
+    toggle_favorite(slug)
+    assert "fav" not in ui.st.query_params
+
+
+def test_favorite_tools_reads_query_params_and_skips_unknown(monkeypatch):
+    slug = TOOLS[2].slug
+    monkeypatch.setattr(ui.st, "query_params", {"fav": f"not-a-real-slug,{slug}"})
+
+    assert favorite_tools() == (TOOLS[2],)

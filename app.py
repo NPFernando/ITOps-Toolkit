@@ -4,7 +4,9 @@ import streamlit as st
 
 from utils.ui import (
     PROFESSIONS,
+    TOOLS,
     apply_app_shell,
+    favorite_tools,
     filter_tools,
     github_url,
     recent_or_popular_tools,
@@ -12,6 +14,7 @@ from utils.ui import (
     render_home_hero,
     render_important_notice,
     render_tool_section,
+    sort_tools,
 )
 
 
@@ -27,11 +30,19 @@ if repo_url:
 
 search_query = render_home_hero()
 
+favorites = favorite_tools()
+if favorites:
+    render_tool_section(favorites, heading="Favorites", section_id=None, key_prefix="fav")
+
 recent_param = st.query_params.get("recent", "")
 recent_slugs = [slug for slug in recent_param.split(",") if slug]
 recent_tools = recent_or_popular_tools(recent_slugs)
 recents_heading = "Recently Used" if recent_slugs else "Popular Tools"
 render_tool_section(recent_tools, heading=recents_heading, section_id=None, key_prefix="recent")
+
+newest_tools = tuple(tool for tool in TOOLS if tool.is_new)
+if newest_tools:
+    render_tool_section(newest_tools, heading="Newest Tools", section_id=None, key_prefix="new")
 
 profession = st.pills(
     "Filter by profession",
@@ -52,7 +63,16 @@ if show_all:
         all_heading = f"{profession} Tools"
     else:
         all_heading = "All Tools"
-    render_tool_section(filter_tools(search_query, profession), heading=all_heading, key_prefix="all")
+    sort_mode_label = st.pills(
+        "Sort",
+        options=("Default", "A-Z", "Z-A"),
+        default="Default",
+        label_visibility="collapsed",
+        key="home_sort_mode",
+    )
+    sort_mode = {"Default": "default", "A-Z": "az", "Z-A": "za"}[sort_mode_label]
+    all_tools = sort_tools(filter_tools(search_query, profession), sort_mode)
+    render_tool_section(all_tools, heading=all_heading, key_prefix="all")
 
 render_feature_strip()
 render_important_notice()
