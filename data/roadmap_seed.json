@@ -111,11 +111,11 @@
     {
       "title": "AI-assisted feature triage for maintainers",
       "category": "AI Ideas",
-      "status": "AI Recommended",
+      "status": "Complete",
       "votes": 55,
       "description": "Summarize GitHub feature requests for maintainers in an admin workflow.",
-      "rationale": "Could help prioritize user ideas later, but should remain opt-in and secret-safe.",
-      "updated_at": "2026-04-30"
+      "rationale": "Could help prioritize user ideas later, but should remain opt-in and secret-safe. Shipped on the Roadmap & Feedback page: an opt-in \"Summarize with AI\" button (only enabled when Azure OpenAI is configured) sends the open (not-Complete) roadmap items' public fields -- titles, descriptions, vote counts, already visible on the page -- to produce a short prioritization summary. No dedicated admin login exists in this app (it's fully public with no auth system), so the practical maintainer gate is the same one already used by the Log Troubleshooting Assistant's AI opt-in: the feature only activates when the maintainer configures their own Azure OpenAI credentials. Cached for 1 hour (st.cache_data) so repeated clicks by any visitor reuse one AI call rather than each paying for a fresh one. Also fixed a stale claim on the same page (\"This page does not call Azure/OpenAI\") that this feature would have made false.",
+      "updated_at": "2026-08-06"
     },
     {
       "title": "Tool bundle recommendations",

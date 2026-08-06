@@ -205,6 +205,100 @@ def summarize_logs_with_azure(
     }
 
 
+FEATURE_TRIAGE_SYSTEM_INSTRUCTIONS = """You are helping a solo maintainer triage a public roadmap of feature requests.
+Use only the supplied item titles, descriptions, rationale, vote counts, and categories.
+Do not invent items, votes, or details not present in the input.
+Group related items by theme, call out the 3-5 highest-value items to prioritize next with a short reason each,
+and note any items that look duplicate or very similar. Keep the whole response under 300 words."""
+
+
+def _safe_roadmap_items_summary(items: list[Any] | None) -> list[dict[str, Any]]:
+    safe_items = []
+    for item in items or []:
+        safe_items.append(
+            {
+                "title": str(getattr(item, "title", "")),
+                "category": str(getattr(item, "category", "")),
+                "status": str(getattr(item, "status", "")),
+                "votes": int(getattr(item, "votes", 0) or 0),
+                "description": str(getattr(item, "description", "")),
+                "rationale": str(getattr(item, "rationale", "")),
+                "source": str(getattr(item, "source", "")),
+            }
+        )
+    return safe_items
+
+
+def summarize_feature_requests_with_azure(
+    items: list[Any],
+    client_factory: Any | None = None,
+) -> dict[str, Any]:
+    """Generate an optional Azure AI triage summary from public roadmap items only.
+
+    Input is exclusively public roadmap data already shown on the Roadmap &
+    Feedback page (titles, descriptions, vote counts) -- no user-submitted
+    free text, credentials, or private data ever reaches this function.
+    """
+    missing = azure_openai_missing_keys()
+    if missing:
+        return {
+            "enabled": False,
+            "provider": "azure_openai",
+            "status": "unavailable",
+            "message": "AI triage summary unavailable until Azure OpenAI settings are configured.",
+        }
+
+    safe_items = _safe_roadmap_items_summary(items)
+    if not safe_items:
+        return {
+            "enabled": False,
+            "provider": "azure_openai",
+            "status": "unavailable",
+            "message": "AI triage summary unavailable because there are no open roadmap items to summarize.",
+        }
+
+    input_text = json.dumps(safe_items, ensure_ascii=False)
+
+    try:
+        config = azure_openai_config()
+        client_builder = client_factory or _default_azure_openai_client
+        client = client_builder(
+            api_key=config["AZURE_OPENAI_API_KEY"],
+            base_url=_azure_openai_base_url(config["AZURE_OPENAI_ENDPOINT"]),
+        )
+        response = client.responses.create(
+            model=config["AZURE_OPENAI_DEPLOYMENT"],
+            instructions=FEATURE_TRIAGE_SYSTEM_INSTRUCTIONS,
+            input=input_text,
+            max_output_tokens=500,
+        )
+        summary = _response_output_text(response)
+    except Exception as exc:
+        return {
+            "enabled": False,
+            "provider": "azure_openai",
+            "status": "error",
+            "message": "AI triage summary could not be generated.",
+            "error_type": type(exc).__name__,
+        }
+
+    if not summary:
+        return {
+            "enabled": False,
+            "provider": "azure_openai",
+            "status": "error",
+            "message": "AI triage summary returned no text.",
+        }
+
+    return {
+        "enabled": True,
+        "provider": "azure_openai",
+        "status": "success",
+        "message": f"AI triage summary generated from {len(safe_items)} open roadmap item(s).",
+        "summary": summary,
+    }
+
+
 def optional_ai_summary(
     sanitized_text: str,
     findings: list[dict[str, Any]] | None = None,
