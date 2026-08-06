@@ -363,10 +363,10 @@
     {
       "title": "DNS propagation checker",
       "category": "Tools",
-      "status": "Planned",
+      "status": "Complete",
       "votes": 8,
       "description": "Query the same DNS record type across several public resolvers (Google 8.8.8.8, Cloudflare 1.1.1.1, Quad9 9.9.9.9) side by side to catch propagation lag or mismatched answers after a DNS change.",
-      "rationale": "Common post-cutover MSP task ('did the change propagate everywhere yet?') that the existing single-resolver DNS Record Checker doesn't answer. Buildable with dnspython's per-query nameserver override, same library already in use.",
+      "rationale": "Shipped as a dedicated DNS Propagation Checker page. Queries Google (8.8.8.8), Cloudflare (1.1.1.1), and Quad9 (9.9.9.9) directly via dnspython's per-resolver nameserver override, and compares the sorted answer sets to flag propagation lag or mismatch. Refactored dns_tools.record_to_row from a private helper to a public one so both DNS Record Checker and this tool share the same record-formatting logic.",
       "updated_at": "2026-08-06"
     },
     {

@@ -55,7 +55,7 @@ def _txt_to_string(record: Any) -> str:
     return str(record).strip('"')
 
 
-def _record_to_row(record: Any, record_type: str) -> dict[str, Any]:
+def record_to_row(record: Any, record_type: str) -> dict[str, Any]:
     if record_type in {"A", "AAAA"}:
         return {"type": record_type, "value": record.address}
     if record_type == "MX":
@@ -144,7 +144,7 @@ def resolve_records(domain: str, record_type: str) -> dict[str, Any]:
     except dns.exception.DNSException as exc:
         return _error_result(normalized, requested_type, query_name, "DNS Error", str(exc))
 
-    records = [_record_to_row(record, query_type) for record in answers]
+    records = [record_to_row(record, query_type) for record in answers]
     if requested_type == "SPF":
         records = [record for record in records if str(record.get("value", "")).lower().startswith("v=spf1")]
     elif requested_type == "DMARC":

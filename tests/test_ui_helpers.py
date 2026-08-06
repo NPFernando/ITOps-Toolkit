@@ -156,6 +156,7 @@ def test_expected_tools_are_tagged_new():
         "uptime_trend",
         "security_headers",
         "cve_lookup",
+        "dns_propagation",
     }
 
 
@@ -288,6 +289,7 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "ipv6_compressor",
             "whois_lookup",
             "bulk_domain_health",
+            "dns_propagation",
         ],
         "Security": [
             "ssl_certificate",
