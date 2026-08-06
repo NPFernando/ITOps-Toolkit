@@ -129,11 +129,11 @@
     {
       "title": "ConnectWise and PSA export ideas",
       "category": "Integrations",
-      "status": "AI Recommended",
+      "status": "Complete",
       "votes": 37,
       "description": "Explore lightweight exports that can be pasted into ticketing systems.",
-      "rationale": "MSP users often need customer-ready notes after troubleshooting.",
-      "updated_at": "2026-04-30"
+      "rationale": "MSP users often need customer-ready notes after troubleshooting. Shipped as a \"PSA / ticket note\" export on Domain Health Checker and Log Troubleshooting Assistant -- plain text with no markdown syntax (# and ** render literally in most PSA ticket note fields, unlike the existing Markdown export), shown via a copy-button st.code block plus a .txt download. Deliberately not a direct ConnectWise Manage/Autotask API integration -- that needs per-tenant API credentials this public, no-storage app has nowhere safe to hold; a copy-paste-ready plain-text note fits the \"lightweight exports\" framing in the description without that scope.",
+      "updated_at": "2026-08-06"
     },
     {
       "title": "Command palette / quick-jump launcher",
