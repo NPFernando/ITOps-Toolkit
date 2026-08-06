@@ -367,6 +367,18 @@ TOOLS: tuple[ToolMeta, ...] = (
         category="Network",
         is_new=True,
     ),
+    ToolMeta(
+        title="Webhook Tester",
+        short_title="Webhook Tester",
+        description="Send a one-off HTTP request with a custom method, headers, and body.",
+        path="pages/29_Webhook_Tester.py",
+        icon="HTP",
+        accent="#ff6b13",
+        slug="webhook_tester",
+        professions=("Web Developer", "Automation Engineer", "Sysadmin / DevOps"),
+        category="Web & Dev",
+        is_new=True,
+    ),
 )
 
 POPULAR_TOOLS = TOOLS[:5]
@@ -981,6 +993,7 @@ def _material_icon_for(slug: str) -> str:
         "color_converter": ":material/palette:",
         "whois_lookup": ":material/badge:",
         "bulk_domain_health": ":material/upload_file:",
+        "webhook_tester": ":material/webhook:",
     }
     return icons.get(slug, ":material/build:")
 
