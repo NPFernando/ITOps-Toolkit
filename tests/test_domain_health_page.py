@@ -101,3 +101,73 @@ def test_domain_health_submitted_page_shows_html_download(monkeypatch):
     assert captured_report["risk_score"] == 100
     assert any(row["check"] == "Risk score" for row in captured_report["summary_rows"])
     assert any(row["check"] == "DNSSEC" for row in captured_report["summary_rows"])
+
+
+def test_domain_health_clicking_download_does_not_hide_results(monkeypatch):
+    """Regression: st.download_button triggers a rerun just like any widget outside
+    st.form. Results must be keyed off session_state, not the transient `submitted`
+    flag, or the whole results section disappears right after the file downloads."""
+
+    def fake_dns_summary(domain, include_dmarc=True):
+        healthy = {"records": [{"type": "A", "value": "203.0.113.10"}], "raw_values": ["203.0.113.10"], "status": "Healthy"}
+        return {
+            "domain": domain,
+            "lookups": {
+                "A": healthy,
+                "AAAA": {"records": [], "raw_values": [], "status": "No Answer"},
+                "MX": {"records": [], "raw_values": [], "status": "No Answer"},
+                "TXT": {"records": [], "raw_values": [], "status": "No Answer"},
+                "SPF": {"records": [], "raw_values": [], "status": "No Answer"},
+                "DMARC": {"records": [], "raw_values": [], "status": "No Answer"},
+            },
+            "status": "Healthy",
+            "email_status": "Warning",
+            "a_found": True,
+            "aaaa_found": False,
+            "mx_found": False,
+            "spf_found": False,
+            "dmarc_found": False,
+            "email_security_posture": {"status": "Warning", "rows": [], "recommendations": []},
+        }
+
+    def fake_ssl_result(domain):
+        return {
+            "ok": True,
+            "tls_status": "Healthy",
+            "subject": {"commonName": domain},
+            "issuer": {"commonName": "Example CA"},
+            "valid_from": datetime(2025, 4, 30, tzinfo=UTC),
+            "valid_until": datetime(2030, 4, 30, tzinfo=UTC),
+            "days_remaining": 365,
+            "error": None,
+        }
+
+    def fake_http_result(domain):
+        return {
+            "ok": True,
+            "status_code": 200,
+            "reason": "OK",
+            "response_time_ms": 123.4,
+            "final_url": f"https://{domain}",
+            "uses_https": True,
+            "redirect_chain": [],
+            "recommendations": [],
+            "error": None,
+        }
+
+    monkeypatch.setattr(dns_tools, "get_dns_summary", fake_dns_summary)
+    monkeypatch.setattr(ssl_tools, "get_certificate_info", fake_ssl_result)
+    monkeypatch.setattr(http_tools, "check_http_status", fake_http_result)
+
+    app = AppTest.from_file(DOMAIN_PAGE, default_timeout=60)
+    app.run()
+    app.text_input[0].set_value("example.com")
+    app.button[0].click()
+    app.run(timeout=60)
+    assert not app.exception
+    assert len(app.dataframe) > 0
+
+    app.download_button[0].click()
+    app.run(timeout=60)
+    assert not app.exception
+    assert len(app.dataframe) > 0
