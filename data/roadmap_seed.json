@@ -471,10 +471,10 @@
     {
       "title": "UUID / ULID generator",
       "category": "Tools",
-      "status": "Planned",
+      "status": "Complete",
       "votes": 6,
       "description": "Generate UUIDs (v4) and ULIDs in bulk, with copy-to-clipboard and a CSV export for when a batch of test IDs is needed.",
-      "rationale": "Inspired by killertools.net's UUID/ULID generators. Extremely common dev/ops need not currently covered by this toolkit; stdlib `uuid` covers UUIDv4 with no new dependency.",
+      "rationale": "Shipped as a dedicated ID Generator page. UUIDv4 uses Python's stdlib uuid module; ULID has no stdlib equivalent, so it's implemented directly against the spec (48-bit ms timestamp + 80-bit randomness, Crockford Base32, 26 chars) using only stdlib time/secrets -- no new dependency. Also caught and fixed a real bug while building this: st.download_button triggers a script rerun just like any other widget, so a download button inside a block gated on a transient form-submitted flag collapses the whole results section right after the file downloads -- the same bug class as PR #33/#34, now also confirmed present on several older, previously-shipped pages (tracked separately).",
       "updated_at": "2026-08-06"
     },
     {

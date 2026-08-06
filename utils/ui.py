@@ -507,6 +507,18 @@ TOOLS: tuple[ToolMeta, ...] = (
         category="Reference",
         is_new=True,
     ),
+    ToolMeta(
+        title="ID Generator",
+        short_title="ID Generator",
+        description="Generate UUIDs (v4) or ULIDs in bulk.",
+        path="pages/40_ID_Generator.py",
+        icon="UID",
+        accent="#6d597a",
+        slug="id_generator",
+        professions=("Web Developer", "Automation Engineer", "Sysadmin / DevOps"),
+        category="Web & Dev",
+        is_new=True,
+    ),
 )
 
 POPULAR_TOOLS = TOOLS[:5]
@@ -546,6 +558,7 @@ TOOL_BUNDLES: dict[str, tuple[str, ...]] = {
     "jwt_decoder": ("jwt_encoder", "hash_generator"),
     "jwt_encoder": ("jwt_decoder", "hash_generator"),
     "json_formatter": ("base64_tool", "regex_tester", "config_format_converter"),
+    "id_generator": ("hash_generator", "json_formatter"),
     "config_format_converter": ("json_formatter", "text_diff_checker"),
     "base64_tool": ("json_formatter", "url_encoder_decoder"),
     "url_encoder_decoder": ("base64_tool", "json_formatter"),
@@ -1264,6 +1277,7 @@ def _material_icon_for(slug: str) -> str:
         "windows_error_reference": ":material/error_outline:",
         "config_format_converter": ":material/sync_alt:",
         "m365_sku_decoder": ":material/badge:",
+        "id_generator": ":material/fingerprint:",
     }
     return icons.get(slug, ":material/build:")
 
