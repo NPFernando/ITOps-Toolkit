@@ -507,10 +507,10 @@
     {
       "title": "chmod calculator",
       "category": "Tools",
-      "status": "Planned",
+      "status": "Complete",
       "votes": 5,
       "description": "Convert between symbolic (rwxr-xr--) and octal (754) Unix file permission notation, both directions, with a checkbox grid for building permissions visually.",
-      "rationale": "Inspired by killertools.net's chmod calculator. Small, stdlib-only sysadmin staple, no external dependency needed.",
+      "rationale": "Shipped as a dedicated chmod Calculator page with three tabs: octal-to-symbolic, symbolic-to-octal, and a visual checkbox-grid builder. Correctly handles setuid/setgid/sticky special bits including the S/T (uppercase) forms when the underlying execute bit is absent -- verified against known real-world examples and round-tripped. Stdlib-only (regex), no dependency. Live-updates as you type with no submit button, so there's no results-vanishing risk (nothing is gated on a transient submit flag).",
       "updated_at": "2026-08-06"
     },
     {
