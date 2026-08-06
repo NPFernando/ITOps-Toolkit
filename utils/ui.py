@@ -387,6 +387,18 @@ TOOLS: tuple[ToolMeta, ...] = (
         category="Web & Dev",
         is_new=True,
     ),
+    ToolMeta(
+        title="Uptime Trend",
+        short_title="Uptime Trend",
+        description="Run a short, one-off series of checks against a URL and see the latency trend for this session only.",
+        path="pages/30_Uptime_Trend.py",
+        icon="UPT",
+        accent="#0e9f6e",
+        slug="uptime_trend",
+        professions=("Sysadmin / DevOps", "Support Engineer", "Web Developer"),
+        category="Web & Dev",
+        is_new=True,
+    ),
 )
 
 POPULAR_TOOLS = TOOLS[:5]
@@ -403,7 +415,8 @@ TOOL_BUNDLES: dict[str, tuple[str, ...]] = {
     "domain_health": ("dns_records", "ssl_certificate", "whois_lookup"),
     "dns_records": ("domain_health", "whois_lookup", "ssl_certificate"),
     "ssl_certificate": ("domain_health", "dns_records", "http_status"),
-    "http_status": ("domain_health", "ssl_certificate", "user_agent_parser"),
+    "http_status": ("domain_health", "ssl_certificate", "uptime_trend"),
+    "uptime_trend": ("http_status", "domain_health"),
     "whois_lookup": ("dns_records", "domain_health", "ssl_certificate"),
     "bulk_domain_health": ("domain_health", "dns_records", "ssl_certificate"),
     "mac_address_tool": ("subnet_calculator", "cidr_aggregator", "ipv6_compressor"),
@@ -1124,6 +1137,7 @@ def _material_icon_for(slug: str) -> str:
         "whois_lookup": ":material/badge:",
         "bulk_domain_health": ":material/upload_file:",
         "webhook_tester": ":material/webhook:",
+        "uptime_trend": ":material/show_chart:",
     }
     return icons.get(slug, ":material/build:")
 
