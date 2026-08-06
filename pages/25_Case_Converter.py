@@ -34,7 +34,7 @@ if not submitted:
 
 if submitted:
     result = convert_case(text_input)
-    with tool_result_panel("case_result"):
+    with tool_result_panel("case_result", related_to="case_converter"):
         render_section_heading("Converted forms", eyebrow="Result")
         if not result["ok"]:
             st.error(result["error"])
