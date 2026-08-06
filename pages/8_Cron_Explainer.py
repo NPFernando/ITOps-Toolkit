@@ -28,12 +28,22 @@ with tool_form_panel("cron_explainer"):
         expression = st.text_input("Cron expression", placeholder="*/15 * * * *")
         submitted = st.form_submit_button("Explain cron")
 
-if not submitted:
+if submitted:
+    # Stored in session_state (not rendered directly here) because the .ics export
+    # panel's download button below triggers its own rerun -- on that rerun
+    # `submitted` is False again, which would otherwise collapse this whole
+    # results section right after the click.
+    result = explain_cron(expression)
+    st.session_state["cron_explainer_state"] = {"expression": expression, "result": result}
+
+state = st.session_state.get("cron_explainer_state")
+
+if state is None:
     render_empty_state("Ready to explain a schedule", "A readable explanation and the next five run times appear after validation.")
 
-if submitted:
+if state is not None:
+    result = state["result"]
     with tool_result_panel("cron_result", related_to="cron_explainer"):
-        result = explain_cron(expression)
         render_section_heading("Cron result", "Readable schedule summary and next run times.")
         if result["ok"]:
             st.success("Valid cron expression")
@@ -50,7 +60,7 @@ if submitted:
             st.caption("No run times available for invalid input.")
 
         if result["ok"]:
-            ics_result = cron_ics_export(expression, count=10)
+            ics_result = cron_ics_export(state["expression"], count=10)
             if ics_result["ok"]:
                 with tool_download_panel("cron_ics_export"):
                     render_section_heading(

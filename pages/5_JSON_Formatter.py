@@ -39,11 +39,29 @@ with tool_form_panel("json_formatter"):
         format_clicked = action_submitted and action == "Format JSON"
         minify_clicked = action_submitted and action == "Minify JSON"
 
-if not (validate_clicked or format_clicked or minify_clicked):
+if validate_clicked or format_clicked or minify_clicked:
+    # Stored in session_state (not rendered directly here) because the "Expand all"
+    # toggle, the search box, and the export download button below all trigger their
+    # own reruns -- on those reruns the transient *_clicked flags are False again,
+    # which would otherwise collapse this whole results section the instant any of
+    # them is touched.
+    st.session_state["json_formatter_state"] = {
+        "json_input": json_input,
+        "result": format_json_text(json_input, minify=minify_clicked, indent=indent),
+        "format_clicked": format_clicked,
+        "minify_clicked": minify_clicked,
+    }
+
+state = st.session_state.get("json_formatter_state")
+
+if state is None:
     render_empty_state("Ready to process JSON", "Validation status and formatted output appear here after you run an action.")
 
-if validate_clicked or format_clicked or minify_clicked:
-    result = format_json_text(json_input, minify=minify_clicked, indent=indent)
+if state is not None:
+    json_input = state["json_input"]
+    result = state["result"]
+    format_clicked = state["format_clicked"]
+    minify_clicked = state["minify_clicked"]
     with tool_result_panel("json_result", related_to="json_formatter"):
         render_section_heading("JSON result", "Validation status and transformed output.")
         if not result["ok"]:

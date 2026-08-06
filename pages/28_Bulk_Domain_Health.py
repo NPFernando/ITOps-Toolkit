@@ -37,9 +37,6 @@ with tool_form_panel("bulk_domain_health"):
         include_dmarc = st.checkbox("Include DMARC check", value=True)
         submitted = st.form_submit_button("Run bulk check")
 
-if not submitted:
-    render_empty_state("Ready for a domain list", "Per-domain risk scores and status appear here after the batch check completes.")
-
 if submitted:
     raw_text = uploaded_file.getvalue().decode("utf-8", errors="ignore") if uploaded_file is not None else ""
     domains = parse_domain_list(raw_text) or parse_domain_list(pasted_text)
@@ -50,26 +47,38 @@ if submitted:
         truncated = len(domains) > MAX_DOMAINS_PER_BATCH
         with st.spinner(f"Checking {min(len(domains), MAX_DOMAINS_PER_BATCH)} domains..."):
             results = run_bulk_health_check(domains, include_dmarc=include_dmarc)
+        # Stored in session_state (not rendered directly here) because the export
+        # panel's download button below triggers its own rerun -- on that rerun
+        # `submitted` is False again, which would otherwise collapse this whole
+        # results section right after the click.
+        st.session_state["bulk_domain_health_state"] = {"results": results, "truncated": truncated, "total_domains": len(domains)}
 
-        with tool_result_panel("bulk_domain_health_result"):
-            render_section_heading("Batch results", eyebrow="Result")
-            if truncated:
-                st.warning(f"{len(domains)} domains were provided; only the first {MAX_DOMAINS_PER_BATCH} were checked.")
+state = st.session_state.get("bulk_domain_health_state")
 
-            frame = pd.DataFrame(results)
-            st.dataframe(frame, width="stretch", hide_index=True)
+if state is None:
+    render_empty_state("Ready for a domain list", "Per-domain risk scores and status appear here after the batch check completes.")
 
-            healthy = sum(1 for r in results if r["risk_status"] == "Healthy")
-            warning = sum(1 for r in results if r["risk_status"] == "Warning")
-            critical = sum(1 for r in results if r["risk_status"] == "Critical")
-            errored = sum(1 for r in results if r["risk_status"] == "Unknown")
-            m1, m2, m3, m4 = st.columns(4)
-            m1.metric("Healthy", healthy)
-            m2.metric("Warning", warning)
-            m3.metric("Critical", critical)
-            m4.metric("Errored", errored)
+if state is not None:
+    results = state["results"]
+    with tool_result_panel("bulk_domain_health_result"):
+        render_section_heading("Batch results", eyebrow="Result")
+        if state["truncated"]:
+            st.warning(f"{state['total_domains']} domains were provided; only the first {MAX_DOMAINS_PER_BATCH} were checked.")
 
-        csv_data = frame.to_csv(index=False).encode("utf-8")
-        with tool_download_panel("bulk_domain_health_export", related_to="bulk_domain_health"):
-            render_section_heading("Export", "Download the current in-memory results.", eyebrow="Downloads")
-            st.download_button("Download results as CSV", csv_data, file_name="bulk-domain-health.csv", mime="text/csv")
+        frame = pd.DataFrame(results)
+        st.dataframe(frame, width="stretch", hide_index=True)
+
+        healthy = sum(1 for r in results if r["risk_status"] == "Healthy")
+        warning = sum(1 for r in results if r["risk_status"] == "Warning")
+        critical = sum(1 for r in results if r["risk_status"] == "Critical")
+        errored = sum(1 for r in results if r["risk_status"] == "Unknown")
+        m1, m2, m3, m4 = st.columns(4)
+        m1.metric("Healthy", healthy)
+        m2.metric("Warning", warning)
+        m3.metric("Critical", critical)
+        m4.metric("Errored", errored)
+
+    csv_data = frame.to_csv(index=False).encode("utf-8")
+    with tool_download_panel("bulk_domain_health_export", related_to="bulk_domain_health"):
+        render_section_heading("Export", "Download the current in-memory results.", eyebrow="Downloads")
+        st.download_button("Download results as CSV", csv_data, file_name="bulk-domain-health.csv", mime="text/csv")
