@@ -8,11 +8,17 @@ from urllib.parse import urlencode
 
 
 DEFAULT_GITHUB_URL = "https://github.com/NPFernando/ITOps-Toolkit"
+DEFAULT_APP_URL = "https://itops-toolkit.streamlit.app"
 
 
 def github_repository_url() -> str:
     """Return the configured public repository URL."""
     return (os.getenv("ITOPS_GITHUB_URL", "").strip() or DEFAULT_GITHUB_URL).rstrip("/")
+
+
+def app_base_url() -> str:
+    """Return the app's own public base URL, for building shareable links."""
+    return (os.getenv("ITOPS_APP_URL", "").strip() or DEFAULT_APP_URL).rstrip("/")
 
 
 def github_repository_slug(repo_url: str | None = None) -> tuple[str, str] | None:

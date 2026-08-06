@@ -210,11 +210,11 @@
     {
       "title": "Shareable favorites link",
       "category": "UX / Design",
-      "status": "AI Recommended",
+      "status": "Complete",
       "votes": 8,
-      "description": "Turn the current favorites list into a copyable URL so a curated toolkit can be shared or bookmarked.",
+      "description": "A \"Share favorites\" popover on Home builds a copyable link (a new read-only shared_fav param) that renders the sender's list as a distinct \"Shared Favorites\" section for the recipient. Deliberately NOT built by reusing the existing fav param directly: that would have let opening a shared link silently overwrite the recipient's own saved favorites in localStorage, since the existing persistence mirror writes any fav value present in the URL straight into local storage. shared_fav is excluded from that mirror entirely.",
       "rationale": "Favorites already live in the URL's query params client-side; surfacing a share/copy action is a small extension of that mechanism.",
-      "updated_at": "2026-08-05"
+      "updated_at": "2026-08-06"
     },
     {
       "title": "Installable PWA / offline app shell",
