@@ -495,6 +495,18 @@ TOOLS: tuple[ToolMeta, ...] = (
         category="Web & Dev",
         is_new=True,
     ),
+    ToolMeta(
+        title="M365 SKU Decoder",
+        short_title="M365 SKU Decoder",
+        description="Convert Microsoft 365 license SKU strings and GUIDs to readable product names.",
+        path="pages/39_M365_SKU_Decoder.py",
+        icon="M365",
+        accent="#0078d4",
+        slug="m365_sku_decoder",
+        professions=("Sysadmin / DevOps", "Support Engineer", "Helpdesk / L1"),
+        category="Reference",
+        is_new=True,
+    ),
 )
 
 POPULAR_TOOLS = TOOLS[:5]
@@ -525,6 +537,7 @@ TOOL_BUNDLES: dict[str, tuple[str, ...]] = {
     "port_reference": ("subnet_calculator", "mac_address_tool"),
     "windows_event_reference": ("log_troubleshooting", "port_reference", "windows_error_reference"),
     "windows_error_reference": ("windows_event_reference", "log_troubleshooting"),
+    "m365_sku_decoder": ("windows_event_reference", "port_reference"),
     "email_header_analyzer": ("dns_records", "domain_health", "dkim_lookup"),
     "dkim_lookup": ("email_header_analyzer", "domain_health", "email_record_builder"),
     "email_record_builder": ("dkim_lookup", "dns_records"),
@@ -1250,6 +1263,7 @@ def _material_icon_for(slug: str) -> str:
         "email_record_builder": ":material/build:",
         "windows_error_reference": ":material/error_outline:",
         "config_format_converter": ":material/sync_alt:",
+        "m365_sku_decoder": ":material/badge:",
     }
     return icons.get(slug, ":material/build:")
 

@@ -435,10 +435,10 @@
     {
       "title": "M365 license SKU decoder",
       "category": "Tools",
-      "status": "Planned",
+      "status": "Complete",
       "votes": 6,
       "description": "Convert Microsoft 365 license SKU strings and GUIDs (e.g. SPE_E3, ENTERPRISEPACK) to readable product names.",
-      "rationale": "Inspired by killertools.net's M365 SKU Decoder. High-value for MSPs auditing tenant licensing; a static lookup table, same shape as Port Reference.",
+      "rationale": "Shipped as a dedicated M365 SKU Decoder page. All 42 entries were verified directly against Microsoft's official licensing CSV (learn.microsoft.com/entra/identity/users/licensing-service-plan-reference) rather than reconstructed from memory -- an initial memory-based draft and a lossy AI-summarized page fetch both produced several wrong/swapped GUIDs, caught only by cross-checking against the raw authoritative CSV before shipping.",
       "updated_at": "2026-08-06"
     },
     {
