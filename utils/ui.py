@@ -531,6 +531,18 @@ TOOLS: tuple[ToolMeta, ...] = (
         category="Web & Dev",
         is_new=True,
     ),
+    ToolMeta(
+        title="IP Geolocation Lookup",
+        short_title="IP Geolocation",
+        description="Resolve an IP address to approximate geography, ASN, and ISP/org info.",
+        path="pages/42_IP_Geolocation_Lookup.py",
+        icon="GEO",
+        accent="#2a9d8f",
+        slug="ip_geolocation",
+        professions=("Sysadmin / DevOps", "Security Engineer", "Support Engineer"),
+        category="Network",
+        is_new=True,
+    ),
 )
 
 POPULAR_TOOLS = TOOLS[:5]
@@ -555,6 +567,7 @@ TOOL_BUNDLES: dict[str, tuple[str, ...]] = {
     "whois_lookup": ("dns_records", "domain_health", "ssl_certificate"),
     "bulk_domain_health": ("domain_health", "dns_records", "ssl_certificate"),
     "mac_address_tool": ("subnet_calculator", "cidr_aggregator", "ipv6_compressor"),
+    "ip_geolocation": ("whois_lookup", "dns_records", "http_status"),
     "subnet_calculator": ("cidr_aggregator", "ipv6_compressor", "mac_address_tool"),
     "cidr_aggregator": ("subnet_calculator", "ipv6_compressor"),
     "ipv6_compressor": ("subnet_calculator", "cidr_aggregator"),
@@ -1292,6 +1305,7 @@ def _material_icon_for(slug: str) -> str:
         "m365_sku_decoder": ":material/badge:",
         "id_generator": ":material/fingerprint:",
         "json_diff": ":material/compare_arrows:",
+        "ip_geolocation": ":material/location_on:",
     }
     return icons.get(slug, ":material/build:")
 
