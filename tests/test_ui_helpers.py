@@ -153,6 +153,7 @@ def test_expected_tools_are_tagged_new():
         "whois_lookup",
         "bulk_domain_health",
         "webhook_tester",
+        "uptime_trend",
     }
 
 
@@ -298,6 +299,7 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "case_converter",
             "color_converter",
             "webhook_tester",
+            "uptime_trend",
         ],
         "Ops & Automation": ["cron_explainer", "log_troubleshooting", "timestamp_converter"],
         "Reference": ["port_reference"],

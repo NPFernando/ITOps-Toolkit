@@ -84,11 +84,11 @@
     {
       "title": "One-off uptime and latency trend visualization",
       "category": "Reports",
-      "status": "Planned",
+      "status": "Complete",
       "votes": 61,
       "description": "Show short-lived trend charts without storing historical checks.",
-      "rationale": "Gives context during incident checks while keeping the app persistence-free.",
-      "updated_at": "2026-04-30"
+      "rationale": "Gives context during incident checks while keeping the app persistence-free. Shipped as a new Uptime Trend tool: runs 3-20 sequential HTTP checks against a URL in a single page render, with an optional delay between checks, and plots latency + uptime % as a plotly chart. Every sample lives only in that one script run's return value -- nothing is written to disk, a database, or session state that survives the page. Capped checks/interval to keep it from being usable as a load-testing tool against third parties, with an explicit warning in the page copy.",
+      "updated_at": "2026-08-06"
     },
     {
       "title": "GitHub reaction-based voting",
