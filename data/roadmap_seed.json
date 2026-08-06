@@ -413,6 +413,141 @@
       "description": "Generate a QR code for a URL, Wi-Fi credentials, or plain text/contact info, for onboarding handoffs and support materials.",
       "rationale": "Common small MSP/support utility (e.g. printed Wi-Fi onboarding cards) that fits the existing 'small standalone utility' shape of Color Converter and Case Converter.",
       "updated_at": "2026-08-06"
+    },
+    {
+      "title": "Windows Event ID reference",
+      "category": "Tools",
+      "status": "Planned",
+      "votes": 8,
+      "description": "Searchable reference of common Windows Event Log IDs with description, source, and severity, similar to killertools.net's Windows Event Lookup.",
+      "rationale": "Inspired by a comparison against killertools.net (a competing MSP/sysadmin toolkit). Same 'curated static dataset + search box' shape already proven out by the existing Port Reference page -- no external API needed, just a maintained data table.",
+      "updated_at": "2026-08-06"
+    },
+    {
+      "title": "Windows/Win32 error code lookup",
+      "category": "Tools",
+      "status": "Planned",
+      "votes": 7,
+      "description": "Look up a Windows error code (hex or decimal) -- system errors, BSOD stop codes, WMI/RPC/MSI errors -- and get the plain-language meaning.",
+      "rationale": "Inspired by killertools.net's Windows Error Code Lookup. Same reference-table pattern as Port Reference; complements the existing Log Troubleshooting Assistant for techs triaging Windows-side incidents.",
+      "updated_at": "2026-08-06"
+    },
+    {
+      "title": "M365 license SKU decoder",
+      "category": "Tools",
+      "status": "Planned",
+      "votes": 6,
+      "description": "Convert Microsoft 365 license SKU strings and GUIDs (e.g. SPE_E3, ENTERPRISEPACK) to readable product names.",
+      "rationale": "Inspired by killertools.net's M365 SKU Decoder. High-value for MSPs auditing tenant licensing; a static lookup table, same shape as Port Reference.",
+      "updated_at": "2026-08-06"
+    },
+    {
+      "title": "CVE lookup",
+      "category": "Security",
+      "status": "Planned",
+      "votes": 9,
+      "description": "Search the NIST National Vulnerability Database by CVE ID or keyword and show severity, description, and affected products.",
+      "rationale": "Inspired by killertools.net's CVE Lookup. NVD has a public, keyless API for basic queries, so this follows the same 'optional live external lookup' pattern already validated by WHOIS/MAC-vendor/DNS work -- genuinely useful for MSP security triage, not currently covered by anything in this toolkit.",
+      "updated_at": "2026-08-06"
+    },
+    {
+      "title": "SPF/DMARC/DKIM record builder",
+      "category": "Security",
+      "status": "Planned",
+      "votes": 7,
+      "description": "Generate correctly-formatted SPF, DMARC, and DKIM TXT record strings from simple inputs (allowed senders, policy level, reporting address), the reverse of the existing DNS/email-security checks.",
+      "rationale": "Inspired by killertools.net's Email Record Generator. Directly complements the existing Domain Health Checker / DKIM selector lookup roadmap item -- checking is covered, building the record isn't yet.",
+      "updated_at": "2026-08-06"
+    },
+    {
+      "title": "Integer base converter",
+      "category": "Tools",
+      "status": "Planned",
+      "votes": 5,
+      "description": "Convert a number between binary, octal, decimal, and hexadecimal, with live conversion as you type.",
+      "rationale": "Inspired by killertools.net's Integer Base Converter. Small, stdlib-only, universally useful dev/IT utility not currently in this toolkit.",
+      "updated_at": "2026-08-06"
+    },
+    {
+      "title": "UUID / ULID generator",
+      "category": "Tools",
+      "status": "Planned",
+      "votes": 6,
+      "description": "Generate UUIDs (v4) and ULIDs in bulk, with copy-to-clipboard and a CSV export for when a batch of test IDs is needed.",
+      "rationale": "Inspired by killertools.net's UUID/ULID generators. Extremely common dev/ops need not currently covered by this toolkit; stdlib `uuid` covers UUIDv4 with no new dependency.",
+      "updated_at": "2026-08-06"
+    },
+    {
+      "title": "TOTP/OTP code generator and validator",
+      "category": "Security",
+      "status": "Planned",
+      "votes": 6,
+      "description": "Generate and validate time-based one-time passcodes (TOTP) from a shared secret, for testing MFA setups without needing a phone in hand.",
+      "rationale": "Inspired by killertools.net's OTP tool. Useful for techs testing MFA enrollment/troubleshooting; buildable with the small, well-audited `pyotp` package (a new dependency, worth calling out at build time given this app's history with dependency-related outages).",
+      "updated_at": "2026-08-06"
+    },
+    {
+      "title": "Bcrypt hash generator/verifier",
+      "category": "Security",
+      "status": "Planned",
+      "votes": 5,
+      "description": "Hash a value with bcrypt (configurable cost factor) and separately verify a value against an existing bcrypt hash.",
+      "rationale": "Inspired by killertools.net's bcrypt tool. Complements the existing Hash Generator, which only covers fixed-digest algorithms (MD5/SHA family), not bcrypt's salted/adaptive scheme -- useful when testing an app's auth/password storage.",
+      "updated_at": "2026-08-06"
+    },
+    {
+      "title": "RSA/SSH key pair generator",
+      "category": "Security",
+      "status": "Planned",
+      "votes": 6,
+      "description": "Generate an RSA (or ed25519) key pair in the browser for test/throwaway use -- SSH authorized_keys format and PEM private key.",
+      "rationale": "Inspired by killertools.net's RSA Key Pair Generator. Useful for spinning up disposable test credentials during troubleshooting; buildable with Python's `cryptography` package (a new dependency).",
+      "updated_at": "2026-08-06"
+    },
+    {
+      "title": "chmod calculator",
+      "category": "Tools",
+      "status": "Planned",
+      "votes": 5,
+      "description": "Convert between symbolic (rwxr-xr--) and octal (754) Unix file permission notation, both directions, with a checkbox grid for building permissions visually.",
+      "rationale": "Inspired by killertools.net's chmod calculator. Small, stdlib-only sysadmin staple, no external dependency needed.",
+      "updated_at": "2026-08-06"
+    },
+    {
+      "title": "Config format converter (YAML / TOML / XML / JSON)",
+      "category": "Tools",
+      "status": "Planned",
+      "votes": 7,
+      "description": "Convert a pasted config snippet between YAML, TOML, XML, and JSON, reusing the existing JSON Formatter's validation/error-display pattern.",
+      "rationale": "Inspired by killertools.net's YAML/TOML/XML converters. Common ops task when moving config between tools (e.g. Ansible YAML to a JSON API payload); would need `PyYAML` and `toml`/`tomllib` (stdlib in 3.11+) as dependencies.",
+      "updated_at": "2026-08-06"
+    },
+    {
+      "title": "JSON diff viewer",
+      "category": "Tools",
+      "status": "Planned",
+      "votes": 6,
+      "description": "Structurally diff two JSON documents (key-aware, not line-based) and highlight added/removed/changed fields.",
+      "rationale": "Inspired by killertools.net's JSON diff tool. Complements the existing Text Diff Checker (line-based) and JSON Formatter -- useful for comparing API responses or config exports where line-based diffing produces noisy results from key reordering.",
+      "updated_at": "2026-08-06"
+    },
+    {
+      "title": "SQL formatter/prettifier",
+      "category": "Tools",
+      "status": "Planned",
+      "votes": 5,
+      "description": "Reformat a pasted SQL query with consistent indentation and keyword casing for readability.",
+      "rationale": "Inspired by killertools.net's SQL Prettify tool. Useful for sysadmins/DBAs pasting minified or exported queries; buildable with the small `sqlparse` package (a new dependency).",
+      "updated_at": "2026-08-06"
+    },
+    {
+      "title": "HTTP status code reference",
+      "category": "Tools",
+      "status": "Planned",
+      "votes": 4,
+      "description": "Searchable static reference of HTTP status codes with meaning and common causes, standalone from the live HTTP Status Checker.",
+      "rationale": "Inspired by killertools.net's HTTP Status Codes reference. Same static-lookup pattern as Port Reference; useful as a quick lookup when a code shows up in a log rather than from a live check.",
+      "updated_at": "2026-08-06"
     }
   ]
 }
