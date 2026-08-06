@@ -117,6 +117,49 @@ def test_log_page_renders_remediation_steps_as_interactive_checkboxes(monkeypatc
     assert all(c.value is False for c in remediation_checkboxes)
 
 
+def test_log_page_ticking_remediation_checkbox_does_not_hide_results(monkeypatch):
+    """Regression: the remediation checkboxes render outside `st.form`, so ticking one
+    triggers a rerun where the submit button's transient `submitted` value is False
+    again. Results must stay keyed off session_state, not `submitted`, or the whole
+    findings section (checkboxes included) disappears the instant a box is checked."""
+    _set_azure_config(monkeypatch, configured=False)
+
+    app = _submit_log(_run_log_page(), use_ai_summary=False)
+    remediation_checkboxes = [c for c in app.checkbox if c.key and c.key.startswith("remediation_step_")]
+    assert remediation_checkboxes
+
+    remediation_checkboxes[0].set_value(True)
+    app.run()
+    assert not app.exception
+
+    text = _page_text(app)
+    assert "Ready to analyze sanitized logs" not in text
+    still_present = [c for c in app.checkbox if c.key and c.key.startswith("remediation_step_")]
+    assert still_present
+    assert still_present[0].value is True
+
+
+def test_log_page_remediation_state_does_not_leak_across_different_submissions(monkeypatch):
+    """Regression: checkbox keys were purely positional (finding_index/step_index), so a
+    ticked box could appear pre-checked against an unrelated finding from a later,
+    different submission that happens to land at the same index."""
+    _set_azure_config(monkeypatch, configured=False)
+
+    app = _submit_log(_run_log_page(), use_ai_summary=False)
+    remediation_checkboxes = [c for c in app.checkbox if c.key and c.key.startswith("remediation_step_")]
+    remediation_checkboxes[0].set_value(True)
+    app.run()
+
+    app.text_area[0].set_value("connection refused timeout")
+    app.button[0].click()
+    app.run()
+    assert not app.exception
+
+    new_checkboxes = [c for c in app.checkbox if c.key and c.key.startswith("remediation_step_")]
+    assert new_checkboxes
+    assert all(c.value is False for c in new_checkboxes)
+
+
 def test_log_page_checked_submit_renders_fake_ai_success(monkeypatch):
     _set_azure_config(monkeypatch, configured=True)
     calls = []
