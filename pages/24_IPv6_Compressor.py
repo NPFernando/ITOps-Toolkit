@@ -34,7 +34,7 @@ if not submitted:
 
 if submitted:
     result = convert_ipv6(address_input)
-    with tool_result_panel("ipv6_result"):
+    with tool_result_panel("ipv6_result", related_to="ipv6_compressor"):
         render_section_heading("Converted forms", eyebrow="Result")
         if not result["ok"]:
             st.error(result["error"])

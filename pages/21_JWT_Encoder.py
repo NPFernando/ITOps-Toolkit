@@ -42,7 +42,7 @@ if not submitted:
 
 if submitted:
     result = encode_jwt(payload_input, secret_input, algorithm)
-    with tool_result_panel("jwt_encode_result"):
+    with tool_result_panel("jwt_encode_result", related_to="jwt_encoder"):
         render_section_heading("Signed token", "Copy this now -- it is not stored or logged.")
         if not result["ok"]:
             st.error(result["error"])

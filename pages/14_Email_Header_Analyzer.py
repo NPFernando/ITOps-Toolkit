@@ -35,7 +35,7 @@ if not submitted:
 
 if submitted:
     result = parse_email_headers(headers_input)
-    with tool_result_panel("email_header_result"):
+    with tool_result_panel("email_header_result", related_to="email_header_analyzer"):
         render_section_heading("Header summary", "Common fields found in the pasted headers.")
         if not result["ok"]:
             st.error(result["error"])

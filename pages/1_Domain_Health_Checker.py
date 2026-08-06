@@ -281,7 +281,7 @@ if submitted:
         csv_data = pd.DataFrame(rows).to_csv(index=False).encode("utf-8")
         markdown_data = _markdown_summary(normalized, dns_summary, ssl_result, http_result, risk)
         html_data = build_domain_health_html_report(normalized, dns_summary, ssl_result, http_result, risk, rows)
-        with tool_download_panel("domain_exports"):
+        with tool_download_panel("domain_exports", related_to="domain_health"):
             render_section_heading("Export", "Download the current in-memory results.", eyebrow="Downloads")
             export_col_a, export_col_b, export_col_c = st.columns(3)
             export_col_a.download_button("Download results as CSV", csv_data, file_name=f"{normalized}-health.csv", mime="text/csv")

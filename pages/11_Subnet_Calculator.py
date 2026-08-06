@@ -34,7 +34,7 @@ if not submitted:
 
 if submitted:
     result = calculate_subnet(cidr_input)
-    with tool_result_panel("subnet_result"):
+    with tool_result_panel("subnet_result", related_to="subnet_calculator"):
         render_section_heading("Subnet details", "Computed from the entered address or CIDR block.")
         if not result["ok"]:
             st.error(result["error"])

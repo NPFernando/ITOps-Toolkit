@@ -39,7 +39,7 @@ if not submitted:
 
 if submitted:
     result = test_regex(pattern_input, text_input, tuple(flag_names))
-    with tool_result_panel("regex_result"):
+    with tool_result_panel("regex_result", related_to="regex_tester"):
         render_section_heading("Matches", f"{result['match_count']} match(es) found.")
         if not result["ok"]:
             st.error(result["error"])

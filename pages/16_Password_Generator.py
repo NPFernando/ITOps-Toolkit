@@ -58,7 +58,7 @@ if not (password_clicked or passphrase_clicked):
 
 if password_clicked:
     result = generate_password(length, use_upper, use_lower, use_digits, use_symbols, exclude_ambiguous)
-    with tool_result_panel("password_result"):
+    with tool_result_panel("password_result", related_to="password_generator"):
         render_section_heading("Generated password", "Copy this now -- it is not stored or logged.")
         if not result["ok"]:
             st.error(result["error"])
@@ -68,7 +68,7 @@ if password_clicked:
 
 if passphrase_clicked:
     result = generate_passphrase(word_count, separator, capitalize, include_number)
-    with tool_result_panel("passphrase_result"):
+    with tool_result_panel("passphrase_result", related_to="password_generator"):
         render_section_heading("Generated passphrase", "Copy this now -- it is not stored or logged.")
         if not result["ok"]:
             st.error(result["error"])

@@ -41,7 +41,7 @@ if not (hash_clicked or hmac_clicked):
 
 if hash_clicked:
     result = generate_hashes(text_input)
-    with tool_result_panel("hash_result"):
+    with tool_result_panel("hash_result", related_to="hash_generator"):
         render_section_heading("Digests", "Hex-encoded digests for the entered text.")
         if not result["ok"]:
             st.error(result["error"])
@@ -51,7 +51,7 @@ if hash_clicked:
 
 if hmac_clicked:
     result = generate_hmac(text_input, secret_input, hmac_algorithm)
-    with tool_result_panel("hmac_result"):
+    with tool_result_panel("hmac_result", related_to="hash_generator"):
         render_section_heading("HMAC", f"HMAC-{hmac_algorithm.upper()} of the entered text.")
         if not result["ok"]:
             st.error(result["error"])

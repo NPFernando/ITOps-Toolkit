@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+from contextlib import contextmanager
 from dataclasses import dataclass
 from html import escape
 from typing import Any, Iterable
@@ -391,6 +392,60 @@ TOOLS: tuple[ToolMeta, ...] = (
 POPULAR_TOOLS = TOOLS[:5]
 TITLE_TO_SLUG: dict[str, str] = {tool.title: tool.slug for tool in TOOLS}
 
+# Curated "what would you naturally run next" pairings for a real troubleshooting
+# flow (e.g. DNS -> SSL -> HTTP), not derived from category -- category groups
+# tools by domain, not by which ones chain together in practice. Intentionally
+# hand-picked rather than exhaustive: a tool with no obvious next step (e.g. a
+# pure text converter with no natural chain) is simply absent, and
+# render_related_tools() renders nothing for an absent slug rather than a
+# forced, meaningless section.
+TOOL_BUNDLES: dict[str, tuple[str, ...]] = {
+    "domain_health": ("dns_records", "ssl_certificate", "whois_lookup"),
+    "dns_records": ("domain_health", "whois_lookup", "ssl_certificate"),
+    "ssl_certificate": ("domain_health", "dns_records", "http_status"),
+    "http_status": ("domain_health", "ssl_certificate", "user_agent_parser"),
+    "whois_lookup": ("dns_records", "domain_health", "ssl_certificate"),
+    "bulk_domain_health": ("domain_health", "dns_records", "ssl_certificate"),
+    "mac_address_tool": ("subnet_calculator", "cidr_aggregator", "ipv6_compressor"),
+    "subnet_calculator": ("cidr_aggregator", "ipv6_compressor", "mac_address_tool"),
+    "cidr_aggregator": ("subnet_calculator", "ipv6_compressor"),
+    "ipv6_compressor": ("subnet_calculator", "cidr_aggregator"),
+    "port_reference": ("subnet_calculator", "mac_address_tool"),
+    "email_header_analyzer": ("dns_records", "domain_health"),
+    "password_generator": ("hash_generator",),
+    "hash_generator": ("password_generator", "jwt_decoder"),
+    "jwt_decoder": ("jwt_encoder", "hash_generator"),
+    "jwt_encoder": ("jwt_decoder", "hash_generator"),
+    "json_formatter": ("base64_tool", "regex_tester"),
+    "base64_tool": ("json_formatter", "url_encoder_decoder"),
+    "url_encoder_decoder": ("base64_tool", "json_formatter"),
+    "regex_tester": ("text_diff_checker", "json_formatter"),
+    "text_diff_checker": ("regex_tester", "case_converter"),
+    "case_converter": ("text_diff_checker", "url_encoder_decoder"),
+    "timestamp_converter": ("cron_explainer",),
+    "cron_explainer": ("timestamp_converter", "log_troubleshooting"),
+    "log_troubleshooting": ("cron_explainer", "webhook_tester"),
+    "webhook_tester": ("http_status", "log_troubleshooting"),
+    "user_agent_parser": ("http_status", "email_header_analyzer"),
+}
+
+
+def related_tools(slug: str) -> tuple[ToolMeta, ...]:
+    """Return the curated "next tool" suggestions for a tool slug. Empty if none defined."""
+    return tuple(_resolve_slugs(TOOL_BUNDLES.get(slug, ())))
+
+
+def render_related_tools(slug: str) -> None:
+    """Render a compact "Related tools" row of suggestions, if any are curated for ``slug``."""
+    tools = related_tools(slug)
+    if not tools:
+        return
+    st.markdown('<div class="related-tools-label">Related tools</div>', unsafe_allow_html=True)
+    cols = st.columns(len(tools), gap="small")
+    for col, tool in zip(cols, tools, strict=True):
+        with col:
+            _safe_page_link(tool.path, label=tool.short_title, icon=":material/arrow_forward:", stretch_width=True)
+
 
 def apply_app_shell(active_page: str) -> None:
     """Apply global theme CSS and render the shared sidebar shell.
@@ -734,12 +789,23 @@ def tool_form_panel(key: str):
     return st.container(key=f"tool_form_panel_{_key_slug(key)}")
 
 
-def tool_result_panel(key: str):
-    return st.container(key=f"tool_result_panel_{_key_slug(key)}")
+@contextmanager
+def tool_result_panel(key: str, related_to: str | None = None):
+    """Result panel container. Pass ``related_to=<tool slug>`` to append a curated
+    "Related tools" row after the panel's own content, if any bundle is defined."""
+    with st.container(key=f"tool_result_panel_{_key_slug(key)}"):
+        yield
+        if related_to:
+            render_related_tools(related_to)
 
 
-def tool_download_panel(key: str):
-    return st.container(key=f"tool_download_panel_{_key_slug(key)}")
+@contextmanager
+def tool_download_panel(key: str, related_to: str | None = None):
+    """Download panel container. Accepts ``related_to`` the same way tool_result_panel does."""
+    with st.container(key=f"tool_download_panel_{_key_slug(key)}"):
+        yield
+        if related_to:
+            render_related_tools(related_to)
 
 
 def display_rows_frame(rows: Iterable[dict[str, Any]]) -> pd.DataFrame:
@@ -1973,6 +2039,15 @@ def _inject_global_css(mode: str) -> None:
             font-weight: 900;
             letter-spacing: 0;
             text-transform: uppercase;
+        }
+
+        .related-tools-label {
+            color: var(--itops-muted);
+            font-size: 0.72rem;
+            font-weight: 900;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            margin: 1.4rem 0 0.5rem;
         }
 
         .tool-empty-state {

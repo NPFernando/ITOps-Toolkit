@@ -35,7 +35,7 @@ if not submitted:
 if submitted:
     with st.spinner("Querying RDAP..."):
         result = lookup_whois(domain_input)
-    with tool_result_panel("whois_result"):
+    with tool_result_panel("whois_result", related_to="whois_lookup"):
         render_section_heading("Registration details", eyebrow="Result")
         if not result["ok"]:
             st.error(result["error"])
