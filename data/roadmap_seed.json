@@ -141,8 +141,8 @@
       "status": "Planned",
       "votes": 18,
       "description": "A keyboard-triggered launcher to jump straight to any tool, complementing the sidebar quick-search.",
-      "rationale": "Power users on killer-tools-style sites expect a Ctrl+K-style jump; the sidebar search covers most of this need today but isn't reachable by keyboard shortcut.",
-      "updated_at": "2026-08-05"
+      "rationale": "Power users on killer-tools-style sites expect a Ctrl+K-style jump; the sidebar search covers most of this need today but isn't reachable by keyboard shortcut. NOT flatly blocked like the PWA item, but not attempted this round either: unlike a real service worker, a global keydown listener + overlay is plausibly buildable via the same same-origin iframe trick this app already uses for the localStorage mirror (the iframe can reach window.top.document, so it could attach a listener and DOM-inject an overlay there). But it's a materially bigger and more fragile JS surface than anything shipped so far -- real DOM manipulation of the top-level page from inside an iframe script, a hand-built filter/keyboard-nav overlay, dark/light theme handling, focus trapping -- and this sandboxed dev environment has no real browser to visually verify any of it before it ships to a live auto-deploying site. Left open rather than built blind; worth a manual-verification pass with browser access, not a routine PR.",
+      "updated_at": "2026-08-06"
     },
     {
       "title": "Drag-to-reorder favorites",
@@ -222,8 +222,8 @@
       "status": "AI Recommended",
       "votes": 11,
       "description": "Add a web app manifest and service worker so the toolkit can be installed and its shell used offline.",
-      "rationale": "Matches the \"works everywhere\" positioning already in the trust chips and feature strip.",
-      "updated_at": "2026-08-05"
+      "rationale": "Matches the \"works everywhere\" positioning already in the trust chips and feature strip. BLOCKED as scoped, verified against the installed streamlit==1.61.0 package source, not just platform folklore: Streamlit's only static-file-serving route is server.enableStaticServing, which mounts files at /app/static/{path} (streamlit/web/server/starlette/starlette_routes.py, _ROUTE_APP_STATIC), never at the origin root. A service worker registered from /app/static/sw.js can only control pages under /app/static/ by default (its scope is limited to its own directory unless the server sends a Service-Worker-Allowed header, which Streamlit's static handler has no way to set) -- so it could never actually control the live app pages, making a real installable/offline PWA unreachable through any Streamlit-native mechanism, independent of whatever Streamlit Cloud's proxy additionally restricts.",
+      "updated_at": "2026-08-06"
     },
     {
       "title": "Accessibility audit pass",
