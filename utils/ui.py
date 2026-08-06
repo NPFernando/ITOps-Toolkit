@@ -471,6 +471,18 @@ TOOLS: tuple[ToolMeta, ...] = (
         category="Network",
         is_new=True,
     ),
+    ToolMeta(
+        title="Windows Error Reference",
+        short_title="Windows Errors",
+        description="Look up Windows/Win32 error codes (decimal or hex) -- Win32, service control, RPC, HRESULT, and NTSTATUS.",
+        path="pages/37_Windows_Error_Reference.py",
+        icon="WER",
+        accent="#8d99ae",
+        slug="windows_error_reference",
+        professions=("Sysadmin / DevOps", "Support Engineer", "Helpdesk / L1"),
+        category="Reference",
+        is_new=True,
+    ),
 )
 
 POPULAR_TOOLS = TOOLS[:5]
@@ -499,7 +511,8 @@ TOOL_BUNDLES: dict[str, tuple[str, ...]] = {
     "cidr_aggregator": ("subnet_calculator", "ipv6_compressor"),
     "ipv6_compressor": ("subnet_calculator", "cidr_aggregator"),
     "port_reference": ("subnet_calculator", "mac_address_tool"),
-    "windows_event_reference": ("log_troubleshooting", "port_reference"),
+    "windows_event_reference": ("log_troubleshooting", "port_reference", "windows_error_reference"),
+    "windows_error_reference": ("windows_event_reference", "log_troubleshooting"),
     "email_header_analyzer": ("dns_records", "domain_health", "dkim_lookup"),
     "dkim_lookup": ("email_header_analyzer", "domain_health", "email_record_builder"),
     "email_record_builder": ("dkim_lookup", "dns_records"),
@@ -1222,6 +1235,7 @@ def _material_icon_for(slug: str) -> str:
         "windows_event_reference": ":material/event_note:",
         "dkim_lookup": ":material/key:",
         "email_record_builder": ":material/build:",
+        "windows_error_reference": ":material/error_outline:",
     }
     return icons.get(slug, ":material/build:")
 
