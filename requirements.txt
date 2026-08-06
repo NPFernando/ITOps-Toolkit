@@ -8,3 +8,4 @@ pyjwt
 croniter
 openai
 tzdata
+pyyaml

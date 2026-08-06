@@ -516,10 +516,10 @@
     {
       "title": "Config format converter (YAML / TOML / XML / JSON)",
       "category": "Tools",
-      "status": "Planned",
+      "status": "Complete",
       "votes": 7,
       "description": "Convert a pasted config snippet between YAML, TOML, XML, and JSON, reusing the existing JSON Formatter's validation/error-display pattern.",
-      "rationale": "Inspired by killertools.net's YAML/TOML/XML converters. Common ops task when moving config between tools (e.g. Ansible YAML to a JSON API payload); would need `PyYAML` and `toml`/`tomllib` (stdlib in 3.11+) as dependencies.",
+      "rationale": "Shipped as a dedicated Config Format Converter page. JSON/YAML/TOML share the same object model and convert losslessly (modulo TOML's own restrictions -- no top-level list, no null). XML has no standard equivalent, so the tool uses one explicit, disclosed convention (keys become child elements, lists become repeated elements, scalars become element text) rather than pretending it's a universal mapping -- called out directly on the page. Added pyyaml to requirements.txt; toml was already a transitive dependency.",
       "updated_at": "2026-08-06"
     },
     {
