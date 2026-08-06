@@ -411,6 +411,18 @@ TOOLS: tuple[ToolMeta, ...] = (
         category="Security",
         is_new=True,
     ),
+    ToolMeta(
+        title="CVE Lookup",
+        short_title="CVE Lookup",
+        description="Search the NIST National Vulnerability Database by CVE ID or keyword.",
+        path="pages/32_CVE_Lookup.py",
+        icon="CVE",
+        accent="#c1121f",
+        slug="cve_lookup",
+        professions=("Security Engineer", "Sysadmin / DevOps", "Support Engineer"),
+        category="Security",
+        is_new=True,
+    ),
 )
 
 POPULAR_TOOLS = TOOLS[:5]
@@ -430,6 +442,7 @@ TOOL_BUNDLES: dict[str, tuple[str, ...]] = {
     "http_status": ("domain_health", "ssl_certificate", "uptime_trend", "security_headers"),
     "uptime_trend": ("http_status", "domain_health"),
     "security_headers": ("http_status", "ssl_certificate"),
+    "cve_lookup": ("security_headers", "ssl_certificate"),
     "whois_lookup": ("dns_records", "domain_health", "ssl_certificate"),
     "bulk_domain_health": ("domain_health", "dns_records", "ssl_certificate"),
     "mac_address_tool": ("subnet_calculator", "cidr_aggregator", "ipv6_compressor"),
@@ -1152,6 +1165,7 @@ def _material_icon_for(slug: str) -> str:
         "webhook_tester": ":material/webhook:",
         "uptime_trend": ":material/show_chart:",
         "security_headers": ":material/shield:",
+        "cve_lookup": ":material/bug_report:",
     }
     return icons.get(slug, ":material/build:")
 

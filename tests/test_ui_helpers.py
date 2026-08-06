@@ -155,6 +155,7 @@ def test_expected_tools_are_tagged_new():
         "webhook_tester",
         "uptime_trend",
         "security_headers",
+        "cve_lookup",
     }
 
 
@@ -296,6 +297,7 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "password_generator",
             "jwt_encoder",
             "security_headers",
+            "cve_lookup",
         ],
         "Web & Dev": [
             "http_status",
