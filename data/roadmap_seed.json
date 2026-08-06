@@ -339,7 +339,7 @@
       "status": "AI Recommended",
       "votes": 10,
       "description": "A real ephemeral endpoint (e.g. /webhook/<session-id>) that captures incoming HTTP calls from third-party services and displays them live, with no persistent storage.",
-      "rationale": "Split out from the original 'Webhook / HTTP request tester' idea once the outbound request-testing half shipped -- this inbound-capture half needs a real receiving endpoint and session-scoped in-memory storage, a bigger architectural lift than a single Streamlit page.",
+      "rationale": "Split out from the original 'Webhook / HTTP request tester' idea once the outbound request-testing half shipped -- this inbound-capture half needs a real receiving endpoint and session-scoped in-memory storage, a bigger architectural lift than a single Streamlit page. BLOCKED as scoped: Streamlit Community Cloud (this app's deployment target) only runs `streamlit run app.py` behind its own proxy and exposes no way to register a custom HTTP route -- there is no in-app way to actually receive third-party POSTs. A monkey-patch of the underlying Tornado/Starlette handler list would touch the same server layer that caused a real production outage on this app before (the GZipResponder/starlette-version incident), and wouldn't be reachable through Streamlit Cloud's proxy anyway. This becomes buildable only if paired with a small separate receiver service (e.g. FastAPI on the Oracle VM this session runs on, behind nginx) that the Streamlit page reads from -- a new service and public endpoint, i.e. a real infrastructure decision, not a routine PR.",
       "updated_at": "2026-08-06"
     }
   ]
