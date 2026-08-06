@@ -453,10 +453,10 @@
     {
       "title": "SPF/DMARC/DKIM record builder",
       "category": "Security",
-      "status": "Planned",
+      "status": "Complete",
       "votes": 7,
       "description": "Generate correctly-formatted SPF, DMARC, and DKIM TXT record strings from simple inputs (allowed senders, policy level, reporting address), the reverse of the existing DNS/email-security checks.",
-      "rationale": "Inspired by killertools.net's Email Record Generator. Directly complements the existing Domain Health Checker / DKIM selector lookup roadmap item -- checking is covered, building the record isn't yet.",
+      "rationale": "Shipped as an Email Record Builder page with SPF/DMARC/DKIM tabs. SPF and DMARC are fully generated from structured inputs with built-in warnings (SPF 10-lookup limit, empty-sender records, DMARC missing rua, full pct=100 reject). DKIM formats an existing pasted public key into the correct TXT record and record name -- it does not generate a key pair (that's the separate RSA/SSH key pair generator roadmap item).",
       "updated_at": "2026-08-06"
     },
     {
