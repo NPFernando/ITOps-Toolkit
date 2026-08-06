@@ -423,6 +423,18 @@ TOOLS: tuple[ToolMeta, ...] = (
         category="Security",
         is_new=True,
     ),
+    ToolMeta(
+        title="DNS Propagation Checker",
+        short_title="DNS Propagation",
+        description="Query the same DNS record across several public resolvers to catch propagation lag or mismatches.",
+        path="pages/33_DNS_Propagation_Checker.py",
+        icon="DPC",
+        accent="#0077b6",
+        slug="dns_propagation",
+        professions=("Sysadmin / DevOps", "Network Engineer", "Support Engineer"),
+        category="Network",
+        is_new=True,
+    ),
 )
 
 POPULAR_TOOLS = TOOLS[:5]
@@ -437,7 +449,8 @@ TITLE_TO_SLUG: dict[str, str] = {tool.title: tool.slug for tool in TOOLS}
 # forced, meaningless section.
 TOOL_BUNDLES: dict[str, tuple[str, ...]] = {
     "domain_health": ("dns_records", "ssl_certificate", "whois_lookup"),
-    "dns_records": ("domain_health", "whois_lookup", "ssl_certificate"),
+    "dns_records": ("domain_health", "whois_lookup", "dns_propagation"),
+    "dns_propagation": ("dns_records", "domain_health"),
     "ssl_certificate": ("domain_health", "dns_records", "http_status"),
     "http_status": ("domain_health", "ssl_certificate", "uptime_trend", "security_headers"),
     "uptime_trend": ("http_status", "domain_health"),
@@ -1166,6 +1179,7 @@ def _material_icon_for(slug: str) -> str:
         "uptime_trend": ":material/show_chart:",
         "security_headers": ":material/shield:",
         "cve_lookup": ":material/bug_report:",
+        "dns_propagation": ":material/travel_explore:",
     }
     return icons.get(slug, ":material/build:")
 
