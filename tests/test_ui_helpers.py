@@ -154,6 +154,7 @@ def test_expected_tools_are_tagged_new():
         "bulk_domain_health",
         "webhook_tester",
         "uptime_trend",
+        "security_headers",
     }
 
 
@@ -287,7 +288,15 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "whois_lookup",
             "bulk_domain_health",
         ],
-        "Security": ["ssl_certificate", "jwt_decoder", "hash_generator", "email_header_analyzer", "password_generator", "jwt_encoder"],
+        "Security": [
+            "ssl_certificate",
+            "jwt_decoder",
+            "hash_generator",
+            "email_header_analyzer",
+            "password_generator",
+            "jwt_encoder",
+            "security_headers",
+        ],
         "Web & Dev": [
             "http_status",
             "json_formatter",
