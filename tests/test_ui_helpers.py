@@ -161,6 +161,7 @@ def test_expected_tools_are_tagged_new():
         "dkim_lookup",
         "email_record_builder",
         "windows_error_reference",
+        "config_format_converter",
     }
 
 
@@ -319,6 +320,7 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "color_converter",
             "webhook_tester",
             "uptime_trend",
+            "config_format_converter",
         ],
         "Ops & Automation": ["cron_explainer", "log_troubleshooting", "timestamp_converter"],
         "Reference": ["port_reference", "windows_event_reference", "windows_error_reference"],
