@@ -579,6 +579,18 @@ TOOLS: tuple[ToolMeta, ...] = (
         category="Web & Dev",
         is_new=True,
     ),
+    ToolMeta(
+        title="Cron Expression Builder",
+        short_title="Cron Builder",
+        description="Build a 5-field cron expression from simple controls -- the reverse of Cron Explainer.",
+        path="pages/46_Cron_Expression_Builder.py",
+        icon="CRB",
+        accent="#0e9f6e",
+        slug="cron_builder",
+        professions=("Sysadmin / DevOps", "Automation Engineer"),
+        category="Ops & Automation",
+        is_new=True,
+    ),
 )
 
 POPULAR_TOOLS = TOOLS[:5]
@@ -630,7 +642,8 @@ TOOL_BUNDLES: dict[str, tuple[str, ...]] = {
     "text_diff_checker": ("regex_tester", "case_converter"),
     "case_converter": ("text_diff_checker", "url_encoder_decoder"),
     "timestamp_converter": ("cron_explainer",),
-    "cron_explainer": ("timestamp_converter", "log_troubleshooting"),
+    "cron_explainer": ("timestamp_converter", "log_troubleshooting", "cron_builder"),
+    "cron_builder": ("cron_explainer", "timestamp_converter"),
     "log_troubleshooting": ("cron_explainer", "webhook_tester", "windows_event_reference"),
     "chmod_calculator": ("cron_explainer", "log_troubleshooting"),
     "webhook_tester": ("http_status", "log_troubleshooting"),
@@ -1348,6 +1361,7 @@ def _material_icon_for(slug: str) -> str:
         "file_integrity": ":material/verified:",
         "chmod_calculator": ":material/lock_open:",
         "base_converter": ":material/pin:",
+        "cron_builder": ":material/schedule_send:",
     }
     return icons.get(slug, ":material/build:")
 
