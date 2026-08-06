@@ -159,6 +159,7 @@ def test_expected_tools_are_tagged_new():
         "dns_propagation",
         "windows_event_reference",
         "dkim_lookup",
+        "email_record_builder",
     }
 
 
@@ -293,6 +294,7 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "bulk_domain_health",
             "dns_propagation",
             "dkim_lookup",
+            "email_record_builder",
         ],
         "Security": [
             "ssl_certificate",

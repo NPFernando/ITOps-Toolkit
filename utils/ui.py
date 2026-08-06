@@ -459,6 +459,18 @@ TOOLS: tuple[ToolMeta, ...] = (
         category="Network",
         is_new=True,
     ),
+    ToolMeta(
+        title="Email Record Builder",
+        short_title="Email Records",
+        description="Build SPF, DMARC, and DKIM TXT record strings from simple inputs -- the reverse of the existing checks.",
+        path="pages/36_Email_Record_Builder.py",
+        icon="ERB",
+        accent="#f4a261",
+        slug="email_record_builder",
+        professions=("Sysadmin / DevOps", "Security Engineer", "Support Engineer"),
+        category="Network",
+        is_new=True,
+    ),
 )
 
 POPULAR_TOOLS = TOOLS[:5]
@@ -489,7 +501,8 @@ TOOL_BUNDLES: dict[str, tuple[str, ...]] = {
     "port_reference": ("subnet_calculator", "mac_address_tool"),
     "windows_event_reference": ("log_troubleshooting", "port_reference"),
     "email_header_analyzer": ("dns_records", "domain_health", "dkim_lookup"),
-    "dkim_lookup": ("email_header_analyzer", "domain_health"),
+    "dkim_lookup": ("email_header_analyzer", "domain_health", "email_record_builder"),
+    "email_record_builder": ("dkim_lookup", "dns_records"),
     "password_generator": ("hash_generator",),
     "hash_generator": ("password_generator", "jwt_decoder"),
     "jwt_decoder": ("jwt_encoder", "hash_generator"),
@@ -1208,6 +1221,7 @@ def _material_icon_for(slug: str) -> str:
         "dns_propagation": ":material/travel_explore:",
         "windows_event_reference": ":material/event_note:",
         "dkim_lookup": ":material/key:",
+        "email_record_builder": ":material/build:",
     }
     return icons.get(slug, ":material/build:")
 
