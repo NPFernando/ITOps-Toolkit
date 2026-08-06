@@ -5,6 +5,7 @@ import streamlit as st
 
 from utils.http_tools import MAX_URL_LENGTH
 from utils.latency_trend import MAX_CHECKS, MAX_INTERVAL_SECONDS, MIN_CHECKS, run_latency_trend
+from utils.reporting import INCIDENT_MESSAGE_TARGETS, build_uptime_incident_message
 from utils.ui import (
     apply_app_shell,
     render_empty_state,
@@ -95,3 +96,14 @@ if submitted:
                         for s in result["samples"]
                     ]
                 )
+
+            render_section_heading(
+                "Incident message",
+                "Ready to paste into a Slack or Teams channel for a live incident update.",
+                eyebrow="Chat export",
+            )
+            incident_tabs = st.tabs([target.title() for target in INCIDENT_MESSAGE_TARGETS])
+            for tab, target in zip(incident_tabs, INCIDENT_MESSAGE_TARGETS, strict=True):
+                with tab:
+                    incident_message = build_uptime_incident_message(url, result, target)
+                    st.code(incident_message["message"], language=None)

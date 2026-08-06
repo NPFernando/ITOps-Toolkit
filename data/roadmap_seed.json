@@ -399,10 +399,10 @@
     {
       "title": "Incident message formatter for Slack/Teams",
       "category": "Integrations",
-      "status": "Planned",
+      "status": "Complete",
       "votes": 7,
       "description": "Turn the current Domain Health / Uptime Trend results into a ready-to-paste Slack or Teams incident-update message (their respective mrkdwn/Adaptive-Card-safe plain formatting), the same way the PSA/ticket-note export already avoids raw markdown symbols.",
-      "rationale": "Directly reuses the PSA-note pattern (plain-text, no markdown symbols that would render literally) shipped this session, just targeted at chat tools instead of ticketing systems -- a genuinely different MSP workflow (real-time incident comms vs. after-the-fact ticket notes).",
+      "rationale": "Shipped as new export sections on the existing Domain Health Checker and Uptime Trend pages (not a standalone page, since it turns those pages' own results into a message). Reuses the PSA-note plain-text-summary pattern in utils/reporting.py but produces Slack mrkdwn (single-asterisk bold) or Teams/GFM-style markdown (double-asterisk bold) via tabs -- st.tabs specifically, not a radio/selectbox, because a rerun-triggering widget outside st.form would have hit the same vanishing-results bug fixed in PR #33/#34.",
       "updated_at": "2026-08-06"
     },
     {
