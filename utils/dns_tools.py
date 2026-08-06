@@ -42,14 +42,14 @@ def _base_result(domain: str, record_type: str, query_name: str | None = None) -
     }
 
 
-def _get_resolver(timeout: float = 3.0, lifetime: float = 5.0) -> dns.resolver.Resolver:
+def get_resolver(timeout: float = 3.0, lifetime: float = 5.0) -> dns.resolver.Resolver:
     resolver = dns.resolver.Resolver()
     resolver.timeout = timeout
     resolver.lifetime = lifetime
     return resolver
 
 
-def _txt_to_string(record: Any) -> str:
+def txt_to_string(record: Any) -> str:
     if hasattr(record, "strings"):
         return "".join(part.decode("utf-8", errors="replace") for part in record.strings)
     return str(record).strip('"')
@@ -66,7 +66,7 @@ def record_to_row(record: Any, record_type: str) -> dict[str, Any]:
             "value": f"{record.preference} {str(record.exchange).rstrip('.')}",
         }
     if record_type == "TXT":
-        return {"type": "TXT", "value": _txt_to_string(record)}
+        return {"type": "TXT", "value": txt_to_string(record)}
     if record_type == "NS":
         return {"type": "NS", "value": str(record.target).rstrip(".")}
     if record_type == "CNAME":
@@ -126,7 +126,7 @@ def resolve_records(domain: str, record_type: str) -> dict[str, Any]:
     result = _base_result(normalized, requested_type, query_name)
 
     try:
-        answers = _get_resolver().resolve(query_name, query_type)
+        answers = get_resolver().resolve(query_name, query_type)
     except dns.resolver.NXDOMAIN:
         return _error_result(normalized, requested_type, query_name, "NXDOMAIN", "Domain does not exist.")
     except dns.resolver.NoAnswer:
