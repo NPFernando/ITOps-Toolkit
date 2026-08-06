@@ -543,6 +543,18 @@ TOOLS: tuple[ToolMeta, ...] = (
         category="Network",
         is_new=True,
     ),
+    ToolMeta(
+        title="File Integrity Comparator",
+        short_title="File Integrity",
+        description="Compare two files, or check one file against an expected hash, to confirm a download wasn't corrupted or tampered with.",
+        path="pages/43_File_Integrity_Comparator.py",
+        icon="FIC",
+        accent="#e76f51",
+        slug="file_integrity",
+        professions=("Sysadmin / DevOps", "Security Engineer", "Support Engineer"),
+        category="Security",
+        is_new=True,
+    ),
 )
 
 POPULAR_TOOLS = TOOLS[:5]
@@ -579,7 +591,8 @@ TOOL_BUNDLES: dict[str, tuple[str, ...]] = {
     "dkim_lookup": ("email_header_analyzer", "domain_health", "email_record_builder"),
     "email_record_builder": ("dkim_lookup", "dns_records"),
     "password_generator": ("hash_generator",),
-    "hash_generator": ("password_generator", "jwt_decoder"),
+    "hash_generator": ("password_generator", "jwt_decoder", "file_integrity"),
+    "file_integrity": ("hash_generator", "cve_lookup"),
     "jwt_decoder": ("jwt_encoder", "hash_generator"),
     "jwt_encoder": ("jwt_decoder", "hash_generator"),
     "json_formatter": ("base64_tool", "config_format_converter", "json_diff"),
@@ -1306,6 +1319,7 @@ def _material_icon_for(slug: str) -> str:
         "id_generator": ":material/fingerprint:",
         "json_diff": ":material/compare_arrows:",
         "ip_geolocation": ":material/location_on:",
+        "file_integrity": ":material/verified:",
     }
     return icons.get(slug, ":material/build:")
 
