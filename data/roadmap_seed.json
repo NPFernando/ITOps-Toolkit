@@ -525,10 +525,10 @@
     {
       "title": "JSON diff viewer",
       "category": "Tools",
-      "status": "Planned",
+      "status": "Complete",
       "votes": 6,
       "description": "Structurally diff two JSON documents (key-aware, not line-based) and highlight added/removed/changed fields.",
-      "rationale": "Inspired by killertools.net's JSON diff tool. Complements the existing Text Diff Checker (line-based) and JSON Formatter -- useful for comparing API responses or config exports where line-based diffing produces noisy results from key reordering.",
+      "rationale": "Shipped as a dedicated JSON Diff Viewer page. Structurally diffs by key/path (not by line), so key reordering is not reported as a difference, unlike the existing Text Diff Checker. Walks iteratively with an explicit stack, not recursion, and caps results at 500 -- same defensive pattern already used by json_stats/search_json_paths in utils/text_tools.py for the same reason (a short but deeply-nested JSON string can exceed Python's recursion limit).",
       "updated_at": "2026-08-06"
     },
     {
