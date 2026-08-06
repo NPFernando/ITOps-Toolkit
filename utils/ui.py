@@ -6,15 +6,22 @@ import json
 from dataclasses import dataclass
 from html import escape
 from typing import Any, Iterable
+from urllib.parse import urlencode
 
 import pandas as pd
 import streamlit as st
 
-from utils.project_links import github_repository_url
+from utils.project_links import app_base_url, github_repository_url
 
 
 MAX_RECENT_TOOLS = 5
 PERSISTED_LIST_PARAMS: tuple[str, ...] = ("recent", "fav")
+# Deliberately NOT in PERSISTED_LIST_PARAMS: "shared_fav" is a read-only,
+# view-only param for opening someone else's shared favorites link. It must
+# never be mirrored into localStorage or treated as the visitor's own
+# persisted favorites -- that would silently overwrite a visitor's saved
+# favorites just from opening a link someone sent them.
+SHARED_FAVORITES_PARAM = "shared_fav"
 
 
 @dataclass(frozen=True)
@@ -840,6 +847,19 @@ def recent_or_popular_tools(recent_slugs: Iterable[str]) -> tuple[ToolMeta, ...]
 def favorite_tools() -> tuple[ToolMeta, ...]:
     """Return the visitor's favorited tools, in the order they were favorited. No padding."""
     return tuple(_resolve_slugs(_get_persisted_slugs("fav")))
+
+
+def favorites_share_link(tools: Iterable[ToolMeta]) -> str:
+    """Build an absolute, read-only link that opens someone else's favorites as a shared list."""
+    slugs = ",".join(tool.slug for tool in tools)
+    query = urlencode({SHARED_FAVORITES_PARAM: slugs})
+    return f"{app_base_url()}/?{query}"
+
+
+def shared_favorite_tools() -> tuple[ToolMeta, ...]:
+    """Return the tools named by a visited ``shared_fav`` link, in order. Read-only, view-only."""
+    raw = st.query_params.get(SHARED_FAVORITES_PARAM, "")
+    return tuple(_resolve_slugs(slug for slug in raw.split(",") if slug))
 
 
 def sort_tools(tools: tuple[ToolMeta, ...], mode: str) -> tuple[ToolMeta, ...]:

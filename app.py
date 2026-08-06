@@ -7,6 +7,7 @@ from utils.ui import (
     TOOLS,
     apply_app_shell,
     favorite_tools,
+    favorites_share_link,
     filter_tools,
     github_url,
     recent_or_popular_tools,
@@ -14,6 +15,7 @@ from utils.ui import (
     render_home_hero,
     render_important_notice,
     render_tool_section,
+    shared_favorite_tools,
     sort_tools,
 )
 
@@ -30,9 +32,17 @@ if repo_url:
 
 search_query = render_home_hero()
 
+shared_favorites = shared_favorite_tools()
+if shared_favorites:
+    render_tool_section(shared_favorites, heading="Shared Favorites", section_id=None, key_prefix="shared")
+    st.caption("Someone shared this list with you. It's separate from your own favorites below.")
+
 favorites = favorite_tools()
 if favorites:
     render_tool_section(favorites, heading="Favorites", section_id=None, key_prefix="fav")
+    with st.popover("Share favorites", icon=":material/share:"):
+        st.caption("Anyone with this link can view your current favorites list. It won't affect their own favorites.")
+        st.code(favorites_share_link(favorites), language=None)
 
 recent_param = st.query_params.get("recent", "")
 recent_slugs = [slug for slug in recent_param.split(",") if slug]
