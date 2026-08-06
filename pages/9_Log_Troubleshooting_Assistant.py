@@ -96,13 +96,13 @@ if submitted:
             ]
             st.dataframe(pd.DataFrame(summary_rows), width="stretch", hide_index=True)
 
-            for item in result["findings"]:
+            for finding_index, item in enumerate(result["findings"]):
                 with st.expander(item["likely_issue"], expanded=True):
                     _status(item["severity"])
                     st.markdown("**Possible cause**")
                     st.write(item["possible_cause"])
                     st.markdown("**Commands to check**")
                     st.code("\n".join(item["commands_to_check"]), language="bash")
-                    st.markdown("**Safe next steps**")
-                    for step in item["safe_next_steps"]:
-                        st.write(f"- {step}")
+                    st.markdown("**Remediation checklist**")
+                    for step_index, step in enumerate(item["safe_next_steps"]):
+                        st.checkbox(step, key=f"remediation_step_{finding_index}_{step_index}")

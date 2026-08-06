@@ -107,6 +107,16 @@ def test_log_page_unchecked_submit_skips_ai_without_external_call(monkeypatch):
     assert "secret-api-key" not in text
 
 
+def test_log_page_renders_remediation_steps_as_interactive_checkboxes(monkeypatch):
+    _set_azure_config(monkeypatch, configured=False)
+
+    app = _submit_log(_run_log_page(), use_ai_summary=False)
+
+    remediation_checkboxes = [c for c in app.checkbox if c.key and c.key.startswith("remediation_step_")]
+    assert remediation_checkboxes
+    assert all(c.value is False for c in remediation_checkboxes)
+
+
 def test_log_page_checked_submit_renders_fake_ai_success(monkeypatch):
     _set_azure_config(monkeypatch, configured=True)
     calls = []

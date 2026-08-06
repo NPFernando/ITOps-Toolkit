@@ -57,11 +57,11 @@
     {
       "title": "GitHub-connected roadmap board",
       "category": "UX / Design",
-      "status": "In Progress",
+      "status": "Complete",
       "votes": 47,
       "description": "Public board that merges curated seeds with public GitHub feature requests.",
-      "rationale": "Makes priorities visible and gives users a clear path to suggest improvements.",
-      "updated_at": "2026-04-30"
+      "rationale": "Makes priorities visible and gives users a clear path to suggest improvements. Status was stale at \"In Progress\" -- utils/roadmap.py's load_roadmap_board() already merges seed items with live GitHub issues (source-tagged Seed vs GitHub #N) and pages/10_Roadmap_Feedback.py renders the combined board with a working Submit Idea link. Found while auditing the full roadmap list, not built this round.",
+      "updated_at": "2026-08-06"
     },
     {
       "title": "Downloadable HTML reports",
@@ -93,20 +93,20 @@
     {
       "title": "GitHub reaction-based voting",
       "category": "Integrations",
-      "status": "Planned",
+      "status": "Complete",
       "votes": 44,
       "description": "Use GitHub issue reactions as the real vote source for feature ideas.",
-      "rationale": "Keeps feedback public and avoids adding a custom database.",
-      "updated_at": "2026-04-30"
+      "rationale": "Keeps feedback public and avoids adding a custom database. Status was stale at \"Planned\" -- utils/roadmap.py's github_issue_to_roadmap_item() already reads reactions.total_count from the GitHub Issues API response and uses it directly as votes for GitHub-sourced roadmap items (covered by tests/test_roadmap.py). Found while auditing the full roadmap list, not built this round.",
+      "updated_at": "2026-08-06"
     },
     {
       "title": "AI-generated remediation checklists",
       "category": "AI Ideas",
-      "status": "AI Recommended",
+      "status": "Complete",
       "votes": 72,
       "description": "Turn safe rule-based findings into short action checklists.",
-      "rationale": "Recommended because it builds on existing findings without requiring raw secret input.",
-      "updated_at": "2026-04-30"
+      "rationale": "Recommended because it builds on existing findings without requiring raw secret input. The rule-based findings and safe_next_steps already existed on the Log Troubleshooting Assistant; changed the last piece -- next steps rendered as plain bullet text -- into actual interactive st.checkbox items per finding, so it's a literal checklist a visitor can tick through rather than just a list.",
+      "updated_at": "2026-08-06"
     },
     {
       "title": "AI-assisted feature triage for maintainers",
