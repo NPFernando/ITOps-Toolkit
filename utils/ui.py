@@ -399,6 +399,18 @@ TOOLS: tuple[ToolMeta, ...] = (
         category="Web & Dev",
         is_new=True,
     ),
+    ToolMeta(
+        title="Security Headers Checker",
+        short_title="Security Headers",
+        description="Grade a URL's response security headers (HSTS, CSP, and more), similar to securityheaders.com.",
+        path="pages/31_Security_Headers_Checker.py",
+        icon="SHC",
+        accent="#e63946",
+        slug="security_headers",
+        professions=("Sysadmin / DevOps", "Web Developer", "Security Engineer"),
+        category="Security",
+        is_new=True,
+    ),
 )
 
 POPULAR_TOOLS = TOOLS[:5]
@@ -415,8 +427,9 @@ TOOL_BUNDLES: dict[str, tuple[str, ...]] = {
     "domain_health": ("dns_records", "ssl_certificate", "whois_lookup"),
     "dns_records": ("domain_health", "whois_lookup", "ssl_certificate"),
     "ssl_certificate": ("domain_health", "dns_records", "http_status"),
-    "http_status": ("domain_health", "ssl_certificate", "uptime_trend"),
+    "http_status": ("domain_health", "ssl_certificate", "uptime_trend", "security_headers"),
     "uptime_trend": ("http_status", "domain_health"),
+    "security_headers": ("http_status", "ssl_certificate"),
     "whois_lookup": ("dns_records", "domain_health", "ssl_certificate"),
     "bulk_domain_health": ("domain_health", "dns_records", "ssl_certificate"),
     "mac_address_tool": ("subnet_calculator", "cidr_aggregator", "ipv6_compressor"),
@@ -1138,6 +1151,7 @@ def _material_icon_for(slug: str) -> str:
         "bulk_domain_health": ":material/upload_file:",
         "webhook_tester": ":material/webhook:",
         "uptime_trend": ":material/show_chart:",
+        "security_headers": ":material/shield:",
     }
     return icons.get(slug, ":material/build:")
 
