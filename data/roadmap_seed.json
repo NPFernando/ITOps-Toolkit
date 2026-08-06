@@ -341,6 +341,78 @@
       "description": "A real ephemeral endpoint (e.g. /webhook/<session-id>) that captures incoming HTTP calls from third-party services and displays them live, with no persistent storage.",
       "rationale": "Split out from the original 'Webhook / HTTP request tester' idea once the outbound request-testing half shipped -- this inbound-capture half needs a real receiving endpoint and session-scoped in-memory storage, a bigger architectural lift than a single Streamlit page. BLOCKED as scoped: Streamlit Community Cloud (this app's deployment target) only runs `streamlit run app.py` behind its own proxy and exposes no way to register a custom HTTP route -- there is no in-app way to actually receive third-party POSTs. A monkey-patch of the underlying Tornado/Starlette handler list would touch the same server layer that caused a real production outage on this app before (the GZipResponder/starlette-version incident), and wouldn't be reachable through Streamlit Cloud's proxy anyway. This becomes buildable only if paired with a small separate receiver service (e.g. FastAPI on the Oracle VM this session runs on, behind nginx) that the Streamlit page reads from -- a new service and public endpoint, i.e. a real infrastructure decision, not a routine PR.",
       "updated_at": "2026-08-06"
+    },
+    {
+      "title": "Security headers checker",
+      "category": "Security",
+      "status": "Planned",
+      "votes": 9,
+      "description": "Inspect a URL's HTTP response headers (CSP, HSTS, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy) and grade what's missing, similar to securityheaders.com.",
+      "rationale": "Reuses the same request/response pattern already proven out by HTTP Status Checker and Webhook Tester -- just reads headers instead of status/body. Common MSP pre-audit check that isn't covered by the existing SSL/DNS/email-security tools.",
+      "updated_at": "2026-08-06"
+    },
+    {
+      "title": "DKIM selector lookup",
+      "category": "Security",
+      "status": "Planned",
+      "votes": 7,
+      "description": "Given a domain and a DKIM selector, query and parse the DKIM TXT record (public key, key type, flags) the same way SPF/DMARC are already checked.",
+      "rationale": "Completes the email-authentication trio (SPF, DMARC, DKIM) started by the existing Email Security Posture checks. DKIM needs a selector, which SPF/DMARC don't, so it's a distinct lookup rather than a free addition to the existing DNS summary.",
+      "updated_at": "2026-08-06"
+    },
+    {
+      "title": "DNS propagation checker",
+      "category": "Tools",
+      "status": "Planned",
+      "votes": 8,
+      "description": "Query the same DNS record type across several public resolvers (Google 8.8.8.8, Cloudflare 1.1.1.1, Quad9 9.9.9.9) side by side to catch propagation lag or mismatched answers after a DNS change.",
+      "rationale": "Common post-cutover MSP task ('did the change propagate everywhere yet?') that the existing single-resolver DNS Record Checker doesn't answer. Buildable with dnspython's per-query nameserver override, same library already in use.",
+      "updated_at": "2026-08-06"
+    },
+    {
+      "title": "IP geolocation lookup",
+      "category": "Tools",
+      "status": "Planned",
+      "votes": 6,
+      "description": "Resolve an IP address to approximate geography, ASN, and network/ISP info via a public API, mirroring the pattern already used for MAC vendor lookup.",
+      "rationale": "Frequently useful alongside DNS/HTTP checks when triaging an unfamiliar IP in logs or access lists. Same 'optional live lookup against a free public API' shape as MAC vendor lookup, so the risk profile is already validated.",
+      "updated_at": "2026-08-06"
+    },
+    {
+      "title": "File hash / integrity comparator",
+      "category": "Security",
+      "status": "Planned",
+      "votes": 6,
+      "description": "Upload two files (or a file plus an expected hash string) and compare their digests to confirm a download wasn't corrupted or tampered with.",
+      "rationale": "Extends the existing Hash Generator (which only hashes typed/pasted text) to file uploads, a distinct and common verification workflow for downloaded installers/patches.",
+      "updated_at": "2026-08-06"
+    },
+    {
+      "title": "Cron expression builder",
+      "category": "Tools",
+      "status": "Planned",
+      "votes": 5,
+      "description": "The reverse of the existing Cron Explainer: pick a schedule via simple minute/hour/day controls and get the resulting cron expression, instead of typing one in to be explained.",
+      "rationale": "Natural companion to Cron Explainer for people who don't already know cron syntax and want to construct rather than decode a schedule.",
+      "updated_at": "2026-08-06"
+    },
+    {
+      "title": "Incident message formatter for Slack/Teams",
+      "category": "Integrations",
+      "status": "Planned",
+      "votes": 7,
+      "description": "Turn the current Domain Health / Uptime Trend results into a ready-to-paste Slack or Teams incident-update message (their respective mrkdwn/Adaptive-Card-safe plain formatting), the same way the PSA/ticket-note export already avoids raw markdown symbols.",
+      "rationale": "Directly reuses the PSA-note pattern (plain-text, no markdown symbols that would render literally) shipped this session, just targeted at chat tools instead of ticketing systems -- a genuinely different MSP workflow (real-time incident comms vs. after-the-fact ticket notes).",
+      "updated_at": "2026-08-06"
+    },
+    {
+      "title": "QR code generator",
+      "category": "Tools",
+      "status": "Planned",
+      "votes": 5,
+      "description": "Generate a QR code for a URL, Wi-Fi credentials, or plain text/contact info, for onboarding handoffs and support materials.",
+      "rationale": "Common small MSP/support utility (e.g. printed Wi-Fi onboarding cards) that fits the existing 'small standalone utility' shape of Color Converter and Case Converter.",
+      "updated_at": "2026-08-06"
     }
   ]
 }
