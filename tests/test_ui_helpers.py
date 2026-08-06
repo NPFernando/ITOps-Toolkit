@@ -146,6 +146,7 @@ def test_expected_tools_are_tagged_new():
         "color_converter",
         "whois_lookup",
         "bulk_domain_health",
+        "webhook_tester",
     }
 
 
@@ -221,6 +222,7 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "user_agent_parser",
             "case_converter",
             "color_converter",
+            "webhook_tester",
         ],
         "Ops & Automation": ["cron_explainer", "log_troubleshooting", "timestamp_converter"],
         "Reference": ["port_reference"],

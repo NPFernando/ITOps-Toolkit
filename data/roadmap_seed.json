@@ -237,11 +237,11 @@
     {
       "title": "Webhook / HTTP request tester",
       "category": "Integrations",
-      "status": "AI Recommended",
+      "status": "Complete",
       "votes": 10,
-      "description": "A RequestBin-style ephemeral endpoint to inspect incoming webhook payloads, with no persistent storage.",
+      "description": "Shipped the outbound half: send a one-off HTTP request with a custom method, headers, and body, and inspect the response. The originally scoped RequestBin-style inbound endpoint (capturing incoming webhook calls at a public URL) is a materially different feature -- it needs a real receiving endpoint and in-memory/session storage for arrivals, not just a request client -- so it's still open as a separate, larger idea rather than folded into this one.",
       "rationale": "Common need when debugging integrations; fits the toolkit's no-storage, public-safe model if payloads are ephemeral and session-scoped.",
-      "updated_at": "2026-08-05"
+      "updated_at": "2026-08-06"
     },
     {
       "title": "Timestamp / epoch converter",
@@ -332,6 +332,15 @@
       "description": "Convert colors between HEX, RGB, and HSL, with a live swatch preview.",
       "rationale": "Common small utility for anyone touching CSS/UI work alongside the IT-focused tools.",
       "updated_at": "2026-08-05"
+    },
+    {
+      "title": "RequestBin-style inbound webhook capture",
+      "category": "Integrations",
+      "status": "AI Recommended",
+      "votes": 10,
+      "description": "A real ephemeral endpoint (e.g. /webhook/<session-id>) that captures incoming HTTP calls from third-party services and displays them live, with no persistent storage.",
+      "rationale": "Split out from the original 'Webhook / HTTP request tester' idea once the outbound request-testing half shipped -- this inbound-capture half needs a real receiving endpoint and session-scoped in-memory storage, a bigger architectural lift than a single Streamlit page.",
+      "updated_at": "2026-08-06"
     }
   ]
 }
