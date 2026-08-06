@@ -147,11 +147,11 @@
     {
       "title": "Drag-to-reorder favorites",
       "category": "UX / Design",
-      "status": "AI Recommended",
+      "status": "Complete",
       "votes": 9,
-      "description": "Let visitors reorder their favorited tools instead of using favorite-order only.",
+      "description": "Shipped as move-earlier/move-later buttons on each Favorites card, not literal mouse drag. True drag-and-drop needs a bidirectional Streamlit custom component with a JS build step this repo doesn't have; the existing one-way iframe-to-URL trick used elsewhere in the app would mean a full page reload per drag, which is worse UX than buttons. Reorder controls only appear on the visitor's own Favorites grid, never on the read-only Shared Favorites grid.",
       "rationale": "Favorites currently keep insertion order; manual reordering is a small, self-contained UX add-on once favorites are already shipped.",
-      "updated_at": "2026-08-05"
+      "updated_at": "2026-08-06"
     },
     {
       "title": "WHOIS lookup tool",
