@@ -354,10 +354,10 @@
     {
       "title": "DKIM selector lookup",
       "category": "Security",
-      "status": "Planned",
+      "status": "Complete",
       "votes": 7,
       "description": "Given a domain and a DKIM selector, query and parse the DKIM TXT record (public key, key type, flags) the same way SPF/DMARC are already checked.",
-      "rationale": "Completes the email-authentication trio (SPF, DMARC, DKIM) started by the existing Email Security Posture checks. DKIM needs a selector, which SPF/DMARC don't, so it's a distinct lookup rather than a free addition to the existing DNS summary.",
+      "rationale": "Shipped as a dedicated DKIM Selector Lookup page. Since a DKIM record's location depends on a selector that isn't discoverable from DNS alone, the form takes both domain and selector explicitly, then queries <selector>._domainkey.<domain> and parses the v=/k=/p= fields. Reuses dns_tools.get_resolver/txt_to_string (made public alongside record_to_row for this).",
       "updated_at": "2026-08-06"
     },
     {

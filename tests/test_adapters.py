@@ -45,7 +45,7 @@ def test_normalize_domain_handles_urls_ports_paths_and_idna():
 
 
 def test_resolve_records_uses_fake_resolver_for_a_records(monkeypatch):
-    monkeypatch.setattr(dns_tools, "_get_resolver", lambda: FakeResolver([FakeARecord()]))
+    monkeypatch.setattr(dns_tools, "get_resolver", lambda: FakeResolver([FakeARecord()]))
 
     result = dns_tools.resolve_records("Example.com", "A")
 
@@ -59,12 +59,12 @@ def test_resolve_records_uses_fake_resolver_for_a_records(monkeypatch):
 def test_resolve_records_filters_spf_and_handles_timeouts(monkeypatch):
     monkeypatch.setattr(
         dns_tools,
-        "_get_resolver",
+        "get_resolver",
         lambda: FakeResolver([FakeTxtRecord("not-spf"), FakeTxtRecord("v=spf1 include:_spf.example.com")]),
     )
     spf = dns_tools.resolve_records("example.com", "SPF")
 
-    monkeypatch.setattr(dns_tools, "_get_resolver", lambda: FakeResolver(error=dns.exception.Timeout()))
+    monkeypatch.setattr(dns_tools, "get_resolver", lambda: FakeResolver(error=dns.exception.Timeout()))
     timeout = dns_tools.resolve_records("example.com", "A")
 
     assert spf["ok"] is True
@@ -77,19 +77,19 @@ def test_resolve_records_filters_spf_and_handles_timeouts(monkeypatch):
 
 def test_resolve_records_handles_dnssec_mta_sts_and_tls_rpt_queries(monkeypatch):
     ds_resolver = FakeResolver([FakeGenericRecord("12345 13 2 abcdef")])
-    monkeypatch.setattr(dns_tools, "_get_resolver", lambda: ds_resolver)
+    monkeypatch.setattr(dns_tools, "get_resolver", lambda: ds_resolver)
     ds = dns_tools.resolve_records("example.com", "DS")
 
     dnskey_resolver = FakeResolver([FakeGenericRecord("257 3 13 abcdef")])
-    monkeypatch.setattr(dns_tools, "_get_resolver", lambda: dnskey_resolver)
+    monkeypatch.setattr(dns_tools, "get_resolver", lambda: dnskey_resolver)
     dnskey = dns_tools.resolve_records("example.com", "DNSKEY")
 
     mta_resolver = FakeResolver([FakeTxtRecord("v=STSv1; id=20260501")])
-    monkeypatch.setattr(dns_tools, "_get_resolver", lambda: mta_resolver)
+    monkeypatch.setattr(dns_tools, "get_resolver", lambda: mta_resolver)
     mta_sts = dns_tools.resolve_records("example.com", "MTA_STS")
 
     tls_resolver = FakeResolver([FakeTxtRecord("v=TLSRPTv1; rua=mailto:tls@example.com")])
-    monkeypatch.setattr(dns_tools, "_get_resolver", lambda: tls_resolver)
+    monkeypatch.setattr(dns_tools, "get_resolver", lambda: tls_resolver)
     tls_rpt = dns_tools.resolve_records("example.com", "TLS_RPT")
 
     assert ds["ok"] is True

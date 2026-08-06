@@ -447,6 +447,18 @@ TOOLS: tuple[ToolMeta, ...] = (
         category="Reference",
         is_new=True,
     ),
+    ToolMeta(
+        title="DKIM Selector Lookup",
+        short_title="DKIM Lookup",
+        description="Look up a DKIM TXT record for a domain and selector, and parse its public key/algorithm fields.",
+        path="pages/35_DKIM_Selector_Lookup.py",
+        icon="DKM",
+        accent="#2a9d8f",
+        slug="dkim_lookup",
+        professions=("Sysadmin / DevOps", "Security Engineer", "Support Engineer"),
+        category="Network",
+        is_new=True,
+    ),
 )
 
 POPULAR_TOOLS = TOOLS[:5]
@@ -476,7 +488,8 @@ TOOL_BUNDLES: dict[str, tuple[str, ...]] = {
     "ipv6_compressor": ("subnet_calculator", "cidr_aggregator"),
     "port_reference": ("subnet_calculator", "mac_address_tool"),
     "windows_event_reference": ("log_troubleshooting", "port_reference"),
-    "email_header_analyzer": ("dns_records", "domain_health"),
+    "email_header_analyzer": ("dns_records", "domain_health", "dkim_lookup"),
+    "dkim_lookup": ("email_header_analyzer", "domain_health"),
     "password_generator": ("hash_generator",),
     "hash_generator": ("password_generator", "jwt_decoder"),
     "jwt_decoder": ("jwt_encoder", "hash_generator"),
@@ -1194,6 +1207,7 @@ def _material_icon_for(slug: str) -> str:
         "cve_lookup": ":material/bug_report:",
         "dns_propagation": ":material/travel_explore:",
         "windows_event_reference": ":material/event_note:",
+        "dkim_lookup": ":material/key:",
     }
     return icons.get(slug, ":material/build:")
 
