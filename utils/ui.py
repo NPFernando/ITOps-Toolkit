@@ -555,6 +555,18 @@ TOOLS: tuple[ToolMeta, ...] = (
         category="Security",
         is_new=True,
     ),
+    ToolMeta(
+        title="chmod Calculator",
+        short_title="chmod Calculator",
+        description="Convert between symbolic (rwxr-xr-x) and octal (755) Unix file permission notation.",
+        path="pages/44_Chmod_Calculator.py",
+        icon="CHM",
+        accent="#5c6bc0",
+        slug="chmod_calculator",
+        professions=("Sysadmin / DevOps", "Automation Engineer"),
+        category="Ops & Automation",
+        is_new=True,
+    ),
 )
 
 POPULAR_TOOLS = TOOLS[:5]
@@ -607,6 +619,7 @@ TOOL_BUNDLES: dict[str, tuple[str, ...]] = {
     "timestamp_converter": ("cron_explainer",),
     "cron_explainer": ("timestamp_converter", "log_troubleshooting"),
     "log_troubleshooting": ("cron_explainer", "webhook_tester", "windows_event_reference"),
+    "chmod_calculator": ("cron_explainer", "log_troubleshooting"),
     "webhook_tester": ("http_status", "log_troubleshooting"),
     "user_agent_parser": ("http_status", "email_header_analyzer"),
 }
@@ -1320,6 +1333,7 @@ def _material_icon_for(slug: str) -> str:
         "json_diff": ":material/compare_arrows:",
         "ip_geolocation": ":material/location_on:",
         "file_integrity": ":material/verified:",
+        "chmod_calculator": ":material/lock_open:",
     }
     return icons.get(slug, ":material/build:")
 

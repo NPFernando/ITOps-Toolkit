@@ -167,6 +167,7 @@ def test_expected_tools_are_tagged_new():
         "json_diff",
         "ip_geolocation",
         "file_integrity",
+        "chmod_calculator",
     }
 
 
@@ -331,7 +332,7 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "id_generator",
             "json_diff",
         ],
-        "Ops & Automation": ["cron_explainer", "log_troubleshooting", "timestamp_converter"],
+        "Ops & Automation": ["cron_explainer", "log_troubleshooting", "timestamp_converter", "chmod_calculator"],
         "Reference": ["port_reference", "windows_event_reference", "windows_error_reference", "m365_sku_decoder"],
     }
 
