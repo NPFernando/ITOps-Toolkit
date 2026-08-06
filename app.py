@@ -39,7 +39,7 @@ if shared_favorites:
 
 favorites = favorite_tools()
 if favorites:
-    render_tool_section(favorites, heading="Favorites", section_id=None, key_prefix="fav")
+    render_tool_section(favorites, heading="Favorites", section_id=None, key_prefix="fav", show_reorder=True)
     with st.popover("Share favorites", icon=":material/share:"):
         st.caption("Anyone with this link can view your current favorites list. It won't affect their own favorites.")
         st.code(favorites_share_link(favorites), language=None)

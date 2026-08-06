@@ -437,6 +437,23 @@ def toggle_favorite(slug: str) -> None:
     _set_persisted_slugs("fav", stored)
 
 
+def move_favorite(slug: str, offset: int) -> None:
+    """Shift ``slug`` earlier (offset=-1) or later (offset=+1) in the favorites order.
+
+    A no-op if ``slug`` isn't favorited or the move would go out of bounds
+    (callers should disable the button in that case rather than rely on this).
+    """
+    stored = _get_persisted_slugs("fav")
+    if slug not in stored:
+        return
+    index = stored.index(slug)
+    target = index + offset
+    if not 0 <= target < len(stored):
+        return
+    stored[index], stored[target] = stored[target], stored[index]
+    _set_persisted_slugs("fav", stored)
+
+
 def _sync_local_storage_mirror(active_page: str) -> None:
     """Mirror the persisted-slug query params to/from browser localStorage.
 
@@ -593,6 +610,7 @@ def render_tool_section(
     heading: str | None = None,
     section_id: str | None = "all-tools",
     key_prefix: str = "tools",
+    show_reorder: bool = False,
 ) -> None:
     """Render a home page tool card grid.
 
@@ -602,7 +620,10 @@ def render_tool_section(
     None when rendering more than one section on the same page so IDs stay
     unique. ``key_prefix`` must also be unique per section on a page since
     the same tool can appear in more than one grid (e.g. recents + all
-    tools) and Streamlit container keys must be unique.
+    tools) and Streamlit container keys must be unique. ``show_reorder``
+    adds move-earlier/move-later buttons -- pass True only for the
+    visitor's own Favorites grid, never for a read-only grid like Shared
+    Favorites or Recently Used.
     """
     tools = tuple(tools)
     section_label = heading if heading is not None else ("Matching Tools" if query.strip() else "Popular Tools")
@@ -626,7 +647,30 @@ def render_tool_section(
             with st.container(key=f"tool_card_{key_prefix}_{tool.slug}"):
                 delay_ms = min(index, 9) * 45
                 st.markdown(_tool_card_html(tool, delay_ms=delay_ms), unsafe_allow_html=True)
-                link_col, fav_col = st.columns([5, 1])
+                if show_reorder:
+                    back_col, link_col, fwd_col, fav_col = st.columns([1, 4, 1, 1])
+                    with back_col:
+                        if st.button(
+                            "",
+                            icon=":material/arrow_back:",
+                            key=f"fav_move_back_{key_prefix}_{tool.slug}",
+                            help="Move earlier",
+                            disabled=index == 0,
+                        ):
+                            move_favorite(tool.slug, -1)
+                            st.rerun()
+                    with fwd_col:
+                        if st.button(
+                            "",
+                            icon=":material/arrow_forward_ios:",
+                            key=f"fav_move_fwd_{key_prefix}_{tool.slug}",
+                            help="Move later",
+                            disabled=index == len(tools) - 1,
+                        ):
+                            move_favorite(tool.slug, 1)
+                            st.rerun()
+                else:
+                    link_col, fav_col = st.columns([5, 1])
                 with link_col:
                     _safe_page_link(tool.path, label="Open Tool", icon=":material/arrow_forward:", stretch_width=True)
                 with fav_col:
