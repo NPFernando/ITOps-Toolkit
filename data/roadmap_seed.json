@@ -372,10 +372,10 @@
     {
       "title": "IP geolocation lookup",
       "category": "Tools",
-      "status": "Planned",
+      "status": "Complete",
       "votes": 6,
       "description": "Resolve an IP address to approximate geography, ASN, and network/ISP info via a public API, mirroring the pattern already used for MAC vendor lookup.",
-      "rationale": "Frequently useful alongside DNS/HTTP checks when triaging an unfamiliar IP in logs or access lists. Same 'optional live lookup against a free public API' shape as MAC vendor lookup, so the risk profile is already validated.",
+      "rationale": "Shipped as a dedicated IP Geolocation Lookup page against the free ip-api.com public API (no key). Chose it over ipapi.co after live testing -- ipapi.co's free tier hit its rate limit on back-to-back sequential test calls, while ip-api.com handled repeated calls cleanly with clear success/fail states (including distinct 'private range' and 'invalid query' messages). Also caught and fixed a real bug during interactive verification: passing mixed-type values (strings and floats) straight into a bare pd.DataFrame triggers a PyArrow serialization warning/auto-fix in Streamlit -- switched to the existing display_rows_frame() helper (utils/ui.py), which already exists specifically for this.",
       "updated_at": "2026-08-06"
     },
     {

@@ -165,6 +165,7 @@ def test_expected_tools_are_tagged_new():
         "m365_sku_decoder",
         "id_generator",
         "json_diff",
+        "ip_geolocation",
     }
 
 
@@ -300,6 +301,7 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "dns_propagation",
             "dkim_lookup",
             "email_record_builder",
+            "ip_geolocation",
         ],
         "Security": [
             "ssl_certificate",
