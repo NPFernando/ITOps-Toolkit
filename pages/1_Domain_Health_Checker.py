@@ -9,7 +9,7 @@ import streamlit as st
 
 from utils.dns_tools import MAX_DOMAIN_LENGTH, get_dns_summary, normalize_domain
 from utils.http_tools import check_http_status
-from utils.reporting import build_domain_health_html_report
+from utils.reporting import build_domain_health_html_report, build_domain_health_psa_note
 from utils.scoring import calculate_risk_score
 from utils.ssl_tools import get_certificate_info
 from utils.text_tools import validate_length
@@ -281,6 +281,7 @@ if submitted:
         csv_data = pd.DataFrame(rows).to_csv(index=False).encode("utf-8")
         markdown_data = _markdown_summary(normalized, dns_summary, ssl_result, http_result, risk)
         html_data = build_domain_health_html_report(normalized, dns_summary, ssl_result, http_result, risk, rows)
+        psa_note = build_domain_health_psa_note(normalized, dns_summary, ssl_result, http_result, risk)
         with tool_download_panel("domain_exports", related_to="domain_health"):
             render_section_heading("Export", "Download the current in-memory results.", eyebrow="Downloads")
             export_col_a, export_col_b, export_col_c = st.columns(3)
@@ -296,4 +297,17 @@ if submitted:
                 html_data,
                 file_name=f"{normalized}-health-report.html",
                 mime="text/html",
+            )
+
+            render_section_heading(
+                "PSA / ticket note",
+                "Plain text, no markdown symbols -- ready to paste into a ConnectWise, Autotask, or Halo ticket note.",
+                eyebrow="MSP export",
+            )
+            st.code(psa_note, language=None)
+            st.download_button(
+                "Download PSA note (.txt)",
+                psa_note,
+                file_name=f"{normalized}-health-ticket-note.txt",
+                mime="text/plain",
             )

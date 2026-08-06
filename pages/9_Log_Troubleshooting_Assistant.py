@@ -4,6 +4,7 @@ import pandas as pd
 import streamlit as st
 
 from utils.ai_tools import analyze_logs_rule_based, optional_ai_configured, optional_ai_summary
+from utils.reporting import build_log_analysis_psa_note
 from utils.text_tools import MAX_LOG_LENGTH
 from utils.ui import (
     apply_app_shell,
@@ -12,6 +13,7 @@ from utils.ui import (
     render_page_header,
     render_section_heading,
     render_status_note,
+    tool_download_panel,
     tool_form_panel,
     tool_result_panel,
 )
@@ -106,3 +108,18 @@ if submitted:
                     st.markdown("**Remediation checklist**")
                     for step_index, step in enumerate(item["safe_next_steps"]):
                         st.checkbox(step, key=f"remediation_step_{finding_index}_{step_index}")
+
+            psa_note = build_log_analysis_psa_note(result["findings"])
+            with tool_download_panel("log_troubleshooting_export"):
+                render_section_heading(
+                    "PSA / ticket note",
+                    "Plain text, no markdown symbols -- ready to paste into a ConnectWise, Autotask, or Halo ticket note.",
+                    eyebrow="MSP export",
+                )
+                st.code(psa_note, language=None)
+                st.download_button(
+                    "Download PSA note (.txt)",
+                    psa_note,
+                    file_name="log-troubleshooting-ticket-note.txt",
+                    mime="text/plain",
+                )
