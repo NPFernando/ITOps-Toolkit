@@ -9,7 +9,12 @@ import streamlit as st
 
 from utils.dns_tools import MAX_DOMAIN_LENGTH, get_dns_summary, normalize_domain
 from utils.http_tools import check_http_status
-from utils.reporting import build_domain_health_html_report, build_domain_health_psa_note
+from utils.reporting import (
+    INCIDENT_MESSAGE_TARGETS,
+    build_domain_health_html_report,
+    build_domain_health_incident_message,
+    build_domain_health_psa_note,
+)
 from utils.scoring import calculate_risk_score
 from utils.ssl_tools import get_certificate_info
 from utils.text_tools import validate_length
@@ -311,3 +316,14 @@ if submitted:
                 file_name=f"{normalized}-health-ticket-note.txt",
                 mime="text/plain",
             )
+
+            render_section_heading(
+                "Incident message",
+                "Ready to paste into a Slack or Teams channel for a live incident update.",
+                eyebrow="Chat export",
+            )
+            incident_tabs = st.tabs([target.title() for target in INCIDENT_MESSAGE_TARGETS])
+            for tab, target in zip(incident_tabs, INCIDENT_MESSAGE_TARGETS, strict=True):
+                with tab:
+                    incident_message = build_domain_health_incident_message(normalized, dns_summary, ssl_result, http_result, risk, target)
+                    st.code(incident_message["message"], language=None)
