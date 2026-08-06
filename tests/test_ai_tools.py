@@ -148,3 +148,96 @@ def test_azure_openai_summary_hides_provider_errors(monkeypatch):
     assert result["status"] == "error"
     assert result["error_type"] == "RuntimeError"
     assert "secret-api-key" not in result["message"]
+
+
+class _FakeRoadmapItem:
+    def __init__(self, title, category="Tools", status="AI Recommended", votes=10, description="", rationale="", source="seed"):
+        self.title = title
+        self.category = category
+        self.status = status
+        self.votes = votes
+        self.description = description
+        self.rationale = rationale
+        self.source = source
+
+
+def test_summarize_feature_requests_unavailable_without_azure_config(monkeypatch):
+    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+    monkeypatch.delenv("AZURE_OPENAI_API_KEY", raising=False)
+
+    result = ai_tools.summarize_feature_requests_with_azure([_FakeRoadmapItem("Idea 1")])
+
+    assert result["enabled"] is False
+    assert result["status"] == "unavailable"
+
+
+def test_summarize_feature_requests_unavailable_with_no_items(monkeypatch):
+    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+    monkeypatch.setenv("AZURE_OPENAI_API_KEY", "test-key")
+    monkeypatch.setenv("AZURE_OPENAI_ENDPOINT", "https://example.openai.azure.com")
+    monkeypatch.setenv("AZURE_OPENAI_DEPLOYMENT", "gpt-test")
+
+    result = ai_tools.summarize_feature_requests_with_azure([])
+
+    assert result["enabled"] is False
+    assert result["status"] == "unavailable"
+    assert "no open roadmap items" in result["message"]
+
+
+def test_summarize_feature_requests_sends_only_public_fields(monkeypatch):
+    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+    monkeypatch.setenv("AZURE_OPENAI_API_KEY", "test-key")
+    monkeypatch.setenv("AZURE_OPENAI_ENDPOINT", "https://example.openai.azure.com/")
+    monkeypatch.setenv("AZURE_OPENAI_DEPLOYMENT", "gpt-test")
+
+    calls = []
+
+    class FakeResponses:
+        def create(self, **kwargs):
+            calls.append(kwargs)
+
+            class Response:
+                output_text = "Prioritize the command palette and PWA ideas first."
+
+            return Response()
+
+    class FakeClient:
+        responses = FakeResponses()
+
+    items = [
+        _FakeRoadmapItem("Command palette", votes=18, description="Ctrl+K launcher", rationale="Power users expect it"),
+        _FakeRoadmapItem("PWA support", votes=11, source="github"),
+    ]
+
+    result = ai_tools.summarize_feature_requests_with_azure(items, client_factory=lambda **_: FakeClient())
+
+    response_call = calls[0]
+    assert result["enabled"] is True
+    assert result["status"] == "success"
+    assert "Command palette" in response_call["input"]
+    assert "PWA support" in response_call["input"]
+    assert "test-key" not in response_call["input"]
+
+
+def test_summarize_feature_requests_hides_provider_errors(monkeypatch):
+    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+    monkeypatch.setenv("AZURE_OPENAI_API_KEY", "secret-api-key")
+    monkeypatch.setenv("AZURE_OPENAI_ENDPOINT", "https://example.openai.azure.com/openai/v1/")
+    monkeypatch.setenv("AZURE_OPENAI_DEPLOYMENT", "gpt-test")
+
+    class FakeResponses:
+        def create(self, **kwargs):
+            raise RuntimeError("secret-api-key was rejected")
+
+    class FakeClient:
+        responses = FakeResponses()
+
+    result = ai_tools.summarize_feature_requests_with_azure(
+        [_FakeRoadmapItem("Idea 1")],
+        client_factory=lambda **_: FakeClient(),
+    )
+
+    assert result["enabled"] is False
+    assert result["status"] == "error"
+    assert result["error_type"] == "RuntimeError"
+    assert "secret-api-key" not in result["message"]
