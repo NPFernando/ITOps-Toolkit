@@ -462,11 +462,11 @@
     {
       "title": "Integer base converter",
       "category": "Tools",
-      "status": "Planned",
+      "status": "Complete",
       "votes": 5,
       "description": "Convert a number between binary, octal, decimal, and hexadecimal, with live conversion as you type.",
-      "rationale": "Inspired by killertools.net's Integer Base Converter. Small, stdlib-only, universally useful dev/IT utility not currently in this toolkit.",
-      "updated_at": "2026-08-06"
+      "rationale": "Shipped as a dedicated Integer Base Converter page, stdlib-only (int()/bin()/oct()/hex()). Handles negative numbers and same-base prefixes (0x/0b/0o) if included. Live-updates as you type, same no-submit-button pattern as chmod Calculator -- no results-vanishing risk since nothing is gated on a transient flag.",
+      "updated_at": "2026-08-07"
     },
     {
       "title": "UUID / ULID generator",

@@ -567,6 +567,18 @@ TOOLS: tuple[ToolMeta, ...] = (
         category="Ops & Automation",
         is_new=True,
     ),
+    ToolMeta(
+        title="Integer Base Converter",
+        short_title="Base Converter",
+        description="Convert a number between binary, octal, decimal, and hexadecimal, live as you type.",
+        path="pages/45_Integer_Base_Converter.py",
+        icon="BAS",
+        accent="#264653",
+        slug="base_converter",
+        professions=("Web Developer", "Automation Engineer", "Sysadmin / DevOps"),
+        category="Web & Dev",
+        is_new=True,
+    ),
 )
 
 POPULAR_TOOLS = TOOLS[:5]
@@ -610,6 +622,7 @@ TOOL_BUNDLES: dict[str, tuple[str, ...]] = {
     "json_formatter": ("base64_tool", "config_format_converter", "json_diff"),
     "id_generator": ("hash_generator", "json_formatter"),
     "json_diff": ("json_formatter", "text_diff_checker"),
+    "base_converter": ("hash_generator", "id_generator"),
     "config_format_converter": ("json_formatter", "text_diff_checker"),
     "base64_tool": ("json_formatter", "url_encoder_decoder"),
     "url_encoder_decoder": ("base64_tool", "json_formatter"),
@@ -1334,6 +1347,7 @@ def _material_icon_for(slug: str) -> str:
         "ip_geolocation": ":material/location_on:",
         "file_integrity": ":material/verified:",
         "chmod_calculator": ":material/lock_open:",
+        "base_converter": ":material/pin:",
     }
     return icons.get(slug, ":material/build:")
 
