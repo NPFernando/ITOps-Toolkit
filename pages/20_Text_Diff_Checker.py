@@ -41,7 +41,7 @@ if not submitted:
 
 if submitted:
     result = compare_text(original_input, changed_input, ignore_whitespace)
-    with tool_result_panel("diff_result"):
+    with tool_result_panel("diff_result", related_to="text_diff_checker"):
         render_section_heading("Diff", f"{result['added']} added, {result['removed']} removed.")
         if not result["ok"]:
             st.error(result["error"])

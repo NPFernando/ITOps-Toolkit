@@ -70,6 +70,6 @@ if submitted:
             m4.metric("Errored", errored)
 
         csv_data = frame.to_csv(index=False).encode("utf-8")
-        with tool_download_panel("bulk_domain_health_export"):
+        with tool_download_panel("bulk_domain_health_export", related_to="bulk_domain_health"):
             render_section_heading("Export", "Download the current in-memory results.", eyebrow="Downloads")
             st.download_button("Download results as CSV", csv_data, file_name="bulk-domain-health.csv", mime="text/csv")

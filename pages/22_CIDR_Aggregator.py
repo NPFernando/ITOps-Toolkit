@@ -40,7 +40,7 @@ if not submitted:
 
 if submitted:
     result = aggregate_cidrs(cidr_input)
-    with tool_result_panel("cidr_result"):
+    with tool_result_panel("cidr_result", related_to="cidr_aggregator"):
         render_section_heading("Aggregated networks", f"{result['input_count']} entries in.")
         if not result["ok"]:
             st.error(result["error"])

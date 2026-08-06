@@ -6,6 +6,7 @@ from utils.ui import (
     SIDEBAR_CATEGORIES,
     TITLE_TO_SLUG,
     TOOLS,
+    TOOL_BUNDLES,
     display_rows_frame,
     favorite_tools,
     favorites_share_link,
@@ -13,6 +14,7 @@ from utils.ui import (
     move_favorite,
     record_recent_visit,
     recent_or_popular_tools,
+    related_tools,
     shared_favorite_tools,
     sort_tools,
     toggle_favorite,
@@ -242,6 +244,25 @@ def test_shared_favorites_param_is_excluded_from_local_storage_mirror():
     # Sharing a favorites link must never overwrite the visitor's own saved
     # favorites -- confirm the mirror only ever touches "recent"/"fav".
     assert SHARED_FAVORITES_PARAM not in ui.PERSISTED_LIST_PARAMS
+
+
+def test_related_tools_resolves_bundle_slugs_in_order():
+    tools = related_tools("ssl_certificate")
+
+    assert [t.slug for t in tools] == list(TOOL_BUNDLES["ssl_certificate"])
+
+
+def test_related_tools_returns_empty_for_unbundled_slug():
+    assert related_tools("not-a-real-slug") == ()
+
+
+def test_all_tool_bundles_reference_known_slugs_and_never_self_reference():
+    known_slugs = {tool.slug for tool in TOOLS}
+    for slug, related in TOOL_BUNDLES.items():
+        assert slug in known_slugs, f"{slug!r} is not a known tool slug"
+        for related_slug in related:
+            assert related_slug in known_slugs, f"{slug!r} bundles unknown slug {related_slug!r}"
+            assert related_slug != slug, f"{slug!r} lists itself as a related tool"
 
 
 def test_every_tool_has_a_valid_sidebar_category():

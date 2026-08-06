@@ -63,7 +63,7 @@ if submitted:
         st.error("Enter a domain name.")
     else:
         result = get_certificate_info(normalized, int(port))
-        with tool_result_panel("ssl_result"):
+        with tool_result_panel("ssl_result", related_to="ssl_certificate"):
             render_section_heading("Certificate result", "Connection status, expiration, issuer, and subject details.")
             _status(result["tls_status"])
             if result["error"]:

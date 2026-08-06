@@ -66,7 +66,7 @@ if not submitted:
 
 if submitted:
     result = analyze_logs_rule_based(log_text)
-    with tool_result_panel("log_result"):
+    with tool_result_panel("log_result", related_to="log_troubleshooting"):
         render_section_heading("Log analysis", "Rule-based findings and safe operational next steps.")
         if not result["ok"]:
             st.error(result["error"])

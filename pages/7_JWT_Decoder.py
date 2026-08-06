@@ -35,7 +35,7 @@ if not submitted:
 
 if submitted:
     result = decode_jwt_unverified(token)
-    with tool_result_panel("jwt_result"):
+    with tool_result_panel("jwt_result", related_to="jwt_decoder"):
         render_section_heading("Decoded token", "Unverified header and payload values from the pasted token.")
         if not result["ok"]:
             st.error(result["error"])

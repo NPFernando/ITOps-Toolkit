@@ -46,7 +46,7 @@ if not submitted:
 if submitted:
     with st.spinner("Sending request..."):
         result = send_request(url, method, headers_text, body_text)
-    with tool_result_panel("webhook_result"):
+    with tool_result_panel("webhook_result", related_to="webhook_tester"):
         render_section_heading("Response", eyebrow="Result")
         if result["error"]:
             st.error(result["error"])

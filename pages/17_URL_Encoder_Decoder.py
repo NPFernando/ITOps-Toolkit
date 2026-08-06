@@ -39,7 +39,7 @@ if not (encode_clicked or decode_clicked):
 
 if encode_clicked:
     result = encode_url_text(text_input, plus_for_space)
-    with tool_result_panel("url_encoded"):
+    with tool_result_panel("url_encoded", related_to="url_encoder_decoder"):
         render_section_heading("Encoded result", "Percent-encoded output generated from the current input.")
         if not result["ok"]:
             st.error(result["error"])
@@ -48,7 +48,7 @@ if encode_clicked:
 
 if decode_clicked:
     result = decode_url_text(text_input, plus_for_space)
-    with tool_result_panel("url_decoded"):
+    with tool_result_panel("url_decoded", related_to="url_encoder_decoder"):
         render_section_heading("Decoded result", "Decoded text from the current input.")
         if not result["ok"]:
             st.error(result["error"])

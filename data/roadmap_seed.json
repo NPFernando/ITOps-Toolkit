@@ -120,11 +120,11 @@
     {
       "title": "Tool bundle recommendations",
       "category": "UX / Design",
-      "status": "AI Recommended",
+      "status": "Complete",
       "votes": 49,
       "description": "Suggest the next tool to run based on current troubleshooting context.",
-      "rationale": "Helps users move from DNS to SSL to HTTP checks without a heavy workflow engine.",
-      "updated_at": "2026-04-30"
+      "rationale": "Helps users move from DNS to SSL to HTTP checks without a heavy workflow engine. Shipped as a curated (not AI-generated) TOOL_BUNDLES map in utils/ui.py -- hand-picked \"what would you naturally run next\" pairings, e.g. DNS Record Checker -> Domain Health Checker/WHOIS/SSL, JWT Decoder -> JWT Encoder/Hash Generator. A \"Related tools\" row renders after a tool's own result via tool_result_panel(..., related_to=<slug>). No heavy workflow engine, matching the rationale; a tool with no natural next step is simply absent from the map rather than forced into one.",
+      "updated_at": "2026-08-06"
     },
     {
       "title": "ConnectWise and PSA export ideas",

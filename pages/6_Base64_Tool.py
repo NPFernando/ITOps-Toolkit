@@ -38,13 +38,13 @@ if not (encode_clicked or decode_clicked):
     render_empty_state("Ready for Base64 input", "Encoded or decoded output appears here after you choose an action.")
 
 if encode_clicked:
-    with tool_result_panel("base64_encoded"):
+    with tool_result_panel("base64_encoded", related_to="base64_tool"):
         render_section_heading("Encoded result", "Base64 output generated from the current input.")
         st.text_area("Result", value=encode_base64_text(text_input), height=220)
 
 if decode_clicked:
     result = decode_base64_text(text_input.strip())
-    with tool_result_panel("base64_decoded"):
+    with tool_result_panel("base64_decoded", related_to="base64_tool"):
         render_section_heading("Decoded result", "Decoded text from valid Base64 input.")
         if result["ok"]:
             st.text_area("Result", value=result["result"], height=220)

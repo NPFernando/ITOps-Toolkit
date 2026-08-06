@@ -38,7 +38,7 @@ if submitted:
         st.error(error)
     else:
         result = check_http_status(url)
-        with tool_result_panel("http_result"):
+        with tool_result_panel("http_result", related_to="http_status"):
             render_section_heading("HTTP result", "Status, timing, HTTPS state, and final URL.")
             if result["ok"]:
                 st.success("Healthy")

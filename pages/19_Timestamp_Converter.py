@@ -51,7 +51,7 @@ with tool_form_panel("epoch_to_date"):
 
 if epoch_submitted:
     result = epoch_to_datetime(epoch_input, unit, tz_a)
-    with tool_result_panel("epoch_result"):
+    with tool_result_panel("epoch_result", related_to="timestamp_converter"):
         render_section_heading("Converted date", eyebrow="Result")
         if not result["ok"]:
             st.error(result["error"])
@@ -72,7 +72,7 @@ with tool_form_panel("date_to_epoch"):
 
 if date_submitted:
     result = datetime_to_epoch(date_input, tz_b)
-    with tool_result_panel("date_result"):
+    with tool_result_panel("date_result", related_to="timestamp_converter"):
         render_section_heading("Converted epoch", eyebrow="Result")
         if not result["ok"]:
             st.error(result["error"])
@@ -95,7 +95,7 @@ with tool_form_panel("timezone_convert"):
 
 if tz_submitted:
     result = convert_timezone(tz_date_input, tz_from, tz_to)
-    with tool_result_panel("timezone_result"):
+    with tool_result_panel("timezone_result", related_to="timestamp_converter"):
         render_section_heading("Converted time", eyebrow="Result")
         if not result["ok"]:
             st.error(result["error"])

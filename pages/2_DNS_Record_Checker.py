@@ -54,7 +54,7 @@ if submitted:
         st.error("Enter a domain name.")
     else:
         result = resolve_records(normalized, record_type)
-        with tool_result_panel("dns_result"):
+        with tool_result_panel("dns_result", related_to="dns_records"):
             render_section_heading(f"{record_type} records", EXPLANATIONS[record_type])
 
             if result["ok"]:
