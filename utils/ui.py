@@ -435,6 +435,18 @@ TOOLS: tuple[ToolMeta, ...] = (
         category="Network",
         is_new=True,
     ),
+    ToolMeta(
+        title="Windows Event Reference",
+        short_title="Windows Events",
+        description="Look up common Windows Event Log IDs by number, log, source, severity, or keyword.",
+        path="pages/34_Windows_Event_Reference.py",
+        icon="WEV",
+        accent="#5c6bc0",
+        slug="windows_event_reference",
+        professions=("Sysadmin / DevOps", "Support Engineer", "Helpdesk / L1"),
+        category="Reference",
+        is_new=True,
+    ),
 )
 
 POPULAR_TOOLS = TOOLS[:5]
@@ -463,6 +475,7 @@ TOOL_BUNDLES: dict[str, tuple[str, ...]] = {
     "cidr_aggregator": ("subnet_calculator", "ipv6_compressor"),
     "ipv6_compressor": ("subnet_calculator", "cidr_aggregator"),
     "port_reference": ("subnet_calculator", "mac_address_tool"),
+    "windows_event_reference": ("log_troubleshooting", "port_reference"),
     "email_header_analyzer": ("dns_records", "domain_health"),
     "password_generator": ("hash_generator",),
     "hash_generator": ("password_generator", "jwt_decoder"),
@@ -476,7 +489,7 @@ TOOL_BUNDLES: dict[str, tuple[str, ...]] = {
     "case_converter": ("text_diff_checker", "url_encoder_decoder"),
     "timestamp_converter": ("cron_explainer",),
     "cron_explainer": ("timestamp_converter", "log_troubleshooting"),
-    "log_troubleshooting": ("cron_explainer", "webhook_tester"),
+    "log_troubleshooting": ("cron_explainer", "webhook_tester", "windows_event_reference"),
     "webhook_tester": ("http_status", "log_troubleshooting"),
     "user_agent_parser": ("http_status", "email_header_analyzer"),
 }
@@ -1180,6 +1193,7 @@ def _material_icon_for(slug: str) -> str:
         "security_headers": ":material/shield:",
         "cve_lookup": ":material/bug_report:",
         "dns_propagation": ":material/travel_explore:",
+        "windows_event_reference": ":material/event_note:",
     }
     return icons.get(slug, ":material/build:")
 
