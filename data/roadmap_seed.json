@@ -444,10 +444,10 @@
     {
       "title": "CVE lookup",
       "category": "Security",
-      "status": "Planned",
+      "status": "Complete",
       "votes": 9,
       "description": "Search the NIST National Vulnerability Database by CVE ID or keyword and show severity, description, and affected products.",
-      "rationale": "Inspired by killertools.net's CVE Lookup. NVD has a public, keyless API for basic queries, so this follows the same 'optional live external lookup' pattern already validated by WHOIS/MAC-vendor/DNS work -- genuinely useful for MSP security triage, not currently covered by anything in this toolkit.",
+      "rationale": "Shipped as a dedicated CVE Lookup page against the live NIST NVD public API (no API key required for this usage level). Supports exact CVE ID lookup and free-text keyword search, and prefers the newest available CVSS score/severity (v3.1 > v3.0 > v2).",
       "updated_at": "2026-08-06"
     },
     {
