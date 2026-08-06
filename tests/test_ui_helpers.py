@@ -166,6 +166,7 @@ def test_expected_tools_are_tagged_new():
         "id_generator",
         "json_diff",
         "ip_geolocation",
+        "file_integrity",
     }
 
 
@@ -312,6 +313,7 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "jwt_encoder",
             "security_headers",
             "cve_lookup",
+            "file_integrity",
         ],
         "Web & Dev": [
             "http_status",
