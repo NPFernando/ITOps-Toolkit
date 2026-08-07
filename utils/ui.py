@@ -40,6 +40,39 @@ class ToolMeta:
     aliases: tuple[str, ...] = ()
 
 
+def _icon_text_color(accent: str) -> str:
+    """Pick white or dark icon text, whichever has higher contrast against ``accent``.
+
+    Tool icon badges (.tool-page-icon/.tool-card-icon) draw small bold text
+    directly on a per-tool accent gradient. Several accents (e.g. #ffb703,
+    measured 1.75:1 with white text) fail WCAG AA's 4.5:1 minimum with a
+    hardcoded white. Every one of TOOLS' 51 accents clears 4.5:1 with either
+    white (#ffffff) or dark (#0c1116) text -- verified in
+    tests/test_theme_contrast.py -- so picking the higher-contrast of the two
+    is sufficient; no accent needs its own color redesigned.
+    """
+
+    def hex_to_rgb(value: str) -> tuple[int, int, int]:
+        value = value.lstrip("#")
+        return tuple(int(value[i : i + 2], 16) for i in (0, 2, 4))
+
+    def linearize(channel: int) -> float:
+        c = channel / 255
+        return c / 12.92 if c <= 0.03928 else ((c + 0.055) / 1.055) ** 2.4
+
+    def luminance(hex_value: str) -> float:
+        r, g, b = hex_to_rgb(hex_value)
+        return 0.2126 * linearize(r) + 0.7152 * linearize(g) + 0.0722 * linearize(b)
+
+    def contrast(hex_a: str, hex_b: str) -> float:
+        lum_a, lum_b = luminance(hex_a), luminance(hex_b)
+        lighter, darker = max(lum_a, lum_b), min(lum_a, lum_b)
+        return (lighter + 0.05) / (darker + 0.05)
+
+    white, dark = "#ffffff", "#0c1116"
+    return white if contrast(white, accent) >= contrast(dark, accent) else dark
+
+
 PROFESSIONS: tuple[str, ...] = (
     "Support Engineer",
     "Network Engineer",
@@ -1040,9 +1073,10 @@ def render_page_header(title: str, description: str, warning: str | None = None)
     tool = tool_by_title(title)
     icon = tool.icon if tool else "IT"
     accent = tool.accent if tool else "#1668f4"
+    icon_text = _icon_text_color(accent)
     st.markdown(
         f"""
-        <section class="tool-page-header" style="--tool-accent: {accent};">
+        <section class="tool-page-header" style="--tool-accent: {accent}; --tool-icon-text: {icon_text};">
             <div class="tool-page-icon">{escape(icon)}</div>
             <div>
                 <h1>{escape(title)}</h1>
@@ -1341,8 +1375,9 @@ def _tool_card_html(tool: ToolMeta, delay_ms: int = 0) -> str:
     # the card renders as literal escaped tag text. Keeping it on the same
     # line as the opening tag means that line is never blank.
     new_badge = '<span class="tool-card-badge-new">NEW</span>' if tool.is_new else ""
+    icon_text = _icon_text_color(tool.accent)
     return f"""
-    <div class="tool-card-shell" style="--tool-accent: {tool.accent}; animation-delay: {delay_ms}ms;">{new_badge}
+    <div class="tool-card-shell" style="--tool-accent: {tool.accent}; --tool-icon-text: {icon_text}; animation-delay: {delay_ms}ms;">{new_badge}
         <div class="tool-card-icon">{escape(tool.icon)}</div>
         <h3>{escape(tool.title)}</h3>
         <p>{escape(tool.description)}</p>
@@ -2113,7 +2148,9 @@ def _inject_global_css(mode: str) -> None:
             place-items: center;
             border-radius: var(--card-radius);
             margin-bottom: 1rem;
-            color: #ffffff;
+            /* Not always white -- several accents fail WCAG AA with white
+               icon text, see _icon_text_color() in utils/ui.py. */
+            color: var(--tool-icon-text, #ffffff);
             font-size: 0.84rem;
             font-weight: 900;
             background: linear-gradient(145deg, color-mix(in srgb, var(--tool-accent), #ffffff 8%), var(--tool-accent));
@@ -2261,7 +2298,9 @@ def _inject_global_css(mode: str) -> None:
             place-items: center;
             border-radius: var(--card-radius);
             background: linear-gradient(145deg, color-mix(in srgb, var(--tool-accent), #ffffff 8%), var(--tool-accent));
-            color: #ffffff;
+            /* Not always white -- several accents fail WCAG AA with white
+               icon text, see _icon_text_color() in utils/ui.py. */
+            color: var(--tool-icon-text, #ffffff);
             font-weight: 900;
             font-size: 0.76rem;
         }
