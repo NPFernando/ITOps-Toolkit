@@ -36,11 +36,20 @@ with tool_form_panel("text_diff"):
         ignore_whitespace = st.checkbox("Ignore leading/trailing whitespace per line", value=False)
         submitted = st.form_submit_button("Compare")
 
-if not submitted:
+if submitted:
+    # Stored in session_state (not rendered directly here) because the sidebar's
+    # quick-search box, favorite-star buttons, and any other widget outside this
+    # page's st.form trigger reruns of their own -- on those reruns `submitted` is
+    # False again, which would otherwise collapse this whole results section the
+    # instant any of them is touched.
+    st.session_state["text_diff_result"] = compare_text(original_input, changed_input, ignore_whitespace)
+
+result = st.session_state.get("text_diff_result")
+
+if result is None:
     render_empty_state("Ready to compare", "A line-by-line diff appears here after you compare two versions.")
 
-if submitted:
-    result = compare_text(original_input, changed_input, ignore_whitespace)
+if result is not None:
     with tool_result_panel("diff_result", related_to="text_diff_checker"):
         render_section_heading("Diff", f"{result['added']} added, {result['removed']} removed.")
         if not result["ok"]:

@@ -30,11 +30,20 @@ with tool_form_panel("jwt_decoder"):
         token = st.text_area("JWT token", height=180, max_chars=20_000)
         submitted = st.form_submit_button("Decode token")
 
-if not submitted:
+if submitted:
+    # Stored in session_state (not rendered directly here) because the sidebar's
+    # quick-search box, favorite-star buttons, and any other widget outside this
+    # page's st.form trigger reruns of their own -- on those reruns `submitted` is
+    # False again, which would otherwise collapse this whole results section the
+    # instant any of them is touched.
+    st.session_state["jwt_decoder_result"] = decode_jwt_unverified(token)
+
+result = st.session_state.get("jwt_decoder_result")
+
+if result is None:
     render_empty_state("Ready to decode a JWT", "Issuer, audience, timestamps, header, and payload appear after decoding.")
 
-if submitted:
-    result = decode_jwt_unverified(token)
+if result is not None:
     with tool_result_panel("jwt_result", related_to="jwt_decoder"):
         render_section_heading("Decoded token", "Unverified header and payload values from the pasted token.")
         if not result["ok"]:

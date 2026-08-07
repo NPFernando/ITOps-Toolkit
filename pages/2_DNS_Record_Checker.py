@@ -42,32 +42,52 @@ with tool_form_panel("dns_records"):
         record_type = st.selectbox("Record type", list(EXPLANATIONS.keys()))
         submitted = st.form_submit_button("Lookup records")
 
-if not submitted:
-    render_empty_state("Ready to query DNS", "Record results, raw values, and the queried name appear after lookup.")
-
 if submitted:
+    # Stored in session_state (not rendered directly here) because the sidebar's
+    # quick-search box, favorite-star buttons, and any other widget outside this
+    # page's st.form trigger reruns of their own -- on those reruns `submitted` is
+    # False again, which would otherwise collapse this whole results section the
+    # instant any of them is touched.
     ok, error = validate_length(domain, MAX_DOMAIN_LENGTH, "Domain")
     normalized = normalize_domain(domain)
     if not ok:
-        st.error(error)
+        st.session_state["dns_records_validation_error"] = error
+        st.session_state["dns_records_result"] = None
     elif not normalized:
-        st.error("Enter a domain name.")
+        st.session_state["dns_records_validation_error"] = "Enter a domain name."
+        st.session_state["dns_records_result"] = None
     else:
-        result = resolve_records(normalized, record_type)
-        with tool_result_panel("dns_result", related_to="dns_records"):
-            render_section_heading(f"{record_type} records", EXPLANATIONS[record_type])
+        st.session_state["dns_records_validation_error"] = None
+        st.session_state["dns_records_result"] = {
+            "record_type": record_type,
+            "data": resolve_records(normalized, record_type),
+        }
 
-            if result["ok"]:
-                st.success(result["status"])
-                st.dataframe(pd.DataFrame(result["records"]), width="stretch", hide_index=True)
+validation_error = st.session_state.get("dns_records_validation_error")
+stored = st.session_state.get("dns_records_result")
+
+if validation_error is None and stored is None:
+    render_empty_state("Ready to query DNS", "Record results, raw values, and the queried name appear after lookup.")
+
+if validation_error is not None:
+    st.error(validation_error)
+
+if stored is not None:
+    result = stored["data"]
+    with tool_result_panel("dns_result", related_to="dns_records"):
+        render_section_heading(f"{stored['record_type']} records", EXPLANATIONS[stored["record_type"]])
+
+        if result["ok"]:
+            st.success(result["status"])
+            st.dataframe(pd.DataFrame(result["records"]), width="stretch", hide_index=True)
+        else:
+            st.warning(result["status"])
+            st.error(result["error"])
+
+        with st.expander("Raw values"):
+            if result["raw_values"]:
+                st.code("\n".join(result["raw_values"]))
             else:
-                st.warning(result["status"])
-                st.error(result["error"])
+                st.caption("No raw values returned.")
 
-            with st.expander("Raw values"):
-                if result["raw_values"]:
-                    st.code("\n".join(result["raw_values"]))
-                else:
-                    st.caption("No raw values returned.")
-
-            st.caption(f"Queried name: {result['query_name']}")
+        st.caption(f"Queried name: {result['query_name']}")

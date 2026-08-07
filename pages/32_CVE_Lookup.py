@@ -31,40 +31,55 @@ with tool_form_panel("cve_lookup"):
         query = st.text_input("CVE ID or keyword", placeholder="CVE-2021-44228 or \"log4j remote code execution\"", max_chars=MAX_QUERY_LENGTH)
         submitted = st.form_submit_button("Search")
 
-if not submitted:
-    render_empty_state("Ready to search CVEs", "Severity, description, and references appear after a search.")
-
 if submitted:
+    # Stored in session_state (not rendered directly here) because the sidebar's
+    # quick-search box, favorite-star buttons, and any other widget outside this
+    # page's st.form trigger reruns of their own -- on those reruns `submitted` is
+    # False again, which would otherwise collapse this whole results section the
+    # instant any of them is touched.
     ok, error = validate_length(query, MAX_QUERY_LENGTH, "Query")
     if not ok:
-        st.error(error)
+        st.session_state["cve_lookup_validation_error"] = error
+        st.session_state["cve_lookup_result"] = None
     else:
-        result = lookup_cve(query)
-        with tool_result_panel("cve_result", related_to="cve_lookup"):
-            render_section_heading("Results", f"{result['total_results']} total result(s) from NVD.")
-            if not result["ok"]:
-                st.error(result["error"])
-            else:
-                for entry in result["results"]:
-                    cvss = entry["cvss"]
-                    with st.expander(entry["id"], expanded=len(result["results"]) == 1):
-                        c1, c2, c3 = st.columns(3)
-                        c1.metric("Status", entry["status"] or "Unknown")
-                        c2.metric("CVSS score", cvss["base_score"] if cvss else "Unknown")
-                        c3.metric("Severity", cvss["base_severity"] if cvss else "Unknown")
+        st.session_state["cve_lookup_validation_error"] = None
+        st.session_state["cve_lookup_result"] = lookup_cve(query)
 
-                        st.markdown("**Description**")
-                        st.write(entry["description"] or "No description available.")
+validation_error = st.session_state.get("cve_lookup_validation_error")
+result = st.session_state.get("cve_lookup_result")
 
-                        rows = [
-                            {"field": "Published", "value": entry["published"] or "Unknown"},
-                            {"field": "Last modified", "value": entry["last_modified"] or "Unknown"},
-                        ]
-                        if cvss:
-                            rows.append({"field": "CVSS vector", "value": cvss["vector_string"] or "Unknown"})
-                        st.dataframe(pd.DataFrame(rows), width="stretch", hide_index=True)
+if validation_error is None and result is None:
+    render_empty_state("Ready to search CVEs", "Severity, description, and references appear after a search.")
 
-                        if entry["references"]:
-                            st.markdown("**References**")
-                            for url in entry["references"]:
-                                st.markdown(f"- {url}")
+if validation_error is not None:
+    st.error(validation_error)
+
+if result is not None:
+    with tool_result_panel("cve_result", related_to="cve_lookup"):
+        render_section_heading("Results", f"{result['total_results']} total result(s) from NVD.")
+        if not result["ok"]:
+            st.error(result["error"])
+        else:
+            for entry in result["results"]:
+                cvss = entry["cvss"]
+                with st.expander(entry["id"], expanded=len(result["results"]) == 1):
+                    c1, c2, c3 = st.columns(3)
+                    c1.metric("Status", entry["status"] or "Unknown")
+                    c2.metric("CVSS score", cvss["base_score"] if cvss else "Unknown")
+                    c3.metric("Severity", cvss["base_severity"] if cvss else "Unknown")
+
+                    st.markdown("**Description**")
+                    st.write(entry["description"] or "No description available.")
+
+                    rows = [
+                        {"field": "Published", "value": entry["published"] or "Unknown"},
+                        {"field": "Last modified", "value": entry["last_modified"] or "Unknown"},
+                    ]
+                    if cvss:
+                        rows.append({"field": "CVSS vector", "value": cvss["vector_string"] or "Unknown"})
+                    st.dataframe(pd.DataFrame(rows), width="stretch", hide_index=True)
+
+                    if entry["references"]:
+                        st.markdown("**References**")
+                        for url in entry["references"]:
+                            st.markdown(f"- {url}")

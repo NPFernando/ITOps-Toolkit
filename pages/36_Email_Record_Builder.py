@@ -35,10 +35,19 @@ with spf_tab:
             spf_submitted = st.form_submit_button("Build SPF record")
 
     if spf_submitted:
+        # Stored in session_state (not rendered directly here) because the sidebar's
+        # quick-search box, favorite-star buttons, and any other widget outside this
+        # page's st.form trigger reruns of their own -- on those reruns the transient
+        # *_submitted flags are False again, which would otherwise collapse this
+        # whole results section the instant any of them is touched.
         includes = [line for line in includes_raw.splitlines() if line.strip()]
         ip4 = [line for line in ip4_raw.splitlines() if line.strip()]
         ip6 = [line for line in ip6_raw.splitlines() if line.strip()]
-        result = build_spf_record(includes, ip4, ip6, all_mechanism)
+        st.session_state["email_record_builder_spf_result"] = build_spf_record(includes, ip4, ip6, all_mechanism)
+
+    spf_result = st.session_state.get("email_record_builder_spf_result")
+    if spf_result is not None:
+        result = spf_result
         with tool_result_panel("spf_result", related_to="email_record_builder"):
             render_section_heading("SPF record", "Publish this as a TXT record at the domain root.")
             if not result["ok"]:
@@ -66,7 +75,11 @@ with dmarc_tab:
         rua = [addr.strip() for addr in rua_raw.split(",") if addr.strip()]
         ruf = [addr.strip() for addr in ruf_raw.split(",") if addr.strip()]
         sp = None if subdomain_policy == "Same as policy" else subdomain_policy
-        result = build_dmarc_record(policy, rua, ruf, sp, pct, adkim, aspf)
+        st.session_state["email_record_builder_dmarc_result"] = build_dmarc_record(policy, rua, ruf, sp, pct, adkim, aspf)
+
+    dmarc_result = st.session_state.get("email_record_builder_dmarc_result")
+    if dmarc_result is not None:
+        result = dmarc_result
         with tool_result_panel("dmarc_result", related_to="email_record_builder"):
             render_section_heading("DMARC record", "Publish this as a TXT record at _dmarc.<domain>.")
             if not result["ok"]:
@@ -87,7 +100,11 @@ with dkim_tab:
             dkim_submitted = st.form_submit_button("Build DKIM record")
 
     if dkim_submitted:
-        result = build_dkim_record(selector, domain, public_key)
+        st.session_state["email_record_builder_dkim_result"] = build_dkim_record(selector, domain, public_key)
+
+    dkim_result = st.session_state.get("email_record_builder_dkim_result")
+    if dkim_result is not None:
+        result = dkim_result
         with tool_result_panel("dkim_builder_result", related_to="email_record_builder"):
             render_section_heading("DKIM record", "Publish this TXT record at the shown name.")
             if not result["ok"]:
