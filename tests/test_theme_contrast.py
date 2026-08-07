@@ -39,6 +39,15 @@ def test_light_theme_muted_text_meets_aa_against_bg():
     assert contrast_ratio(muted, _THEME_TOKENS["light"]["bg"]) >= 4.5
 
 
+def test_dark_theme_muted_text_meets_aa_against_surface_strong():
+    # Roadmap page text (vote pill, item category/status/source badges, card
+    # captions) was hardcoded to #667790/#64758e/#3d4f68 (2.98:1-1.68:1
+    # against the dark bg) and was switched to the shared "muted" token --
+    # confirm it clears AA against the roadmap's surface-strong background too.
+    muted = _THEME_TOKENS["dark"]["muted"]
+    assert contrast_ratio(muted, _THEME_TOKENS["dark"]["surface-strong"]) >= 4.5
+
+
 def test_new_badge_text_meets_aa_against_green_gradient_stops():
     # The badge background is `linear-gradient(135deg, green, color-mix(green, #000 15%))`
     # -- check both stops, since darkening the green toward black is the worst case.

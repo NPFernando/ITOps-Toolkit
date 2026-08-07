@@ -1679,8 +1679,13 @@ def _inject_global_css(mode: str) -> None:
         [data-testid="stSkeleton"] > div,
         [class*="Skeleton"] {
             border-radius: 8px !important;
-            background-color: #e7f0ff !important;
-            background-image: linear-gradient(90deg, #e7f0ff 0%, #f7fbff 50%, #e7f0ff 100%) !important;
+            background-color: var(--itops-surface-strong) !important;
+            background-image: linear-gradient(
+                90deg,
+                var(--itops-surface-strong) 0%,
+                var(--itops-surface) 50%,
+                var(--itops-surface-strong) 100%
+            ) !important;
         }
 
         [data-testid="stSpinner"],
@@ -2262,8 +2267,8 @@ def _inject_global_css(mode: str) -> None:
             align-items: center;
             padding: 1rem 1.15rem;
             border-radius: 8px;
-            border: 1px solid #f0d08a;
-            background: linear-gradient(135deg, rgba(255, 189, 24, 0.13), var(--itops-surface));
+            border: 1px solid color-mix(in srgb, var(--itops-orange), transparent 30%);
+            background: linear-gradient(135deg, color-mix(in srgb, var(--itops-orange), transparent 87%), var(--itops-surface));
         }
 
         .important-notice strong {
@@ -2285,7 +2290,7 @@ def _inject_global_css(mode: str) -> None:
             border-radius: 50%;
             display: grid;
             place-items: center;
-            background: #f8b400;
+            background: var(--itops-orange);
             color: #ffffff;
             font-weight: 900;
         }
@@ -2403,7 +2408,7 @@ def _inject_global_css(mode: str) -> None:
             color: #ffffff;
             font-size: 0.72rem;
             font-weight: 900;
-            background: linear-gradient(145deg, #278aff, #0f67f2);
+            background: linear-gradient(145deg, var(--itops-blue), var(--itops-blue-dark));
         }
 
         .tool-empty-state strong,
@@ -2421,9 +2426,9 @@ def _inject_global_css(mode: str) -> None:
         }
 
         .tool-safe-note {
-            border: 1px solid rgba(34, 186, 79, 0.28);
+            border: 1px solid color-mix(in srgb, var(--itops-green), transparent 72%);
             border-radius: 8px;
-            background: rgba(34, 186, 79, 0.08);
+            background: color-mix(in srgb, var(--itops-green), transparent 92%);
             padding: 0.85rem 1rem;
             margin: 0.8rem 0;
         }
@@ -2481,7 +2486,7 @@ def _inject_global_css(mode: str) -> None:
         }
 
         .tool-status-note-success {
-            border-color: rgba(34, 186, 79, 0.24);
+            border-color: color-mix(in srgb, var(--itops-green), transparent 76%);
             background: color-mix(in srgb, var(--itops-surface), var(--itops-green) 12%);
         }
 
@@ -2490,7 +2495,7 @@ def _inject_global_css(mode: str) -> None:
         }
 
         .tool-status-note-warning {
-            border-color: rgba(255, 106, 19, 0.25);
+            border-color: color-mix(in srgb, var(--itops-orange), transparent 75%);
             background: color-mix(in srgb, var(--itops-surface), var(--itops-orange) 12%);
         }
 
@@ -2664,7 +2669,7 @@ def _inject_global_css(mode: str) -> None:
         }
 
         .roadmap-notice-warning {
-            border-color: rgba(255, 106, 19, 0.28);
+            border-color: color-mix(in srgb, var(--itops-orange), transparent 72%);
             background: color-mix(in srgb, var(--itops-surface), var(--itops-orange) 12%);
         }
 
@@ -2733,7 +2738,9 @@ def _inject_global_css(mode: str) -> None:
         }
 
         .roadmap-board-card strong {
-            color: #667790;
+            /* #667790 measured 3.07:1 against the dark bg -- below WCAG AA's
+               4.5:1 minimum for normal text. --itops-muted (4.59:1) clears it. */
+            color: var(--itops-muted);
             font-size: 0.88rem;
             font-weight: 900;
         }
@@ -2779,8 +2786,8 @@ def _inject_global_css(mode: str) -> None:
             flex: 0 0 auto;
             min-height: 3.15rem;
             padding: 0.78rem 0.9rem;
-            border-bottom: 1px solid #d7e2f5;
-            background: rgba(251, 253, 255, 0.96);
+            border-bottom: 1px solid var(--itops-surface-border);
+            background: var(--itops-surface-strong);
         }
 
         .roadmap-column-title > .roadmap-status-dot {
@@ -2802,7 +2809,9 @@ def _inject_global_css(mode: str) -> None:
         }
 
         .roadmap-column-title strong {
-            color: #667790;
+            /* #667790 measured 3.07:1 against the dark bg -- below WCAG AA's
+               4.5:1 minimum for normal text. --itops-muted (4.59:1) clears it. */
+            color: var(--itops-muted);
             font-size: 0.82rem;
             font-weight: 900;
         }
@@ -2818,7 +2827,7 @@ def _inject_global_css(mode: str) -> None:
             overflow-y: auto;
             padding: 0 0.9rem;
             scrollbar-width: thin;
-            scrollbar-color: #b5c8e4 transparent;
+            scrollbar-color: var(--itops-surface-border) transparent;
         }
 
         .roadmap-column-list::-webkit-scrollbar {
@@ -2827,7 +2836,7 @@ def _inject_global_css(mode: str) -> None:
 
         .roadmap-column-list::-webkit-scrollbar-thumb {
             border-radius: 999px;
-            background: #b5c8e4;
+            background: var(--itops-surface-border);
         }
 
         .roadmap-item-card {
@@ -2835,13 +2844,21 @@ def _inject_global_css(mode: str) -> None:
             grid-template-columns: 2.35rem minmax(0, 1fr);
             gap: 0.72rem;
             align-items: start;
-            padding: 0.85rem 0;
-            border-bottom: 1px solid #e1e9f7;
+            padding: 0.85rem 0 0.85rem 0.6rem;
+            border-bottom: 1px solid var(--itops-surface-border);
+            border-left: 3px solid transparent;
         }
 
         .roadmap-item-card:last-child {
             border-bottom: 0;
         }
+
+        /* Matches the column-header status-dot colors just above, so each
+           card carries the same status accent as the column it sits in. */
+        .roadmap-item-planned { border-left-color: #2e8bff; }
+        .roadmap-item-progress { border-left-color: #8a61f2; }
+        .roadmap-item-done { border-left-color: #22ba4f; }
+        .roadmap-item-ai { border-left-color: #11aab8; }
 
         .roadmap-vote-pill {
             width: 2.35rem;
@@ -2852,7 +2869,9 @@ def _inject_global_css(mode: str) -> None:
             display: grid;
             place-items: center;
             align-content: center;
-            color: #3d4f68;
+            /* #3d4f68 measured 1.68:1 against the dark bg -- far below WCAG AA's
+               4.5:1 minimum for normal text. --itops-muted (4.59:1) clears it. */
+            color: var(--itops-muted);
             background: var(--itops-surface);
             font-size: 0.75rem;
             font-weight: 850;
@@ -2860,7 +2879,9 @@ def _inject_global_css(mode: str) -> None:
         }
 
         .roadmap-vote-pill span {
-            color: #667790;
+            /* #667790 measured 3.07:1 against the dark bg -- below WCAG AA's
+               4.5:1 minimum for normal text. --itops-muted (4.59:1) clears it. */
+            color: var(--itops-muted);
             font-weight: 900;
         }
 
@@ -2908,7 +2929,9 @@ def _inject_global_css(mode: str) -> None:
             min-height: 1.25rem;
             border-radius: 8px;
             padding: 0 0.45rem;
-            color: #667790;
+            /* #667790 measured 3.07:1 against the dark bg -- below WCAG AA's
+               4.5:1 minimum for normal text. --itops-muted (4.59:1) clears it. */
+            color: var(--itops-muted);
             font-size: 0.68rem;
             line-height: 1.2;
             font-weight: 900;
@@ -2920,18 +2943,18 @@ def _inject_global_css(mode: str) -> None:
         }
 
         .roadmap-status-badge {
-            color: #0d4fbd;
-            background: rgba(18, 107, 255, 0.1);
+            color: var(--itops-blue);
+            background: color-mix(in srgb, var(--itops-blue), transparent 90%);
         }
 
         .roadmap-source-badge {
-            color: #23663b;
-            background: rgba(34, 186, 79, 0.1);
+            color: var(--itops-green);
+            background: color-mix(in srgb, var(--itops-green), transparent 90%);
         }
 
         .roadmap-source-github {
-            color: #4b3bb0;
-            background: rgba(109, 85, 233, 0.12);
+            color: var(--itops-purple);
+            background: color-mix(in srgb, var(--itops-purple), transparent 88%);
         }
 
         .roadmap-item-body p {
@@ -2949,7 +2972,9 @@ def _inject_global_css(mode: str) -> None:
         .roadmap-item-body small {
             display: block;
             margin-top: 0.38rem;
-            color: #64758e;
+            /* #64758e measured 2.98:1 against the dark bg -- below WCAG AA's
+               4.5:1 minimum for normal text. --itops-muted (4.59:1) clears it. */
+            color: var(--itops-muted);
             font-size: 0.72rem;
             line-height: 1.4;
             display: -webkit-box;
