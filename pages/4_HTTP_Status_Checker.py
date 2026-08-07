@@ -29,16 +29,31 @@ with tool_form_panel("http_status"):
         url = st.text_input("URL", placeholder="https://example.com", max_chars=MAX_URL_LENGTH)
         submitted = st.form_submit_button("Check URL")
 
-if not submitted:
-    render_empty_state("Ready to check HTTP", "Response status, selected headers, redirects, and recommendations appear after the check.")
-
 if submitted:
+    # Stored in session_state (not rendered directly here) because the sidebar's
+    # quick-search box, favorite-star buttons, and any other widget outside this
+    # page's st.form trigger reruns of their own -- on those reruns `submitted` is
+    # False again, which would otherwise collapse this whole results section the
+    # instant any of them is touched.
     ok, error = validate_length(url, MAX_URL_LENGTH, "URL")
     if not ok:
-        st.error(error)
+        st.session_state["http_status_validation_error"] = error
+        st.session_state["http_status_result"] = None
     else:
-        result = check_http_status(url)
-        with tool_result_panel("http_result", related_to="http_status"):
+        st.session_state["http_status_validation_error"] = None
+        st.session_state["http_status_result"] = check_http_status(url)
+
+validation_error = st.session_state.get("http_status_validation_error")
+result = st.session_state.get("http_status_result")
+
+if validation_error is None and result is None:
+    render_empty_state("Ready to check HTTP", "Response status, selected headers, redirects, and recommendations appear after the check.")
+
+if validation_error is not None:
+    st.error(validation_error)
+
+if result is not None:
+    with tool_result_panel("http_result", related_to="http_status"):
             render_section_heading("HTTP result", "Status, timing, HTTPS state, and final URL.")
             if result["ok"]:
                 st.success("Healthy")

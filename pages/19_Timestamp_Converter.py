@@ -50,7 +50,16 @@ with tool_form_panel("epoch_to_date"):
         epoch_submitted = st.form_submit_button("Convert to date")
 
 if epoch_submitted:
-    result = epoch_to_datetime(epoch_input, unit, tz_a)
+    # Stored in session_state (not rendered directly here) because the sidebar's
+    # quick-search box, favorite-star buttons, and any other widget outside this
+    # page's st.form trigger reruns of their own -- on those reruns `epoch_submitted`
+    # is False again, which would otherwise collapse this whole results section the
+    # instant any of them is touched.
+    st.session_state["timestamp_converter_epoch_result"] = epoch_to_datetime(epoch_input, unit, tz_a)
+
+epoch_result = st.session_state.get("timestamp_converter_epoch_result")
+if epoch_result is not None:
+    result = epoch_result
     with tool_result_panel("epoch_result", related_to="timestamp_converter"):
         render_section_heading("Converted date", eyebrow="Result")
         if not result["ok"]:
@@ -71,7 +80,11 @@ with tool_form_panel("date_to_epoch"):
         date_submitted = st.form_submit_button("Convert to epoch")
 
 if date_submitted:
-    result = datetime_to_epoch(date_input, tz_b)
+    st.session_state["timestamp_converter_date_result"] = datetime_to_epoch(date_input, tz_b)
+
+date_result = st.session_state.get("timestamp_converter_date_result")
+if date_result is not None:
+    result = date_result
     with tool_result_panel("date_result", related_to="timestamp_converter"):
         render_section_heading("Converted epoch", eyebrow="Result")
         if not result["ok"]:
@@ -94,7 +107,11 @@ with tool_form_panel("timezone_convert"):
         tz_submitted = st.form_submit_button("Convert timezone")
 
 if tz_submitted:
-    result = convert_timezone(tz_date_input, tz_from, tz_to)
+    st.session_state["timestamp_converter_timezone_result"] = convert_timezone(tz_date_input, tz_from, tz_to)
+
+timezone_result = st.session_state.get("timestamp_converter_timezone_result")
+if timezone_result is not None:
+    result = timezone_result
     with tool_result_panel("timezone_result", related_to="timestamp_converter"):
         render_section_heading("Converted time", eyebrow="Result")
         if not result["ok"]:

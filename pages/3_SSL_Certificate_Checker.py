@@ -51,19 +51,35 @@ with tool_form_panel("ssl_certificate"):
         port = st.number_input("Port", min_value=1, max_value=65535, value=443, step=1)
         submitted = st.form_submit_button("Check certificate")
 
-if not submitted:
-    render_empty_state("Ready to inspect TLS", "Certificate issuer, SANs, validity dates, and expiration status appear after the check.")
-
 if submitted:
+    # Stored in session_state (not rendered directly here) because the sidebar's
+    # quick-search box, favorite-star buttons, and any other widget outside this
+    # page's st.form trigger reruns of their own -- on those reruns `submitted` is
+    # False again, which would otherwise collapse this whole results section the
+    # instant any of them is touched.
     ok, error = validate_length(domain, MAX_DOMAIN_LENGTH, "Domain")
     normalized = normalize_domain(domain)
     if not ok:
-        st.error(error)
+        st.session_state["ssl_certificate_validation_error"] = error
+        st.session_state["ssl_certificate_result"] = None
     elif not normalized:
-        st.error("Enter a domain name.")
+        st.session_state["ssl_certificate_validation_error"] = "Enter a domain name."
+        st.session_state["ssl_certificate_result"] = None
     else:
-        result = get_certificate_info(normalized, int(port))
-        with tool_result_panel("ssl_result", related_to="ssl_certificate"):
+        st.session_state["ssl_certificate_validation_error"] = None
+        st.session_state["ssl_certificate_result"] = get_certificate_info(normalized, int(port))
+
+validation_error = st.session_state.get("ssl_certificate_validation_error")
+result = st.session_state.get("ssl_certificate_result")
+
+if validation_error is None and result is None:
+    render_empty_state("Ready to inspect TLS", "Certificate issuer, SANs, validity dates, and expiration status appear after the check.")
+
+if validation_error is not None:
+    st.error(validation_error)
+
+if result is not None:
+    with tool_result_panel("ssl_result", related_to="ssl_certificate"):
             render_section_heading("Certificate result", "Connection status, expiration, issuer, and subject details.")
             _status(result["tls_status"])
             if result["error"]:

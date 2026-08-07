@@ -40,12 +40,21 @@ with tool_form_panel("webhook_tester"):
         body_text = st.text_area("Body (POST/PUT/PATCH/DELETE only)", height=140, max_chars=MAX_BODY_LENGTH)
         submitted = st.form_submit_button("Send request")
 
-if not submitted:
+if submitted:
+    # Stored in session_state (not rendered directly here) because the sidebar's
+    # quick-search box, favorite-star buttons, and any other widget outside this
+    # page's st.form trigger reruns of their own -- on those reruns `submitted` is
+    # False again, which would otherwise collapse this whole results section the
+    # instant any of them is touched.
+    with st.spinner("Sending request..."):
+        st.session_state["webhook_tester_result"] = send_request(url, method, headers_text, body_text)
+
+result = st.session_state.get("webhook_tester_result")
+
+if result is None:
     render_empty_state("Ready to send a request", "Response status, headers, timing, and body appear here after the request completes.")
 
-if submitted:
-    with st.spinner("Sending request..."):
-        result = send_request(url, method, headers_text, body_text)
+if result is not None:
     with tool_result_panel("webhook_result", related_to="webhook_tester"):
         render_section_heading("Response", eyebrow="Result")
         if result["error"]:

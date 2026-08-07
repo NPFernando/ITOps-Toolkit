@@ -29,11 +29,20 @@ with tool_form_panel("ipv6_compressor"):
         address_input = st.text_input("IPv6 address", max_chars=MAX_INPUT_LENGTH, placeholder="2001:db8::1")
         submitted = st.form_submit_button("Convert")
 
-if not submitted:
+if submitted:
+    # Stored in session_state (not rendered directly here) because the sidebar's
+    # quick-search box, favorite-star buttons, and any other widget outside this
+    # page's st.form trigger reruns of their own -- on those reruns `submitted` is
+    # False again, which would otherwise collapse this whole results section the
+    # instant any of them is touched.
+    st.session_state["ipv6_compressor_result"] = convert_ipv6(address_input)
+
+result = st.session_state.get("ipv6_compressor_result")
+
+if result is None:
     render_empty_state("Ready to convert", "Both the compressed and expanded forms appear here after you submit.")
 
-if submitted:
-    result = convert_ipv6(address_input)
+if result is not None:
     with tool_result_panel("ipv6_result", related_to="ipv6_compressor"):
         render_section_heading("Converted forms", eyebrow="Result")
         if not result["ok"]:

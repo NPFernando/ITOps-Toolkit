@@ -34,11 +34,20 @@ with tool_form_panel("user_agent_parser"):
         )
         submitted = st.form_submit_button("Parse")
 
-if not submitted:
+if submitted:
+    # Stored in session_state (not rendered directly here) because the sidebar's
+    # quick-search box, favorite-star buttons, and any other widget outside this
+    # page's st.form trigger reruns of their own -- on those reruns `submitted` is
+    # False again, which would otherwise collapse this whole results section the
+    # instant any of them is touched.
+    st.session_state["user_agent_parser_result"] = parse_user_agent(ua_input)
+
+result = st.session_state.get("user_agent_parser_result")
+
+if result is None:
     render_empty_state("Ready to parse", "Browser, OS, and device details appear here after you submit a User-Agent.")
 
-if submitted:
-    result = parse_user_agent(ua_input)
+if result is not None:
     with tool_result_panel("user_agent_result", related_to="user_agent_parser"):
         render_section_heading("Parsed details", eyebrow="Result")
         if not result["ok"]:
