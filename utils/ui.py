@@ -1604,7 +1604,6 @@ def _inject_global_css(mode: str) -> None:
 
         #MainMenu,
         footer,
-        [data-testid="stDecoration"],
         [data-testid="stStatusWidget"],
         [data-testid="stSidebarNav"] {
             display: none !important;
@@ -1711,6 +1710,10 @@ def _inject_global_css(mode: str) -> None:
         }
 
         .brand-mark {
+            /* Deliberately its own shape/palette, not var(--card-radius) or a
+               theme token -- this is the sidebar's static brand logo tile,
+               which (like the rest of the sidebar chrome) stays fixed
+               regardless of theme, distinct from the app's content cards. */
             width: 3.1rem;
             height: 3.7rem;
             border-radius: 8px 8px 18px 18px;
@@ -1884,6 +1887,12 @@ def _inject_global_css(mode: str) -> None:
             box-shadow: 0 8px 24px rgba(43, 88, 150, 0.06);
         }
 
+        /* .hero-visual and everything nested inside it (.laptop-*, .dot-grid,
+           .chart-line, .hero-shield, .hero-globe, .server-stack, etc.) is a
+           static decorative illustration. Its hardcoded blues/whites are an
+           intentional fixed brand graphic, not a missed var(--itops-*) token
+           -- same "fixed, not a token" rationale as the AI-badge spots
+           elsewhere in this file, just not previously called out here. */
         .hero-visual {
             position: relative;
             min-height: 330px;
@@ -2488,13 +2497,19 @@ def _inject_global_css(mode: str) -> None:
             overflow-wrap: anywhere;
         }
 
+        /* Every .tool-status-note-{tone} pairs a themed note background
+           (var(--itops-*), so it stays correct across the palette) with a
+           .tool-status-mark icon gradient using its own fixed, richer vivid
+           hex stops for a glossy-icon look -- not the flatter token colors.
+           The ai/info variant is the one exception that must stay fixed
+           end-to-end: var(--itops-blue) is the theme accent (coral/red in
+           dark mode, matching odysseus), not a literal blue, and using it
+           here would both look wrong for an "info" note and clash with the
+           icon's hardcoded blue gradient. Mirrored in .roadmap-notice-*
+           below -- keep both in sync if this changes. */
         .tool-status-note-ai,
         .tool-status-note-info {
             border-color: rgba(18, 107, 255, 0.22);
-            /* Fixed blue, not var(--itops-blue) -- that token is the
-               theme accent (coral/red in dark mode, matching odysseus),
-               not a literal blue, and would clash with the badge icon's
-               hardcoded blue gradient just below. */
             background: color-mix(in srgb, var(--itops-surface), #126bff 12%);
         }
 
@@ -2527,6 +2542,8 @@ def _inject_global_css(mode: str) -> None:
         }
 
         .tool-status-note-neutral .tool-status-mark {
+            /* No neutral theme token exists -- this is its own fixed
+               gray-blue, not derived from any var(--itops-*) accent. */
             background: #7a8da8;
         }
 
@@ -2712,6 +2729,7 @@ def _inject_global_css(mode: str) -> None:
         }
 
         .roadmap-notice-neutral .roadmap-notice-mark {
+            /* No neutral theme token exists -- see .tool-status-note-neutral. */
             background: #7a8da8;
         }
 
