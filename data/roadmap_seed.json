@@ -534,11 +534,11 @@
     {
       "title": "SQL formatter/prettifier",
       "category": "Tools",
-      "status": "Planned",
+      "status": "Complete",
       "votes": 5,
       "description": "Reformat a pasted SQL query with consistent indentation and keyword casing for readability.",
-      "rationale": "Inspired by killertools.net's SQL Prettify tool. Useful for sysadmins/DBAs pasting minified or exported queries; buildable with the small `sqlparse` package (a new dependency).",
-      "updated_at": "2026-08-06"
+      "rationale": "Shipped as a dedicated SQL Formatter page. sqlparse is a lenient tokenizer/formatter, not a validator for a specific SQL dialect -- it never rejects input as 'invalid SQL' and even uppercases recognized keywords inside otherwise-plain text (confirmed directly, not assumed, and stated on the page itself rather than implying validation that doesn't happen). Adds sqlparse as a new dependency, no transitive packages. Live-updates, no submit button -- no results-vanishing risk. This was the final remaining roadmap backlog item.",
+      "updated_at": "2026-08-07"
     },
     {
       "title": "HTTP status code reference",
