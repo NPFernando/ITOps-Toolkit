@@ -719,6 +719,7 @@ TOOL_BUNDLES: dict[str, tuple[str, ...]] = {
     "regex_tester": ("text_diff_checker", "json_formatter"),
     "text_diff_checker": ("regex_tester", "case_converter"),
     "case_converter": ("text_diff_checker", "url_encoder_decoder"),
+    "color_converter": ("qr_code_generator", "case_converter"),
     "timestamp_converter": ("cron_explainer",),
     "cron_explainer": ("timestamp_converter", "log_troubleshooting", "cron_builder"),
     "cron_builder": ("cron_explainer", "timestamp_converter"),
