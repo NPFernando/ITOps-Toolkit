@@ -548,6 +548,114 @@
       "description": "Searchable static reference of HTTP status codes with meaning and common causes, standalone from the live HTTP Status Checker.",
       "rationale": "Shipped as a dedicated HTTP Status Reference page, same static-dataset + search shape as Port Reference and the Windows Event/Error References. Covers 39 commonly-seen 1xx-5xx codes, searchable by code, category, or keyword.",
       "updated_at": "2026-08-07"
+    },
+    {
+      "title": "ULID/UUID decoder",
+      "category": "Tools",
+      "status": "Planned",
+      "votes": 6,
+      "description": "Decode a ULID back to its embedded creation timestamp, or identify a UUID's version and (for v1/v7) extract its embedded timestamp.",
+      "rationale": "Reverse of the existing ID Generator -- useful when you have an ID from a log or database row and want to know when it was created without a lookup. Stdlib-only (struct/datetime), no new dependency.",
+      "updated_at": "2026-08-07"
+    },
+    {
+      "title": ".env file linter",
+      "category": "Tools",
+      "status": "Planned",
+      "votes": 6,
+      "description": "Paste a .env file and flag common mistakes: duplicate keys, unquoted values with spaces, trailing whitespace, missing '=', and accidental export/quote mismatches.",
+      "rationale": "Common DevOps footgun-catcher; distinct from Config Format Converter (which converts between structured formats, not this key=value convention). Stdlib-only, no dependency.",
+      "updated_at": "2026-08-07"
+    },
+    {
+      "title": "curl command builder",
+      "category": "Tools",
+      "status": "Planned",
+      "votes": 5,
+      "description": "Build a copy-pasteable curl command line from a method, URL, headers, and body -- the inverse of Webhook Tester, which executes the request instead of generating the command.",
+      "rationale": "Useful when you want the request to run somewhere else (a script, a teammate's terminal, a support ticket) rather than from this app. Reuses Webhook Tester's header/body parsing helpers where possible.",
+      "updated_at": "2026-08-07"
+    },
+    {
+      "title": "CSV diff viewer",
+      "category": "Tools",
+      "status": "Planned",
+      "votes": 5,
+      "description": "Structurally compare two CSV files by a chosen key column, showing added/removed/changed rows -- the CSV equivalent of the existing JSON Diff Viewer.",
+      "rationale": "Common export-comparison task (before/after a data migration, config export diffing) that a raw text diff handles poorly once rows reorder. Stdlib csv module, no new dependency.",
+      "updated_at": "2026-08-07"
+    },
+    {
+      "title": "Regex cheat sheet reference",
+      "category": "Tools",
+      "status": "Planned",
+      "votes": 4,
+      "description": "Static, searchable reference of common regex patterns (email, IPv4/IPv6, URL, phone number, UUID, hex color, etc.) with a short explanation for each.",
+      "rationale": "Same static-dataset + search shape as Port Reference and the Windows Event/Error References. Complements Regex Tester (which tests a pattern you already have) with patterns to start from.",
+      "updated_at": "2026-08-07"
+    },
+    {
+      "title": "Markdown <-> HTML converter",
+      "category": "Tools",
+      "status": "Planned",
+      "votes": 5,
+      "description": "Convert Markdown to HTML and HTML back to Markdown.",
+      "rationale": "Common content-authoring task (README snippets, ticket notes, wiki pages) not currently covered. Would need a small markdown-to-HTML dependency (e.g. `markdown`) and an HTML-to-Markdown one (e.g. `markdownify`) -- flag both at build time.",
+      "updated_at": "2026-08-07"
+    },
+    {
+      "title": "TLS cipher/protocol scanner",
+      "category": "Security",
+      "status": "Planned",
+      "votes": 6,
+      "description": "Connect to a host:port and report which TLS protocol versions (SSLv3-TLS1.3) and select cipher suites are accepted or rejected, similar to a lightweight SSL Labs check.",
+      "rationale": "Complements the existing SSL Certificate Checker (which reports the certificate actually presented) with what the server's TLS stack will negotiate. Buildable with stdlib `ssl`/`socket` (multiple connection attempts, one per protocol/cipher-set) -- no new dependency, but each check takes several real network round trips, so needs a sensible cap on how many combinations are probed.",
+      "updated_at": "2026-08-07"
+    },
+    {
+      "title": "Business hours / SLA duration calculator",
+      "category": "Tools",
+      "status": "Planned",
+      "votes": 6,
+      "description": "Compute elapsed business hours between two timestamps, excluding weekends and a configurable set of holidays -- for SLA/response-time tracking.",
+      "rationale": "Directly useful for MSP ticket SLA math, distinct from the existing Timestamp Converter (single-value conversion) and Uptime Trend (uptime %, not elapsed business time). Stdlib datetime only.",
+      "updated_at": "2026-08-07"
+    },
+    {
+      "title": "Text encoding detector and converter",
+      "category": "Tools",
+      "status": "Planned",
+      "votes": 4,
+      "description": "Detect the likely character encoding of pasted or uploaded text (e.g. Windows-1252 vs UTF-8 vs UTF-16) and convert it to clean UTF-8.",
+      "rationale": "Useful for garbled log files or CSV exports from older Windows tools that show mojibake when opened as UTF-8. Would need a small detection dependency (e.g. `charset-normalizer`, already a transitive dependency of `requests`) -- flag at build time whether it's already present.",
+      "updated_at": "2026-08-07"
+    },
+    {
+      "title": "robots.txt / sitemap.xml validator",
+      "category": "Tools",
+      "status": "Planned",
+      "votes": 4,
+      "description": "Fetch a domain's robots.txt and referenced sitemap(s), validate their syntax, and report basic issues (unreachable sitemap URL, malformed directives).",
+      "rationale": "Common pre-launch/SEO-audit check for web developers; reuses the same live-fetch pattern already validated by HTTP Status Checker and Security Headers Checker.",
+      "updated_at": "2026-08-07"
+    },
+    {
+      "title": "JWT weak-secret checker",
+      "category": "Security",
+      "status": "Planned",
+      "votes": 5,
+      "description": "Test whether a JWT's HMAC signature matches any secret from a small built-in list of common/weak secrets (e.g. 'secret', 'changeme', '123456') -- a quick sanity check for your own tokens, not a general cracking tool.",
+      "rationale": "Complements the existing JWT Decoder/Encoder. Deliberately scoped to a short built-in wordlist (not a brute-force engine or user-supplied wordlist upload) to keep this a quick sanity check rather than something that could be repurposed as an attack tool against third-party tokens.",
+      "updated_at": "2026-08-07"
+    },
+    {
+      "title": "Log timestamp duration calculator",
+      "category": "Tools",
+      "status": "Planned",
+      "votes": 4,
+      "description": "Paste two timestamps (in any of several common log formats -- ISO 8601, syslog, Apache/nginx access log) and get the elapsed duration between them, auto-detecting the format of each.",
+      "rationale": "Common troubleshooting task (how long did this incident/request actually take, from two log lines in different formats) that the existing Timestamp Converter doesn't directly answer since it only converts single values, not computes a delta between two auto-detected formats.",
+      "updated_at": "2026-08-07"
     }
   ]
 }
