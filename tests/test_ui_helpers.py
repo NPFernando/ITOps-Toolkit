@@ -174,6 +174,7 @@ def test_expected_tools_are_tagged_new():
         "totp_generator",
         "keypair_generator",
         "qr_code_generator",
+        "bcrypt_tool",
     }
 
 
@@ -323,6 +324,7 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "file_integrity",
             "totp_generator",
             "keypair_generator",
+            "bcrypt_tool",
         ],
         "Web & Dev": [
             "http_status",

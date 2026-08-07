@@ -639,6 +639,18 @@ TOOLS: tuple[ToolMeta, ...] = (
         category="Web & Dev",
         is_new=True,
     ),
+    ToolMeta(
+        title="Bcrypt Tool",
+        short_title="Bcrypt Tool",
+        description="Hash a value with bcrypt, or verify a value against an existing bcrypt hash.",
+        path="pages/51_Bcrypt_Tool.py",
+        icon="BCR",
+        accent="#023047",
+        slug="bcrypt_tool",
+        professions=("Web Developer", "Security Engineer", "Sysadmin / DevOps"),
+        category="Security",
+        is_new=True,
+    ),
 )
 
 POPULAR_TOOLS = TOOLS[:5]
@@ -678,6 +690,7 @@ TOOL_BUNDLES: dict[str, tuple[str, ...]] = {
     "password_generator": ("hash_generator",),
     "hash_generator": ("password_generator", "jwt_decoder", "file_integrity"),
     "file_integrity": ("hash_generator", "cve_lookup"),
+    "bcrypt_tool": ("hash_generator", "password_generator"),
     "totp_generator": ("password_generator", "hash_generator"),
     "keypair_generator": ("password_generator", "hash_generator"),
     "qr_code_generator": ("url_encoder_decoder", "color_converter"),
@@ -1418,6 +1431,7 @@ def _material_icon_for(slug: str) -> str:
         "totp_generator": ":material/dialpad:",
         "keypair_generator": ":material/vpn_key:",
         "qr_code_generator": ":material/qr_code_2:",
+        "bcrypt_tool": ":material/enhanced_encryption:",
     }
     return icons.get(slug, ":material/build:")
 

@@ -489,11 +489,11 @@
     {
       "title": "Bcrypt hash generator/verifier",
       "category": "Security",
-      "status": "Planned",
+      "status": "Complete",
       "votes": 5,
       "description": "Hash a value with bcrypt (configurable cost factor) and separately verify a value against an existing bcrypt hash.",
-      "rationale": "Inspired by killertools.net's bcrypt tool. Complements the existing Hash Generator, which only covers fixed-digest algorithms (MD5/SHA family), not bcrypt's salted/adaptive scheme -- useful when testing an app's auth/password storage.",
-      "updated_at": "2026-08-06"
+      "rationale": "Shipped as a Bcrypt Tool page with Hash and Verify tabs. Configurable cost factor (4-15 rounds; capped below bcrypt's full range since round 16+ takes several seconds per hash, a DoS concern on a shared public app). Handles both of bcrypt's real error modes: passwords over the library's hard 72-byte limit, and invalid hash strings on verify. Adds bcrypt as a new dependency, verified installing cleanly with no extra transitive packages beyond itself.",
+      "updated_at": "2026-08-07"
     },
     {
       "title": "RSA/SSH key pair generator",
