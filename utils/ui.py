@@ -1529,6 +1529,11 @@ def _render_theme_toggle() -> None:
         "Theme",
         options=["Dark", "Light"],
         default=current_label,
+        required=True,  # without this, clicking the already-selected pill deselects it to
+        # None (documented segmented_control behavior with required=False), which the
+        # ternary below silently maps to "light" -- a real bug: one click on "Dark" while
+        # it's already selected would flip the whole app to light mode and that choice
+        # then persists in session_state indefinitely (survives reloads).
         label_visibility="collapsed",
         key="itops_theme_toggle_control",
         persist_state="session",

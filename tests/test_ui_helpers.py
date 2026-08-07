@@ -33,6 +33,26 @@ def test_display_rows_frame_stringifies_mixed_values():
     assert all(isinstance(value, str) for value in frame["value"].tolist())
 
 
+def test_theme_toggle_requires_a_selection(monkeypatch):
+    """Regression: st.segmented_control defaults to required=False, meaning a click on
+    the already-selected pill deselects it to None -- which the mode-resolution ternary
+    then silently maps to "light". Without required=True, one click on "Dark" while it's
+    already selected flips the whole app to light mode, and that persists in
+    session_state indefinitely (survives reloads within the same browser session)."""
+    calls = []
+
+    def fake_segmented_control(*args, **kwargs):
+        calls.append(kwargs)
+        return kwargs.get("default")
+
+    monkeypatch.setattr(ui.st, "segmented_control", fake_segmented_control)
+    monkeypatch.setattr(ui.st, "session_state", {})
+
+    ui._render_theme_toggle()
+
+    assert calls[0].get("required") is True
+
+
 def test_render_status_note_escapes_description_and_normalizes_tone(monkeypatch):
     rendered = []
 
