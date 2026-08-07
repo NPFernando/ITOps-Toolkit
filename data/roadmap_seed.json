@@ -480,11 +480,11 @@
     {
       "title": "TOTP/OTP code generator and validator",
       "category": "Security",
-      "status": "Planned",
+      "status": "Complete",
       "votes": 6,
       "description": "Generate and validate time-based one-time passcodes (TOTP) from a shared secret, for testing MFA setups without needing a phone in hand.",
-      "rationale": "Inspired by killertools.net's OTP tool. Useful for techs testing MFA enrollment/troubleshooting; buildable with the small, well-audited `pyotp` package (a new dependency, worth calling out at build time given this app's history with dependency-related outages).",
-      "updated_at": "2026-08-06"
+      "rationale": "Shipped as a TOTP Generator page with two tabs: generate a current code from a secret (with a 'generate random secret' button for quick testing), and verify a code against a secret with one 30-second window of clock-drift tolerance. Added pyotp as a new dependency (small, well-established, single-purpose library) -- flagged explicitly since this app has a history of dependency-related incidents.",
+      "updated_at": "2026-08-07"
     },
     {
       "title": "Bcrypt hash generator/verifier",
