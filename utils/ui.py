@@ -627,6 +627,18 @@ TOOLS: tuple[ToolMeta, ...] = (
         category="Security",
         is_new=True,
     ),
+    ToolMeta(
+        title="QR Code Generator",
+        short_title="QR Code Generator",
+        description="Generate a QR code for a URL, plain text, or Wi-Fi credentials.",
+        path="pages/50_QR_Code_Generator.py",
+        icon="QRC",
+        accent="#219ebc",
+        slug="qr_code_generator",
+        professions=("Support Engineer", "Helpdesk / L1", "Sysadmin / DevOps"),
+        category="Web & Dev",
+        is_new=True,
+    ),
 )
 
 POPULAR_TOOLS = TOOLS[:5]
@@ -668,6 +680,7 @@ TOOL_BUNDLES: dict[str, tuple[str, ...]] = {
     "file_integrity": ("hash_generator", "cve_lookup"),
     "totp_generator": ("password_generator", "hash_generator"),
     "keypair_generator": ("password_generator", "hash_generator"),
+    "qr_code_generator": ("url_encoder_decoder", "color_converter"),
     "jwt_decoder": ("jwt_encoder", "hash_generator"),
     "jwt_encoder": ("jwt_decoder", "hash_generator"),
     "json_formatter": ("base64_tool", "config_format_converter", "json_diff"),
@@ -1404,6 +1417,7 @@ def _material_icon_for(slug: str) -> str:
         "http_status_reference": ":material/http:",
         "totp_generator": ":material/dialpad:",
         "keypair_generator": ":material/vpn_key:",
+        "qr_code_generator": ":material/qr_code_2:",
     }
     return icons.get(slug, ":material/build:")
 
