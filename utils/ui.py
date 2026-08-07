@@ -591,6 +591,18 @@ TOOLS: tuple[ToolMeta, ...] = (
         category="Ops & Automation",
         is_new=True,
     ),
+    ToolMeta(
+        title="HTTP Status Reference",
+        short_title="HTTP Status Reference",
+        description="Look up HTTP status codes by number, category, or keyword.",
+        path="pages/47_HTTP_Status_Reference.py",
+        icon="STS",
+        accent="#e63946",
+        slug="http_status_reference",
+        professions=("Web Developer", "Sysadmin / DevOps", "Support Engineer"),
+        category="Reference",
+        is_new=True,
+    ),
 )
 
 POPULAR_TOOLS = TOOLS[:5]
@@ -609,6 +621,7 @@ TOOL_BUNDLES: dict[str, tuple[str, ...]] = {
     "dns_propagation": ("dns_records", "domain_health"),
     "ssl_certificate": ("domain_health", "dns_records", "http_status"),
     "http_status": ("domain_health", "ssl_certificate", "uptime_trend", "security_headers"),
+    "http_status_reference": ("http_status", "webhook_tester"),
     "uptime_trend": ("http_status", "domain_health"),
     "security_headers": ("http_status", "ssl_certificate"),
     "cve_lookup": ("security_headers", "ssl_certificate"),
@@ -1362,6 +1375,7 @@ def _material_icon_for(slug: str) -> str:
         "chmod_calculator": ":material/lock_open:",
         "base_converter": ":material/pin:",
         "cron_builder": ":material/schedule_send:",
+        "http_status_reference": ":material/http:",
     }
     return icons.get(slug, ":material/build:")
 
