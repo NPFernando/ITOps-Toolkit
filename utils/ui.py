@@ -1626,8 +1626,8 @@ def _inject_global_css(mode: str) -> None:
             justify-content: center !important;
             border-radius: 8px !important;
             color: #ffffff !important;
-            background: linear-gradient(135deg, #2487ff, #0f66ee) !important;
-            box-shadow: 0 12px 26px rgba(13, 103, 242, 0.26) !important;
+            background: linear-gradient(135deg, var(--itops-blue), var(--itops-blue-dark)) !important;
+            box-shadow: 0 12px 26px color-mix(in srgb, var(--itops-blue) 26%, transparent) !important;
             pointer-events: auto !important;
             z-index: 1000000 !important;
         }
@@ -1756,8 +1756,8 @@ def _inject_global_css(mode: str) -> None:
 
         [data-testid="stSidebar"] .st-key-nav_home_active [data-testid="stPageLink"] a,
         [data-testid="stSidebar"] [class*="st-key-nav_"][class*="_active"] [data-testid="stPageLink"] a {
-            background: linear-gradient(135deg, #278aff 0%, #0f67f2 100%);
-            box-shadow: 0 12px 24px rgba(13, 103, 242, 0.28);
+            background: linear-gradient(135deg, var(--itops-blue) 0%, var(--itops-blue-dark) 100%);
+            box-shadow: 0 12px 24px color-mix(in srgb, var(--itops-blue) 28%, transparent);
             color: #ffffff !important;
         }
 
@@ -1771,7 +1771,7 @@ def _inject_global_css(mode: str) -> None:
             color: #ffffff !important;
             text-decoration: none !important;
             font-weight: 800;
-            background: linear-gradient(135deg, #2487ff, #0f66ee);
+            background: linear-gradient(135deg, var(--itops-blue), var(--itops-blue-dark));
         }
 
         [data-testid="stSidebar"] .fallback-page-link {
@@ -2186,7 +2186,7 @@ def _inject_global_css(mode: str) -> None:
             justify-content: center;
             color: #ffffff !important;
             font-weight: 800;
-            background: linear-gradient(135deg, #2487ff, #0f66ee);
+            background: linear-gradient(135deg, var(--itops-blue), var(--itops-blue-dark));
             min-height: 2.35rem;
             border: 0;
         }
@@ -2596,14 +2596,14 @@ def _inject_global_css(mode: str) -> None:
 
         .roadmap-submit-link {
             color: #ffffff !important;
-            background: linear-gradient(135deg, #2487ff, #0f66ee);
-            box-shadow: 0 12px 24px rgba(13, 103, 242, 0.2);
+            background: linear-gradient(135deg, var(--itops-blue), var(--itops-blue-dark));
+            box-shadow: 0 12px 24px color-mix(in srgb, var(--itops-blue) 20%, transparent);
         }
 
         .roadmap-submit-link:hover,
         .roadmap-footer-note a:hover {
             transform: translateY(-1px);
-            box-shadow: 0 14px 28px rgba(13, 103, 242, 0.24);
+            box-shadow: 0 14px 28px color-mix(in srgb, var(--itops-blue) 24%, transparent);
         }
 
         .roadmap-secondary-link {
@@ -3005,7 +3005,7 @@ def _inject_global_css(mode: str) -> None:
 
         .roadmap-footer-note a {
             color: #ffffff !important;
-            background: linear-gradient(135deg, #2487ff, #0f66ee);
+            background: linear-gradient(135deg, var(--itops-blue), var(--itops-blue-dark));
         }
 
         button[kind="primary"],
