@@ -748,14 +748,9 @@ def render_related_tools(slug: str) -> None:
 
 
 def apply_app_shell(active_page: str) -> None:
-    """Apply global theme CSS and render the shared sidebar shell.
-
-    Sidebar renders first so the theme-toggle widget resolves this run's
-    value into session_state before CSS is injected -- injecting CSS first
-    would use last run's stale mode and make a mode switch lag by one click.
-    """
+    """Apply global theme CSS and render the shared sidebar shell."""
     render_sidebar(active_page)
-    _inject_global_css(current_theme_mode())
+    _inject_global_css("dark")
     slug = TITLE_TO_SLUG.get(active_page)
     if slug is not None:
         record_recent_visit(slug)
@@ -886,7 +881,6 @@ def render_sidebar(active_page: str) -> None:
             """,
             unsafe_allow_html=True,
         )
-        _render_theme_toggle()
         quick_search = st.text_input(
             "Quick search",
             placeholder="Jump to a tool...",
@@ -1455,15 +1449,12 @@ def _key_slug(value: str) -> str:
     return "".join(char.lower() if char.isalnum() else "_" for char in value).strip("_")
 
 
-THEME_MODE_KEY = "itops_theme_mode"
-
-# Dark matches the shared palette reused across cloudscope, odysseus, and
-# hermes-workspace. Light restores this app's original palette. Only these
-# central tokens switch between modes -- decorative one-off gradients and
-# shadows elsewhere in this file are not mode-aware (see THEME.md note in
-# the PR/commit history) and keep their original literal values in both
-# modes, since there's no way to visually verify a full per-mode conversion
-# of ~150 one-off values in this environment.
+# Matches the shared palette reused across cloudscope, odysseus, and
+# hermes-workspace. This app ships dark-only -- a Light palette existed
+# behind a toggle but Streamlit's native widget chrome (buttons, selects,
+# sliders, alerts) is read once from .streamlit/config.toml at server
+# start and never followed the in-app toggle, so "Light mode" never
+# looked fully correct and was dropped rather than fixed.
 _THEME_TOKENS = {
     "dark": {
         "blue": "#e06c75",
@@ -1493,57 +1484,7 @@ _THEME_TOKENS = {
         "app-gradient-top": "#2a2e36",
         "app-gradient-bottom": "#1f232a",
     },
-    "light": {
-        "blue": "#126bff",
-        "blue-dark": "#0a47c9",
-        "ink": "#07142f",
-        "muted": "#52637f",
-        "line": "#d7e2f5",
-        "bg": "#f6f9ff",
-        "panel": "#fbfdff",
-        "sidebar": "#071a33",
-        "sidebar-2": "#0b2748",
-        "green": "#22ba4f",
-        "purple": "#6d55e9",
-        "orange": "#ff6a13",
-        "surface": "rgba(255, 255, 255, 0.84)",
-        "surface-strong": "#ffffff",
-        "surface-border": "#d4e0f2",
-        "text-secondary": "#334765",
-        "input-bg": "#ffffff",
-        "app-gradient-top": "#fbfdff",
-        "app-gradient-bottom": "#eef5ff",
-    },
 }
-
-
-def current_theme_mode() -> str:
-    """Return the active theme mode, defaulting to dark.
-
-    Reads the theme toggle widget's own session_state entry directly --
-    deliberately not a separate mirrored key. An earlier version kept
-    THEME_MODE_KEY as a second, manually-written copy of the widget's
-    selection; the two could drift out of sync (this was suspected as a
-    contributing factor in a real "toggle shows Dark but the app renders
-    light" report), so there's now exactly one place this value lives.
-    """
-    selection = st.session_state.get(THEME_MODE_KEY, "Dark")
-    return "dark" if selection == "Dark" else "light"
-
-
-def _render_theme_toggle() -> None:
-    """Sidebar control letting visitors switch between the dark (default) and light palette."""
-    st.segmented_control(
-        "Theme",
-        options=["Dark", "Light"],
-        default="Dark",
-        required=True,  # without this, clicking the already-selected pill deselects it to
-        # None (documented segmented_control behavior with required=False), which would
-        # otherwise need a second place to paper over -- a real bug found earlier: one
-        # click on "Dark" while it's already selected flipped the whole app to light mode.
-        label_visibility="collapsed",
-        key=THEME_MODE_KEY,
-    )
 
 
 def _inject_global_css(mode: str) -> None:
