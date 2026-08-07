@@ -498,11 +498,11 @@
     {
       "title": "RSA/SSH key pair generator",
       "category": "Security",
-      "status": "Planned",
+      "status": "Complete",
       "votes": 6,
       "description": "Generate an RSA (or ed25519) key pair in the browser for test/throwaway use -- SSH authorized_keys format and PEM private key.",
-      "rationale": "Inspired by killertools.net's RSA Key Pair Generator. Useful for spinning up disposable test credentials during troubleshooting; buildable with Python's `cryptography` package (a new dependency).",
-      "updated_at": "2026-08-06"
+      "rationale": "Shipped as an RSA/SSH Key Pair Generator page supporting RSA (2048/3072/4096) and Ed25519, outputting PKCS8 PEM private key + OpenSSH-format public key + SHA256 fingerprint (matches real ssh-keygen -lf output format). Adds cryptography as a new dependency -- widely-used, has prebuilt wheels for standard platforms, no compilation needed. Explicit warning on the page that this is for disposable test credentials only, never anything real, since the app has no way to protect a private key once rendered to the browser.",
+      "updated_at": "2026-08-07"
     },
     {
       "title": "chmod calculator",

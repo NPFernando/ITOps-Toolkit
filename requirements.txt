@@ -10,3 +10,4 @@ openai
 tzdata
 pyyaml
 pyotp
+cryptography

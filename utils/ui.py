@@ -615,6 +615,18 @@ TOOLS: tuple[ToolMeta, ...] = (
         category="Security",
         is_new=True,
     ),
+    ToolMeta(
+        title="RSA/SSH Key Pair Generator",
+        short_title="Key Pair Generator",
+        description="Generate a disposable RSA or Ed25519 key pair for test/throwaway use.",
+        path="pages/49_RSA_SSH_Key_Pair_Generator.py",
+        icon="KEY",
+        accent="#ffb703",
+        slug="keypair_generator",
+        professions=("Sysadmin / DevOps", "Security Engineer", "Automation Engineer"),
+        category="Security",
+        is_new=True,
+    ),
 )
 
 POPULAR_TOOLS = TOOLS[:5]
@@ -655,6 +667,7 @@ TOOL_BUNDLES: dict[str, tuple[str, ...]] = {
     "hash_generator": ("password_generator", "jwt_decoder", "file_integrity"),
     "file_integrity": ("hash_generator", "cve_lookup"),
     "totp_generator": ("password_generator", "hash_generator"),
+    "keypair_generator": ("password_generator", "hash_generator"),
     "jwt_decoder": ("jwt_encoder", "hash_generator"),
     "jwt_encoder": ("jwt_decoder", "hash_generator"),
     "json_formatter": ("base64_tool", "config_format_converter", "json_diff"),
@@ -1390,6 +1403,7 @@ def _material_icon_for(slug: str) -> str:
         "cron_builder": ":material/schedule_send:",
         "http_status_reference": ":material/http:",
         "totp_generator": ":material/dialpad:",
+        "keypair_generator": ":material/vpn_key:",
     }
     return icons.get(slug, ":material/build:")
 

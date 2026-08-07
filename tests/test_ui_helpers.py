@@ -172,6 +172,7 @@ def test_expected_tools_are_tagged_new():
         "cron_builder",
         "http_status_reference",
         "totp_generator",
+        "keypair_generator",
     }
 
 
@@ -320,6 +321,7 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "cve_lookup",
             "file_integrity",
             "totp_generator",
+            "keypair_generator",
         ],
         "Web & Dev": [
             "http_status",
