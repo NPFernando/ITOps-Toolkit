@@ -546,6 +546,7 @@ TOOLS: tuple[ToolMeta, ...] = (
         slug="ip_geolocation",
         professions=("Sysadmin / DevOps", "Security Engineer", "Support Engineer"),
         category="Network",
+        aliases=("geoip",),
     ),
     ToolMeta(
         title="File Integrity Comparator",
