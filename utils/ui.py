@@ -37,6 +37,7 @@ class ToolMeta:
     professions: tuple[str, ...]
     category: str
     is_new: bool = False
+    aliases: tuple[str, ...] = ()
 
 
 PROFESSIONS: tuple[str, ...] = (
@@ -54,6 +55,7 @@ SIDEBAR_CATEGORIES: tuple[str, ...] = (
     "Network",
     "Security",
     "Web & Dev",
+    "Data & Text",
     "Ops & Automation",
     "Reference",
 )
@@ -113,7 +115,7 @@ TOOLS: tuple[ToolMeta, ...] = (
         accent="#11aab8",
         slug="json_formatter",
         professions=("Automation Engineer", "Web Developer", "Cloud Engineer"),
-        category="Web & Dev",
+        category="Data & Text",
     ),
     ToolMeta(
         title="Base64 Tool",
@@ -124,7 +126,8 @@ TOOLS: tuple[ToolMeta, ...] = (
         accent="#0f7ff0",
         slug="base64_tool",
         professions=("Automation Engineer", "Web Developer", "Support Engineer"),
-        category="Web & Dev",
+        category="Data & Text",
+        aliases=("b64",),
     ),
     ToolMeta(
         title="JWT Decoder",
@@ -169,7 +172,6 @@ TOOLS: tuple[ToolMeta, ...] = (
         slug="subnet_calculator",
         professions=("Network Engineer", "Sysadmin / DevOps", "Cloud Engineer"),
         category="Network",
-        is_new=True,
     ),
     ToolMeta(
         title="Hash Generator",
@@ -181,7 +183,6 @@ TOOLS: tuple[ToolMeta, ...] = (
         slug="hash_generator",
         professions=("Security Engineer", "Automation Engineer"),
         category="Security",
-        is_new=True,
     ),
     ToolMeta(
         title="MAC Address Tool",
@@ -193,7 +194,6 @@ TOOLS: tuple[ToolMeta, ...] = (
         slug="mac_address_tool",
         professions=("Network Engineer", "Sysadmin / DevOps"),
         category="Network",
-        is_new=True,
     ),
     ToolMeta(
         title="Email Header Analyzer",
@@ -205,7 +205,6 @@ TOOLS: tuple[ToolMeta, ...] = (
         slug="email_header_analyzer",
         professions=("Security Engineer", "Support Engineer", "Helpdesk / L1"),
         category="Security",
-        is_new=True,
     ),
     ToolMeta(
         title="Port Reference",
@@ -217,7 +216,6 @@ TOOLS: tuple[ToolMeta, ...] = (
         slug="port_reference",
         professions=("Network Engineer", "Security Engineer", "Helpdesk / L1"),
         category="Reference",
-        is_new=True,
     ),
     ToolMeta(
         title="Password Generator",
@@ -229,7 +227,6 @@ TOOLS: tuple[ToolMeta, ...] = (
         slug="password_generator",
         professions=("Security Engineer", "Support Engineer", "Helpdesk / L1", "Sysadmin / DevOps"),
         category="Security",
-        is_new=True,
     ),
     ToolMeta(
         title="URL Encoder/Decoder",
@@ -241,7 +238,6 @@ TOOLS: tuple[ToolMeta, ...] = (
         slug="url_encoder_decoder",
         professions=("Web Developer", "Automation Engineer", "Support Engineer"),
         category="Web & Dev",
-        is_new=True,
     ),
     ToolMeta(
         title="Regex Tester",
@@ -252,8 +248,7 @@ TOOLS: tuple[ToolMeta, ...] = (
         accent="#65a30d",
         slug="regex_tester",
         professions=("Automation Engineer", "Web Developer", "Support Engineer"),
-        category="Web & Dev",
-        is_new=True,
+        category="Data & Text",
     ),
     ToolMeta(
         title="Timestamp Converter",
@@ -265,7 +260,6 @@ TOOLS: tuple[ToolMeta, ...] = (
         slug="timestamp_converter",
         professions=("Automation Engineer", "Sysadmin / DevOps", "Support Engineer", "Cloud Engineer"),
         category="Ops & Automation",
-        is_new=True,
     ),
     ToolMeta(
         title="Text Diff Checker",
@@ -276,8 +270,7 @@ TOOLS: tuple[ToolMeta, ...] = (
         accent="#7c3aed",
         slug="text_diff_checker",
         professions=("Automation Engineer", "Web Developer", "Support Engineer"),
-        category="Web & Dev",
-        is_new=True,
+        category="Data & Text",
     ),
     ToolMeta(
         title="JWT Encoder",
@@ -289,7 +282,6 @@ TOOLS: tuple[ToolMeta, ...] = (
         slug="jwt_encoder",
         professions=("Web Developer", "Security Engineer", "Automation Engineer"),
         category="Security",
-        is_new=True,
     ),
     ToolMeta(
         title="CIDR Aggregator",
@@ -301,7 +293,6 @@ TOOLS: tuple[ToolMeta, ...] = (
         slug="cidr_aggregator",
         professions=("Network Engineer", "Sysadmin / DevOps", "Cloud Engineer"),
         category="Network",
-        is_new=True,
     ),
     ToolMeta(
         title="User-Agent Parser",
@@ -313,7 +304,6 @@ TOOLS: tuple[ToolMeta, ...] = (
         slug="user_agent_parser",
         professions=("Support Engineer", "Web Developer", "Helpdesk / L1"),
         category="Web & Dev",
-        is_new=True,
     ),
     ToolMeta(
         title="IPv6 Compressor",
@@ -325,7 +315,6 @@ TOOLS: tuple[ToolMeta, ...] = (
         slug="ipv6_compressor",
         professions=("Network Engineer", "Sysadmin / DevOps"),
         category="Network",
-        is_new=True,
     ),
     ToolMeta(
         title="Case Converter",
@@ -336,8 +325,7 @@ TOOLS: tuple[ToolMeta, ...] = (
         accent="#ca8a04",
         slug="case_converter",
         professions=("Web Developer", "Automation Engineer"),
-        category="Web & Dev",
-        is_new=True,
+        category="Data & Text",
     ),
     ToolMeta(
         title="Color Converter",
@@ -348,8 +336,7 @@ TOOLS: tuple[ToolMeta, ...] = (
         accent="#db2777",
         slug="color_converter",
         professions=("Web Developer", "Automation Engineer"),
-        category="Web & Dev",
-        is_new=True,
+        category="Data & Text",
     ),
     ToolMeta(
         title="WHOIS Lookup",
@@ -361,7 +348,6 @@ TOOLS: tuple[ToolMeta, ...] = (
         slug="whois_lookup",
         professions=("Network Engineer", "Security Engineer", "Sysadmin / DevOps", "Web Developer"),
         category="Network",
-        is_new=True,
     ),
     ToolMeta(
         title="Bulk Domain Health",
@@ -373,7 +359,6 @@ TOOLS: tuple[ToolMeta, ...] = (
         slug="bulk_domain_health",
         professions=("Network Engineer", "Security Engineer", "Sysadmin / DevOps", "Web Developer"),
         category="Network",
-        is_new=True,
     ),
     ToolMeta(
         title="Webhook Tester",
@@ -385,7 +370,6 @@ TOOLS: tuple[ToolMeta, ...] = (
         slug="webhook_tester",
         professions=("Web Developer", "Automation Engineer", "Sysadmin / DevOps"),
         category="Web & Dev",
-        is_new=True,
     ),
     ToolMeta(
         title="Uptime Trend",
@@ -397,7 +381,6 @@ TOOLS: tuple[ToolMeta, ...] = (
         slug="uptime_trend",
         professions=("Sysadmin / DevOps", "Support Engineer", "Web Developer"),
         category="Web & Dev",
-        is_new=True,
     ),
     ToolMeta(
         title="Security Headers Checker",
@@ -409,7 +392,6 @@ TOOLS: tuple[ToolMeta, ...] = (
         slug="security_headers",
         professions=("Sysadmin / DevOps", "Web Developer", "Security Engineer"),
         category="Security",
-        is_new=True,
     ),
     ToolMeta(
         title="CVE Lookup",
@@ -421,7 +403,6 @@ TOOLS: tuple[ToolMeta, ...] = (
         slug="cve_lookup",
         professions=("Security Engineer", "Sysadmin / DevOps", "Support Engineer"),
         category="Security",
-        is_new=True,
     ),
     ToolMeta(
         title="DNS Propagation Checker",
@@ -433,7 +414,6 @@ TOOLS: tuple[ToolMeta, ...] = (
         slug="dns_propagation",
         professions=("Sysadmin / DevOps", "Network Engineer", "Support Engineer"),
         category="Network",
-        is_new=True,
     ),
     ToolMeta(
         title="Windows Event Reference",
@@ -445,7 +425,6 @@ TOOLS: tuple[ToolMeta, ...] = (
         slug="windows_event_reference",
         professions=("Sysadmin / DevOps", "Support Engineer", "Helpdesk / L1"),
         category="Reference",
-        is_new=True,
     ),
     ToolMeta(
         title="DKIM Selector Lookup",
@@ -457,7 +436,6 @@ TOOLS: tuple[ToolMeta, ...] = (
         slug="dkim_lookup",
         professions=("Sysadmin / DevOps", "Security Engineer", "Support Engineer"),
         category="Network",
-        is_new=True,
     ),
     ToolMeta(
         title="Email Record Builder",
@@ -469,7 +447,6 @@ TOOLS: tuple[ToolMeta, ...] = (
         slug="email_record_builder",
         professions=("Sysadmin / DevOps", "Security Engineer", "Support Engineer"),
         category="Network",
-        is_new=True,
     ),
     ToolMeta(
         title="Windows Error Reference",
@@ -481,7 +458,6 @@ TOOLS: tuple[ToolMeta, ...] = (
         slug="windows_error_reference",
         professions=("Sysadmin / DevOps", "Support Engineer", "Helpdesk / L1"),
         category="Reference",
-        is_new=True,
     ),
     ToolMeta(
         title="Config Format Converter",
@@ -492,8 +468,7 @@ TOOLS: tuple[ToolMeta, ...] = (
         accent="#457b9d",
         slug="config_format_converter",
         professions=("Sysadmin / DevOps", "Web Developer", "Automation Engineer"),
-        category="Web & Dev",
-        is_new=True,
+        category="Data & Text",
     ),
     ToolMeta(
         title="M365 SKU Decoder",
@@ -505,7 +480,6 @@ TOOLS: tuple[ToolMeta, ...] = (
         slug="m365_sku_decoder",
         professions=("Sysadmin / DevOps", "Support Engineer", "Helpdesk / L1"),
         category="Reference",
-        is_new=True,
     ),
     ToolMeta(
         title="ID Generator",
@@ -516,8 +490,7 @@ TOOLS: tuple[ToolMeta, ...] = (
         accent="#6d597a",
         slug="id_generator",
         professions=("Web Developer", "Automation Engineer", "Sysadmin / DevOps"),
-        category="Web & Dev",
-        is_new=True,
+        category="Data & Text",
     ),
     ToolMeta(
         title="JSON Diff Viewer",
@@ -528,8 +501,7 @@ TOOLS: tuple[ToolMeta, ...] = (
         accent="#118ab2",
         slug="json_diff",
         professions=("Web Developer", "Automation Engineer", "Sysadmin / DevOps"),
-        category="Web & Dev",
-        is_new=True,
+        category="Data & Text",
     ),
     ToolMeta(
         title="IP Geolocation Lookup",
@@ -541,7 +513,6 @@ TOOLS: tuple[ToolMeta, ...] = (
         slug="ip_geolocation",
         professions=("Sysadmin / DevOps", "Security Engineer", "Support Engineer"),
         category="Network",
-        is_new=True,
     ),
     ToolMeta(
         title="File Integrity Comparator",
@@ -553,7 +524,6 @@ TOOLS: tuple[ToolMeta, ...] = (
         slug="file_integrity",
         professions=("Sysadmin / DevOps", "Security Engineer", "Support Engineer"),
         category="Security",
-        is_new=True,
     ),
     ToolMeta(
         title="chmod Calculator",
@@ -565,7 +535,6 @@ TOOLS: tuple[ToolMeta, ...] = (
         slug="chmod_calculator",
         professions=("Sysadmin / DevOps", "Automation Engineer"),
         category="Ops & Automation",
-        is_new=True,
     ),
     ToolMeta(
         title="Integer Base Converter",
@@ -576,7 +545,7 @@ TOOLS: tuple[ToolMeta, ...] = (
         accent="#264653",
         slug="base_converter",
         professions=("Web Developer", "Automation Engineer", "Sysadmin / DevOps"),
-        category="Web & Dev",
+        category="Data & Text",
         is_new=True,
     ),
     ToolMeta(
@@ -636,7 +605,7 @@ TOOLS: tuple[ToolMeta, ...] = (
         accent="#219ebc",
         slug="qr_code_generator",
         professions=("Support Engineer", "Helpdesk / L1", "Sysadmin / DevOps"),
-        category="Web & Dev",
+        category="Data & Text",
         is_new=True,
     ),
     ToolMeta(
@@ -660,12 +629,20 @@ TOOLS: tuple[ToolMeta, ...] = (
         accent="#8338ec",
         slug="sql_formatter",
         professions=("Sysadmin / DevOps", "Web Developer", "Automation Engineer"),
-        category="Web & Dev",
+        category="Data & Text",
         is_new=True,
     ),
 )
 
-POPULAR_TOOLS = TOOLS[:5]
+# Curated, not usage-derived -- this app deliberately has no usage tracking
+# (Public Safe, no signup). Originally a frozen TOOLS[:5] slice pinned to the
+# first tools ever shipped; refreshed to include a couple of broadly-useful
+# later additions so this row doesn't read as permanently stuck on session-1
+# tools now that the catalog has grown to 51.
+_POPULAR_SLUGS = ("domain_health", "dns_records", "ssl_certificate", "security_headers", "cve_lookup")
+_tools_by_slug = {tool.slug: tool for tool in TOOLS}
+POPULAR_TOOLS = tuple(_tools_by_slug[slug] for slug in _POPULAR_SLUGS)
+del _tools_by_slug
 TITLE_TO_SLUG: dict[str, str] = {tool.title: tool.slug for tool in TOOLS}
 
 # Curated "what would you naturally run next" pairings for a real troubleshooting
@@ -1205,6 +1182,7 @@ def filter_tools(query: str = "", profession: str = "All") -> tuple[ToolMeta, ..
             or value in tool.short_title.lower()
             or value in tool.description.lower()
             or value in tool.slug.replace("_", " ")
+            or any(value in alias.lower() for alias in tool.aliases)
         )
     )
     matches_profession = (
