@@ -35,7 +35,7 @@ with octal_tab:
     with tool_form_panel("chmod_octal_to_symbolic"):
         render_form_intro("Octal to symbolic", "Enter 3 or 4 octal digits (e.g. 755 or 4755).")
         octal_input = st.text_input("Octal", placeholder="755", key="chmod_octal_input")
-    with tool_result_panel("chmod_octal_result"):
+    with tool_result_panel("chmod_octal_result", related_to="chmod_calculator"):
         render_section_heading("Result", "Owner, group, and other permissions.")
         _render_result(octal_to_symbolic(octal_input))
 
@@ -43,7 +43,7 @@ with symbolic_tab:
     with tool_form_panel("chmod_symbolic_to_octal"):
         render_form_intro("Symbolic to octal", "Enter 9 permission characters (e.g. rwxr-xr-x).")
         symbolic_input = st.text_input("Symbolic", placeholder="rwxr-xr-x", key="chmod_symbolic_input")
-    with tool_result_panel("chmod_symbolic_result"):
+    with tool_result_panel("chmod_symbolic_result", related_to="chmod_calculator"):
         render_section_heading("Result", "Owner, group, and other permissions.")
         _render_result(symbolic_to_octal(symbolic_input))
 
@@ -59,7 +59,7 @@ with build_tab:
                 w = st.checkbox("Write", key=f"chmod_build_{who}_w")
                 x = st.checkbox("Execute", key=f"chmod_build_{who}_x")
                 digits.append((4 if r else 0) + (2 if w else 0) + (1 if x else 0))
-    with tool_result_panel("chmod_build_result"):
+    with tool_result_panel("chmod_build_result", related_to="chmod_calculator"):
         render_section_heading("Result", "Owner, group, and other permissions.")
         octal_value = "".join(str(d) for d in digits)
         _render_result(octal_to_symbolic(octal_value))
