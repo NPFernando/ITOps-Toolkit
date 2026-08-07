@@ -85,6 +85,15 @@ def test_filter_tools_covers_every_declared_profession():
         assert filter_tools(profession=profession), f"no tool tagged with {profession!r}"
 
 
+def test_filter_tools_matches_on_alias():
+    # "b64" appears in none of Base64 Tool's title/short_title/description/slug,
+    # so without alias matching this search would return nothing.
+    results = filter_tools(query="b64")
+
+    assert results
+    assert all(tool.slug == "base64_tool" for tool in results)
+
+
 def test_recent_or_popular_tools_falls_back_to_popular_when_empty():
     assert recent_or_popular_tools([]) == POPULAR_TOOLS
 
@@ -131,43 +140,12 @@ def test_sort_tools_default_and_unknown_mode_preserve_order():
 
 
 def test_expected_tools_are_tagged_new():
+    # Re-scoped from all 42 non-original tools down to the last ~8 actually
+    # shipped, so the "Newest Tools" home page section regains real signal
+    # instead of rendering an uncapped ~9-row section.
     new_slugs = {tool.slug for tool in TOOLS if tool.is_new}
 
     assert new_slugs == {
-        "subnet_calculator",
-        "hash_generator",
-        "mac_address_tool",
-        "email_header_analyzer",
-        "port_reference",
-        "password_generator",
-        "url_encoder_decoder",
-        "regex_tester",
-        "timestamp_converter",
-        "text_diff_checker",
-        "jwt_encoder",
-        "cidr_aggregator",
-        "user_agent_parser",
-        "ipv6_compressor",
-        "case_converter",
-        "color_converter",
-        "whois_lookup",
-        "bulk_domain_health",
-        "webhook_tester",
-        "uptime_trend",
-        "security_headers",
-        "cve_lookup",
-        "dns_propagation",
-        "windows_event_reference",
-        "dkim_lookup",
-        "email_record_builder",
-        "windows_error_reference",
-        "config_format_converter",
-        "m365_sku_decoder",
-        "id_generator",
-        "json_diff",
-        "ip_geolocation",
-        "file_integrity",
-        "chmod_calculator",
         "base_converter",
         "cron_builder",
         "http_status_reference",
@@ -329,16 +307,18 @@ def test_sidebar_category_partition_matches_expected_grouping():
         ],
         "Web & Dev": [
             "http_status",
-            "json_formatter",
-            "base64_tool",
             "url_encoder_decoder",
-            "regex_tester",
-            "text_diff_checker",
             "user_agent_parser",
-            "case_converter",
-            "color_converter",
             "webhook_tester",
             "uptime_trend",
+        ],
+        "Data & Text": [
+            "json_formatter",
+            "base64_tool",
+            "regex_tester",
+            "text_diff_checker",
+            "case_converter",
+            "color_converter",
             "config_format_converter",
             "id_generator",
             "json_diff",
