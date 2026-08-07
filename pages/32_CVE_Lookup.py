@@ -11,6 +11,7 @@ from utils.ui import (
     render_form_intro,
     render_page_header,
     render_section_heading,
+    run_validated_lookup,
     tool_form_panel,
     tool_result_panel,
 )
@@ -33,18 +34,11 @@ with tool_form_panel("cve_lookup"):
         submitted = st.form_submit_button("Search")
 
 if submitted:
-    # Stored in session_state (not rendered directly here) because the sidebar's
-    # quick-search box, favorite-star buttons, and any other widget outside this
-    # page's st.form trigger reruns of their own -- on those reruns `submitted` is
-    # False again, which would otherwise collapse this whole results section the
-    # instant any of them is touched.
-    ok, error = validate_length(query, MAX_QUERY_LENGTH, "Query")
-    if not ok:
-        st.session_state["cve_lookup_validation_error"] = error
-        st.session_state["cve_lookup_result"] = None
-    else:
-        st.session_state["cve_lookup_validation_error"] = None
-        st.session_state["cve_lookup_result"] = lookup_cve(query)
+    def _validate() -> str | None:
+        ok, error = validate_length(query, MAX_QUERY_LENGTH, "Query")
+        return None if ok else error
+
+    run_validated_lookup("cve_lookup", _validate, lambda: lookup_cve(query), spinner_text="Searching NVD...")
 
 validation_error = st.session_state.get("cve_lookup_validation_error")
 result = st.session_state.get("cve_lookup_result")

@@ -12,6 +12,7 @@ from utils.ui import (
     render_form_intro,
     render_page_header,
     render_section_heading,
+    run_validated_lookup,
     tool_form_panel,
     tool_result_panel,
 )
@@ -36,26 +37,23 @@ with tool_form_panel("dkim_lookup"):
         submitted = st.form_submit_button("Look up")
 
 if submitted:
-    # Stored in session_state (not rendered directly here) because the sidebar's
-    # quick-search box, favorite-star buttons, and any other widget outside this
-    # page's st.form trigger reruns of their own -- on those reruns `submitted` is
-    # False again, which would otherwise collapse this whole results section the
-    # instant any of them is touched.
-    ok_domain, error_domain = validate_length(domain, MAX_DOMAIN_LENGTH, "Domain")
-    ok_selector, error_selector = validate_length(selector, MAX_SELECTOR_LENGTH, "Selector")
-    normalized = normalize_domain(domain)
-    if not ok_domain:
-        st.session_state["dkim_lookup_validation_error"] = error_domain
-        st.session_state["dkim_lookup_result"] = None
-    elif not ok_selector:
-        st.session_state["dkim_lookup_validation_error"] = error_selector
-        st.session_state["dkim_lookup_result"] = None
-    elif not normalized:
-        st.session_state["dkim_lookup_validation_error"] = "Enter a domain name."
-        st.session_state["dkim_lookup_result"] = None
-    else:
-        st.session_state["dkim_lookup_validation_error"] = None
-        st.session_state["dkim_lookup_result"] = lookup_dkim(normalized, selector)
+    def _validate() -> str | None:
+        ok_domain, error_domain = validate_length(domain, MAX_DOMAIN_LENGTH, "Domain")
+        if not ok_domain:
+            return error_domain
+        ok_selector, error_selector = validate_length(selector, MAX_SELECTOR_LENGTH, "Selector")
+        if not ok_selector:
+            return error_selector
+        if not normalize_domain(domain):
+            return "Enter a domain name."
+        return None
+
+    run_validated_lookup(
+        "dkim_lookup",
+        _validate,
+        lambda: lookup_dkim(normalize_domain(domain), selector),
+        spinner_text="Querying DKIM record...",
+    )
 
 validation_error = st.session_state.get("dkim_lookup_validation_error")
 result = st.session_state.get("dkim_lookup_result")

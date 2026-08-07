@@ -23,7 +23,8 @@ with tool_form_panel("ip_geolocation"):
         submitted = st.form_submit_button("Look up")
 
 if submitted:
-    st.session_state["ip_geolocation_result"] = lookup_ip_geolocation(ip)
+    with st.spinner("Looking up IP..."):
+        st.session_state["ip_geolocation_result"] = lookup_ip_geolocation(ip)
 
 result = st.session_state.get("ip_geolocation_result")
 

@@ -12,6 +12,7 @@ from utils.ui import (
     render_form_intro,
     render_page_header,
     render_section_heading,
+    run_validated_lookup,
     tool_form_panel,
     tool_result_panel,
 )
@@ -34,18 +35,11 @@ with tool_form_panel("http_status"):
         submitted = st.form_submit_button("Check URL")
 
 if submitted:
-    # Stored in session_state (not rendered directly here) because the sidebar's
-    # quick-search box, favorite-star buttons, and any other widget outside this
-    # page's st.form trigger reruns of their own -- on those reruns `submitted` is
-    # False again, which would otherwise collapse this whole results section the
-    # instant any of them is touched.
-    ok, error = validate_length(url, MAX_URL_LENGTH, "URL")
-    if not ok:
-        st.session_state["http_status_validation_error"] = error
-        st.session_state["http_status_result"] = None
-    else:
-        st.session_state["http_status_validation_error"] = None
-        st.session_state["http_status_result"] = check_http_status(url)
+    def _validate() -> str | None:
+        ok, error = validate_length(url, MAX_URL_LENGTH, "URL")
+        return None if ok else error
+
+    run_validated_lookup("http_status", _validate, lambda: check_http_status(url), spinner_text="Checking URL...")
 
 validation_error = st.session_state.get("http_status_validation_error")
 result = st.session_state.get("http_status_result")
@@ -58,45 +52,45 @@ if validation_error is not None:
 
 if result is not None:
     with tool_result_panel("http_result", related_to="http_status"):
-            render_section_heading("HTTP result", "Status, timing, HTTPS state, and final URL.")
-            if result["ok"]:
-                st.success("Healthy")
-            elif result["error"]:
-                st.error(result["error"])
-            else:
-                st.warning("Warning")
+        render_section_heading("HTTP result", "Status, timing, HTTPS state, and final URL.")
+        if result["ok"]:
+            st.success("Healthy")
+        elif result["error"]:
+            st.error(result["error"])
+        else:
+            st.warning("Warning")
 
-            c1, c2, c3, c4 = st.columns(4)
-            c1.metric("Status code", result["status_code"] or "Failed")
-            c2.metric("Reason", result["reason"] or "Unknown")
-            c3.metric("Response time", f"{result['response_time_ms']} ms" if result["response_time_ms"] else "Unknown")
-            c4.metric("HTTPS", "Yes" if result["uses_https"] else "No")
+        c1, c2, c3, c4 = st.columns(4)
+        c1.metric("Status code", result["status_code"] or "Failed")
+        c2.metric("Reason", result["reason"] or "Unknown")
+        c3.metric("Response time", f"{result['response_time_ms']} ms" if result["response_time_ms"] else "Unknown")
+        c4.metric("HTTPS", "Yes" if result["uses_https"] else "No")
 
-            rows = [
-                {"field": "Final URL", "value": result["final_url"] or "Unknown"},
-                {"field": "Input URL", "value": result["url"]},
-                {"field": "Status code", "value": result["status_code"] or "Unknown"},
-                {"field": "Reason", "value": result["reason"] or "Unknown"},
-            ]
-            st.dataframe(display_rows_frame(rows), width="stretch", hide_index=True)
+        rows = [
+            {"field": "Final URL", "value": result["final_url"] or "Unknown"},
+            {"field": "Input URL", "value": result["url"]},
+            {"field": "Status code", "value": result["status_code"] or "Unknown"},
+            {"field": "Reason", "value": result["reason"] or "Unknown"},
+        ]
+        st.dataframe(display_rows_frame(rows), width="stretch", hide_index=True)
 
-            render_section_heading("Selected headers", "Security and response headers returned by the final URL.", eyebrow="Headers")
-            if result["headers"]:
-                st.dataframe(
-                    pd.DataFrame([{"header": key, "value": value} for key, value in result["headers"].items()]),
-                    width="stretch",
-                    hide_index=True,
-                )
-            else:
-                st.caption("No selected headers returned.")
+        render_section_heading("Selected headers", "Security and response headers returned by the final URL.", eyebrow="Headers")
+        if result["headers"]:
+            st.dataframe(
+                pd.DataFrame([{"header": key, "value": value} for key, value in result["headers"].items()]),
+                width="stretch",
+                hide_index=True,
+            )
+        else:
+            st.caption("No selected headers returned.")
 
-            if result["redirect_chain"]:
-                with st.expander("Redirect chain"):
-                    st.dataframe(pd.DataFrame(result["redirect_chain"]), width="stretch", hide_index=True)
+        if result["redirect_chain"]:
+            with st.expander("Redirect chain"):
+                st.dataframe(pd.DataFrame(result["redirect_chain"]), width="stretch", hide_index=True)
 
-            render_section_heading("Recommendations", "Header, HTTPS, and status recommendations from this check.", eyebrow="Actions")
-            if result["recommendations"]:
-                for item in result["recommendations"]:
-                    st.warning(item)
-            else:
-                st.success("No header or HTTPS recommendations from this check.")
+        render_section_heading("Recommendations", "Header, HTTPS, and status recommendations from this check.", eyebrow="Actions")
+        if result["recommendations"]:
+            for item in result["recommendations"]:
+                st.warning(item)
+        else:
+            st.success("No header or HTTPS recommendations from this check.")

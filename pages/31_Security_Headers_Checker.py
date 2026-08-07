@@ -12,6 +12,7 @@ from utils.ui import (
     render_form_intro,
     render_page_header,
     render_section_heading,
+    run_validated_lookup,
     tool_form_panel,
     tool_result_panel,
 )
@@ -34,18 +35,13 @@ with tool_form_panel("security_headers"):
         submitted = st.form_submit_button("Check headers")
 
 if submitted:
-    # Stored in session_state (not rendered directly here) because the sidebar's
-    # quick-search box, favorite-star buttons, and any other widget outside this
-    # page's st.form trigger reruns of their own -- on those reruns `submitted` is
-    # False again, which would otherwise collapse this whole results section the
-    # instant any of them is touched.
-    ok, error = validate_length(url, MAX_URL_LENGTH, "URL")
-    if not ok:
-        st.session_state["security_headers_validation_error"] = error
-        st.session_state["security_headers_result"] = None
-    else:
-        st.session_state["security_headers_validation_error"] = None
-        st.session_state["security_headers_result"] = check_security_headers(url)
+    def _validate() -> str | None:
+        ok, error = validate_length(url, MAX_URL_LENGTH, "URL")
+        return None if ok else error
+
+    run_validated_lookup(
+        "security_headers", _validate, lambda: check_security_headers(url), spinner_text="Fetching headers..."
+    )
 
 validation_error = st.session_state.get("security_headers_validation_error")
 result = st.session_state.get("security_headers_result")

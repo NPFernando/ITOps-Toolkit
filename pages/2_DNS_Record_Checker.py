@@ -11,6 +11,7 @@ from utils.ui import (
     render_form_intro,
     render_page_header,
     render_section_heading,
+    run_validated_lookup,
     tool_form_panel,
     tool_result_panel,
 )
@@ -47,25 +48,20 @@ with tool_form_panel("dns_records"):
         submitted = st.form_submit_button("Look up records")
 
 if submitted:
-    # Stored in session_state (not rendered directly here) because the sidebar's
-    # quick-search box, favorite-star buttons, and any other widget outside this
-    # page's st.form trigger reruns of their own -- on those reruns `submitted` is
-    # False again, which would otherwise collapse this whole results section the
-    # instant any of them is touched.
-    ok, error = validate_length(domain, MAX_DOMAIN_LENGTH, "Domain")
-    normalized = normalize_domain(domain)
-    if not ok:
-        st.session_state["dns_records_validation_error"] = error
-        st.session_state["dns_records_result"] = None
-    elif not normalized:
-        st.session_state["dns_records_validation_error"] = "Enter a domain name."
-        st.session_state["dns_records_result"] = None
-    else:
-        st.session_state["dns_records_validation_error"] = None
-        st.session_state["dns_records_result"] = {
-            "record_type": record_type,
-            "data": resolve_records(normalized, record_type),
-        }
+    def _validate() -> str | None:
+        ok, error = validate_length(domain, MAX_DOMAIN_LENGTH, "Domain")
+        if not ok:
+            return error
+        if not normalize_domain(domain):
+            return "Enter a domain name."
+        return None
+
+    run_validated_lookup(
+        "dns_records",
+        _validate,
+        lambda: {"record_type": record_type, "data": resolve_records(normalize_domain(domain), record_type)},
+        spinner_text="Querying DNS...",
+    )
 
 validation_error = st.session_state.get("dns_records_validation_error")
 stored = st.session_state.get("dns_records_result")

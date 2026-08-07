@@ -16,6 +16,7 @@ from utils.ui import (
     render_form_intro,
     render_page_header,
     render_section_heading,
+    run_validated_lookup,
     tool_form_panel,
     tool_result_panel,
 )
@@ -56,22 +57,20 @@ with tool_form_panel("ssl_certificate"):
         submitted = st.form_submit_button("Check certificate")
 
 if submitted:
-    # Stored in session_state (not rendered directly here) because the sidebar's
-    # quick-search box, favorite-star buttons, and any other widget outside this
-    # page's st.form trigger reruns of their own -- on those reruns `submitted` is
-    # False again, which would otherwise collapse this whole results section the
-    # instant any of them is touched.
-    ok, error = validate_length(domain, MAX_DOMAIN_LENGTH, "Domain")
-    normalized = normalize_domain(domain)
-    if not ok:
-        st.session_state["ssl_certificate_validation_error"] = error
-        st.session_state["ssl_certificate_result"] = None
-    elif not normalized:
-        st.session_state["ssl_certificate_validation_error"] = "Enter a domain name."
-        st.session_state["ssl_certificate_result"] = None
-    else:
-        st.session_state["ssl_certificate_validation_error"] = None
-        st.session_state["ssl_certificate_result"] = get_certificate_info(normalized, int(port))
+    def _validate() -> str | None:
+        ok, error = validate_length(domain, MAX_DOMAIN_LENGTH, "Domain")
+        if not ok:
+            return error
+        if not normalize_domain(domain):
+            return "Enter a domain name."
+        return None
+
+    run_validated_lookup(
+        "ssl_certificate",
+        _validate,
+        lambda: get_certificate_info(normalize_domain(domain), int(port)),
+        spinner_text="Connecting...",
+    )
 
 validation_error = st.session_state.get("ssl_certificate_validation_error")
 result = st.session_state.get("ssl_certificate_result")
@@ -84,36 +83,36 @@ if validation_error is not None:
 
 if result is not None:
     with tool_result_panel("ssl_result", related_to="ssl_certificate"):
-            render_section_heading("Certificate result", "Connection status, expiration, issuer, and subject details.")
-            _status(result["tls_status"])
-            if result["error"]:
-                st.error(result["error"])
+        render_section_heading("Certificate result", "Connection status, expiration, issuer, and subject details.")
+        _status(result["tls_status"])
+        if result["error"]:
+            st.error(result["error"])
 
-            c1, c2, c3, c4 = st.columns(4)
-            c1.metric("TLS connection", "OK" if result["verification_ok"] else "Failed")
-            c2.metric("Days remaining", result["days_remaining"] if result["days_remaining"] is not None else "Unknown")
-            c3.metric("Port", result["port"])
-            c4.metric("Chain status", result["chain_status"])
-            if result["chain_explanation"]:
-                st.caption(result["chain_explanation"])
+        c1, c2, c3, c4 = st.columns(4)
+        c1.metric("TLS connection", "OK" if result["verification_ok"] else "Failed")
+        c2.metric("Days remaining", result["days_remaining"] if result["days_remaining"] is not None else "Unknown")
+        c3.metric("Port", result["port"])
+        c4.metric("Chain status", result["chain_status"])
+        if result["chain_explanation"]:
+            st.caption(result["chain_explanation"])
 
-            rows = [
-                {"field": "Subject", "value": result["subject"].get("commonName", "Unknown")},
-                {"field": "Issuer", "value": result["issuer"].get("commonName", "Unknown")},
-                {"field": "Valid from", "value": _format_dt(result["valid_from"])},
-                {"field": "Valid until", "value": _format_dt(result["valid_until"])},
-                {"field": "Status", "value": result["tls_status"]},
-            ]
-            st.dataframe(display_rows_frame(rows), width="stretch", hide_index=True)
+        rows = [
+            {"field": "Subject", "value": result["subject"].get("commonName", "Unknown")},
+            {"field": "Issuer", "value": result["issuer"].get("commonName", "Unknown")},
+            {"field": "Valid from", "value": _format_dt(result["valid_from"])},
+            {"field": "Valid until", "value": _format_dt(result["valid_until"])},
+            {"field": "Status", "value": result["tls_status"]},
+        ]
+        st.dataframe(display_rows_frame(rows), width="stretch", hide_index=True)
 
-            if result["days_remaining"] is not None:
-                if result["days_remaining"] < 0:
-                    st.error("Certificate is expired.")
-                elif result["days_remaining"] < 30:
-                    st.warning("Certificate expires within 30 days.")
+        if result["days_remaining"] is not None:
+            if result["days_remaining"] < 0:
+                st.error("Certificate is expired.")
+            elif result["days_remaining"] < 30:
+                st.warning("Certificate expires within 30 days.")
 
-            with st.expander("Subject alternative names"):
-                if result["san_names"]:
-                    st.dataframe(pd.DataFrame({"SAN": result["san_names"]}), width="stretch", hide_index=True)
-                else:
-                    st.caption("No SAN names available.")
+        with st.expander("Subject alternative names"):
+            if result["san_names"]:
+                st.dataframe(pd.DataFrame({"SAN": result["san_names"]}), width="stretch", hide_index=True)
+            else:
+                st.caption("No SAN names available.")
