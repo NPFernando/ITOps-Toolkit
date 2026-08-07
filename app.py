@@ -64,12 +64,19 @@ profession = st.pills(
 )
 
 show_all_flag = st.session_state.get("home_show_all", False)
-button_label = "Hide all tools" if show_all_flag else "Show all tools"
-button_icon = ":material/expand_less:" if show_all_flag else ":material/apps:"
+# `show_all` also factors in an active search/profession filter, which can
+# already be expanding the section independently of the flag -- label and
+# toggle off of this combined state (not the raw flag) so the button doesn't
+# read "Show all tools" while the section is already expanded, and so
+# clicking it while a filter is doing the showing doesn't set a flag that
+# then outlives the filter (previously left the section stuck open after
+# clearing the filter).
+show_all = show_all_flag or bool(search_query.strip()) or profession != "All"
+button_label = "Hide all tools" if show_all else "Show all tools"
+button_icon = ":material/expand_less:" if show_all else ":material/apps:"
 if st.button(button_label, icon=button_icon):
-    st.session_state["home_show_all"] = not show_all_flag
+    st.session_state["home_show_all"] = not show_all
     st.rerun()
-show_all = st.session_state.get("home_show_all", False) or bool(search_query.strip()) or profession != "All"
 
 if show_all:
     if search_query.strip():

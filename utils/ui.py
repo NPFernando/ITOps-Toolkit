@@ -3191,6 +3191,18 @@ def _inject_global_css(mode: str) -> None:
                 display: block;
                 margin: 0.35rem 0 0.8rem;
             }
+
+            /* Multi-metric rows (4-6 st.metric columns) rely entirely on
+               Streamlit's native column-stacking below this breakpoint --
+               without this, a stacked 4-6-metric row reads as an ungrouped
+               wall of numbers with no visual relationship to each other. */
+            [data-testid="stHorizontalBlock"]:has([data-testid="stMetric"]) {
+                background: var(--itops-surface);
+                border: 1px solid var(--itops-surface-border);
+                border-radius: var(--card-radius);
+                padding: 0.75rem 1rem;
+                margin: 0.5rem 0;
+            }
         }
         </style>
         """
