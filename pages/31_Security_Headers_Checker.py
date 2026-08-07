@@ -24,6 +24,7 @@ apply_app_shell(active_page="Security Headers Checker")
 render_page_header(
     "Security Headers Checker",
     "Grade a URL's response security headers -- HSTS, CSP, and more -- similar to securityheaders.com.",
+    warning="Do not enter private hostnames or sensitive customer data.",
 )
 
 with tool_form_panel("security_headers"):

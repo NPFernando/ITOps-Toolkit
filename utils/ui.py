@@ -1080,7 +1080,13 @@ def tool_download_panel(key: str, related_to: str | None = None):
 
 
 def display_rows_frame(rows: Iterable[dict[str, Any]]) -> pd.DataFrame:
-    """Build a Streamlit-safe dataframe for mixed-value display rows."""
+    """Build a Streamlit-safe dataframe for mixed-value display rows.
+
+    Convention across this app's pages: static reference pages use st.table
+    (fixed content, no need for the sort/resize/scroll affordances); pages
+    showing results from a live lookup use st.dataframe (usually via this
+    helper), since those can be wider or more variable in row count.
+    """
     return pd.DataFrame(
         {key: str(value) for key, value in row.items()}
         for row in rows

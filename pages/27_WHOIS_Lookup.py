@@ -21,6 +21,7 @@ apply_app_shell(active_page="WHOIS Lookup")
 render_page_header(
     "WHOIS Lookup",
     "Look up domain registration details (registrar, key dates, name servers) via RDAP.",
+    warning="Do not enter private hostnames or sensitive customer data.",
 )
 
 with tool_form_panel("whois_lookup"):

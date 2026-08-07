@@ -24,6 +24,7 @@ apply_app_shell(active_page="DKIM Selector Lookup")
 render_page_header(
     "DKIM Selector Lookup",
     "Look up a DKIM TXT record for a domain and selector, and parse its public key/algorithm fields.",
+    warning="Do not enter private hostnames or sensitive customer data.",
 )
 
 with tool_form_panel("dkim_lookup"):

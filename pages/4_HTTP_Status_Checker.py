@@ -21,7 +21,11 @@ st.set_page_config(page_title="HTTP Status Checker", layout="wide")
 apply_app_shell(active_page="HTTP Status Checker")
 
 
-render_page_header("HTTP Status Checker", "Check status, redirects, timing, and selected response headers.")
+render_page_header(
+    "HTTP Status Checker",
+    "Check status, redirects, timing, and selected response headers.",
+    warning="Do not enter private hostnames or sensitive customer data.",
+)
 
 with tool_form_panel("http_status"):
     render_form_intro("Check URL", "Enter a public URL or domain to inspect status, timing, redirects, and selected headers.")

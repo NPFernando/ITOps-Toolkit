@@ -23,6 +23,7 @@ apply_app_shell(active_page="CVE Lookup")
 render_page_header(
     "CVE Lookup",
     "Search the NIST National Vulnerability Database by CVE ID or keyword.",
+    warning="This queries the public NVD database -- do not enter sensitive or internal-only product names.",
 )
 
 with tool_form_panel("cve_lookup"):

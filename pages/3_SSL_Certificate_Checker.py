@@ -42,7 +42,11 @@ def _status(status: str) -> None:
         st.info(status or "Unknown")
 
 
-render_page_header("SSL Certificate Checker", "Inspect a public TLS certificate without storing the result.")
+render_page_header(
+    "SSL Certificate Checker",
+    "Inspect a public TLS certificate without storing the result.",
+    warning="Do not enter private hostnames or sensitive customer data.",
+)
 
 with tool_form_panel("ssl_certificate"):
     render_form_intro("Check certificate", "Enter a public hostname and TLS port to inspect certificate status.")
