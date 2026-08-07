@@ -175,6 +175,7 @@ def test_expected_tools_are_tagged_new():
         "keypair_generator",
         "qr_code_generator",
         "bcrypt_tool",
+        "sql_formatter",
     }
 
 
@@ -343,6 +344,7 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "json_diff",
             "base_converter",
             "qr_code_generator",
+            "sql_formatter",
         ],
         "Ops & Automation": ["cron_explainer", "log_troubleshooting", "timestamp_converter", "chmod_calculator", "cron_builder"],
         "Reference": ["port_reference", "windows_event_reference", "windows_error_reference", "m365_sku_decoder", "http_status_reference"],

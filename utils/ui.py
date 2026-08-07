@@ -651,6 +651,18 @@ TOOLS: tuple[ToolMeta, ...] = (
         category="Security",
         is_new=True,
     ),
+    ToolMeta(
+        title="SQL Formatter",
+        short_title="SQL Formatter",
+        description="Reformat a pasted SQL query with consistent indentation and keyword casing.",
+        path="pages/52_SQL_Formatter.py",
+        icon="SQL",
+        accent="#8338ec",
+        slug="sql_formatter",
+        professions=("Sysadmin / DevOps", "Web Developer", "Automation Engineer"),
+        category="Web & Dev",
+        is_new=True,
+    ),
 )
 
 POPULAR_TOOLS = TOOLS[:5]
@@ -699,6 +711,7 @@ TOOL_BUNDLES: dict[str, tuple[str, ...]] = {
     "json_formatter": ("base64_tool", "config_format_converter", "json_diff"),
     "id_generator": ("hash_generator", "json_formatter"),
     "json_diff": ("json_formatter", "text_diff_checker"),
+    "sql_formatter": ("json_formatter", "config_format_converter"),
     "base_converter": ("hash_generator", "id_generator"),
     "config_format_converter": ("json_formatter", "text_diff_checker"),
     "base64_tool": ("json_formatter", "url_encoder_decoder"),
@@ -1432,6 +1445,7 @@ def _material_icon_for(slug: str) -> str:
         "keypair_generator": ":material/vpn_key:",
         "qr_code_generator": ":material/qr_code_2:",
         "bcrypt_tool": ":material/enhanced_encryption:",
+        "sql_formatter": ":material/table_chart:",
     }
     return icons.get(slug, ":material/build:")
 
