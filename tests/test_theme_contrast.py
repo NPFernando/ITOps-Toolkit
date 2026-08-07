@@ -43,6 +43,15 @@ def test_dark_theme_muted_text_meets_aa_against_surface_strong():
     assert contrast_ratio(muted, _THEME_TOKENS["dark"]["surface-strong"]) >= 4.5
 
 
+def test_dark_theme_blue_text_meets_aa_against_bg_and_panel():
+    # #e06c75 measured 4.38:1 against "bg" -- just below WCAG AA's 4.5:1
+    # minimum for normal text. This token backs several small/body-text spots
+    # (.section-bolt, .feature-blue, .tool-panel-eyebrow, .roadmap-status-badge).
+    blue = _THEME_TOKENS["dark"]["blue"]
+    assert contrast_ratio(blue, _THEME_TOKENS["dark"]["bg"]) >= 4.5
+    assert contrast_ratio(blue, _THEME_TOKENS["dark"]["panel"]) >= 4.5
+
+
 def test_new_badge_text_meets_aa_against_green_gradient_stops():
     # The badge background is `linear-gradient(135deg, green, color-mix(green, #000 15%))`
     # -- check both stops, since darkening the green toward black is the worst case.
