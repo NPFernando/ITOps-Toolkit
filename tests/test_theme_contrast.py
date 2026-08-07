@@ -5,7 +5,7 @@ These caught a real accessibility bug: the dark-theme "muted" token measured
 and the "NEW" badge's white-on-green text measured as low as 1.4:1.
 """
 
-from utils.ui import _THEME_TOKENS
+from utils.ui import TOOLS, _icon_text_color, _THEME_TOKENS
 
 
 def _hex_to_rgb(value: str) -> tuple[int, int, int]:
@@ -50,6 +50,18 @@ def test_dark_theme_blue_text_meets_aa_against_bg_and_panel():
     blue = _THEME_TOKENS["dark"]["blue"]
     assert contrast_ratio(blue, _THEME_TOKENS["dark"]["bg"]) >= 4.5
     assert contrast_ratio(blue, _THEME_TOKENS["dark"]["panel"]) >= 4.5
+
+
+def test_icon_text_color_meets_aa_for_every_tool_accent():
+    # .tool-page-icon/.tool-card-icon draw small bold icon text directly on a
+    # per-tool accent gradient (e.g. #ffb703 measured 1.75:1 with hardcoded
+    # white text). _icon_text_color() picks white or dark text per accent --
+    # confirm every TOOLS entry actually clears AA with the color it picks.
+    for tool in TOOLS:
+        text_color = _icon_text_color(tool.accent)
+        assert contrast_ratio(text_color, tool.accent) >= 4.5, (
+            f"{tool.slug}: {text_color} on {tool.accent} fails AA"
+        )
 
 
 def test_new_badge_text_meets_aa_against_green_gradient_stops():
