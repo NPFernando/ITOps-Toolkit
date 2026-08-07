@@ -6,7 +6,7 @@ import json
 from contextlib import contextmanager
 from dataclasses import dataclass
 from html import escape
-from typing import Any, Iterable
+from typing import Any, Callable, Iterable
 from urllib.parse import urlencode
 
 import pandas as pd
@@ -1171,6 +1171,37 @@ def render_empty_state(title: str, description: str) -> None:
         """,
         unsafe_allow_html=True,
     )
+
+
+def run_validated_lookup(
+    key: str,
+    validate: Callable[[], str | None],
+    call: Callable[[], Any],
+    spinner_text: str = "Working...",
+) -> None:
+    """Validate, then run a live-lookup ``call`` under a spinner, storing the
+    outcome in ``st.session_state``.
+
+    Call this inside ``if submitted:`` right after a form's submit flag
+    resolves. Rendering must read the result back from
+    ``st.session_state[f"{key}_result"]`` / ``st.session_state[f"{key}_validation_error"]``
+    (not off the transient submit flag), since the sidebar's quick-search box,
+    favorite-star buttons, and any other widget outside the page's st.form
+    trigger reruns of their own -- on those reruns the submit flag is False
+    again, which would otherwise collapse the whole results section.
+
+    ``validate`` returns an error message, or ``None`` if the input is valid.
+    ``call`` performs the actual (usually network-bound) lookup and is only
+    invoked -- under ``st.spinner(spinner_text)`` -- when validation passes.
+    """
+    error = validate()
+    if error is not None:
+        st.session_state[f"{key}_validation_error"] = error
+        st.session_state[f"{key}_result"] = None
+        return
+    st.session_state[f"{key}_validation_error"] = None
+    with st.spinner(spinner_text):
+        st.session_state[f"{key}_result"] = call()
 
 
 def render_safe_note(title: str, description: str) -> None:
