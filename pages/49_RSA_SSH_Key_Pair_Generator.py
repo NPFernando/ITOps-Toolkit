@@ -3,7 +3,15 @@ from __future__ import annotations
 import streamlit as st
 
 from utils.keypair_tools import KEY_TYPES, RSA_KEY_SIZES, generate_keypair
-from utils.ui import apply_app_shell, render_form_intro, render_page_header, render_section_heading, tool_form_panel, tool_result_panel
+from utils.ui import (
+    apply_app_shell,
+    render_empty_state,
+    render_form_intro,
+    render_page_header,
+    render_section_heading,
+    tool_form_panel,
+    tool_result_panel,
+)
 
 
 st.set_page_config(page_title="RSA/SSH Key Pair Generator", layout="wide")
@@ -27,6 +35,9 @@ if generate_clicked:
     st.session_state["keypair_result"] = generate_keypair(key_type, rsa_key_size)
 
 result = st.session_state.get("keypair_result")
+
+if result is None:
+    render_empty_state("Ready to generate", "A key pair and fingerprint appear here after you generate one.")
 
 if result is not None:
     with tool_result_panel("keypair_result_panel", related_to="keypair_generator"):

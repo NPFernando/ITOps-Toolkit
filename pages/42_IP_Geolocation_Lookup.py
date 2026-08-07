@@ -13,6 +13,7 @@ apply_app_shell(active_page="IP Geolocation Lookup")
 render_page_header(
     "IP Geolocation Lookup",
     "Resolve an IP address to approximate geography, ASN, and ISP/org info.",
+    warning="Do not enter private or internal-only IP addresses.",
 )
 
 with tool_form_panel("ip_geolocation"):

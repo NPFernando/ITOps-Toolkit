@@ -24,6 +24,7 @@ apply_app_shell(active_page="DNS Propagation Checker")
 render_page_header(
     "DNS Propagation Checker",
     f"Query the same record across {len(PUBLIC_RESOLVERS)} public resolvers ({', '.join(name for name, _ in PUBLIC_RESOLVERS)}) to catch propagation lag or mismatched answers.",
+    warning="Do not enter private hostnames or sensitive customer data.",
 )
 
 with tool_form_panel("dns_propagation"):

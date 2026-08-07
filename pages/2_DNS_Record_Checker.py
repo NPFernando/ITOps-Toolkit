@@ -33,14 +33,18 @@ EXPLANATIONS = {
 }
 
 
-render_page_header("DNS Record Checker", "Lookup public DNS records and view friendly explanations.")
+render_page_header(
+    "DNS Record Checker",
+    "Look up public DNS records and view friendly explanations.",
+    warning="Do not enter private hostnames or sensitive customer data.",
+)
 
 with tool_form_panel("dns_records"):
-    render_form_intro("Lookup DNS records", "Choose a public domain and record type to inspect.")
+    render_form_intro("Look up DNS records", "Choose a public domain and record type to inspect.")
     with st.form("dns-form"):
         domain = st.text_input("Domain", placeholder="example.com", max_chars=MAX_DOMAIN_LENGTH)
         record_type = st.selectbox("Record type", list(EXPLANATIONS.keys()))
-        submitted = st.form_submit_button("Lookup records")
+        submitted = st.form_submit_button("Look up records")
 
 if submitted:
     # Stored in session_state (not rendered directly here) because the sidebar's
