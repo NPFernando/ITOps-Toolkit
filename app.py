@@ -54,6 +54,7 @@ newest_tools = tuple(tool for tool in TOOLS if tool.is_new)
 if newest_tools:
     render_tool_section(newest_tools, heading="Newest Tools", section_id=None, key_prefix="new")
 
+st.markdown('<div class="tool-panel-eyebrow">Filter by profession</div>', unsafe_allow_html=True)
 profession = st.pills(
     "Filter by profession",
     options=("All", *PROFESSIONS),
@@ -61,9 +62,13 @@ profession = st.pills(
     label_visibility="collapsed",
     key="home_profession_filter",
 )
-show_all_clicked = st.button("Show all tools", icon=":material/apps:")
-if show_all_clicked:
-    st.session_state["home_show_all"] = True
+
+show_all_flag = st.session_state.get("home_show_all", False)
+button_label = "Hide all tools" if show_all_flag else "Show all tools"
+button_icon = ":material/expand_less:" if show_all_flag else ":material/apps:"
+if st.button(button_label, icon=button_icon):
+    st.session_state["home_show_all"] = not show_all_flag
+    st.rerun()
 show_all = st.session_state.get("home_show_all", False) or bool(search_query.strip()) or profession != "All"
 
 if show_all:
@@ -73,6 +78,7 @@ if show_all:
         all_heading = f"{profession} Tools"
     else:
         all_heading = "All Tools"
+    st.markdown('<div class="tool-panel-eyebrow">Sort</div>', unsafe_allow_html=True)
     sort_mode_label = st.pills(
         "Sort",
         options=("Default", "A-Z", "Z-A"),
