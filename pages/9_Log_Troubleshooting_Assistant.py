@@ -69,11 +69,12 @@ if submitted:
     # rerun where `submitted` is False again, which would otherwise make the whole
     # results section (checkboxes included) disappear the instant you check a box.
     st.session_state["log_troubleshooting_result"] = analyze_logs_rule_based(log_text)
-    st.session_state["log_troubleshooting_ai_state"] = optional_ai_summary(
-        st.session_state["log_troubleshooting_result"]["sanitized"],
-        findings=st.session_state["log_troubleshooting_result"]["findings"],
-        opted_in=use_ai_summary,
-    )
+    with st.spinner("Generating AI summary..." if use_ai_summary else "Analyzing..."):
+        st.session_state["log_troubleshooting_ai_state"] = optional_ai_summary(
+            st.session_state["log_troubleshooting_result"]["sanitized"],
+            findings=st.session_state["log_troubleshooting_result"]["findings"],
+            opted_in=use_ai_summary,
+        )
 
 result = st.session_state.get("log_troubleshooting_result")
 

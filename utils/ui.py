@@ -759,9 +759,16 @@ def render_related_tools(slug: str) -> None:
 
 
 def apply_app_shell(active_page: str) -> None:
-    """Apply global theme CSS and render the shared sidebar shell."""
-    render_sidebar(active_page)
+    """Apply global theme CSS and render the shared sidebar shell.
+
+    CSS injects first, sidebar renders second -- otherwise the sidebar's
+    custom-styled HTML (branding, nav links, cards) reaches the browser as
+    its own delta before the stylesheet that styles it exists, producing a
+    brief flash of unstyled/default-look content on page load and
+    navigation.
+    """
     _inject_global_css("dark")
+    render_sidebar(active_page)
     slug = TITLE_TO_SLUG.get(active_page)
     if slug is not None:
         record_recent_visit(slug)
@@ -1551,8 +1558,10 @@ def _inject_global_css(mode: str) -> None:
     tokens = _THEME_TOKENS[mode]
     root_vars = "\n            ".join(f"--itops-{name}: {value};" for name, value in tokens.items())
     css = """
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
         <style>
-        @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
 
         :root {
             __ITOPS_ROOT_VARS__
