@@ -603,6 +603,18 @@ TOOLS: tuple[ToolMeta, ...] = (
         category="Reference",
         is_new=True,
     ),
+    ToolMeta(
+        title="TOTP Generator",
+        short_title="TOTP Generator",
+        description="Generate and validate time-based one-time passcodes (TOTP) from a shared secret.",
+        path="pages/48_TOTP_Generator.py",
+        icon="OTP",
+        accent="#7209b7",
+        slug="totp_generator",
+        professions=("Security Engineer", "Sysadmin / DevOps", "Support Engineer"),
+        category="Security",
+        is_new=True,
+    ),
 )
 
 POPULAR_TOOLS = TOOLS[:5]
@@ -642,6 +654,7 @@ TOOL_BUNDLES: dict[str, tuple[str, ...]] = {
     "password_generator": ("hash_generator",),
     "hash_generator": ("password_generator", "jwt_decoder", "file_integrity"),
     "file_integrity": ("hash_generator", "cve_lookup"),
+    "totp_generator": ("password_generator", "hash_generator"),
     "jwt_decoder": ("jwt_encoder", "hash_generator"),
     "jwt_encoder": ("jwt_decoder", "hash_generator"),
     "json_formatter": ("base64_tool", "config_format_converter", "json_diff"),
@@ -1376,6 +1389,7 @@ def _material_icon_for(slug: str) -> str:
         "base_converter": ":material/pin:",
         "cron_builder": ":material/schedule_send:",
         "http_status_reference": ":material/http:",
+        "totp_generator": ":material/dialpad:",
     }
     return icons.get(slug, ":material/build:")
 
