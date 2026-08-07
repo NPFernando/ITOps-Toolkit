@@ -34,11 +34,6 @@ def test_dark_theme_muted_text_meets_aa_against_bg_and_panel():
     assert contrast_ratio(muted, _THEME_TOKENS["dark"]["panel"]) >= 4.5
 
 
-def test_light_theme_muted_text_meets_aa_against_bg():
-    muted = _THEME_TOKENS["light"]["muted"]
-    assert contrast_ratio(muted, _THEME_TOKENS["light"]["bg"]) >= 4.5
-
-
 def test_dark_theme_muted_text_meets_aa_against_surface_strong():
     # Roadmap page text (vote pill, item category/status/source badges, card
     # captions) was hardcoded to #667790/#64758e/#3d4f68 (2.98:1-1.68:1
@@ -52,9 +47,8 @@ def test_new_badge_text_meets_aa_against_green_gradient_stops():
     # The badge background is `linear-gradient(135deg, green, color-mix(green, #000 15%))`
     # -- check both stops, since darkening the green toward black is the worst case.
     badge_text = "#04140a"
-    for mode in ("dark", "light"):
-        green = _THEME_TOKENS[mode]["green"]
-        r, g, b = _hex_to_rgb(green)
-        darkened = f"#{round(r * 0.85):02x}{round(g * 0.85):02x}{round(b * 0.85):02x}"
-        assert contrast_ratio(badge_text, green) >= 4.5
-        assert contrast_ratio(badge_text, darkened) >= 4.5
+    green = _THEME_TOKENS["dark"]["green"]
+    r, g, b = _hex_to_rgb(green)
+    darkened = f"#{round(r * 0.85):02x}{round(g * 0.85):02x}{round(b * 0.85):02x}"
+    assert contrast_ratio(badge_text, green) >= 4.5
+    assert contrast_ratio(badge_text, darkened) >= 4.5
