@@ -38,25 +38,33 @@ with tool_form_panel("bulk_domain_health"):
         submitted = st.form_submit_button("Run bulk check")
 
 if submitted:
+    # Stored in session_state (not rendered directly here) because the export
+    # panel's download button below triggers its own rerun -- on that rerun
+    # `submitted` is False again, which would otherwise collapse this whole
+    # results section right after the click (and, for the validation error,
+    # would otherwise vanish the instant any widget outside this st.form is
+    # touched, e.g. the sidebar's quick-search box).
     raw_text = uploaded_file.getvalue().decode("utf-8", errors="ignore") if uploaded_file is not None else ""
     domains = parse_domain_list(raw_text) or parse_domain_list(pasted_text)
 
     if not domains:
-        st.error("Upload a file or paste at least one domain.")
+        st.session_state["bulk_domain_health_validation_error"] = "Upload a file or paste at least one domain."
+        st.session_state["bulk_domain_health_state"] = None
     else:
         truncated = len(domains) > MAX_DOMAINS_PER_BATCH
         with st.spinner(f"Checking {min(len(domains), MAX_DOMAINS_PER_BATCH)} domains..."):
             results = run_bulk_health_check(domains, include_dmarc=include_dmarc)
-        # Stored in session_state (not rendered directly here) because the export
-        # panel's download button below triggers its own rerun -- on that rerun
-        # `submitted` is False again, which would otherwise collapse this whole
-        # results section right after the click.
+        st.session_state["bulk_domain_health_validation_error"] = None
         st.session_state["bulk_domain_health_state"] = {"results": results, "truncated": truncated, "total_domains": len(domains)}
 
+validation_error = st.session_state.get("bulk_domain_health_validation_error")
 state = st.session_state.get("bulk_domain_health_state")
 
-if state is None:
+if validation_error is None and state is None:
     render_empty_state("Ready for a domain list", "Per-domain risk scores and status appear here after the batch check completes.")
+
+if validation_error is not None:
+    st.error(validation_error)
 
 if state is not None:
     results = state["results"]
