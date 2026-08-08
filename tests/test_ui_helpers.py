@@ -206,13 +206,12 @@ def test_expected_tools_are_tagged_new():
     new_slugs = {tool.slug for tool in TOOLS if tool.is_new}
 
     assert new_slugs == {
-        "sql_formatter",
-        "ulid_uuid_decoder",
-        "curl_builder",
-        "regex_cheat_sheet",
-        "env_linter",
-        "tls_scanner",
-        "business_hours",
+        "csv_diff",
+        "markdown_converter",
+        "encoding_detector",
+        "robots_validator",
+        "jwt_weak_secret",
+        "log_duration",
     }
 
 
@@ -364,6 +363,7 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "keypair_generator",
             "bcrypt_tool",
             "tls_scanner",
+            "jwt_weak_secret",
         ],
         "Web & Dev": [
             "http_status",
@@ -372,6 +372,7 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "webhook_tester",
             "uptime_trend",
             "curl_builder",
+            "robots_validator",
         ],
         "Data & Text": [
             "json_formatter",
@@ -388,8 +389,19 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "sql_formatter",
             "ulid_uuid_decoder",
             "env_linter",
+            "csv_diff",
+            "markdown_converter",
+            "encoding_detector",
         ],
-        "Ops & Automation": ["cron_explainer", "log_troubleshooting", "timestamp_converter", "chmod_calculator", "cron_builder", "business_hours"],
+        "Ops & Automation": [
+            "cron_explainer",
+            "log_troubleshooting",
+            "timestamp_converter",
+            "chmod_calculator",
+            "cron_builder",
+            "business_hours",
+            "log_duration",
+        ],
         "Reference": [
             "port_reference",
             "windows_event_reference",

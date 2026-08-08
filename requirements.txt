@@ -14,3 +14,5 @@ cryptography
 qrcode
 bcrypt
 sqlparse
+markdown
+markdownify
