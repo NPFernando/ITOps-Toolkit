@@ -77,7 +77,7 @@ if password_result is not None:
         if not password_result["ok"]:
             st.error(password_result["error"])
         else:
-            st.text_input("Password", value=password_result["password"], disabled=True)
+            st.code(password_result["password"], language=None)
             st.caption(f"~{password_result['entropy_bits']} bits of entropy from a {password_result['pool_size']}-character set.")
 
 if passphrase_result is not None:
@@ -86,5 +86,5 @@ if passphrase_result is not None:
         if not passphrase_result["ok"]:
             st.error(passphrase_result["error"])
         else:
-            st.text_input("Passphrase", value=passphrase_result["passphrase"], disabled=True)
+            st.code(passphrase_result["passphrase"], language=None)
             st.caption(f"~{passphrase_result['entropy_bits']} bits of entropy from a {len(WORDLIST)}-word list.")
