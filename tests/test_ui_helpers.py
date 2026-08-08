@@ -35,6 +35,25 @@ def test_display_rows_frame_stringifies_mixed_values():
     assert all(isinstance(value, str) for value in frame["value"].tolist())
 
 
+def test_apply_app_shell_injects_css_before_rendering_sidebar(monkeypatch):
+    """Regression: apply_app_shell() used to render the sidebar's custom HTML
+    before injecting the stylesheet that styles it -- a leftover ordering
+    from the removed Dark/Light toggle era (CSS injection has no
+    session_state dependency on sidebar widgets anymore). This left a window
+    where the sidebar's custom-styled HTML reached the browser before its
+    stylesheet existed, producing a flash of unstyled content."""
+    call_order = []
+
+    monkeypatch.setattr(ui, "_inject_global_css", lambda mode: call_order.append("css"))
+    monkeypatch.setattr(ui, "render_sidebar", lambda active_page: call_order.append("sidebar"))
+    monkeypatch.setattr(ui, "record_recent_visit", lambda slug: None)
+    monkeypatch.setattr(ui, "_sync_local_storage_mirror", lambda active_page: None)
+
+    ui.apply_app_shell("Home")
+
+    assert call_order == ["css", "sidebar"]
+
+
 def test_render_status_note_escapes_description_and_normalizes_tone(monkeypatch):
     rendered = []
 
