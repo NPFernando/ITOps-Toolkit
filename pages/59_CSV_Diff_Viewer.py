@@ -38,14 +38,21 @@ if result is not None:
         render_section_heading("Differences", "Added, removed, and changed rows, matched by key column.")
         if not result["ok"]:
             st.error(result["error"])
-        elif result["identical"]:
-            st.success("The two CSVs are identical for the matched rows.")
         else:
-            rows = []
-            for diff in result["differences"]:
-                if diff["type"] == "changed":
-                    for field, values in diff["fields"].items():
-                        rows.append({"Key": diff["key"], "Type": "changed", "Field": field, "Old value": values["old"], "New value": values["new"]})
-                else:
-                    rows.append({"Key": diff["key"], "Type": diff["type"], "Field": None, "Old value": None, "New value": None})
-            st.dataframe(pd.DataFrame(rows), width="stretch", hide_index=True)
+            duplicates = result["duplicate_keys"]
+            if duplicates["first_csv"]:
+                st.warning(f"First CSV has duplicate key value(s): {', '.join(duplicates['first_csv'])}. Only the last matching row for each is compared.")
+            if duplicates["second_csv"]:
+                st.warning(f"Second CSV has duplicate key value(s): {', '.join(duplicates['second_csv'])}. Only the last matching row for each is compared.")
+
+            if result["identical"]:
+                st.success("The two CSVs are identical for the matched rows.")
+            else:
+                rows = []
+                for diff in result["differences"]:
+                    if diff["type"] == "changed":
+                        for field, values in diff["fields"].items():
+                            rows.append({"Key": diff["key"], "Type": "changed", "Field": field, "Old value": values["old"], "New value": values["new"]})
+                    else:
+                        rows.append({"Key": diff["key"], "Type": diff["type"], "Field": None, "Old value": None, "New value": None})
+                st.dataframe(pd.DataFrame(rows), width="stretch", hide_index=True)

@@ -29,13 +29,22 @@ def _resolve_timezone(tz_name: str) -> ZoneInfo | None:
 
 
 def _parse_timestamp(value: str, tz: ZoneInfo) -> datetime | None:
+    """Parse an ISO 8601 timestamp and anchor it to the selected timezone.
+
+    A naive (offset-less) timestamp is assumed to already be in ``tz``. An
+    offset-bearing timestamp is converted into ``tz`` rather than kept as-is
+    -- otherwise the business-hours window below would be built against
+    whatever offset the input happened to carry, silently overriding the
+    timezone the user picked from the dropdown (same real-world instant,
+    different -- wrong -- business-hours answer depending on input format).
+    """
     try:
         dt = datetime.fromisoformat(value.strip())
     except ValueError:
         return None
     if dt.tzinfo is None:
-        dt = dt.replace(tzinfo=tz)
-    return dt
+        return dt.replace(tzinfo=tz)
+    return dt.astimezone(tz)
 
 
 def _parse_holidays(holidays_str: str) -> tuple[set[date], list[str]]:

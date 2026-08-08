@@ -26,6 +26,26 @@ def test_diff_csv_identical_when_no_differences():
     assert result["differences"] == []
 
 
+def test_diff_csv_flags_duplicate_keys_instead_of_silently_dropping_rows():
+    # Regression: dict-indexing by key silently collapses duplicate-key rows
+    # (only the last one survives) with no indication -- duplicates must be
+    # surfaced, not silently lost.
+    csv_with_dup = "id,name\n1,Alice\n1,Duplicate\n"
+    other = "id,name\n1,Alice2\n"
+
+    result = diff_csv(csv_with_dup, other, "id")
+
+    assert result["ok"] is True
+    assert result["duplicate_keys"]["first_csv"] == ["1"]
+    assert result["duplicate_keys"]["second_csv"] == []
+
+
+def test_diff_csv_no_duplicate_keys_reported_for_clean_input():
+    result = diff_csv(CSV_A, CSV_B, "id")
+
+    assert result["duplicate_keys"] == {"first_csv": [], "second_csv": []}
+
+
 def test_diff_csv_rejects_missing_key_column():
     result = diff_csv(CSV_A, CSV_B, "")
 
