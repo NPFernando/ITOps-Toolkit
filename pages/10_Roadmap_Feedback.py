@@ -170,6 +170,10 @@ with filter_col:
         "Filter category",
         options=("All", *roadmap.roadmap_categories()),
         default="All",
+        required=True,  # without this, clicking the already-selected pill deselects it
+        # to None (documented st.pills behavior with required=False). Already safely
+        # coerced by `category or "All"` below, but fixed at the source anyway --
+        # same bug class as PR #63.
         label_visibility="collapsed",
     )
 
