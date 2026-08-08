@@ -5,6 +5,7 @@ from __future__ import annotations
 import base64
 import binascii
 import json
+import re
 from datetime import UTC, datetime
 from typing import Any
 from urllib.parse import quote, quote_plus, unquote, unquote_plus
@@ -133,8 +134,13 @@ def encode_base64_text(value: str) -> str:
 
 
 def decode_base64_text(value: str) -> dict[str, Any]:
+    # Strips all whitespace, not just the ends -- base64.b64decode(validate=True)
+    # rejects any embedded whitespace, but wrapped/multi-line base64 (the standard
+    # `base64` CLI output format, or anything copy-pasted from a text file) is a
+    # normal, valid input shape that would otherwise fail with a misleading error.
+    cleaned = re.sub(r"\s+", "", value or "")
     try:
-        decoded = base64.b64decode((value or "").encode("ascii"), validate=True)
+        decoded = base64.b64decode(cleaned.encode("ascii"), validate=True)
     except (UnicodeEncodeError, binascii.Error) as exc:
         return {"ok": False, "error": f"Invalid Base64 input: {exc}", "result": None}
     return {"ok": True, "error": None, "result": decoded.decode("utf-8", errors="replace")}

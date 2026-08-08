@@ -42,7 +42,7 @@ if encode_clicked:
     # results section the instant any of them is touched.
     st.session_state["base64_tool_encoded"] = encode_base64_text(text_input)
 if decode_clicked:
-    st.session_state["base64_tool_decoded"] = decode_base64_text(text_input.strip())
+    st.session_state["base64_tool_decoded"] = decode_base64_text(text_input)
 
 encoded_result = st.session_state.get("base64_tool_encoded")
 decoded_result = st.session_state.get("base64_tool_decoded")

@@ -44,8 +44,11 @@ if result is not None:
 
             rows = [
                 {"field": "Postal code", "value": result["postal"] or "Unknown"},
-                {"field": "Latitude", "value": result["latitude"]},
-                {"field": "Longitude", "value": result["longitude"]},
+                # `is not None` (not `or "Unknown"`) -- a real coordinate of
+                # exactly 0.0 (equator/prime meridian) is falsy in Python and
+                # would otherwise incorrectly render as "Unknown".
+                {"field": "Latitude", "value": result["latitude"] if result["latitude"] is not None else "Unknown"},
+                {"field": "Longitude", "value": result["longitude"] if result["longitude"] is not None else "Unknown"},
                 {"field": "Timezone", "value": result["timezone"] or "Unknown"},
                 {"field": "ISP", "value": result["isp"] or "Unknown"},
                 {"field": "Organization", "value": result["org"] or "Unknown"},

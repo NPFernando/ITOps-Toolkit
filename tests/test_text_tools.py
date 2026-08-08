@@ -88,6 +88,20 @@ def test_base64_encode_decode_and_invalid_input():
     assert invalid["result"] is None
 
 
+def test_base64_decode_handles_wrapped_multiline_input():
+    # Regression: base64.b64decode(validate=True) rejects any embedded
+    # whitespace, so wrapped/multi-line base64 -- the standard `base64` CLI
+    # output format, or anything copy-pasted from a text file -- used to fail
+    # with a misleading "Invalid Base64 input" error despite being valid.
+    original = "hello world this is a test string" * 3
+    encoded = text_tools.encode_base64_text(original)
+    wrapped = "\n".join(encoded[i : i + 40] for i in range(0, len(encoded), 40))
+
+    decoded = text_tools.decode_base64_text(wrapped)
+
+    assert decoded == {"ok": True, "error": None, "result": original}
+
+
 def test_decode_jwt_unverified_valid_and_invalid_tokens():
     token = jwt.encode(
         {"iss": "issuer", "aud": "audience", "iat": 0, "exp": 60},
