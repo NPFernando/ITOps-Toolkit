@@ -579,11 +579,11 @@
     {
       "title": "CSV diff viewer",
       "category": "Tools",
-      "status": "Planned",
+      "status": "Complete",
       "votes": 5,
       "description": "Structurally compare two CSV files by a chosen key column, showing added/removed/changed rows -- the CSV equivalent of the existing JSON Diff Viewer.",
       "rationale": "Common export-comparison task (before/after a data migration, config export diffing) that a raw text diff handles poorly once rows reorder. Stdlib csv module, no new dependency.",
-      "updated_at": "2026-08-07"
+      "updated_at": "2026-08-08"
     },
     {
       "title": "Regex cheat sheet reference",
@@ -597,11 +597,11 @@
     {
       "title": "Markdown <-> HTML converter",
       "category": "Tools",
-      "status": "Planned",
+      "status": "Complete",
       "votes": 5,
       "description": "Convert Markdown to HTML and HTML back to Markdown.",
       "rationale": "Common content-authoring task (README snippets, ticket notes, wiki pages) not currently covered. Would need a small markdown-to-HTML dependency (e.g. `markdown`) and an HTML-to-Markdown one (e.g. `markdownify`) -- flag both at build time.",
-      "updated_at": "2026-08-07"
+      "updated_at": "2026-08-08"
     },
     {
       "title": "TLS cipher/protocol scanner",
@@ -624,38 +624,38 @@
     {
       "title": "Text encoding detector and converter",
       "category": "Tools",
-      "status": "Planned",
+      "status": "Complete",
       "votes": 4,
       "description": "Detect the likely character encoding of pasted or uploaded text (e.g. Windows-1252 vs UTF-8 vs UTF-16) and convert it to clean UTF-8.",
       "rationale": "Useful for garbled log files or CSV exports from older Windows tools that show mojibake when opened as UTF-8. Would need a small detection dependency (e.g. `charset-normalizer`, already a transitive dependency of `requests`) -- flag at build time whether it's already present.",
-      "updated_at": "2026-08-07"
+      "updated_at": "2026-08-08"
     },
     {
       "title": "robots.txt / sitemap.xml validator",
       "category": "Tools",
-      "status": "Planned",
+      "status": "Complete",
       "votes": 4,
       "description": "Fetch a domain's robots.txt and referenced sitemap(s), validate their syntax, and report basic issues (unreachable sitemap URL, malformed directives).",
       "rationale": "Common pre-launch/SEO-audit check for web developers; reuses the same live-fetch pattern already validated by HTTP Status Checker and Security Headers Checker.",
-      "updated_at": "2026-08-07"
+      "updated_at": "2026-08-08"
     },
     {
       "title": "JWT weak-secret checker",
       "category": "Security",
-      "status": "Planned",
+      "status": "Complete",
       "votes": 5,
       "description": "Test whether a JWT's HMAC signature matches any secret from a small built-in list of common/weak secrets (e.g. 'secret', 'changeme', '123456') -- a quick sanity check for your own tokens, not a general cracking tool.",
       "rationale": "Complements the existing JWT Decoder/Encoder. Deliberately scoped to a short built-in wordlist (not a brute-force engine or user-supplied wordlist upload) to keep this a quick sanity check rather than something that could be repurposed as an attack tool against third-party tokens.",
-      "updated_at": "2026-08-07"
+      "updated_at": "2026-08-08"
     },
     {
       "title": "Log timestamp duration calculator",
       "category": "Tools",
-      "status": "Planned",
+      "status": "Complete",
       "votes": 4,
       "description": "Paste two timestamps (in any of several common log formats -- ISO 8601, syslog, Apache/nginx access log) and get the elapsed duration between them, auto-detecting the format of each.",
       "rationale": "Common troubleshooting task (how long did this incident/request actually take, from two log lines in different formats) that the existing Timestamp Converter doesn't directly answer since it only converts single values, not computes a delta between two auto-detected formats.",
-      "updated_at": "2026-08-07"
+      "updated_at": "2026-08-08"
     }
   ]
 }
