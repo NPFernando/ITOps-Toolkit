@@ -56,4 +56,4 @@ if result is not None:
         if not result["ok"]:
             st.error(result["error"])
         else:
-            st.text_area("JWT", value=result["token"], height=100)
+            st.code(result["token"], language=None)

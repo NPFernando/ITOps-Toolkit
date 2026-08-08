@@ -10,7 +10,15 @@ from utils.email_record_builder import (
     build_dmarc_record,
     build_spf_record,
 )
-from utils.ui import apply_app_shell, render_form_intro, render_page_header, render_section_heading, tool_form_panel, tool_result_panel
+from utils.ui import (
+    apply_app_shell,
+    render_empty_state,
+    render_form_intro,
+    render_page_header,
+    render_section_heading,
+    tool_form_panel,
+    tool_result_panel,
+)
 
 
 st.set_page_config(page_title="Email Record Builder", layout="wide")
@@ -46,6 +54,8 @@ with spf_tab:
         st.session_state["email_record_builder_spf_result"] = build_spf_record(includes, ip4, ip6, all_mechanism)
 
     spf_result = st.session_state.get("email_record_builder_spf_result")
+    if spf_result is None:
+        render_empty_state("Ready to build", "The SPF record appears here after you build one.")
     if spf_result is not None:
         result = spf_result
         with tool_result_panel("spf_result", related_to="email_record_builder"):
@@ -78,6 +88,8 @@ with dmarc_tab:
         st.session_state["email_record_builder_dmarc_result"] = build_dmarc_record(policy, rua, ruf, sp, pct, adkim, aspf)
 
     dmarc_result = st.session_state.get("email_record_builder_dmarc_result")
+    if dmarc_result is None:
+        render_empty_state("Ready to build", "The DMARC record appears here after you build one.")
     if dmarc_result is not None:
         result = dmarc_result
         with tool_result_panel("dmarc_result", related_to="email_record_builder"):
@@ -103,6 +115,8 @@ with dkim_tab:
         st.session_state["email_record_builder_dkim_result"] = build_dkim_record(selector, domain, public_key)
 
     dkim_result = st.session_state.get("email_record_builder_dkim_result")
+    if dkim_result is None:
+        render_empty_state("Ready to build", "The formatted DKIM record appears here after you build one.")
     if dkim_result is not None:
         result = dkim_result
         with tool_result_panel("dkim_builder_result", related_to="email_record_builder"):
