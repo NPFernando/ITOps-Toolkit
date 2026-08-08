@@ -62,7 +62,7 @@ with verify_tab:
     if verify_result is None:
         render_empty_state("Ready to verify", "The verification result appears here after you check a code.")
     if verify_result is not None:
-        with tool_result_panel("totp_verify_result_panel"):
+        with tool_result_panel("totp_verify_result_panel", related_to="totp_generator"):
             if not verify_result["ok"]:
                 st.error(verify_result["error"])
             elif verify_result["valid"]:

@@ -59,7 +59,7 @@ def test_file_integrity_page_matches_expected_hash():
 
     app.button[0].click().run()
     assert not app.exception
-    assert any("Matches the expected hash (SHA256)" in s.body for s in app.success)
+    assert any("File A matches the expected hash (SHA256)" in s.body for s in app.success)
 
 
 def test_file_integrity_page_wrong_expected_hash_does_not_match():
@@ -73,4 +73,4 @@ def test_file_integrity_page_wrong_expected_hash_does_not_match():
 
     app.button[0].click().run()
     assert not app.exception
-    assert any("Does not match" in e.value for e in app.error)
+    assert any("File A does not match" in e.value for e in app.error)

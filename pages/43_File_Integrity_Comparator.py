@@ -73,7 +73,9 @@ if state is not None:
                             st.error("Files differ -- digests do not match.")
 
                 if "expected_hash" in state:
+                    # Always checked against File A only -- named explicitly so this
+                    # isn't misread as confirming File B when both are supplied.
                     if state["matched_algorithm"]:
-                        st.success(f"Matches the expected hash ({state['matched_algorithm'].upper()}).")
+                        st.success(f"File A matches the expected hash ({state['matched_algorithm'].upper()}).")
                     else:
-                        st.error("Does not match the expected hash against any computed algorithm.")
+                        st.error("File A does not match the expected hash against any computed algorithm.")
