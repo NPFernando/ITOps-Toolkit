@@ -580,7 +580,6 @@ TOOLS: tuple[ToolMeta, ...] = (
         slug="base_converter",
         professions=("Web Developer", "Automation Engineer", "Sysadmin / DevOps"),
         category="Data & Text",
-        is_new=True,
     ),
     ToolMeta(
         title="Cron Expression Builder",
@@ -592,7 +591,6 @@ TOOLS: tuple[ToolMeta, ...] = (
         slug="cron_builder",
         professions=("Sysadmin / DevOps", "Automation Engineer"),
         category="Ops & Automation",
-        is_new=True,
     ),
     ToolMeta(
         title="HTTP Status Reference",
@@ -604,7 +602,6 @@ TOOLS: tuple[ToolMeta, ...] = (
         slug="http_status_reference",
         professions=("Web Developer", "Sysadmin / DevOps", "Support Engineer"),
         category="Reference",
-        is_new=True,
     ),
     ToolMeta(
         title="TOTP Generator",
@@ -666,6 +663,42 @@ TOOLS: tuple[ToolMeta, ...] = (
         category="Data & Text",
         is_new=True,
     ),
+    ToolMeta(
+        title="ULID/UUID Decoder",
+        short_title="ULID/UUID Decoder",
+        description="Decode a ULID or UUID's embedded creation timestamp -- the reverse of ID Generator.",
+        path="pages/53_ULID_UUID_Decoder.py",
+        icon="UID",
+        accent="#00b4d8",
+        slug="ulid_uuid_decoder",
+        professions=("Web Developer", "Automation Engineer", "Sysadmin / DevOps"),
+        category="Data & Text",
+        is_new=True,
+    ),
+    ToolMeta(
+        title="curl Command Builder",
+        short_title="curl Builder",
+        description="Build a copy-pasteable curl command from a method, URL, headers, and body -- the reverse of Webhook Tester.",
+        path="pages/54_Curl_Command_Builder.py",
+        icon="CURL",
+        accent="#fb8500",
+        slug="curl_builder",
+        professions=("Web Developer", "Automation Engineer", "Sysadmin / DevOps"),
+        category="Web & Dev",
+        is_new=True,
+    ),
+    ToolMeta(
+        title="Regex Cheat Sheet",
+        short_title="Regex Cheat Sheet",
+        description="Common regex patterns to start from -- email, IPv4/IPv6, URL, phone number, UUID, hex color, and more.",
+        path="pages/55_Regex_Cheat_Sheet.py",
+        icon=".*",
+        accent="#0891b2",
+        slug="regex_cheat_sheet",
+        professions=("Automation Engineer", "Web Developer", "Support Engineer"),
+        category="Reference",
+        is_new=True,
+    ),
 )
 
 # Curated, not usage-derived -- this app deliberately has no usage tracking
@@ -720,14 +753,14 @@ TOOL_BUNDLES: dict[str, tuple[str, ...]] = {
     "jwt_decoder": ("jwt_encoder", "hash_generator"),
     "jwt_encoder": ("jwt_decoder", "hash_generator"),
     "json_formatter": ("base64_tool", "config_format_converter", "json_diff"),
-    "id_generator": ("hash_generator", "json_formatter"),
+    "id_generator": ("hash_generator", "json_formatter", "ulid_uuid_decoder"),
     "json_diff": ("json_formatter", "text_diff_checker"),
     "sql_formatter": ("json_formatter", "config_format_converter"),
     "base_converter": ("hash_generator", "id_generator"),
     "config_format_converter": ("json_formatter", "text_diff_checker"),
     "base64_tool": ("json_formatter", "url_encoder_decoder"),
     "url_encoder_decoder": ("base64_tool", "json_formatter"),
-    "regex_tester": ("text_diff_checker", "json_formatter"),
+    "regex_tester": ("text_diff_checker", "json_formatter", "regex_cheat_sheet"),
     "text_diff_checker": ("regex_tester", "case_converter"),
     "case_converter": ("text_diff_checker", "url_encoder_decoder"),
     "color_converter": ("qr_code_generator", "case_converter"),
@@ -736,8 +769,11 @@ TOOL_BUNDLES: dict[str, tuple[str, ...]] = {
     "cron_builder": ("cron_explainer", "timestamp_converter"),
     "log_troubleshooting": ("cron_explainer", "webhook_tester", "windows_event_reference"),
     "chmod_calculator": ("cron_explainer", "log_troubleshooting"),
-    "webhook_tester": ("http_status", "log_troubleshooting"),
+    "webhook_tester": ("http_status", "log_troubleshooting", "curl_builder"),
     "user_agent_parser": ("http_status", "email_header_analyzer"),
+    "ulid_uuid_decoder": ("id_generator", "timestamp_converter"),
+    "curl_builder": ("webhook_tester", "url_encoder_decoder"),
+    "regex_cheat_sheet": ("regex_tester",),
 }
 
 
@@ -1499,6 +1535,9 @@ def _material_icon_for(slug: str) -> str:
         "qr_code_generator": ":material/qr_code_2:",
         "bcrypt_tool": ":material/enhanced_encryption:",
         "sql_formatter": ":material/table_chart:",
+        "ulid_uuid_decoder": ":material/fingerprint:",
+        "curl_builder": ":material/terminal:",
+        "regex_cheat_sheet": ":material/pattern:",
     }
     return icons.get(slug, ":material/build:")
 

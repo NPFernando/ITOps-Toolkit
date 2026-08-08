@@ -206,14 +206,14 @@ def test_expected_tools_are_tagged_new():
     new_slugs = {tool.slug for tool in TOOLS if tool.is_new}
 
     assert new_slugs == {
-        "base_converter",
-        "cron_builder",
-        "http_status_reference",
         "totp_generator",
         "keypair_generator",
         "qr_code_generator",
         "bcrypt_tool",
         "sql_formatter",
+        "ulid_uuid_decoder",
+        "curl_builder",
+        "regex_cheat_sheet",
     }
 
 
@@ -371,6 +371,7 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "user_agent_parser",
             "webhook_tester",
             "uptime_trend",
+            "curl_builder",
         ],
         "Data & Text": [
             "json_formatter",
@@ -385,9 +386,17 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "base_converter",
             "qr_code_generator",
             "sql_formatter",
+            "ulid_uuid_decoder",
         ],
         "Ops & Automation": ["cron_explainer", "log_troubleshooting", "timestamp_converter", "chmod_calculator", "cron_builder"],
-        "Reference": ["port_reference", "windows_event_reference", "windows_error_reference", "m365_sku_decoder", "http_status_reference"],
+        "Reference": [
+            "port_reference",
+            "windows_event_reference",
+            "windows_error_reference",
+            "m365_sku_decoder",
+            "http_status_reference",
+            "regex_cheat_sheet",
+        ],
     }
 
 
