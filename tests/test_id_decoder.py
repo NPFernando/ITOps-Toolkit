@@ -84,6 +84,25 @@ def test_decode_uuid_v7_extracts_timestamp():
     assert result["datetime_utc"].startswith("2023-11-14")
 
 
+def test_decode_uuid_nil_uuid_has_no_version():
+    # Regression: the nil UUID (all zeros) has no version bits set --
+    # decode_uuid must report version=None rather than raising, and the
+    # page must not render a bare "None" for it.
+    result = id_decoder.decode_uuid("00000000-0000-0000-0000-000000000000")
+
+    assert result["ok"] is True
+    assert result["version"] is None
+    assert result["timestamp_supported"] is False
+
+
+def test_decode_uuid_max_uuid_has_no_version():
+    result = id_decoder.decode_uuid("ffffffff-ffff-ffff-ffff-ffffffffffff")
+
+    assert result["ok"] is True
+    assert result["version"] is None
+    assert result["timestamp_supported"] is False
+
+
 def test_decode_uuid_rejects_invalid_input():
     result = id_decoder.decode_uuid("not-a-uuid")
 

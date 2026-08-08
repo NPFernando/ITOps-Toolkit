@@ -20,6 +20,8 @@ import uuid
 from datetime import UTC, datetime
 from typing import Any
 
+MAX_INPUT_LENGTH = 64  # comfortably above a 36-char UUID or 26-char ULID
+
 _CROCKFORD_ALPHABET = "0123456789ABCDEFGHJKMNPQRSTVWXYZ"
 _CROCKFORD_INDEX = {char: index for index, char in enumerate(_CROCKFORD_ALPHABET)}
 # Per the Crockford Base32 spec, decoders should accept these common
