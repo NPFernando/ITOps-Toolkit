@@ -2325,7 +2325,9 @@ def _inject_global_css(mode: str) -> None:
             display: grid;
             place-items: center;
             background: var(--itops-orange);
-            color: #ffffff;
+            /* White text measured 1.95:1 against --itops-orange -- below
+               WCAG AA's 4.5:1. Dark ink clears it (9.75:1). */
+            color: #0c1116;
             font-weight: 900;
         }
 
@@ -2441,10 +2443,16 @@ def _inject_global_css(mode: str) -> None:
             display: grid;
             place-items: center;
             border-radius: var(--card-radius);
-            color: #ffffff;
+            /* White text measured 3.05:1/4.23:1 against this gradient's two
+               stops -- below WCAG AA's 4.5:1. Dark ink clears the lighter
+               stop (6.23:1); the darker stop is nudged 2% lighter locally
+               (not the shared --itops-blue-dark token, which backs several
+               icon-only buttons elsewhere with no text needing this check)
+               so dark ink clears it too (was 4.49:1, just under). */
+            color: #0c1116;
             font-size: 0.72rem;
             font-weight: 900;
-            background: linear-gradient(145deg, var(--itops-blue), var(--itops-blue-dark));
+            background: linear-gradient(145deg, var(--itops-blue), color-mix(in srgb, var(--itops-blue-dark), white 2%));
         }
 
         .tool-empty-state strong,
@@ -2524,7 +2532,10 @@ def _inject_global_css(mode: str) -> None:
 
         .tool-status-note-ai .tool-status-mark,
         .tool-status-note-info .tool-status-mark {
-            background: linear-gradient(145deg, #278aff, #0f67f2);
+            /* #278aff measured 3.41:1 against white icon text -- below WCAG
+               AA's 4.5:1. Darkened to #2174d6 (4.63:1), same hue; the other
+               stop (#0f67f2, 4.95:1) already cleared. */
+            background: linear-gradient(145deg, #2174d6, #0f67f2);
         }
 
         .tool-status-note-success {
@@ -2533,6 +2544,9 @@ def _inject_global_css(mode: str) -> None:
         }
 
         .tool-status-note-success .tool-status-mark {
+            /* White text measured 1.87:1/3.09:1 against these two stops --
+               below WCAG AA's 4.5:1. Dark ink clears both (10.16:1/6.15:1). */
+            color: #0c1116;
             background: linear-gradient(145deg, #30d968, #19a946);
         }
 
@@ -2542,6 +2556,9 @@ def _inject_global_css(mode: str) -> None:
         }
 
         .tool-status-note-warning .tool-status-mark {
+            /* White text measured 2.35:1/2.87:1 against these two stops --
+               below WCAG AA's 4.5:1. Dark ink clears both (8.09:1/6.61:1). */
+            color: #0c1116;
             background: linear-gradient(145deg, #ff8a3d, #ff6a13);
         }
 
@@ -2552,7 +2569,10 @@ def _inject_global_css(mode: str) -> None:
 
         .tool-status-note-neutral .tool-status-mark {
             /* No neutral theme token exists -- this is its own fixed
-               gray-blue, not derived from any var(--itops-*) accent. */
+               gray-blue, not derived from any var(--itops-*) accent. White
+               text measured 3.39:1 against it -- below WCAG AA's 4.5:1;
+               dark ink clears it (5.60:1). */
+            color: #0c1116;
             background: #7a8da8;
         }
 
@@ -2718,6 +2738,8 @@ def _inject_global_css(mode: str) -> None:
         }
 
         .roadmap-notice-warning .roadmap-notice-mark {
+            /* See .tool-status-note-warning .tool-status-mark -- same fix. */
+            color: #0c1116;
             background: linear-gradient(145deg, #ff8a3d, #ff6a13);
         }
 
@@ -2728,7 +2750,8 @@ def _inject_global_css(mode: str) -> None:
         }
 
         .roadmap-notice-ai .roadmap-notice-mark {
-            background: linear-gradient(145deg, #278aff, #0f67f2);
+            /* See .tool-status-note-ai .tool-status-mark -- same fix. */
+            background: linear-gradient(145deg, #2174d6, #0f67f2);
         }
 
         .roadmap-notice-neutral {
@@ -2739,6 +2762,7 @@ def _inject_global_css(mode: str) -> None:
 
         .roadmap-notice-neutral .roadmap-notice-mark {
             /* No neutral theme token exists -- see .tool-status-note-neutral. */
+            color: #0c1116;
             background: #7a8da8;
         }
 
@@ -3015,7 +3039,6 @@ def _inject_global_css(mode: str) -> None:
         }
 
         .roadmap-item-body small {
-            display: block;
             margin-top: 0.38rem;
             /* #64758e measured 2.98:1 against the dark bg -- below WCAG AA's
                4.5:1 minimum for normal text. --itops-muted (4.59:1) clears it. */
