@@ -613,7 +613,6 @@ TOOLS: tuple[ToolMeta, ...] = (
         slug="totp_generator",
         professions=("Security Engineer", "Sysadmin / DevOps", "Support Engineer"),
         category="Security",
-        is_new=True,
     ),
     ToolMeta(
         title="RSA/SSH Key Pair Generator",
@@ -625,7 +624,6 @@ TOOLS: tuple[ToolMeta, ...] = (
         slug="keypair_generator",
         professions=("Sysadmin / DevOps", "Security Engineer", "Automation Engineer"),
         category="Security",
-        is_new=True,
     ),
     ToolMeta(
         title="QR Code Generator",
@@ -637,7 +635,6 @@ TOOLS: tuple[ToolMeta, ...] = (
         slug="qr_code_generator",
         professions=("Support Engineer", "Helpdesk / L1", "Sysadmin / DevOps"),
         category="Data & Text",
-        is_new=True,
     ),
     ToolMeta(
         title="Bcrypt Tool",
@@ -649,7 +646,6 @@ TOOLS: tuple[ToolMeta, ...] = (
         slug="bcrypt_tool",
         professions=("Web Developer", "Security Engineer", "Sysadmin / DevOps"),
         category="Security",
-        is_new=True,
     ),
     ToolMeta(
         title="SQL Formatter",
@@ -699,6 +695,42 @@ TOOLS: tuple[ToolMeta, ...] = (
         category="Reference",
         is_new=True,
     ),
+    ToolMeta(
+        title=".env File Linter",
+        short_title=".env Linter",
+        description="Flag duplicate keys, unquoted values with spaces, unterminated quotes, and other common .env mistakes.",
+        path="pages/56_Env_File_Linter.py",
+        icon="ENV",
+        accent="#2a9d8f",
+        slug="env_linter",
+        professions=("Sysadmin / DevOps", "Web Developer", "Automation Engineer"),
+        category="Data & Text",
+        is_new=True,
+    ),
+    ToolMeta(
+        title="TLS Protocol Scanner",
+        short_title="TLS Scanner",
+        description="Connect to a host and report which TLS protocol versions it accepts -- a lightweight SSL Labs-style check.",
+        path="pages/57_TLS_Protocol_Scanner.py",
+        icon="TLS",
+        accent="#e63946",
+        slug="tls_scanner",
+        professions=("Security Engineer", "Sysadmin / DevOps", "Network Engineer"),
+        category="Security",
+        is_new=True,
+    ),
+    ToolMeta(
+        title="Business Hours Calculator",
+        short_title="Business Hours",
+        description="Compute elapsed business hours between two timestamps, excluding weekends and holidays -- for SLA and ticket-response math.",
+        path="pages/58_Business_Hours_Calculator.py",
+        icon="SLA",
+        accent="#f4a261",
+        slug="business_hours",
+        professions=("Sysadmin / DevOps", "Support Engineer", "Automation Engineer"),
+        category="Ops & Automation",
+        is_new=True,
+    ),
 )
 
 # Curated, not usage-derived -- this app deliberately has no usage tracking
@@ -720,13 +752,13 @@ TITLE_TO_SLUG: dict[str, str] = {tool.title: tool.slug for tool in TOOLS}
 # render_related_tools() renders nothing for an absent slug rather than a
 # forced, meaningless section.
 TOOL_BUNDLES: dict[str, tuple[str, ...]] = {
-    "domain_health": ("dns_records", "ssl_certificate", "whois_lookup"),
+    "domain_health": ("dns_records", "ssl_certificate", "whois_lookup", "tls_scanner"),
     "dns_records": ("domain_health", "whois_lookup", "dns_propagation"),
     "dns_propagation": ("dns_records", "domain_health"),
-    "ssl_certificate": ("domain_health", "dns_records", "http_status"),
+    "ssl_certificate": ("domain_health", "dns_records", "http_status", "tls_scanner"),
     "http_status": ("domain_health", "ssl_certificate", "uptime_trend", "security_headers"),
     "http_status_reference": ("http_status", "webhook_tester"),
-    "uptime_trend": ("http_status", "domain_health"),
+    "uptime_trend": ("http_status", "domain_health", "business_hours"),
     "security_headers": ("http_status", "ssl_certificate"),
     "cve_lookup": ("security_headers", "ssl_certificate"),
     "whois_lookup": ("dns_records", "domain_health", "ssl_certificate"),
@@ -757,14 +789,14 @@ TOOL_BUNDLES: dict[str, tuple[str, ...]] = {
     "json_diff": ("json_formatter", "text_diff_checker"),
     "sql_formatter": ("json_formatter", "config_format_converter"),
     "base_converter": ("hash_generator", "id_generator"),
-    "config_format_converter": ("json_formatter", "text_diff_checker"),
+    "config_format_converter": ("json_formatter", "text_diff_checker", "env_linter"),
     "base64_tool": ("json_formatter", "url_encoder_decoder"),
     "url_encoder_decoder": ("base64_tool", "json_formatter"),
     "regex_tester": ("text_diff_checker", "json_formatter", "regex_cheat_sheet"),
     "text_diff_checker": ("regex_tester", "case_converter"),
     "case_converter": ("text_diff_checker", "url_encoder_decoder"),
     "color_converter": ("qr_code_generator", "case_converter"),
-    "timestamp_converter": ("cron_explainer",),
+    "timestamp_converter": ("cron_explainer", "business_hours"),
     "cron_explainer": ("timestamp_converter", "log_troubleshooting", "cron_builder"),
     "cron_builder": ("cron_explainer", "timestamp_converter"),
     "log_troubleshooting": ("cron_explainer", "webhook_tester", "windows_event_reference"),
@@ -774,6 +806,9 @@ TOOL_BUNDLES: dict[str, tuple[str, ...]] = {
     "ulid_uuid_decoder": ("id_generator", "timestamp_converter"),
     "curl_builder": ("webhook_tester", "url_encoder_decoder"),
     "regex_cheat_sheet": ("regex_tester",),
+    "env_linter": ("config_format_converter",),
+    "tls_scanner": ("ssl_certificate", "domain_health"),
+    "business_hours": ("timestamp_converter", "uptime_trend"),
 }
 
 
@@ -809,6 +844,7 @@ def apply_app_shell(active_page: str) -> None:
     if slug is not None:
         record_recent_visit(slug)
     _sync_local_storage_mirror(active_page)
+    render_command_palette()
 
 
 def _get_persisted_slugs(param: str) -> list[str]:
@@ -913,6 +949,162 @@ def _sync_local_storage_mirror(active_page: str) -> None:
                 var newUrl = window.top.location.pathname + (search ? "?" + search : "") + window.top.location.hash;
                 window.top.location.replace(newUrl);
             }}
+        }})();
+        </script>
+        """,
+        height=1,
+    )
+
+
+def render_command_palette() -> None:
+    """Render a global Ctrl+K / Cmd+K command palette overlay.
+
+    New UI pattern for this codebase (no existing modal/overlay precedent) --
+    built the same way _sync_local_storage_mirror() reaches the top-level
+    document: a same-origin sandboxed st.iframe whose script operates on
+    window.top.document/window.top.location. Because a fresh iframe (and JS
+    realm) is injected on every Streamlit rerun, but window.top.document
+    persists across reruns, both the overlay DOM node and the keydown
+    listener are created exactly once via a dedup guard
+    (window.top.__itopsPaletteReady); every subsequent rerun just refreshes
+    the tool list data on window.top.__itopsPaletteTools and returns.
+
+    NOT verified in a real browser -- this sandboxed dev environment has no
+    browser to visually confirm the overlay renders/filters/navigates
+    correctly. Built by directly reading the installed Streamlit frontend
+    bundle's iframe sandbox attributes and mirroring the one proven
+    same-origin-iframe precedent in this file (_sync_local_storage_mirror
+    above). Manually smoke-test after deploy.
+    """
+    entries = [{"title": tool.title, "description": tool.description, "href": _fallback_href(tool.path)} for tool in TOOLS]
+    st.iframe(
+        f"""
+        <script>
+        (function() {{
+            var TOOLS = {json.dumps(entries)};
+            window.top.__itopsPaletteTools = TOOLS;
+
+            if (window.top.__itopsPaletteReady) {{
+                return;
+            }}
+            window.top.__itopsPaletteReady = true;
+
+            var doc = window.top.document;
+
+            var overlay = doc.createElement("div");
+            overlay.id = "itops-cmdk-overlay";
+            overlay.style.cssText = "position:fixed;inset:0;z-index:99999;display:none;" +
+                "background:rgba(10,12,16,0.6);align-items:flex-start;justify-content:center;padding-top:12vh;";
+
+            var panel = doc.createElement("div");
+            panel.style.cssText = "background:#12161c;border:1px solid rgba(255,255,255,0.14);border-radius:12px;" +
+                "width:min(560px,90vw);max-height:60vh;overflow:hidden;display:flex;flex-direction:column;" +
+                "box-shadow:0 20px 60px rgba(0,0,0,0.5);font-family:inherit;";
+
+            var input = doc.createElement("input");
+            input.type = "text";
+            input.placeholder = "Search tools... (Esc to close)";
+            input.style.cssText = "border:none;outline:none;padding:16px;font-size:16px;background:transparent;" +
+                "color:#e8ecf1;border-bottom:1px solid rgba(255,255,255,0.1);width:100%;box-sizing:border-box;";
+
+            var list = doc.createElement("div");
+            list.style.cssText = "overflow-y:auto;padding:8px;";
+
+            panel.appendChild(input);
+            panel.appendChild(list);
+            overlay.appendChild(panel);
+            doc.body.appendChild(overlay);
+
+            function navigateTo(href) {{
+                window.top.location.href = href;
+            }}
+
+            function matchingTools(query) {{
+                var needle = query.trim().toLowerCase();
+                var tools = window.top.__itopsPaletteTools || [];
+                return tools.filter(function(t) {{
+                    return !needle ||
+                        t.title.toLowerCase().indexOf(needle) !== -1 ||
+                        t.description.toLowerCase().indexOf(needle) !== -1;
+                }}).slice(0, 8);
+            }}
+
+            function renderResults(query) {{
+                var matches = matchingTools(query);
+                list.innerHTML = "";
+                if (matches.length === 0) {{
+                    var empty = doc.createElement("div");
+                    empty.style.cssText = "padding:16px;color:#8b95a3;font-size:14px;";
+                    empty.textContent = "No tools matched.";
+                    list.appendChild(empty);
+                    return;
+                }}
+                matches.forEach(function(tool, index) {{
+                    var row = doc.createElement("div");
+                    row.style.cssText = "padding:10px 12px;border-radius:8px;cursor:pointer;" +
+                        (index === 0 ? "background:rgba(255,255,255,0.08);" : "");
+                    var title = doc.createElement("div");
+                    title.style.cssText = "color:#e8ecf1;font-size:14px;font-weight:600;";
+                    title.textContent = tool.title;
+                    var desc = doc.createElement("div");
+                    desc.style.cssText = "color:#8b95a3;font-size:12px;margin-top:2px;";
+                    desc.textContent = tool.description;
+                    row.appendChild(title);
+                    row.appendChild(desc);
+                    row.addEventListener("mouseenter", function() {{
+                        Array.prototype.forEach.call(list.children, function(child) {{ child.style.background = ""; }});
+                        row.style.background = "rgba(255,255,255,0.08)";
+                    }});
+                    row.addEventListener("click", function() {{ navigateTo(tool.href); }});
+                    list.appendChild(row);
+                }});
+            }}
+
+            function openPalette() {{
+                overlay.style.display = "flex";
+                input.value = "";
+                renderResults("");
+                setTimeout(function() {{ input.focus(); }}, 0);
+            }}
+
+            function closePalette() {{
+                overlay.style.display = "none";
+                input.value = "";
+            }}
+
+            input.addEventListener("input", function() {{ renderResults(input.value); }});
+
+            input.addEventListener("keydown", function(evt) {{
+                if (evt.key === "Escape") {{
+                    evt.preventDefault();
+                    closePalette();
+                }} else if (evt.key === "Enter") {{
+                    evt.preventDefault();
+                    var matches = matchingTools(input.value);
+                    if (matches.length > 0) {{
+                        navigateTo(matches[0].href);
+                    }}
+                }}
+            }});
+
+            overlay.addEventListener("click", function(evt) {{
+                if (evt.target === overlay) {{
+                    closePalette();
+                }}
+            }});
+
+            doc.addEventListener("keydown", function(evt) {{
+                var isMac = navigator.platform.toUpperCase().indexOf("MAC") !== -1;
+                var modifierPressed = isMac ? evt.metaKey : evt.ctrlKey;
+                if (modifierPressed && evt.key.toLowerCase() === "k") {{
+                    evt.preventDefault();
+                    if (overlay.style.display === "flex") {{
+                        closePalette();
+                    }} else {{
+                        openPalette();
+                    }}
+                }}
+            }});
         }})();
         </script>
         """,
@@ -1538,6 +1730,9 @@ def _material_icon_for(slug: str) -> str:
         "ulid_uuid_decoder": ":material/fingerprint:",
         "curl_builder": ":material/terminal:",
         "regex_cheat_sheet": ":material/pattern:",
+        "env_linter": ":material/rule:",
+        "tls_scanner": ":material/https:",
+        "business_hours": ":material/schedule:",
     }
     return icons.get(slug, ":material/build:")
 

@@ -138,11 +138,11 @@
     {
       "title": "Command palette / quick-jump launcher",
       "category": "UX / Design",
-      "status": "Planned",
+      "status": "Complete",
       "votes": 18,
       "description": "A keyboard-triggered launcher to jump straight to any tool, complementing the sidebar quick-search.",
       "rationale": "Power users on killer-tools-style sites expect a Ctrl+K-style jump; the sidebar search covers most of this need today but isn't reachable by keyboard shortcut. NOT flatly blocked like the PWA item, but not attempted this round either: unlike a real service worker, a global keydown listener + overlay is plausibly buildable via the same same-origin iframe trick this app already uses for the localStorage mirror (the iframe can reach window.top.document, so it could attach a listener and DOM-inject an overlay there). But it's a materially bigger and more fragile JS surface than anything shipped so far -- real DOM manipulation of the top-level page from inside an iframe script, a hand-built filter/keyboard-nav overlay, dark/light theme handling, focus trapping -- and this sandboxed dev environment has no real browser to visually verify any of it before it ships to a live auto-deploying site. Left open rather than built blind; worth a manual-verification pass with browser access, not a routine PR.",
-      "updated_at": "2026-08-06"
+      "updated_at": "2026-08-08"
     },
     {
       "title": "Drag-to-reorder favorites",
@@ -561,11 +561,11 @@
     {
       "title": ".env file linter",
       "category": "Tools",
-      "status": "Planned",
+      "status": "Complete",
       "votes": 6,
       "description": "Paste a .env file and flag common mistakes: duplicate keys, unquoted values with spaces, trailing whitespace, missing '=', and accidental export/quote mismatches.",
       "rationale": "Common DevOps footgun-catcher; distinct from Config Format Converter (which converts between structured formats, not this key=value convention). Stdlib-only, no dependency.",
-      "updated_at": "2026-08-07"
+      "updated_at": "2026-08-08"
     },
     {
       "title": "curl command builder",
@@ -606,20 +606,20 @@
     {
       "title": "TLS cipher/protocol scanner",
       "category": "Security",
-      "status": "Planned",
+      "status": "Complete",
       "votes": 6,
       "description": "Connect to a host:port and report which TLS protocol versions (SSLv3-TLS1.3) and select cipher suites are accepted or rejected, similar to a lightweight SSL Labs check.",
       "rationale": "Complements the existing SSL Certificate Checker (which reports the certificate actually presented) with what the server's TLS stack will negotiate. Buildable with stdlib `ssl`/`socket` (multiple connection attempts, one per protocol/cipher-set) -- no new dependency, but each check takes several real network round trips, so needs a sensible cap on how many combinations are probed.",
-      "updated_at": "2026-08-07"
+      "updated_at": "2026-08-08"
     },
     {
       "title": "Business hours / SLA duration calculator",
       "category": "Tools",
-      "status": "Planned",
+      "status": "Complete",
       "votes": 6,
       "description": "Compute elapsed business hours between two timestamps, excluding weekends and a configurable set of holidays -- for SLA/response-time tracking.",
       "rationale": "Directly useful for MSP ticket SLA math, distinct from the existing Timestamp Converter (single-value conversion) and Uptime Trend (uptime %, not elapsed business time). Stdlib datetime only.",
-      "updated_at": "2026-08-07"
+      "updated_at": "2026-08-08"
     },
     {
       "title": "Text encoding detector and converter",
