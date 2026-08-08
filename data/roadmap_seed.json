@@ -552,11 +552,11 @@
     {
       "title": "ULID/UUID decoder",
       "category": "Tools",
-      "status": "Planned",
+      "status": "Complete",
       "votes": 6,
       "description": "Decode a ULID back to its embedded creation timestamp, or identify a UUID's version and (for v1/v7) extract its embedded timestamp.",
       "rationale": "Reverse of the existing ID Generator -- useful when you have an ID from a log or database row and want to know when it was created without a lookup. Stdlib-only (struct/datetime), no new dependency.",
-      "updated_at": "2026-08-07"
+      "updated_at": "2026-08-08"
     },
     {
       "title": ".env file linter",
@@ -570,11 +570,11 @@
     {
       "title": "curl command builder",
       "category": "Tools",
-      "status": "Planned",
+      "status": "Complete",
       "votes": 5,
       "description": "Build a copy-pasteable curl command line from a method, URL, headers, and body -- the inverse of Webhook Tester, which executes the request instead of generating the command.",
       "rationale": "Useful when you want the request to run somewhere else (a script, a teammate's terminal, a support ticket) rather than from this app. Reuses Webhook Tester's header/body parsing helpers where possible.",
-      "updated_at": "2026-08-07"
+      "updated_at": "2026-08-08"
     },
     {
       "title": "CSV diff viewer",
@@ -588,11 +588,11 @@
     {
       "title": "Regex cheat sheet reference",
       "category": "Tools",
-      "status": "Planned",
+      "status": "Complete",
       "votes": 4,
       "description": "Static, searchable reference of common regex patterns (email, IPv4/IPv6, URL, phone number, UUID, hex color, etc.) with a short explanation for each.",
       "rationale": "Same static-dataset + search shape as Port Reference and the Windows Event/Error References. Complements Regex Tester (which tests a pattern you already have) with patterns to start from.",
-      "updated_at": "2026-08-07"
+      "updated_at": "2026-08-08"
     },
     {
       "title": "Markdown <-> HTML converter",
