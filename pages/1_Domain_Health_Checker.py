@@ -177,6 +177,18 @@ if submitted:
                 spf_found=bool(dns_summary["spf_found"]),
                 dmarc_found=dmarc_for_score,
             )
+            # Computed once here (not in the render section below) because the
+            # render section runs on every rerun while results are showing --
+            # touching the sidebar search, expanding another section, or
+            # clicking any of the download buttons further down would otherwise
+            # re-fire these two live network calls every single time.
+            www_result = None
+            if check_www and not normalized.startswith("www."):
+                www_domain = f"www.{normalized}"
+                www_result = {
+                    "dns": get_dns_summary(www_domain, include_dmarc=False),
+                    "http": check_http_status(www_domain),
+                }
         # Stored in session_state (not rendered directly here) because the export
         # panel's download buttons and incident-message tabs below trigger reruns
         # of their own -- on those reruns `submitted` is False again, which would
@@ -189,6 +201,7 @@ if submitted:
             "risk": risk,
             "check_www": check_www,
             "include_dmarc": include_dmarc,
+            "www_result": www_result,
         }
 
 state = st.session_state.get("domain_health_state")
@@ -205,7 +218,6 @@ if state is not None:
     ssl_result = state["ssl_result"]
     http_result = state["http_result"]
     risk = state["risk"]
-    check_www = state["check_www"]
     include_dmarc = state["include_dmarc"]
 
     with tool_result_panel("domain_summary"):
@@ -288,15 +300,13 @@ if state is not None:
         with st.expander("Redirect chain"):
             st.dataframe(pd.DataFrame(http_result["redirect_chain"]), width="stretch", hide_index=True)
 
-    if check_www and not normalized.startswith("www."):
+    www_result = state.get("www_result")
+    if www_result is not None:
         with st.expander("www subdomain check"):
-            www_domain = f"www.{normalized}"
-            www_dns = get_dns_summary(www_domain, include_dmarc=False)
-            www_http = check_http_status(www_domain)
-            st.metric("www DNS status", www_dns["status"])
-            st.metric("www HTTP status", www_http["status_code"] or "Failed")
-            if www_http["error"]:
-                st.warning(www_http["error"])
+            st.metric("www DNS status", www_result["dns"]["status"])
+            st.metric("www HTTP status", www_result["http"]["status_code"] or "Failed")
+            if www_result["http"]["error"]:
+                st.warning(www_result["http"]["error"])
 
     render_section_heading("Recommendations", "Prioritized fixes from the current checks.", eyebrow="Actions")
     combined_recommendations = list(dict.fromkeys(risk["recommendations"] + http_result["recommendations"] + posture["recommendations"]))
