@@ -660,7 +660,7 @@
     {
       "title": "URL parser / breakdown tool",
       "category": "Tools",
-      "status": "Planned",
+      "status": "Complete",
       "votes": 7,
       "description": "Paste a URL and see it broken down into scheme, host, port, path, query parameters (as a table), and fragment.",
       "rationale": "Distinct from the existing URL Encoder/Decoder (which only percent-encodes/decodes a string) -- this parses structure. Common need when debugging a long URL with many query params pasted from a browser or log line. Buildable with stdlib urllib.parse only, no new dependency. Verified directly: urllib.parse.urlsplit/parse_qsl handle scheme/host/port/path/query/fragment cleanly.",
@@ -669,7 +669,7 @@
     {
       "title": "Base32 encoder/decoder",
       "category": "Tools",
-      "status": "Planned",
+      "status": "Complete",
       "votes": 5,
       "description": "Encode/decode text or bytes to/from Base32 (RFC 4648), the encoding TOTP secrets and some other systems use.",
       "rationale": "Distinct from Base64 Tool (different alphabet/encoding) and Integer Base Converter (which converts numbers between numeric bases, not byte encoding). Directly complements the existing TOTP Generator, which already consumes Base32 secrets. Stdlib base64.b32encode/b32decode only, no new dependency -- verified directly.",
@@ -678,7 +678,7 @@
     {
       "title": "Raw HTTP header parser",
       "category": "Tools",
-      "status": "Planned",
+      "status": "Complete",
       "votes": 6,
       "description": "Paste a raw block of HTTP request or response headers (e.g. copied from browser devtools) and see them parsed into a labeled table with brief explanations for well-known headers.",
       "rationale": "Distinct from Security Headers Checker and HTTP Status Checker, both of which fetch headers live from a URL -- this parses headers a user already has in hand (from devtools, a support ticket, a curl -v output) with no network call at all. Stdlib text parsing only, no new dependency.",
@@ -687,7 +687,7 @@
     {
       "title": "CIDR overlap checker",
       "category": "Tools",
-      "status": "Planned",
+      "status": "Complete",
       "votes": 5,
       "description": "Enter two or more CIDR ranges and check whether any of them overlap.",
       "rationale": "Complements the existing Subnet Calculator and CIDR Aggregator (which describe/merge ranges but don't flag overlap between separately-entered ranges) -- a common pre-flight check before allocating a new subnet block. Stdlib ipaddress.ip_network(...).overlaps() only, no new dependency -- verified directly.",
@@ -696,7 +696,7 @@
     {
       "title": "CSR decoder",
       "category": "Security",
-      "status": "Planned",
+      "status": "Complete",
       "votes": 6,
       "description": "Paste a PEM-encoded Certificate Signing Request (CSR) and see its subject, SAN entries, public key algorithm/size, and signature validity.",
       "rationale": "Complements SSL Certificate Checker (which inspects an issued cert, not the request that preceded it) and RSA/SSH Key Pair Generator. Uses the `cryptography` package already installed for this app's TOTP/keypair/bcrypt tools -- x509.load_pem_x509_csr() and CSR.is_signature_valid -- no new dependency. Verified directly by generating and parsing a real CSR.",
@@ -705,7 +705,7 @@
     {
       "title": "PEM certificate bundle splitter",
       "category": "Security",
-      "status": "Planned",
+      "status": "Complete",
       "votes": 5,
       "description": "Paste a multi-certificate PEM bundle (e.g. a full chain file) and see it split into individual certificates, each with its subject, issuer, and expiration shown separately.",
       "rationale": "Complements SSL Certificate Checker -- a common troubleshooting need when a server's chain file has certs in the wrong order or an unexpected extra/missing intermediate, which is hard to eyeball from one long PEM blob. Uses the `cryptography` package already installed (x509.load_pem_x509_certificates), no new dependency.",
@@ -714,7 +714,7 @@
     {
       "title": "Invisible/whitespace character visualizer",
       "category": "Tools",
-      "status": "Planned",
+      "status": "Complete",
       "votes": 4,
       "description": "Paste text and highlight non-breaking spaces, tabs, zero-width characters, and other invisible/lookalike characters that commonly cause silent copy-paste bugs (e.g. in config files or scripts).",
       "rationale": "A common, hard-to-self-diagnose class of bug (a config value that 'looks' right but has a stray non-breaking space or zero-width character pasted in from a rich-text source). Stdlib only -- iterate codepoints and flag anything outside printable ASCII plus common accented text.",
@@ -723,7 +723,7 @@
     {
       "title": "Date calculator",
       "category": "Tools",
-      "status": "Planned",
+      "status": "Complete",
       "votes": 4,
       "description": "Add or subtract a number of days/weeks/months from a date, or compute the number of calendar days between two dates.",
       "rationale": "Distinct from Timestamp Converter (single-value epoch/ISO conversion), Business Hours Calculator (business-hours-only elapsed time), and Log Timestamp Duration Calculator (log-format auto-detection) -- this is plain calendar-date arithmetic (e.g. 'what date is 90 days from now', 'how many days until this deadline'), a different and more common everyday need. Stdlib datetime.timedelta only, no new dependency.",
@@ -732,7 +732,7 @@
     {
       "title": "XML formatter/validator",
       "category": "Tools",
-      "status": "Planned",
+      "status": "Complete",
       "votes": 4,
       "description": "Paste XML and get it pretty-printed with consistent indentation, or flagged with a clear error if it's not well-formed.",
       "rationale": "Distinct from JSON Formatter and Config Format Converter's XML support (which only converts a JSON-shaped object model to a simple XML convention, not general XML with attributes/mixed content/namespaces) -- this formats/validates arbitrary XML as-is. Stdlib xml.dom.minidom.toprettyxml, no new dependency -- verified directly.",
