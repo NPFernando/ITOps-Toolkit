@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import streamlit as st
 
-from utils.base32_tools import decode_base32_text, encode_base32_text
+from utils.base32_tools import MAX_INPUT_LENGTH, decode_base32_text, encode_base32_text
 from utils.ui import apply_app_shell, render_empty_state, render_form_intro, render_page_header, render_section_heading, tool_form_panel, tool_result_panel
 
 
@@ -19,7 +19,7 @@ render_page_header(
 with tool_form_panel("base32_tool"):
     render_form_intro("Encode or decode", "Convert text to Base32 or decode valid Base32 back to text.")
     with st.form("base32-form"):
-        text_input = st.text_area("Input", height=220)
+        text_input = st.text_area("Input", height=220, max_chars=MAX_INPUT_LENGTH)
         c1, c2 = st.columns(2)
         with c1:
             encode_clicked = st.form_submit_button("Encode")
