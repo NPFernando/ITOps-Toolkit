@@ -40,14 +40,17 @@ def split_pem_bundle(pem_text: str) -> dict[str, Any]:
     now = datetime.now(UTC)
     certificates = []
     for index, cert in enumerate(certs, start=1):
+        not_valid_before = cert.not_valid_before_utc
         not_valid_after = cert.not_valid_after_utc
         certificates.append(
             {
                 "index": index,
                 "subject": cert.subject.rfc4514_string(),
                 "issuer": cert.issuer.rfc4514_string(),
+                "not_valid_before": not_valid_before.isoformat(),
                 "not_valid_after": not_valid_after.isoformat(),
                 "is_expired": not_valid_after < now,
+                "is_not_yet_valid": not_valid_before > now,
             }
         )
 
