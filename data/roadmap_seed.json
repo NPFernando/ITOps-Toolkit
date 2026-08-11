@@ -1115,6 +1115,60 @@
       "description": "Check a password against a configurable complexity policy -- pass/fail per rule, not an entropy estimate.",
       "rationale": "Distinct from Password Strength Checker (continuous entropy estimate) and Password Generator (creates new passwords) -- this checks pass/fail compliance against explicit, configurable rules, the kind an org sets for its users.",
       "updated_at": "2026-08-11"
+    },
+    {
+      "title": "ISO 8601 duration tool",
+      "category": "Tools",
+      "status": "Complete",
+      "votes": 4,
+      "description": "Parse an ISO 8601 duration (e.g. P3Y6M4DT12H30M5S) into plain English, or build one from individual units.",
+      "rationale": "Distinct from Timestamp Converter/Log Timestamp Duration Calculator, which work with actual timestamps, not the ISO 8601 duration format used in many APIs and config files (AWS, Kubernetes, iCalendar).",
+      "updated_at": "2026-08-11"
+    },
+    {
+      "title": "JSON merge patch",
+      "category": "Tools",
+      "status": "Complete",
+      "votes": 5,
+      "description": "Merge two JSON documents per RFC 7396 -- useful for layering an environment-specific override onto a base config.",
+      "rationale": "Distinct from JSON Diff Viewer (compares, doesn't combine) and JSON Path Query (extracts, doesn't merge). Verified directly against all 15 of RFC 7396's own Appendix A test cases before shipping.",
+      "updated_at": "2026-08-11"
+    },
+    {
+      "title": "Column aligner",
+      "category": "Tools",
+      "status": "Complete",
+      "votes": 4,
+      "description": "Align whitespace-separated columns of plain text -- like the Unix column -t command.",
+      "rationale": "Distinct from Markdown Table Formatter (pipe-delimited Markdown tables) and CSV Column Selector (comma-delimited, selects/reorders rather than aligns). Meant for pasted command output (ps aux, df -h) with ragged spacing.",
+      "updated_at": "2026-08-11"
+    },
+    {
+      "title": "SSH config validator",
+      "category": "Tools",
+      "status": "Complete",
+      "votes": 4,
+      "description": "Lint ~/.ssh/config content for structural mistakes -- directives before any Host block, empty Host blocks, duplicate Host patterns.",
+      "rationale": "Checks structure only, not individual directive names -- OpenSSH has ~100 valid ssh_config keywords, and an incomplete allowlist would flag valid but less common ones as errors.",
+      "updated_at": "2026-08-11"
+    },
+    {
+      "title": "CSR generator",
+      "category": "Tools",
+      "status": "Complete",
+      "votes": 5,
+      "description": "Generate a new RSA key pair and a Certificate Signing Request from subject fields -- the reverse of CSR Decoder.",
+      "rationale": "Verified the generated CSR round-trips correctly through the existing CSR Decoder (valid signature, correct subject/SAN fields) before shipping. Same disposable/test-use framing as RSA/SSH Key Pair Generator -- this app can't protect a private key once rendered to the browser.",
+      "updated_at": "2026-08-11"
+    },
+    {
+      "title": "CAA record builder",
+      "category": "Tools",
+      "status": "Complete",
+      "votes": 4,
+      "description": "Build a DNS CAA (Certification Authority Authorization) record, restricting which CAs may issue certificates for a domain.",
+      "rationale": "A different DNS record type (RFC 8659) from Email Record Builder's SPF/DMARC/DKIM, not covered by any existing tool.",
+      "updated_at": "2026-08-11"
     }
   ]
 }

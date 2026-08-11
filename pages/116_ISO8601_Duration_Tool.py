@@ -1,0 +1,72 @@
+from __future__ import annotations
+
+import streamlit as st
+
+from utils.iso8601_duration import MAX_INPUT_LENGTH, build_duration, parse_duration
+from utils.ui import apply_app_shell, render_empty_state, render_form_intro, render_page_header, render_section_heading, tool_form_panel, tool_result_panel
+
+
+st.set_page_config(page_title="ISO 8601 Duration Tool", layout="wide")
+apply_app_shell(active_page="ISO 8601 Duration Tool")
+
+
+render_page_header(
+    "ISO 8601 Duration Tool",
+    "Parse an ISO 8601 duration (e.g. P3Y6M4DT12H30M5S) into plain English, or build one from individual units.",
+)
+
+parse_tab, build_tab = st.tabs(["Parse", "Build"])
+
+with parse_tab:
+    with tool_form_panel("iso8601_parse"):
+        render_form_intro("Enter an ISO 8601 duration", "")
+        with st.form("iso8601-parse-form"):
+            duration_input = st.text_input("Duration", placeholder="P3Y6M4DT12H30M5S", max_chars=MAX_INPUT_LENGTH)
+            parse_submitted = st.form_submit_button("Parse")
+
+    if parse_submitted:
+        st.session_state["iso8601_parse_result"] = parse_duration(duration_input)
+
+    parse_result = st.session_state.get("iso8601_parse_result")
+
+    if parse_result is None:
+        render_empty_state("Ready to parse", "The plain-English description appears here.")
+
+    if parse_result is not None:
+        with tool_result_panel("iso8601_parse_result_panel", related_to="iso8601_duration"):
+            render_section_heading("In plain English", eyebrow="Result")
+            if not parse_result["ok"]:
+                st.error(parse_result["error"])
+            else:
+                st.success(parse_result["output"])
+
+with build_tab:
+    with tool_form_panel("iso8601_build"):
+        render_form_intro("Enter individual duration units", "")
+        with st.form("iso8601-build-form"):
+            c1, c2, c3, c4 = st.columns(4)
+            years = c1.number_input("Years", min_value=0.0, value=0.0, step=1.0)
+            months = c2.number_input("Months", min_value=0.0, value=0.0, step=1.0)
+            weeks = c3.number_input("Weeks", min_value=0.0, value=0.0, step=1.0)
+            days = c4.number_input("Days", min_value=0.0, value=0.0, step=1.0)
+            c5, c6, c7 = st.columns(3)
+            hours = c5.number_input("Hours", min_value=0.0, value=0.0, step=1.0)
+            minutes = c6.number_input("Minutes", min_value=0.0, value=0.0, step=1.0)
+            seconds = c7.number_input("Seconds", min_value=0.0, value=0.0, step=1.0)
+            build_submitted = st.form_submit_button("Build")
+
+    if build_submitted:
+        st.session_state["iso8601_build_result"] = build_duration(years, months, weeks, days, hours, minutes, seconds)
+
+    build_result = st.session_state.get("iso8601_build_result")
+
+    if build_result is None:
+        render_empty_state("Ready to build", "The ISO 8601 duration string appears here.")
+
+    if build_result is not None:
+        with tool_result_panel("iso8601_build_result_panel", related_to="iso8601_duration"):
+            render_section_heading("ISO 8601 duration", eyebrow="Result")
+            if not build_result["ok"]:
+                st.error(build_result["error"])
+            else:
+                st.code(build_result["output"], language=None)
