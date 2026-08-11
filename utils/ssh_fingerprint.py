@@ -17,11 +17,15 @@ from cryptography.hazmat.primitives.serialization import load_ssh_public_key
 
 MAX_INPUT_LENGTH = 4_000
 
-# Recognized OpenSSH key-type tokens -- used to detect (and strip) a leading
-# hostname column in a known_hosts-style line, which load_ssh_public_key
-# does not accept directly (it expects "type base64 [comment]", not
-# "host type base64 [comment]").
-_KEY_TYPE_PREFIXES = ("ssh-", "ecdsa-sha2-", "sk-ssh-", "sk-ecdsa-sha2-")
+# A plain public key line is "type base64 [comment]" (offset 0). A
+# known_hosts line prepends one hostname column, "host type base64
+# [comment]" (offset 1). A known_hosts line with a @cert-authority/@revoked
+# marker prepends two, "@marker host type base64 [comment]" (offset 2).
+# Rather than guessing which format was pasted from a fixed set of
+# recognized key-type prefixes (which breaks on a hostname that happens to
+# start with "ssh-", or a marker line, or any future key type), try each
+# offset and use the first one load_ssh_public_key actually accepts.
+_MAX_LEADING_COLUMNS = 2
 
 
 def compute_fingerprint(key_text: str) -> dict[str, Any]:
@@ -37,21 +41,26 @@ def compute_fingerprint(key_text: str) -> dict[str, Any]:
         return result
 
     tokens = value.split()
-    if len(tokens) >= 2 and not tokens[0].startswith(_KEY_TYPE_PREFIXES):
-        # known_hosts-style line: "host[,host2] type base64 [comment]" --
-        # drop the leading host column.
-        tokens = tokens[1:]
-    if len(tokens) < 2:
-        result["error"] = "Could not parse a key -- expected 'type base64-blob [comment]'."
-        return result
 
-    key_type, key_blob = tokens[0], tokens[1]
-    comment = " ".join(tokens[2:]) if len(tokens) > 2 else None
+    key_type: str | None = None
+    key_blob: str | None = None
+    comment: str | None = None
+    last_error: Exception | None = None
+    for offset in range(min(_MAX_LEADING_COLUMNS, max(len(tokens) - 2, 0)) + 1):
+        candidate = tokens[offset:]
+        if len(candidate) < 2:
+            continue
+        try:
+            load_ssh_public_key(f"{candidate[0]} {candidate[1]}".encode())
+        except (ValueError, UnsupportedAlgorithm) as exc:
+            last_error = exc
+            continue
+        key_type, key_blob = candidate[0], candidate[1]
+        comment = " ".join(candidate[2:]) if len(candidate) > 2 else None
+        break
 
-    try:
-        load_ssh_public_key(f"{key_type} {key_blob}".encode())
-    except (ValueError, UnsupportedAlgorithm) as exc:
-        result["error"] = f"Could not parse SSH public key: {exc}"
+    if key_type is None or key_blob is None:
+        result["error"] = f"Could not parse SSH public key: {last_error}" if last_error else "Could not parse a key -- expected 'type base64-blob [comment]'."
         return result
 
     try:
