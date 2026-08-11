@@ -21,15 +21,19 @@ def test_css_injects_before_sidebar_and_has_no_blocking_import():
     at = AppTest.from_file(APP_PAGE, default_timeout=30).run()
     assert not at.exception, at.exception
 
+    # The font <link> tags are injected via st.markdown() and the stylesheet
+    # via st.html() (a separate call, since st.html()'s sanitizer strips
+    # <link> tags). The font links are the very first markdown element
+    # emitted, confirming they still render before the rest of the page.
     md_values = [m.value for m in at.markdown]
-    css_block = next((v for v in md_values if "<style>" in v), None)
-    assert css_block is not None, "no <style> block found in markdown output"
+    assert md_values, "no markdown output found"
+    assert 'rel="stylesheet"' in md_values[0], "font <link> is no longer the first thing rendered"
+
+    html_bodies = [getattr(h.proto, "body", "") for h in at.get("html")]
+    css_block = next((v for v in html_bodies if "<style>" in v), None)
+    assert css_block is not None, "no <style> block found in st.html output"
 
     assert "@import" not in css_block, "blocking @import reintroduced"
-    link_idx = css_block.find('rel="stylesheet"')
-    style_idx = css_block.find("<style>")
-    assert link_idx != -1, "no <link rel=stylesheet> found"
-    assert link_idx < style_idx, "font <link> no longer precedes <style>"
 
 
 def test_home_pills_are_required_and_cannot_deselect_to_none():
