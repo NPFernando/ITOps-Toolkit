@@ -899,6 +899,60 @@
       "description": "Paste messy CSV/TSV and trim cell whitespace, drop empty rows, and/or remove duplicate rows.",
       "rationale": "Distinct from Sort & Dedupe Lines (arbitrary text lines, not structured rows/cells) and CSV Diff Viewer (compares two CSVs, doesn't clean one). Stdlib csv only, no new dependency.",
       "updated_at": "2026-08-11"
+    },
+    {
+      "title": "JSON Path query (simple dotted path)",
+      "category": "Tools",
+      "status": "Complete",
+      "votes": 5,
+      "description": "Extract a value from JSON with a simple dotted path, e.g. user.addresses[0].city.",
+      "rationale": "Deliberately scoped to dotted keys and [index] array access only -- no wildcards, filters, or slicing -- so it stays honest about not being a full JSONPath/JMESPath implementation and doesn't need a new dependency. Distinct from JSON Diff Viewer (structural comparison) and JSON Formatter (pretty-print/minify).",
+      "updated_at": "2026-08-11"
+    },
+    {
+      "title": "IBAN validator",
+      "category": "Tools",
+      "status": "Complete",
+      "votes": 5,
+      "description": "Check an IBAN's structure (country-specific length) and mod-97 checksum.",
+      "rationale": "Distinct algorithm from Luhn Checksum Validator (card numbers). Verified the mod-97 implementation and the country-length table directly against known-valid published IBAN test vectors (Germany, UK) before shipping. Stdlib only, no new dependency.",
+      "updated_at": "2026-08-11"
+    },
+    {
+      "title": "Base58 encoder/decoder",
+      "category": "Tools",
+      "status": "Complete",
+      "votes": 4,
+      "description": "Encode or decode text using the Bitcoin/IPFS Base58 alphabet (excludes 0, O, I, l).",
+      "rationale": "Distinct from Base32/Base64 Tool (different alphabet and algorithm) and Integer Base Converter (arbitrary numeric base 2-16 of a single integer, not this specific alphabet/leading-zero-byte handling). Verified against the well-known 'Hello World' and Bitcoin-address Base58 test vectors before shipping. Stdlib only, no new dependency.",
+      "updated_at": "2026-08-11"
+    },
+    {
+      "title": "Exit code reference (Linux/Bash)",
+      "category": "Tools",
+      "status": "Complete",
+      "votes": 5,
+      "description": "Look up Linux/Bash process exit codes -- a quick lookup when a script or CI job fails with an unfamiliar code.",
+      "rationale": "Matches the established static-reference pattern (HTTP Status Reference, Windows Error Reference, Port Reference). Deliberately limits itself to codes with a universally-documented meaning (0-2, 126-165) rather than implying 3-125 mean something specific, since those are application-defined.",
+      "updated_at": "2026-08-11"
+    },
+    {
+      "title": "Timezone abbreviation reference",
+      "category": "Tools",
+      "status": "Complete",
+      "votes": 4,
+      "description": "Look up timezone abbreviations (EST, IST, CST...) and their UTC offset.",
+      "rationale": "Handles a well-documented real-world hazard head-on: many abbreviations (CST, IST, BST) are genuinely ambiguous with multiple real meanings at different UTC offsets, so every meaning is listed as its own row instead of picking one. Distinct from World Clock (interactive conversion of a specific date/time).",
+      "updated_at": "2026-08-11"
+    },
+    {
+      "title": "HTTP Basic Auth header tool",
+      "category": "Tools",
+      "status": "Complete",
+      "votes": 4,
+      "description": "Build or parse an HTTP Authorization: Basic header (RFC 7617).",
+      "rationale": "Distinct from Base64 Tool (generic encode/decode, no credential-format awareness) and HTTP Header Parser (parses a whole raw header block, not specifically this format). Rejects a colon in the username on build, since RFC 7617 uses the first colon as the user-id/password separator.",
+      "updated_at": "2026-08-11"
     }
   ]
 }
