@@ -206,12 +206,12 @@ def test_expected_tools_are_tagged_new():
     new_slugs = {tool.slug for tool in TOOLS if tool.is_new}
 
     assert new_slugs == {
-        "html_entity_tools",
-        "deterministic_uuid",
-        "luhn_validator",
-        "text_stats",
-        "csv_to_markdown",
-        "ssh_fingerprint",
+        "yaml_formatter",
+        "byte_size_converter",
+        "line_ending_converter",
+        "regex_replace",
+        "password_entropy",
+        "pattern_extractor",
     }
 
 
@@ -369,6 +369,7 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "pem_bundle_splitter",
             "luhn_validator",
             "ssh_fingerprint",
+            "password_entropy",
         ],
         "Web & Dev": [
             "http_status",
@@ -381,6 +382,7 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "url_parser",
             "http_header_parser",
             "html_entity_tools",
+            "line_ending_converter",
         ],
         "Data & Text": [
             "json_formatter",
@@ -406,6 +408,8 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "deterministic_uuid",
             "text_stats",
             "csv_to_markdown",
+            "yaml_formatter",
+            "regex_replace",
         ],
         "Ops & Automation": [
             "cron_explainer",
@@ -416,6 +420,8 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "business_hours",
             "log_duration",
             "date_calculator",
+            "byte_size_converter",
+            "pattern_extractor",
         ],
         "Reference": [
             "port_reference",

@@ -795,56 +795,56 @@
     {
       "title": "YAML formatter/validator",
       "category": "Tools",
-      "status": "Planned",
+      "status": "Complete",
       "votes": 5,
       "description": "Paste YAML and get it consistently re-indented, or flagged with a clear error and line number if it's not valid YAML.",
       "rationale": "Distinct from Config Format Converter's YAML support (which only converts a JSON-shaped object model between formats, not format/validate YAML as-is) -- same relationship XML Formatter already has to Config Format Converter's XML support. Uses `pyyaml`, already an installed dependency, no new pin -- verified directly including a malformed-input error with line/column.",
-      "updated_at": "2026-08-12"
+      "updated_at": "2026-08-11"
     },
     {
       "title": "Byte size converter",
       "category": "Tools",
-      "status": "Planned",
+      "status": "Complete",
       "votes": 5,
       "description": "Convert a byte count into human-readable units (KB/MB/GB/TB, both decimal-1000-based and binary-1024-based), or the reverse.",
       "rationale": "Common sysadmin need (interpreting a raw byte count from a log, df output, or API response) with no existing tool -- distinct from Integer Base Converter, which converts numeric bases, not units. Stdlib arithmetic only, no new dependency -- verified directly for both binary and decimal unit systems.",
-      "updated_at": "2026-08-12"
+      "updated_at": "2026-08-11"
     },
     {
       "title": "Line ending converter",
       "category": "Tools",
-      "status": "Planned",
+      "status": "Complete",
       "votes": 4,
       "description": "Convert pasted text between CRLF (Windows), LF (Unix/Mac), and CR (classic Mac) line endings.",
       "rationale": "Common cross-platform text/config file issue (e.g. a script that fails silently because of Windows line endings) with no existing tool covering it directly. Stdlib string replacement only, no new dependency -- verified directly.",
-      "updated_at": "2026-08-12"
+      "updated_at": "2026-08-11"
     },
     {
       "title": "Regex find & replace",
       "category": "Tools",
-      "status": "Planned",
+      "status": "Complete",
       "votes": 5,
       "description": "Paste text and a regex pattern with a replacement (including backreferences like \\1), and see the substituted output.",
       "rationale": "Distinct from Regex Tester (which only shows match/no-match and capture groups, not a substituted result) -- a common need when constructing a find/replace regex before using it in a script or editor. Stdlib re.sub only, no new dependency -- verified directly including backreference substitution.",
-      "updated_at": "2026-08-12"
+      "updated_at": "2026-08-11"
     },
     {
       "title": "Password strength / entropy checker",
       "category": "Security",
-      "status": "Planned",
+      "status": "Complete",
       "votes": 6,
       "description": "Paste a password and see an estimated entropy (bits) and rough strength category, based on character-set diversity and length.",
       "rationale": "Distinct from the existing Password Generator (which creates new passwords, not scores existing ones) -- useful for checking a password you already have in mind. Deliberately scoped to a straightforward character-pool-based entropy estimate (not a dictionary/pattern-based cracking-time model, which would need an external wordlist/library) so it stays honest about what it measures. Stdlib math only, no new dependency -- verified directly.",
-      "updated_at": "2026-08-12"
+      "updated_at": "2026-08-11"
     },
     {
       "title": "Text pattern extractor (grep-style)",
       "category": "Tools",
-      "status": "Planned",
+      "status": "Complete",
       "votes": 4,
       "description": "Paste text and a regex pattern, and get back only the matching lines (or captured groups), like a grep -E over pasted text.",
       "rationale": "Distinct from Regex Tester (single-string match/no-match) and Log Troubleshooting Assistant (fixed known-issue patterns, not a user-supplied pattern) -- a common need when scanning a pasted log or config for lines matching an arbitrary pattern. Stdlib re only, no new dependency -- verified directly.",
-      "updated_at": "2026-08-12"
+      "updated_at": "2026-08-11"
     }
   ]
 }
