@@ -45,6 +45,15 @@ def test_convert_config_yaml_to_json():
     assert '"port": 8080' in result["output"]
 
 
+def test_convert_config_rejects_duplicate_yaml_key():
+    # Regression: PyYAML's default loader silently keeps the last value for
+    # a duplicate mapping key with no warning -- invalid per the YAML spec.
+    result = convert_config("a: 1\na: 2\n", "YAML", "JSON")
+
+    assert result["ok"] is False
+    assert "duplicate key" in result["error"]
+
+
 def test_convert_config_json_to_toml():
     result = convert_config('{"name": "web01", "port": 8080}', "JSON", "TOML")
 
