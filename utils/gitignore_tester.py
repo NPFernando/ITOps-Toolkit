@@ -19,6 +19,47 @@ MAX_INPUT_LENGTH = 50_000
 MAX_PATH_LENGTH = 1_000
 
 
+def _segment_to_regex(segment: str) -> str:
+    """Translate one path segment (no '/') respecting *, ?, and [...] classes.
+
+    re.escape() alone would treat '[oa]' as the literal three characters
+    "[oa]" rather than a character class -- gitignore's [...] classes need
+    their own translation, same as *, and ? already get.
+    """
+    out = []
+    i, n = 0, len(segment)
+    while i < n:
+        char = segment[i]
+        if char == "*":
+            out.append("[^/]*")
+            i += 1
+        elif char == "?":
+            out.append("[^/]")
+            i += 1
+        elif char == "[":
+            j = i + 1
+            if j < n and segment[j] == "!":
+                j += 1
+            if j < n and segment[j] == "]":
+                j += 1
+            while j < n and segment[j] != "]":
+                j += 1
+            if j >= n:
+                # Unterminated '[' -- not a valid class, treat as literal.
+                out.append(re.escape(char))
+                i += 1
+            else:
+                class_body = segment[i + 1 : j]
+                if class_body.startswith("!"):
+                    class_body = "^" + class_body[1:]
+                out.append(f"[{class_body}]")
+                i = j + 1
+        else:
+            out.append(re.escape(char))
+            i += 1
+    return "".join(out)
+
+
 def _translate_pattern(pattern: str) -> re.Pattern[str]:
     """Compile one gitignore pattern into a regex matching a repo-relative path."""
     stripped_trailing = pattern.rstrip("/")
@@ -37,7 +78,7 @@ def _translate_pattern(pattern: str) -> re.Pattern[str]:
             else:
                 fragments.append("(?:/.*)?")
         else:
-            piece = re.escape(part).replace(r"\*", "[^/]*").replace(r"\?", "[^/]")
+            piece = _segment_to_regex(part)
             prev = parts[i - 1] if i > 0 else None
             if i > 0 and prev != "**":
                 fragments.append("/")

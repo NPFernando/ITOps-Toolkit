@@ -15,7 +15,9 @@ from typing import Any
 
 MAX_INPUT_LENGTH = 200_000
 
-_HEADING_RE = re.compile(r"^(#{1,6})\s+(.+)$")
+# CommonMark allows up to 3 leading spaces before the '#' marker; 4+
+# spaces makes it an indented code block instead, not a heading.
+_HEADING_RE = re.compile(r"^ {0,3}(#{1,6})\s+(.+)$")
 # A closing ATX sequence ("## Heading ##") must be preceded by whitespace
 # per CommonMark -- a heading that genuinely ends in "#" (e.g. "## C#")
 # must not have that trailing "#" stripped.
