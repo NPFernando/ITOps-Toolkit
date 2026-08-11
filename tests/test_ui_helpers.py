@@ -206,12 +206,12 @@ def test_expected_tools_are_tagged_new():
     new_slugs = {tool.slug for tool in TOOLS if tool.is_new}
 
     assert new_slugs == {
-        "yaml_formatter",
-        "byte_size_converter",
-        "line_ending_converter",
-        "regex_replace",
-        "password_entropy",
-        "pattern_extractor",
+        "csv_json_converter",
+        "line_sorter",
+        "user_agent_builder",
+        "semver_tools",
+        "world_clock",
+        "csv_cleaner",
     }
 
 
@@ -383,6 +383,7 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "http_header_parser",
             "html_entity_tools",
             "line_ending_converter",
+            "user_agent_builder",
         ],
         "Data & Text": [
             "json_formatter",
@@ -410,6 +411,7 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "csv_to_markdown",
             "yaml_formatter",
             "regex_replace",
+            "csv_json_converter",
         ],
         "Ops & Automation": [
             "cron_explainer",
@@ -422,6 +424,10 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "date_calculator",
             "byte_size_converter",
             "pattern_extractor",
+            "line_sorter",
+            "semver_tools",
+            "world_clock",
+            "csv_cleaner",
         ],
         "Reference": [
             "port_reference",

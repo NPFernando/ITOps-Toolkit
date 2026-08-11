@@ -845,6 +845,60 @@
       "description": "Paste text and a regex pattern, and get back only the matching lines (or captured groups), like a grep -E over pasted text.",
       "rationale": "Distinct from Regex Tester (single-string match/no-match) and Log Troubleshooting Assistant (fixed known-issue patterns, not a user-supplied pattern) -- a common need when scanning a pasted log or config for lines matching an arbitrary pattern. Stdlib re only, no new dependency -- verified directly.",
       "updated_at": "2026-08-11"
+    },
+    {
+      "title": "CSV / JSON converter",
+      "category": "Tools",
+      "status": "Complete",
+      "votes": 5,
+      "description": "Convert CSV/TSV (with a header row) to a JSON array of objects, or the reverse.",
+      "rationale": "Distinct from Config Format Converter (handles JSON/YAML/TOML/XML, no CSV) and CSV to Markdown Table (one-way, CSV to Markdown only). Stdlib csv+json only, no new dependency -- verified directly, including a round-trip CSV->JSON->CSV check.",
+      "updated_at": "2026-08-11"
+    },
+    {
+      "title": "Sort & dedupe lines",
+      "category": "Tools",
+      "status": "Complete",
+      "votes": 5,
+      "description": "Sort pasted text's lines, remove duplicates, and/or drop blank lines -- like sort -u over pasted text.",
+      "rationale": "Distinct from Text Diff Checker (compares two texts) and CSV/TSV Cleaner (structured rows/cells, not arbitrary lines). Stdlib only, no new dependency -- verified directly, including numeric and case-insensitive sort modes.",
+      "updated_at": "2026-08-11"
+    },
+    {
+      "title": "User-Agent builder",
+      "category": "Tools",
+      "status": "Complete",
+      "votes": 4,
+      "description": "Build a User-Agent string for a chosen OS, browser, and version -- the reverse of User Agent Parser.",
+      "rationale": "User Agent Parser only decomposes an existing UA string; this fills the reverse need (testing how a site responds to a specific browser without switching devices). Rejects OS/browser combinations that never existed in the real world (e.g. Safari on Windows). Stdlib only, no new dependency.",
+      "updated_at": "2026-08-11"
+    },
+    {
+      "title": "SemVer comparator / sorter",
+      "category": "Tools",
+      "status": "Complete",
+      "votes": 6,
+      "description": "Compare two Semantic Versioning 2.0.0 version strings, or sort a whole list by precedence.",
+      "rationale": "Uses the official SemVer 2.0.0 regex and precedence rules published at semver.org, verified directly against the spec's own worked precedence-order example (1.0.0-alpha < ... < 1.0.0). Stdlib re only, no new dependency -- deliberately not using the packaging library's version comparator, which implements PEP 440, not SemVer.",
+      "updated_at": "2026-08-11"
+    },
+    {
+      "title": "World clock / meeting time planner",
+      "category": "Tools",
+      "status": "Complete",
+      "votes": 5,
+      "description": "See one date/time across major world timezones -- useful for planning a meeting or a maintenance window.",
+      "rationale": "Distinct from Timestamp Converter's convert_timezone (a single from/to conversion) -- shows every zone in a curated list side by side at once. Stdlib zoneinfo only, no new dependency.",
+      "updated_at": "2026-08-11"
+    },
+    {
+      "title": "CSV/TSV cleaner",
+      "category": "Tools",
+      "status": "Complete",
+      "votes": 4,
+      "description": "Paste messy CSV/TSV and trim cell whitespace, drop empty rows, and/or remove duplicate rows.",
+      "rationale": "Distinct from Sort & Dedupe Lines (arbitrary text lines, not structured rows/cells) and CSV Diff Viewer (compares two CSVs, doesn't clean one). Stdlib csv only, no new dependency.",
+      "updated_at": "2026-08-11"
     }
   ]
 }
