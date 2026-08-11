@@ -1061,6 +1061,60 @@
       "description": "Look up HTTP methods and their safe/idempotent/cacheable properties per RFC 9110.",
       "rationale": "Standalone from HTTP Status Checker/Reference -- methods and status codes are different axes of the HTTP spec. Safe/idempotent/cacheable are the three properties most often gotten wrong in practice (e.g. PUT being idempotent surprises people used to thinking only GET is safe); POST's conditional cacheability is called out explicitly rather than flattened to a plain No.",
       "updated_at": "2026-08-11"
+    },
+    {
+      "title": "Line numberer",
+      "category": "Tools",
+      "status": "Complete",
+      "votes": 4,
+      "description": "Add line numbers to pasted text -- handy for referencing a specific line in a review or bug report.",
+      "rationale": "No existing tool numbers arbitrary pasted text lines. Right-aligns numbers to the widest needed width so columns stay lined up regardless of line count.",
+      "updated_at": "2026-08-11"
+    },
+    {
+      "title": "PII redactor",
+      "category": "Tools",
+      "status": "Complete",
+      "votes": 5,
+      "description": "Redact common sensitive-looking patterns from pasted text before sharing it in a ticket, log, or chat.",
+      "rationale": "Regex-based heuristics, explicitly disclosed as such -- not a real PII detector. All patterns matched in a single combined pass, with the broad credit-card pattern tried last so it can't swallow a more specific SSN/phone match sitting inside a longer digit run (verified directly).",
+      "updated_at": "2026-08-11"
+    },
+    {
+      "title": ".env file diff",
+      "category": "Tools",
+      "status": "Complete",
+      "votes": 4,
+      "description": "Compare two .env files and see which keys were added, removed, or changed.",
+      "rationale": "Distinct from .env File Linter (checks one file for mistakes, doesn't compare two) and JSON/CSV Diff (different formats). Parsing mirrors env_linter's own conventions (export prefix, first '=' as separator) for consistency.",
+      "updated_at": "2026-08-11"
+    },
+    {
+      "title": "Cron overlap checker",
+      "category": "Tools",
+      "status": "Complete",
+      "votes": 4,
+      "description": "Check whether two cron schedules ever fire in the same minute -- useful for spotting jobs that might contend for the same resource.",
+      "rationale": "Distinct from Cron Explainer/Builder (single-schedule tools). Reuses croniter (already a dependency). Hard-caps occurrences per schedule so a once-a-minute schedule combined with a long lookahead window can't turn into an unbounded loop.",
+      "updated_at": "2026-08-11"
+    },
+    {
+      "title": "Test data generator",
+      "category": "Tools",
+      "status": "Complete",
+      "votes": 4,
+      "description": "Generate fake names, emails, usernames, and phone numbers for filling in forms and test fixtures.",
+      "rationale": "Uses IANA-reserved example domains (RFC 2606) for emails and the North American 555-01XX fictional-use phone range, so nothing generated can collide with a real address. Optional seed for reproducible test fixtures.",
+      "updated_at": "2026-08-11"
+    },
+    {
+      "title": "Password policy checker",
+      "category": "Tools",
+      "status": "Complete",
+      "votes": 4,
+      "description": "Check a password against a configurable complexity policy -- pass/fail per rule, not an entropy estimate.",
+      "rationale": "Distinct from Password Strength Checker (continuous entropy estimate) and Password Generator (creates new passwords) -- this checks pass/fail compliance against explicit, configurable rules, the kind an org sets for its users.",
+      "updated_at": "2026-08-11"
     }
   ]
 }

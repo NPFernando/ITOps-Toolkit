@@ -206,12 +206,12 @@ def test_expected_tools_are_tagged_new():
     new_slugs = {tool.slug for tool in TOOLS if tool.is_new}
 
     assert new_slugs == {
-        "csp_builder",
-        "robots_meta_builder",
-        "cache_control_tool",
-        "markdown_table_formatter",
-        "csv_column_selector",
-        "http_methods_reference",
+        "line_numberer",
+        "pii_redactor",
+        "env_diff",
+        "cron_overlap",
+        "test_data_generator",
+        "password_policy_checker",
     }
 
 
@@ -372,6 +372,8 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "password_entropy",
             "iban_validator",
             "csp_builder",
+            "pii_redactor",
+            "password_policy_checker",
         ],
         "Web & Dev": [
             "http_status",
@@ -425,6 +427,8 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "number_to_words",
             "markdown_table_formatter",
             "csv_column_selector",
+            "line_numberer",
+            "test_data_generator",
         ],
         "Ops & Automation": [
             "cron_explainer",
@@ -442,6 +446,8 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "world_clock",
             "csv_cleaner",
             "gitignore_tester",
+            "env_diff",
+            "cron_overlap",
         ],
         "Reference": [
             "port_reference",
