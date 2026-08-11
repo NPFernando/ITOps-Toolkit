@@ -1169,6 +1169,60 @@
       "description": "Build a DNS CAA (Certification Authority Authorization) record, restricting which CAs may issue certificates for a domain.",
       "rationale": "A different DNS record type (RFC 8659) from Email Record Builder's SPF/DMARC/DKIM, not covered by any existing tool.",
       "updated_at": "2026-08-11"
+    },
+    {
+      "title": "Base62 encoder/decoder",
+      "category": "Tools",
+      "status": "Complete",
+      "votes": 4,
+      "description": "Encode a non-negative integer to Base62 (0-9, A-Z, a-z), or decode one back -- commonly used for URL-safe short IDs.",
+      "rationale": "Distinct from Integer Base Converter (bases 2-16, positional numeral systems only) and Base58 Encoder/Decoder (different alphabet and leading-zero-byte handling). Verified round-trips exactly, including at the 64-bit integer boundary.",
+      "updated_at": "2026-08-11"
+    },
+    {
+      "title": "Unified diff generator",
+      "category": "Tools",
+      "status": "Complete",
+      "votes": 5,
+      "description": "Generate a real unified diff (patch) from two texts -- applicable with the patch or git apply command.",
+      "rationale": "Distinct from Text Diff Checker, which produces its own on-screen summary, not a standard .patch-format file. Verified the generated patch actually applies correctly with the real `patch` command, not just that it looks diff-shaped.",
+      "updated_at": "2026-08-11"
+    },
+    {
+      "title": "JWK / PEM converter",
+      "category": "Tools",
+      "status": "Complete",
+      "votes": 5,
+      "description": "Convert an RSA public key between JWK (JSON Web Key) and PEM format -- useful when working with a JWKS endpoint.",
+      "rationale": "Distinct from every other JWT tool in this app, which work with tokens, not the keys used to verify them. Verified against RFC 7517 Appendix A.1's own published example key. RSA only -- EC/OKP JWKs use a different coordinate system and are deliberately out of scope.",
+      "updated_at": "2026-08-11"
+    },
+    {
+      "title": "Certificate chain validator",
+      "category": "Tools",
+      "status": "Complete",
+      "votes": 5,
+      "description": "Check that a pasted PEM certificate bundle is a correctly ordered, cryptographically linked chain.",
+      "rationale": "Distinct from PEM Bundle Splitter (splits a bundle, doesn't check ordering) -- checks both subject/issuer name matching AND that each cert's signature actually verifies against the next cert's public key, since name matching alone can't catch a chain where the names look right but the wrong key signed it.",
+      "updated_at": "2026-08-11"
+    },
+    {
+      "title": "WSL path converter",
+      "category": "Tools",
+      "status": "Complete",
+      "votes": 4,
+      "description": "Convert a filesystem path between Windows, WSL, and Git Bash forms.",
+      "rationale": "WSL mounts a Windows drive at /mnt/c/..., Git Bash mounts it at /c/... instead -- a real, frequently-confused difference, so both are supported as explicit targets. Fixed a real asymmetry found during testing: the tool could produce a bare drive-root path like /mnt/c as output but couldn't accept that same form as input.",
+      "updated_at": "2026-08-11"
+    },
+    {
+      "title": "Markdown link extractor",
+      "category": "Tools",
+      "status": "Complete",
+      "votes": 4,
+      "description": "Extract every link from Markdown text -- inline links, reference-style links, and bare autolinks.",
+      "rationale": "Distinct from Text Pattern Extractor (a generic user-supplied regex, no Markdown-specific link syntax) and Markdown TOC Generator (headings, not links). Correctly excludes image syntax (![alt](url)) from being treated as a link.",
+      "updated_at": "2026-08-11"
     }
   ]
 }
