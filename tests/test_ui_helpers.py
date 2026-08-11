@@ -206,12 +206,12 @@ def test_expected_tools_are_tagged_new():
     new_slugs = {tool.slug for tool in TOOLS if tool.is_new}
 
     assert new_slugs == {
-        "line_numberer",
-        "pii_redactor",
-        "env_diff",
-        "cron_overlap",
-        "test_data_generator",
-        "password_policy_checker",
+        "iso8601_duration",
+        "json_merge_patch",
+        "column_aligner",
+        "ssh_config_validator",
+        "csr_generator",
+        "caa_record_builder",
     }
 
 
@@ -349,6 +349,7 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "email_record_builder",
             "ip_geolocation",
             "cidr_overlap",
+            "caa_record_builder",
         ],
         "Security": [
             "ssl_certificate",
@@ -374,6 +375,8 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "csp_builder",
             "pii_redactor",
             "password_policy_checker",
+            "ssh_config_validator",
+            "csr_generator",
         ],
         "Web & Dev": [
             "http_status",
@@ -429,6 +432,7 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "csv_column_selector",
             "line_numberer",
             "test_data_generator",
+            "json_merge_patch",
         ],
         "Ops & Automation": [
             "cron_explainer",
@@ -448,6 +452,8 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "gitignore_tester",
             "env_diff",
             "cron_overlap",
+            "iso8601_duration",
+            "column_aligner",
         ],
         "Reference": [
             "port_reference",
