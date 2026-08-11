@@ -58,7 +58,12 @@ def sort_and_dedupe_lines(
         try:
             numeric_lines = [(float(line.strip()), line) for line in lines]
         except ValueError:
-            result["error"] = "Numeric sort requires every non-blank line to be a plain number."
+            # Blank lines fail float() too, so a truthful message must not
+            # say "non-blank" unless blank lines are actually being removed.
+            if remove_blank:
+                result["error"] = "Numeric sort requires every non-blank line to be a plain number."
+            else:
+                result["error"] = 'Numeric sort requires every line to be a plain number. Enable "Remove blank lines" if your input has any.'
             return result
         numeric_lines.sort(key=lambda pair: pair[0], reverse=sort_mode.endswith("descending)"))
         lines = [line for _, line in numeric_lines]

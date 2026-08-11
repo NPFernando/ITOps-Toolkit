@@ -60,6 +60,17 @@ def test_sort_numeric_rejects_non_numeric_line():
     assert "numeric" in result["error"].lower()
 
 
+def test_sort_numeric_rejects_blank_line_with_accurate_message():
+    # Regression: blank lines fail float() too, so with remove_blank=False
+    # the old message ("every non-blank line") was misleading -- it implied
+    # blank lines were tolerated when they weren't.
+    result = sort_and_dedupe_lines("10\n\n1", sort_mode="Numeric (ascending)", remove_blank=False)
+
+    assert result["ok"] is False
+    assert "non-blank" not in result["error"]
+    assert "Remove blank lines" in result["error"]
+
+
 def test_remove_blank_lines():
     result = sort_and_dedupe_lines("a\n\nb\n\n", remove_blank=True)
 
