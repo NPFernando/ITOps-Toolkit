@@ -953,6 +953,60 @@
       "description": "Build or parse an HTTP Authorization: Basic header (RFC 7617).",
       "rationale": "Distinct from Base64 Tool (generic encode/decode, no credential-format awareness) and HTTP Header Parser (parses a whole raw header block, not specifically this format). Rejects a colon in the username on build, since RFC 7617 uses the first colon as the user-id/password separator.",
       "updated_at": "2026-08-11"
+    },
+    {
+      "title": ".gitignore pattern tester",
+      "category": "Tools",
+      "status": "Complete",
+      "votes": 5,
+      "description": "Paste .gitignore content and test whether specific paths would be ignored.",
+      "rationale": "Implements gitignore's core glob semantics (*, ?, [...], **, leading/trailing /, ! negation). The anchoring rules and ** zero-directory matching are notoriously easy to get wrong -- verified every rule directly against real `git check-ignore` output before shipping, and caught two real bugs in the draft implementation this way (an over-anchoring bug and a **-doesn't-match-zero-dirs bug). Deliberately doesn't implement git's parent-directory-blocks-reinclusion rule, since that needs a real directory tree, not a single path string -- disclosed in the page's warning.",
+      "updated_at": "2026-08-11"
+    },
+    {
+      "title": "Markdown table of contents generator",
+      "category": "Tools",
+      "status": "Complete",
+      "votes": 5,
+      "description": "Paste Markdown and get a linked table of contents built from its headings.",
+      "rationale": "Anchor slugs follow GitHub's actual algorithm, verified against GitHub's real rendered anchors for punctuation and duplicate headings. Distinct from Markdown/HTML Converter (format conversion, no TOC). Caught a real bug in the draft heading-closer regex (a heading literally ending in '#', like 'C#', had its trailing character wrongly stripped as a closing ATX sequence) before shipping.",
+      "updated_at": "2026-08-11"
+    },
+    {
+      "title": "Number to words",
+      "category": "Tools",
+      "status": "Complete",
+      "votes": 4,
+      "description": "Spell out an integer in English words, e.g. 1042 -> one thousand forty-two.",
+      "rationale": "Deliberately one direction only (number -> words) -- parsing loosely formatted English text back into a number is ambiguous in a way the forward direction isn't. Caught a real bug in the draft scale-word list (it skipped \"quadrillion\" entirely, mislabeling larger numbers and crashing at the largest supported magnitude) via direct testing before shipping.",
+      "updated_at": "2026-08-11"
+    },
+    {
+      "title": "JSON to TypeScript interface generator",
+      "category": "Tools",
+      "status": "Complete",
+      "votes": 5,
+      "description": "Infer a TypeScript interface from a JSON document, with nested objects broken out into their own interfaces.",
+      "rationale": "Distinct from JSON Formatter (pretty-print only, no type inference). Nested objects get their own named interface; an empty array is typed unknown[] rather than guessed, since its element type genuinely can't be inferred from the data.",
+      "updated_at": "2026-08-11"
+    },
+    {
+      "title": "CSS gradient generator",
+      "category": "Tools",
+      "status": "Complete",
+      "votes": 4,
+      "description": "Build a linear-gradient() or radial-gradient() CSS declaration from a list of hex color stops.",
+      "rationale": "Distinct from Color Converter (single-color format conversion, not a multi-stop gradient declaration). A live preview swatch was considered but dropped after review found it would have embedded an unvalidated free-text field (angle/shape) directly into an HTML style attribute via unsafe_allow_html -- a real injection risk removed before shipping rather than patched around.",
+      "updated_at": "2026-08-11"
+    },
+    {
+      "title": "JWT claims reference",
+      "category": "Tools",
+      "status": "Complete",
+      "votes": 4,
+      "description": "Look up what a JWT claim name means -- registered (RFC 7519) claims plus common OAuth 2.0/OpenID Connect conventions.",
+      "rationale": "Standalone from JWT Decoder/Encoder -- useful when you just need to remember what a claim name means without decoding a real token. Registered vs. common-but-unstandardized claims are labeled separately so this doesn't imply a false standardization.",
+      "updated_at": "2026-08-11"
     }
   ]
 }
