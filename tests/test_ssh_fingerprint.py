@@ -35,6 +35,61 @@ def test_compute_fingerprint_known_hosts_style_line_strips_hostname():
     assert kh_result["sha256_fingerprint"] == plain_result["sha256_fingerprint"]
 
 
+def test_compute_fingerprint_known_hosts_hostname_starting_with_ssh_dash():
+    # Regression: a hostname that happens to start with "ssh-" (an ordinary
+    # naming pattern, e.g. a bastion host) was previously mistaken for the
+    # key-type token by a fixed-prefix heuristic, so the real key type was
+    # never stripped and fingerprinting failed with a misleading
+    # "Unsupported key type: b'ssh-bastion.corp.com'" error.
+    plain = _sample_key_line()
+    known_hosts_line = f"ssh-bastion.corp.com {plain}"
+
+    plain_result = compute_fingerprint(plain)
+    kh_result = compute_fingerprint(known_hosts_line)
+
+    assert kh_result["ok"] is True
+    assert kh_result["key_type"] == "ssh-rsa"
+    assert kh_result["md5_fingerprint"] == plain_result["md5_fingerprint"]
+
+
+def test_compute_fingerprint_cert_authority_marker_line():
+    # Regression: "@cert-authority host type base64" has TWO leading
+    # columns (marker + host), not one -- the old single-offset heuristic
+    # left the hostname where the key-type token was expected.
+    plain = _sample_key_line()
+    marker_line = f"@cert-authority *.example.com {plain}"
+
+    plain_result = compute_fingerprint(plain)
+    result = compute_fingerprint(marker_line)
+
+    assert result["ok"] is True
+    assert result["md5_fingerprint"] == plain_result["md5_fingerprint"]
+
+
+def test_compute_fingerprint_revoked_marker_line():
+    plain = _sample_key_line()
+    marker_line = f"@revoked badhost.example.com {plain}"
+
+    plain_result = compute_fingerprint(plain)
+    result = compute_fingerprint(marker_line)
+
+    assert result["ok"] is True
+    assert result["md5_fingerprint"] == plain_result["md5_fingerprint"]
+
+
+def test_compute_fingerprint_hashed_known_hosts_line():
+    # The HashKnownHosts-default OpenSSH format: a single hashed-hostname
+    # column, "|1|salt|hash type base64 [comment]".
+    plain = _sample_key_line()
+    hashed_line = f"|1|F1E1KeoE/eEWtJqOTOkc3jP7DrY=|s1oPKl85/OCazF13N0Z6z5W3Zm0= {plain}"
+
+    plain_result = compute_fingerprint(plain)
+    result = compute_fingerprint(hashed_line)
+
+    assert result["ok"] is True
+    assert result["md5_fingerprint"] == plain_result["md5_fingerprint"]
+
+
 def test_compute_fingerprint_no_comment():
     result = compute_fingerprint(_sample_key_line(comment=""))
 
