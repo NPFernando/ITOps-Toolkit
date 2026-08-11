@@ -1007,6 +1007,60 @@
       "description": "Look up what a JWT claim name means -- registered (RFC 7519) claims plus common OAuth 2.0/OpenID Connect conventions.",
       "rationale": "Standalone from JWT Decoder/Encoder -- useful when you just need to remember what a claim name means without decoding a real token. Registered vs. common-but-unstandardized claims are labeled separately so this doesn't imply a false standardization.",
       "updated_at": "2026-08-11"
+    },
+    {
+      "title": "CSP header builder",
+      "category": "Tools",
+      "status": "Complete",
+      "votes": 5,
+      "description": "Build a Content-Security-Policy header value from directives and source lists, entirely locally.",
+      "rationale": "Distinct from Security Headers Checker (fetches a live URL and checks whether a CSP is present/reasonable, doesn't build one). Known CSP keyword sources ('self', 'none', 'unsafe-inline', etc.) are auto-quoted per spec; anything else is left unquoted, since CSP only quotes its own reserved keywords.",
+      "updated_at": "2026-08-11"
+    },
+    {
+      "title": "Robots meta tag builder",
+      "category": "Tools",
+      "status": "Complete",
+      "votes": 4,
+      "description": "Build a <meta name=\"robots\" content=\"...\"> tag -- distinct from robots.txt, which applies site-wide.",
+      "rationale": "Distinct from robots.txt / Sitemap Validator (validates a site's robots.txt file, a separate mechanism, fetched live) -- this builds the per-page HTML meta tag, entirely locally, following Google's documented robots meta tag values.",
+      "updated_at": "2026-08-11"
+    },
+    {
+      "title": "Cache-Control tool",
+      "category": "Tools",
+      "status": "Complete",
+      "votes": 4,
+      "description": "Build a Cache-Control header from directives, or paste one to see each directive explained.",
+      "rationale": "Distinct from HTTP Header Parser (generic header block parsing, no per-directive explanations). Rejects contradictory combinations (public+private, no-store+max-age) rather than silently building a nonsensical header.",
+      "updated_at": "2026-08-11"
+    },
+    {
+      "title": "Markdown table formatter",
+      "category": "Tools",
+      "status": "Complete",
+      "votes": 4,
+      "description": "Paste a Markdown table with ragged/misaligned columns and get it re-aligned to consistent, padded widths.",
+      "rationale": "Distinct from CSV to Markdown Table (builds a table from CSV, doesn't reformat an existing Markdown table). Preserves each column's alignment marker (:---, ---:, :---:, ---) from the existing separator row.",
+      "updated_at": "2026-08-11"
+    },
+    {
+      "title": "CSV column selector",
+      "category": "Tools",
+      "status": "Complete",
+      "votes": 4,
+      "description": "Extract and reorder specific columns from CSV/TSV by header name.",
+      "rationale": "Distinct from CSV/TSV Cleaner (trims/dedupes rows and cells, doesn't select/reorder columns) and CSV to Markdown Table (converts everything, no column selection).",
+      "updated_at": "2026-08-11"
+    },
+    {
+      "title": "HTTP methods reference",
+      "category": "Tools",
+      "status": "Complete",
+      "votes": 5,
+      "description": "Look up HTTP methods and their safe/idempotent/cacheable properties per RFC 9110.",
+      "rationale": "Standalone from HTTP Status Checker/Reference -- methods and status codes are different axes of the HTTP spec. Safe/idempotent/cacheable are the three properties most often gotten wrong in practice (e.g. PUT being idempotent surprises people used to thinking only GET is safe); POST's conditional cacheability is called out explicitly rather than flattened to a plain No.",
+      "updated_at": "2026-08-11"
     }
   ]
 }
