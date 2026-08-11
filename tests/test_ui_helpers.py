@@ -206,12 +206,12 @@ def test_expected_tools_are_tagged_new():
     new_slugs = {tool.slug for tool in TOOLS if tool.is_new}
 
     assert new_slugs == {
-        "iso8601_duration",
-        "json_merge_patch",
-        "column_aligner",
-        "ssh_config_validator",
-        "csr_generator",
-        "caa_record_builder",
+        "base62_tool",
+        "unified_diff_generator",
+        "jwk_pem_converter",
+        "cert_chain_validator",
+        "wsl_path_converter",
+        "markdown_link_extractor",
     }
 
 
@@ -377,6 +377,8 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "password_policy_checker",
             "ssh_config_validator",
             "csr_generator",
+            "jwk_pem_converter",
+            "cert_chain_validator",
         ],
         "Web & Dev": [
             "http_status",
@@ -396,6 +398,8 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "css_gradient_generator",
             "robots_meta_builder",
             "cache_control_tool",
+            "unified_diff_generator",
+            "markdown_link_extractor",
         ],
         "Data & Text": [
             "json_formatter",
@@ -433,6 +437,7 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "line_numberer",
             "test_data_generator",
             "json_merge_patch",
+            "base62_tool",
         ],
         "Ops & Automation": [
             "cron_explainer",
@@ -454,6 +459,7 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "cron_overlap",
             "iso8601_duration",
             "column_aligner",
+            "wsl_path_converter",
         ],
         "Reference": [
             "port_reference",
