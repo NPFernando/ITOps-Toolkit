@@ -52,6 +52,17 @@ def test_rejects_missing_n_or_e():
     assert "missing required RSA fields" in result["error"]
 
 
+def test_rejects_n_e_that_dont_form_a_valid_key():
+    # Regression: an unreasonably small modulus (e.g. from a truncated
+    # copy-paste) raised an unhandled ValueError from
+    # RSAPublicNumbers.public_key(), crashing the page instead of
+    # reporting a clean error.
+    result = jwk_to_pem(json.dumps({"kty": "RSA", "n": "AQ", "e": "AQAB"}))
+
+    assert result["ok"] is False
+    assert "don't form a valid RSA key" in result["error"]
+
+
 def test_rejects_invalid_json():
     result = jwk_to_pem("{not valid")
 

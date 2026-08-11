@@ -65,7 +65,12 @@ def jwk_to_pem(jwk_text: str) -> dict[str, Any]:
         result["error"] = f"Could not decode 'n'/'e' as base64url integers: {exc}"
         return result
 
-    public_key = rsa.RSAPublicNumbers(e, n).public_key()
+    try:
+        public_key = rsa.RSAPublicNumbers(e, n).public_key()
+    except ValueError as exc:
+        result["error"] = f"'n'/'e' don't form a valid RSA key: {exc}"
+        return result
+
     pem = public_key.public_bytes(encoding=serialization.Encoding.PEM, format=serialization.PublicFormat.SubjectPublicKeyInfo)
     result.update({"ok": True, "output": pem.decode()})
     return result
