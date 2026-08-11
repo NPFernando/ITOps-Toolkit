@@ -69,6 +69,31 @@ def test_query_rejects_keying_a_non_object():
     assert "expects an object" in result["error"]
 
 
+def test_query_root_level_array_index():
+    # Regression: a bare "[0]" path segment (no leading key -- e.g. for a
+    # top-level JSON array, which has no object key to index through
+    # first) used to be rejected as an "Invalid path segment" even though
+    # bracket-index syntax is otherwise supported.
+    result = query_json_path('[{"a": 1}, {"a": 2}]', "[0]")
+
+    assert result["ok"] is True
+    assert json.loads(result["output"]) == {"a": 1}
+
+
+def test_query_root_level_array_index_then_key():
+    result = query_json_path('[{"a": 1}, {"a": 2}]', "[1].a")
+
+    assert result["ok"] is True
+    assert result["output"] == "2"
+
+
+def test_query_rejects_truly_empty_segment():
+    result = query_json_path('{"a": 1}', "a..b")
+
+    assert result["ok"] is False
+    assert "Invalid path segment" in result["error"]
+
+
 def test_query_rejects_empty_path():
     result = query_json_path(DOC, "")
 
