@@ -15,9 +15,10 @@ from typing import Any
 MAX_INPUT_LENGTH = 100_000
 MAX_PATH_LENGTH = 500
 
-# One path segment: a bare key, optionally followed by one or more [index]
-# array accessors (e.g. "addresses[0]", "tags[1][0]").
-_SEGMENT_RE = re.compile(r"^([^.\[\]]+)((?:\[\d+\])*)$")
+# One path segment: an optional key (omitted for a bare root-level index
+# like "[0]"), followed by zero or more [index] array accessors (e.g.
+# "addresses[0]", "tags[1][0]", "[0].a").
+_SEGMENT_RE = re.compile(r"^([^.\[\]]*)((?:\[\d+\])*)$")
 _INDEX_RE = re.compile(r"\[(\d+)\]")
 
 
@@ -29,7 +30,10 @@ def _parse_path(path: str) -> list[str | int]:
         if not match:
             raise ValueError(f"Invalid path segment: '{raw_segment}'.")
         key, indices = match.groups()
-        steps.append(key)
+        if not key and not indices:
+            raise ValueError(f"Invalid path segment: '{raw_segment}'.")
+        if key:
+            steps.append(key)
         steps.extend(int(i) for i in _INDEX_RE.findall(indices))
     return steps
 
