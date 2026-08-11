@@ -206,12 +206,12 @@ def test_expected_tools_are_tagged_new():
     new_slugs = {tool.slug for tool in TOOLS if tool.is_new}
 
     assert new_slugs == {
-        "csv_json_converter",
-        "line_sorter",
-        "user_agent_builder",
-        "semver_tools",
-        "world_clock",
-        "csv_cleaner",
+        "json_path_query",
+        "iban_validator",
+        "base58_tool",
+        "exit_code_reference",
+        "timezone_abbreviation_reference",
+        "basic_auth_tool",
     }
 
 
@@ -370,6 +370,7 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "luhn_validator",
             "ssh_fingerprint",
             "password_entropy",
+            "iban_validator",
         ],
         "Web & Dev": [
             "http_status",
@@ -384,6 +385,7 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "html_entity_tools",
             "line_ending_converter",
             "user_agent_builder",
+            "basic_auth_tool",
         ],
         "Data & Text": [
             "json_formatter",
@@ -412,6 +414,8 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "yaml_formatter",
             "regex_replace",
             "csv_json_converter",
+            "json_path_query",
+            "base58_tool",
         ],
         "Ops & Automation": [
             "cron_explainer",
@@ -436,6 +440,8 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "m365_sku_decoder",
             "http_status_reference",
             "regex_cheat_sheet",
+            "exit_code_reference",
+            "timezone_abbreviation_reference",
         ],
     }
 
