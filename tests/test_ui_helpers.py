@@ -206,12 +206,12 @@ def test_expected_tools_are_tagged_new():
     new_slugs = {tool.slug for tool in TOOLS if tool.is_new}
 
     assert new_slugs == {
-        "json_path_query",
-        "iban_validator",
-        "base58_tool",
-        "exit_code_reference",
-        "timezone_abbreviation_reference",
-        "basic_auth_tool",
+        "gitignore_tester",
+        "markdown_toc_generator",
+        "number_to_words",
+        "json_to_typescript",
+        "css_gradient_generator",
+        "jwt_claims_reference",
     }
 
 
@@ -386,6 +386,8 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "line_ending_converter",
             "user_agent_builder",
             "basic_auth_tool",
+            "json_to_typescript",
+            "css_gradient_generator",
         ],
         "Data & Text": [
             "json_formatter",
@@ -416,6 +418,8 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "csv_json_converter",
             "json_path_query",
             "base58_tool",
+            "markdown_toc_generator",
+            "number_to_words",
         ],
         "Ops & Automation": [
             "cron_explainer",
@@ -432,6 +436,7 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "semver_tools",
             "world_clock",
             "csv_cleaner",
+            "gitignore_tester",
         ],
         "Reference": [
             "port_reference",
@@ -442,6 +447,7 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "regex_cheat_sheet",
             "exit_code_reference",
             "timezone_abbreviation_reference",
+            "jwt_claims_reference",
         ],
     }
 
