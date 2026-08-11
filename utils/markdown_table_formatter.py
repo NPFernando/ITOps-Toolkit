@@ -8,14 +8,20 @@ from the existing separator row.
 
 from __future__ import annotations
 
+import re
 from typing import Any
 
 MAX_INPUT_LENGTH = 100_000
 _MIN_DASH_WIDTH = 3
+# A '\|' inside a cell is a literal pipe, not a column separator -- this is
+# exactly what CSV to Markdown Table's own _escape_cell() produces, so a
+# table built by that tool must still round-trip through this one.
+_UNESCAPED_PIPE_RE = re.compile(r"(?<!\\)\|")
 
 
 def _split_row(line: str) -> list[str]:
-    return [cell.strip() for cell in line.strip().strip("|").split("|")]
+    stripped = line.strip().strip("|")
+    return [cell.strip().replace("\\|", "|") for cell in _UNESCAPED_PIPE_RE.split(stripped)]
 
 
 def _parse_alignment(separator_cell: str) -> str:
@@ -38,6 +44,13 @@ def _format_separator(width: int, align: str) -> str:
     if align == "left":
         return ":" + "-" * max(width - 1, 1)
     return "-" * width
+
+
+def _escape_cell(cell: str) -> str:
+    # Re-escape a literal '|' so the regenerated table is still valid --
+    # otherwise a cell containing "a | b" would silently become an extra
+    # column the next time this table is parsed.
+    return cell.replace("|", "\\|")
 
 
 def _pad(cell: str, width: int, align: str) -> str:
@@ -79,6 +92,9 @@ def format_markdown_table(markdown_text: str) -> dict[str, Any]:
     if ragged:
         result["error"] = f"Every row must have {len(header)} columns to match the header -- found a row with {len(ragged[0])}."
         return result
+
+    header = [_escape_cell(cell) for cell in header]
+    body = [[_escape_cell(cell) for cell in row] for row in body]
 
     aligns = [_parse_alignment(cell) for cell in separator]
     widths = [max(_MIN_DASH_WIDTH, len(header[i]), *(len(row[i]) for row in body)) if body else max(_MIN_DASH_WIDTH, len(header[i])) for i in range(len(header))]

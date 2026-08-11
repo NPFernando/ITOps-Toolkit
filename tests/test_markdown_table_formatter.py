@@ -23,6 +23,17 @@ def test_preserves_alignment_markers():
     assert lines[2].endswith("NYC |")
 
 
+def test_escaped_pipe_inside_cell_round_trips():
+    # Regression: CSV to Markdown Table's own _escape_cell() produces "\|"
+    # for a literal pipe inside a cell -- a table built by that tool must
+    # still parse correctly here, not get misread as an extra column.
+    raw = r"| Name | Note |" "\n" r"|---|---|" "\n" r"| Alice | a \| b |"
+    result = format_markdown_table(raw)
+
+    assert result["ok"] is True
+    assert r"a \| b" in result["output"]
+
+
 def test_rejects_missing_separator_row():
     result = format_markdown_table("| Name | Age |")
 
