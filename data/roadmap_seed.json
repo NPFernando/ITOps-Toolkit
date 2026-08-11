@@ -1223,6 +1223,141 @@
       "description": "Extract every link from Markdown text -- inline links, reference-style links, and bare autolinks.",
       "rationale": "Distinct from Text Pattern Extractor (a generic user-supplied regex, no Markdown-specific link syntax) and Markdown TOC Generator (headings, not links). Correctly excludes image syntax (![alt](url)) from being treated as a link.",
       "updated_at": "2026-08-11"
+    },
+    {
+      "title": "Outlook/M365 Safe Links decoder",
+      "category": "Tools",
+      "status": "Planned",
+      "votes": 6,
+      "description": "Unwrap a Microsoft Defender Safe Links-wrapped URL (the https://*.safelinks.protection.outlook.com/?url=... redirect) back to the real destination URL.",
+      "rationale": "Sourced from a feature comparison against IT-Tools (github.com/CorentinTh/it-tools, a popular open-source developer/IT tools site) -- not covered by any existing tool here. Genuinely common support/security need: a user pastes a suspicious-looking wrapped link and wants to know where it actually goes before clicking. Buildable with stdlib urllib.parse only (extract and URL-decode the 'url' query parameter), no network call needed.",
+      "updated_at": "2026-08-11"
+    },
+    {
+      "title": "docker run to docker-compose converter",
+      "category": "Tools",
+      "status": "Planned",
+      "votes": 5,
+      "description": "Paste a `docker run ...` command and get an equivalent docker-compose.yml service definition.",
+      "rationale": "Sourced from IT-Tools. Genuinely common DevOps need when migrating an ad-hoc container command into a reproducible compose file. Buildable by parsing common docker run flags (-p, -v, -e, --name, -d, image, command) with stdlib shlex/argparse -- scope limited to the well-documented common flags, with an honest note about flags it doesn't recognize.",
+      "updated_at": "2026-08-11"
+    },
+    {
+      "title": "NATO phonetic alphabet converter",
+      "category": "Tools",
+      "status": "Planned",
+      "votes": 5,
+      "description": "Convert text into the NATO phonetic alphabet (Alpha, Bravo, Charlie...) for reading serial numbers, license keys, or codes aloud over the phone.",
+      "rationale": "Sourced from IT-Tools. A real, frequent support-call need (reading a MAC address or license key to someone) that isn't covered by any existing tool. Static lookup table, stdlib only.",
+      "updated_at": "2026-08-11"
+    },
+    {
+      "title": "WiFi QR code generator",
+      "category": "Tools",
+      "status": "Planned",
+      "votes": 4,
+      "description": "Generate a QR code that, when scanned, joins a phone to a WiFi network -- encodes the WIFI:S:<ssid>;T:<type>;P:<password>;; format.",
+      "rationale": "Sourced from IT-Tools. Distinct from the existing QR Code Generator (which encodes arbitrary text/URLs, not this specific structured format) -- common for handing out guest WiFi access. The qrcode library is already a dependency (used by QR Code Generator), no new dependency needed.",
+      "updated_at": "2026-08-11"
+    },
+    {
+      "title": "HMAC generator",
+      "category": "Tools",
+      "status": "Planned",
+      "votes": 5,
+      "description": "Generate an HMAC (keyed hash) for a message using a secret key, in MD5/SHA-1/SHA-256/SHA-512.",
+      "rationale": "Sourced from IT-Tools. Distinct from Hash Generator (unkeyed hashing) -- HMAC needs a secret key and is used for webhook signature verification (Stripe, GitHub, etc.), which plain hashing can't do. Stdlib hmac/hashlib only.",
+      "updated_at": "2026-08-11"
+    },
+    {
+      "title": "IPv6 ULA generator",
+      "category": "Tools",
+      "status": "Planned",
+      "votes": 4,
+      "description": "Generate a random IPv6 Unique Local Address (RFC 4193) prefix for a private network.",
+      "rationale": "Sourced from IT-Tools. Distinct from IPv6 Compressor (formats an existing address, doesn't generate one). RFC 4193's algorithm (random 40-bit global ID derived via SHA-1, per the RFC's own recommended method) is well-specified and implementable with stdlib secrets/hashlib only.",
+      "updated_at": "2026-08-11"
+    },
+    {
+      "title": "Random MAC address generator",
+      "category": "Tools",
+      "status": "Planned",
+      "votes": 4,
+      "description": "Generate a random MAC address, with an option to set the locally-administered bit (for VM/virtual NIC configs that shouldn't collide with real vendor-assigned addresses).",
+      "rationale": "Sourced from IT-Tools. Distinct from the existing MAC Address Tool (analyzes/looks up an existing address, doesn't generate one). Setting the locally-administered bit correctly (per IEEE 802) avoids accidentally generating an address that collides with a real vendor OUI.",
+      "updated_at": "2026-08-11"
+    },
+    {
+      "title": "List converter",
+      "category": "Tools",
+      "status": "Planned",
+      "votes": 4,
+      "description": "Convert a list between formats: newline-separated, comma-separated, JSON array, quoted/comma-separated (e.g. for SQL IN clauses).",
+      "rationale": "Sourced from IT-Tools. A common small friction point (pasting a column of values and needing it as a JSON array or a SQL IN (...) list) not covered by any existing tool. Stdlib only.",
+      "updated_at": "2026-08-11"
+    },
+    {
+      "title": "Email address normalizer",
+      "category": "Tools",
+      "status": "Planned",
+      "votes": 4,
+      "description": "Normalize an email address for deduplication: lowercase, strip Gmail's ignored dots in the local part, strip +tag suffixes.",
+      "rationale": "Sourced from IT-Tools. Distinct from Email Header Analyzer (parses headers) and Email Record Builder (builds DNS records). Genuinely useful for deduplicating a user list where the same person signed up multiple times with dot/plus variations. Needs an honest scope note: the dot-and-plus rules are Gmail-specific conventions, not a universal email spec.",
+      "updated_at": "2026-08-11"
+    },
+    {
+      "title": "IPv4 address format converter",
+      "category": "Tools",
+      "status": "Planned",
+      "votes": 3,
+      "description": "Convert an IPv4 address between dotted-decimal, hexadecimal, binary, and 32-bit integer representations.",
+      "rationale": "Sourced from IT-Tools. Distinct from Subnet Calculator (network/broadcast/host-range math, not format conversion) and IPv6 Compressor (a different protocol). Stdlib ipaddress/socket only.",
+      "updated_at": "2026-08-11"
+    },
+    {
+      "title": "IPv4 range expander",
+      "category": "Tools",
+      "status": "Planned",
+      "votes": 3,
+      "description": "Expand a CIDR block or IP range into the individual addresses it contains.",
+      "rationale": "Sourced from IT-Tools. The reverse of CIDR Aggregator (which collapses individual addresses/ranges into a minimal CIDR set). Needs a hard cap on output size (a /8 has 16M addresses) with a clear error rather than hanging or producing an enormous page.",
+      "updated_at": "2026-08-11"
+    },
+    {
+      "title": "Git command cheat sheet",
+      "category": "Tools",
+      "status": "Planned",
+      "votes": 4,
+      "description": "Searchable static reference of common git commands and what they do.",
+      "rationale": "Sourced from IT-Tools. Matches this app's established static-reference pattern (Regex Cheat Sheet, HTTP Status Reference, Port Reference) -- a different, frequently-needed topic not yet covered.",
+      "updated_at": "2026-08-11"
+    },
+    {
+      "title": "BIP39 mnemonic generator/validator",
+      "category": "Tools",
+      "status": "Planned",
+      "votes": 2,
+      "description": "Generate or validate a BIP39 mnemonic seed phrase (the 12/24-word phrases used by crypto wallets) against the standard English wordlist.",
+      "rationale": "Sourced from IT-Tools. Niche compared to this app's core MSP/sysadmin focus, but a well-specified, self-contained algorithm (checksum bits derived from a SHA-256 hash of the entropy, per the BIP39 spec) that's easy to verify against the spec's own published test vectors. Lower priority than the other items in this batch.",
+      "updated_at": "2026-08-11"
+    },
+    {
+      "title": "Lorem ipsum generator",
+      "category": "Tools",
+      "status": "Planned",
+      "votes": 3,
+      "description": "Generate placeholder Lorem Ipsum text (by word, sentence, or paragraph count) for mockups and test fixtures.",
+      "rationale": "Sourced from IT-Tools. Complements the existing Test Data Generator (structured fake records like names/emails) with unstructured placeholder prose, a different and common mockup need.",
+      "updated_at": "2026-08-11"
+    },
+    {
+      "title": "Text to binary/hex/octal converter",
+      "category": "Tools",
+      "status": "Planned",
+      "votes": 3,
+      "description": "Convert text to its binary, hexadecimal, or octal byte representation, and back.",
+      "rationale": "Sourced from IT-Tools. Distinct from Integer Base Converter (converts a single number's base, not a text string's byte representation) and Base64/Base32 Tool (different encoding scheme entirely). Useful for teaching/debugging low-level byte representations.",
+      "updated_at": "2026-08-11"
     }
   ]
 }
