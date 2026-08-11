@@ -206,15 +206,12 @@ def test_expected_tools_are_tagged_new():
     new_slugs = {tool.slug for tool in TOOLS if tool.is_new}
 
     assert new_slugs == {
-        "url_parser",
-        "base32_tools",
-        "http_header_parser",
-        "cidr_overlap",
-        "csr_decoder",
-        "pem_bundle_splitter",
-        "whitespace_visualizer",
-        "date_calculator",
-        "xml_formatter",
+        "html_entity_tools",
+        "deterministic_uuid",
+        "luhn_validator",
+        "text_stats",
+        "csv_to_markdown",
+        "ssh_fingerprint",
     }
 
 
@@ -370,6 +367,8 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "jwt_weak_secret",
             "csr_decoder",
             "pem_bundle_splitter",
+            "luhn_validator",
+            "ssh_fingerprint",
         ],
         "Web & Dev": [
             "http_status",
@@ -381,6 +380,7 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "robots_validator",
             "url_parser",
             "http_header_parser",
+            "html_entity_tools",
         ],
         "Data & Text": [
             "json_formatter",
@@ -403,6 +403,9 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "base32_tools",
             "whitespace_visualizer",
             "xml_formatter",
+            "deterministic_uuid",
+            "text_stats",
+            "csv_to_markdown",
         ],
         "Ops & Automation": [
             "cron_explainer",
