@@ -62,6 +62,28 @@ def test_last_matching_pattern_wins():
     assert _ignored_map(result) == {"app.log": False}
 
 
+def test_bracket_character_class():
+    # Regression: [...] classes were being re.escape()'d as literal
+    # characters instead of translated into a regex character class, so
+    # "*.[oa]" matched nothing at all. Verified directly against real
+    # `git check-ignore`.
+    result = check_paths("*.[oa]", "file.o\nfile.a\nfile.b")
+
+    assert _ignored_map(result) == {"file.o": True, "file.a": True, "file.b": False}
+
+
+def test_negated_bracket_character_class():
+    result = check_paths("[!abc].txt", "d.txt\na.txt")
+
+    assert _ignored_map(result) == {"d.txt": True, "a.txt": False}
+
+
+def test_question_mark_matches_single_character():
+    result = check_paths("file?.txt", "file1.txt\nfile12.txt")
+
+    assert _ignored_map(result) == {"file1.txt": True, "file12.txt": False}
+
+
 def test_rejects_empty_gitignore():
     result = check_paths("", "app.log")
 

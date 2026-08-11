@@ -60,6 +60,22 @@ def test_level_range_filter():
     assert "H3" not in result["output"]
 
 
+def test_heading_with_up_to_three_leading_spaces_is_recognized():
+    # Regression: CommonMark allows 0-3 leading spaces before the '#'
+    # marker on an ATX heading; the original regex required zero, silently
+    # skipping any heading indented even by one space.
+    result = generate_toc("   # Indented Heading")
+
+    assert result["ok"] is True
+    assert "[Indented Heading](#indented-heading)" in result["output"]
+
+
+def test_heading_with_four_leading_spaces_is_an_indented_code_block_not_a_heading():
+    result = generate_toc("    # Not a heading")
+
+    assert result["ok"] is False
+
+
 def test_rejects_empty_input():
     result = generate_toc("")
 
