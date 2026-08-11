@@ -2141,10 +2141,17 @@ def _inject_global_css(mode: str) -> None:
     # literal `{`/`}` CSS rule braces that would otherwise need escaping.
     tokens = _THEME_TOKENS[mode]
     root_vars = "\n            ".join(f"--itops-{name}: {value};" for name, value in tokens.items())
-    css = """
+    # The font <link> tags are rendered via a separate st.markdown() call
+    # (not st.html()) because st.html()'s sanitizer strips <link> tags.
+    st.markdown(
+        """
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+        """,
+        unsafe_allow_html=True,
+    )
+    css = """
         <style>
 
         :root {
@@ -3814,4 +3821,8 @@ def _inject_global_css(mode: str) -> None:
         </style>
         """
     css = css.replace("__ITOPS_ROOT_VARS__", root_vars)
-    st.markdown(css, unsafe_allow_html=True)
+    # st.html() renders raw HTML/CSS without going through Streamlit's
+    # markdown/CommonMark parser, which was misparsing blank lines inside
+    # this large <style> block as paragraph breaks and leaking the CSS
+    # source as visible page text (see PR description for repro details).
+    st.html(css)
