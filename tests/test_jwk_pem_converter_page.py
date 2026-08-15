@@ -23,7 +23,8 @@ def test_jwk_to_pem_tab_shows_result():
     assert "BEGIN PUBLIC KEY" in code
     md = " ".join(m.value for m in app.markdown)
     assert "tool-status-note-success" in md
-    assert "Conversion complete" in md
+    assert "PEM public key ready" in md
+    assert 'role="status"' in md
 
 
 def test_empty_state_shown_before_submit():
@@ -34,7 +35,8 @@ def test_empty_state_shown_before_submit():
     md = " ".join(m.value for m in app.markdown)
     assert "tool-empty-state" in md
     assert "tool-status-note-neutral" in md
-    assert "Awaiting JWK input" in md
+    assert "Ready for JWK input" in md
+    assert 'role="status"' in md
 
 
 def test_invalid_jwk_shows_warning_status():
@@ -48,7 +50,8 @@ def test_invalid_jwk_shows_warning_status():
 
     md = " ".join(m.value for m in app.markdown)
     assert "tool-status-note-warning" in md
-    assert "Cannot convert JWK to PEM yet" in md
+    assert "JWK to PEM conversion needs input fixes" in md
+    assert 'role="alert"' in md
 
 
 def test_results_persist_after_sidebar_interaction():

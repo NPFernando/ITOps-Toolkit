@@ -21,7 +21,9 @@ def test_convert_shows_result():
     assert "/mnt/c/Users/naveen/file.txt" in code
     md = " ".join(m.value for m in app.markdown)
     assert "tool-status-note-success" in md
-    assert "Conversion complete" in md
+    assert "Path conversion complete" in md
+    assert "WSL (/mnt/c/...)" in md
+    assert 'role="status"' in md
 
 
 def test_empty_state_shown_before_submit():
@@ -32,7 +34,8 @@ def test_empty_state_shown_before_submit():
     md = " ".join(m.value for m in app.markdown)
     assert "tool-empty-state" in md
     assert "tool-status-note-neutral" in md
-    assert "Awaiting path input" in md
+    assert "Ready for path input" in md
+    assert 'role="status"' in md
 
 
 def test_empty_submission_shows_warning_status():
@@ -45,7 +48,8 @@ def test_empty_submission_shows_warning_status():
 
     md = " ".join(m.value for m in app.markdown)
     assert "tool-status-note-warning" in md
-    assert "Cannot convert path yet" in md
+    assert "Path conversion needs input fixes" in md
+    assert 'role="alert"' in md
 
 
 def test_results_persist_after_sidebar_interaction():
