@@ -41,22 +41,39 @@ result = st.session_state.get("cert_chain_validator_result")
 
 if result is None:
     render_empty_state("Ready to validate", "Chain ordering and signature verification results appear here.")
-    render_status_note("Awaiting certificate input", "Paste a PEM chain and run validation to verify order and signatures.", tone="neutral")
+    render_status_note(
+        "Ready for certificate chain input",
+        "Paste a PEM chain and select Validate chain to check certificate order and signatures.",
+        tone="neutral",
+    )
 
 if result is not None:
     with tool_result_panel("cert_chain_validator_result_panel", related_to="cert_chain_validator"):
         render_section_heading("Chain validation", eyebrow="Result")
         if not result["ok"]:
             render_status_note(
-                "Cannot validate certificate chain yet",
+                "Certificate chain validation needs input fixes",
                 f"{result['error']} Provide at least two valid PEM certificates ordered from leaf to issuer, then validate again.",
                 tone="warning",
             )
         else:
+            failing_links = sum(
+                1
+                for link in result["links"]
+                if (not link["names_match"]) or link["signature_verified"] is False
+            )
             if result["chain_valid"]:
-                render_status_note("Validation complete", "Chain ordering and signatures are consistent across all certificate links.", tone="success")
+                render_status_note(
+                    "Certificate chain is consistent",
+                    "Validation passed: each certificate link matched issuer naming and signature checks.",
+                    tone="success",
+                )
             else:
-                render_status_note("Chain needs attention", "At least one certificate link failed name matching or signature verification.", tone="warning")
+                render_status_note(
+                    "Certificate chain needs attention",
+                    f"Validation found {failing_links} certificate link issue(s). Review the link table below for exact mismatches.",
+                    tone="warning",
+                )
             st.table(
                 [
                     {

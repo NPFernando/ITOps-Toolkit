@@ -318,6 +318,20 @@ This guide documents the UI direction used for the Streamlit dashboard and tool 
 - Record Wave 14 outcomes in `docs/release-notes-template.md` using synthetic/sanitized evidence only.
 - Keep non-tool exceptions explicit and confirm desktop/mobile readability after wave-14 updates.
 
+## Phase 22 Wave 15 Standards (Shell, Mobile, Visual, A11y + QA Gates)
+
+- **Shell consistency:** keep shared shell + baseline markers (`shell-ready`, `content-rendered`) stable on Home, Roadmap & Feedback, Unified Diff Generator, JWK/PEM Converter, Certificate Chain Validator, and WSL Path Converter.
+- **Mobile baseline (`<=720px`):** keep wave-15 primary actions full-width and tap-friendly (`use_container_width=True`), avoid forced two-column input layouts on wave-15 pages, and keep conversion target controls readable on small screens.
+- **Visual mapping integrity:** keep wave-15 touchpoint slug mappings readable (`unified_diff_generator`, `jwk_pem_converter`, `cert_chain_validator`, `wsl_path_converter`) before category defaults, with text badge fallback always readable.
+- **Accessibility guardrail:** keep keyboard flow and visible focus rings intact for Home, Roadmap filter/actions, and wave-15 form actions, with neutral/blocking outcomes aligned to shared status/failure note semantics.
+- **QA gate behavior:** treat Wave 15 shell/mobile/visual/a11y regressions as release blockers unless an intentional exception is documented.
+
+### Wave 15 QA handoff guidance
+
+- Run Wave 15 checks in `docs/release-checklist.md` before release.
+- Record Wave 15 outcomes in `docs/release-notes-template.md` using synthetic/sanitized evidence only.
+- Keep non-tool exceptions explicit and confirm desktop/mobile readability after wave-15 updates.
+
 ## Maintenance Rules
 
 - Do not duplicate tool titles, descriptions, paths, or accent colors outside `utils/ui.py`.

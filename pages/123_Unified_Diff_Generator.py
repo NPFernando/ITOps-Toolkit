@@ -30,12 +30,10 @@ render_page_header(
 with tool_form_panel("unified_diff_generator"):
     render_form_intro("Paste the original and changed text", "Use the left box for the baseline and the right box for the updated version.")
     with st.form("unified-diff-form"):
-        col_a, col_b = st.columns(2)
-        original_input = col_a.text_area("Original", height=280, max_chars=MAX_INPUT_LENGTH, placeholder="line1\nline2\nline3")
-        changed_input = col_b.text_area("Changed", height=280, max_chars=MAX_INPUT_LENGTH, placeholder="line1\nCHANGED\nline3")
-        c1, c2 = st.columns(2)
-        original_name = c1.text_input("Original file name", value="a")
-        changed_name = c2.text_input("Changed file name", value="b")
+        original_input = st.text_area("Original", height=240, max_chars=MAX_INPUT_LENGTH, placeholder="line1\nline2\nline3")
+        changed_input = st.text_area("Changed", height=240, max_chars=MAX_INPUT_LENGTH, placeholder="line1\nCHANGED\nline3")
+        original_name = st.text_input("Original file name", value="a")
+        changed_name = st.text_input("Changed file name", value="b")
         context_lines = st.slider("Context lines", 0, 10, 3)
         submitted = st.form_submit_button("Generate diff", use_container_width=True)
 
@@ -46,25 +44,33 @@ result = st.session_state.get("unified_diff_result")
 
 if result is None:
     render_empty_state("Ready to generate", "The unified diff appears here.")
-    render_status_note("Awaiting text input", "Paste original and changed text, then generate a unified diff.", tone="neutral")
+    render_status_note(
+        "Ready for text comparison",
+        "Paste original and changed text, then select Generate diff to create unified patch output.",
+        tone="neutral",
+    )
 
 if result is not None:
     with tool_result_panel("unified_diff_result_panel", related_to="unified_diff_generator"):
         render_section_heading("Unified diff", eyebrow="Result")
         if not result["ok"]:
             render_status_note(
-                "Cannot generate diff yet",
-                f"{result['error']} Review both text inputs and file names, then generate the diff again.",
+                "Diff generation needs input fixes",
+                f"{result['error']} Review the text inputs and file names, then generate the diff again.",
                 tone="warning",
             )
         elif result["identical"]:
             render_status_note(
-                "No changes detected",
-                "Both inputs are identical, so no patch output was produced.",
+                "No differences found",
+                "Both inputs are identical, so no patch output was generated.",
                 tone="neutral",
             )
         else:
-            render_status_note("Diff generation complete", "The patch output is ready below and can be downloaded as a .patch file.", tone="success")
+            render_status_note(
+                "Patch output ready",
+                "Unified diff generation succeeded. Review the patch below or download it as a .patch file.",
+                tone="success",
+            )
             st.code(result["output"], language="diff")
             st.download_button("Download as .patch", result["output"], file_name="change.patch", mime="text/x-diff")
 

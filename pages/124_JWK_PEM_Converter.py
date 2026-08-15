@@ -44,19 +44,23 @@ with jwk_to_pem_tab:
 
     if jwk_result is None:
         render_empty_state("Ready to convert", "The PEM public key appears here.")
-        render_status_note("Awaiting JWK input", "Paste an RSA public JWK and run conversion to produce PEM output.", tone="neutral")
+        render_status_note(
+            "Ready for JWK input",
+            "Paste an RSA public JWK and select Convert to PEM to generate PEM output.",
+            tone="neutral",
+        )
 
     if jwk_result is not None:
         with tool_result_panel("jwk_to_pem_result_panel", related_to="jwk_pem_converter"):
             render_section_heading("PEM public key", eyebrow="Result")
             if not jwk_result["ok"]:
                 render_status_note(
-                    "Cannot convert JWK to PEM yet",
+                    "JWK to PEM conversion needs input fixes",
                     f"{jwk_result['error']} Confirm the JWK is valid JSON with RSA key fields, then retry conversion.",
                     tone="warning",
                 )
             else:
-                render_status_note("Conversion complete", "PEM public key output is ready below.", tone="success")
+                render_status_note("PEM public key ready", "JWK to PEM conversion succeeded. The PEM output is ready below.", tone="success")
                 st.code(jwk_result["output"], language=None)
 
 with pem_to_jwk_tab:
@@ -74,19 +78,23 @@ with pem_to_jwk_tab:
 
     if pem_result is None:
         render_empty_state("Ready to convert", "The JWK appears here.")
-        render_status_note("Awaiting PEM input", "Paste an RSA PEM public key and run conversion to produce JWK output.", tone="neutral")
+        render_status_note(
+            "Ready for PEM input",
+            "Paste an RSA PEM public key and select Convert to JWK to generate JWK output.",
+            tone="neutral",
+        )
 
     if pem_result is not None:
         with tool_result_panel("pem_to_jwk_result_panel", related_to="jwk_pem_converter"):
             render_section_heading("JWK", eyebrow="Result")
             if not pem_result["ok"]:
                 render_status_note(
-                    "Cannot convert PEM to JWK yet",
+                    "PEM to JWK conversion needs input fixes",
                     f"{pem_result['error']} Use a valid RSA PEM public key and retry conversion.",
                     tone="warning",
                 )
             else:
-                render_status_note("Conversion complete", "JWK output is ready below.", tone="success")
+                render_status_note("JWK output ready", "PEM to JWK conversion succeeded. The JWK output is ready below.", tone="success")
                 st.code(pem_result["output"], language="json")
 
 mark_page_baseline(_baseline, "content-rendered")

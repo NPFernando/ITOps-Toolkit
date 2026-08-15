@@ -14,6 +14,7 @@ from utils.ui import (
     recent_or_popular_tools,
     recent_tool_slugs,
     render_feature_strip,
+    render_form_intro,
     render_fragment,
     render_home_hero,
     render_important_notice,
@@ -98,17 +99,18 @@ if show_all:
         all_heading = f"{profession} Tools"
     else:
         all_heading = "All Tools"
-    st.markdown('<div class="tool-panel-eyebrow">Sort</div>', unsafe_allow_html=True)
-    sort_mode_label = st.pills(
-        "Sort",
-        options=("Default", "A-Z", "Z-A"),
-        default="Default",
-        required=True,  # without this, clicking the already-selected pill deselects it
-        # to None, which would then KeyError on the dict lookup below and crash the
-        # whole home page. Same bug class as PR #63.
-        label_visibility="collapsed",
-        key="home_sort_mode",
-    )
+    with tool_form_panel("home_sort_controls"):
+        render_form_intro("Sort visible tools", "Choose how to order the tools currently shown.")
+        sort_mode_label = st.pills(
+            "Sort",
+            options=("Default", "A-Z", "Z-A"),
+            default="Default",
+            required=True,  # without this, clicking the already-selected pill deselects it
+            # to None, which would then KeyError on the dict lookup below and crash the
+            # whole home page. Same bug class as PR #63.
+            label_visibility="collapsed",
+            key="home_sort_mode",
+        )
     sort_mode = {"Default": "default", "A-Z": "az", "Z-A": "za"}[sort_mode_label]
     all_tools = sort_tools(filtered_tools, sort_mode)
     render_fragment(
