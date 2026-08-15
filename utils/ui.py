@@ -1785,20 +1785,45 @@ def apply_app_shell(active_page: str) -> None:
 
 def _get_persisted_slugs(param: str) -> list[str]:
     """Read a comma-separated slug list from the URL query params."""
-    return [slug for slug in st.query_params.get(param, "").split(",") if slug]
+    max_items = MAX_RECENT_TOOLS if param == "recent" else None
+    return _normalize_slug_list(st.query_params.get(param, "").split(","), max_items=max_items)
 
 
 def _set_persisted_slugs(param: str, slugs: list[str]) -> None:
-    """Write a slug list back into the URL query params (removing the key when empty)."""
-    if slugs:
-        st.query_params[param] = ",".join(slugs)
-    else:
+    """Write a slug list back into URL query params, skipping no-op writes."""
+    max_items = MAX_RECENT_TOOLS if param == "recent" else None
+    normalized = _normalize_slug_list(slugs, max_items=max_items)
+    current = st.query_params.get(param, "")
+    updated = ",".join(normalized)
+    if updated:
+        if updated != current:
+            st.query_params[param] = updated
+    elif param in st.query_params:
         st.query_params.pop(param, None)
+
+
+def _normalize_slug_list(slugs: Iterable[str], max_items: int | None = None) -> list[str]:
+    """Trim, de-dupe, and preserve order for persisted query-param slug lists."""
+    normalized: list[str] = []
+    seen: set[str] = set()
+    for value in slugs:
+        slug = value.strip()
+        if not slug or slug in seen:
+            continue
+        normalized.append(slug)
+        seen.add(slug)
+        if max_items is not None and len(normalized) >= max_items:
+            break
+    return normalized
 
 
 def record_recent_visit(slug: str) -> None:
     """Prepend ``slug`` to the recents list (deduped, capped) and persist it."""
+    if not slug:
+        return
     stored = _get_persisted_slugs("recent")
+    if stored and stored[0] == slug:
+        return
     stored = [slug, *(s for s in stored if s != slug)][:MAX_RECENT_TOOLS]
     _set_persisted_slugs("recent", stored)
 
@@ -2135,6 +2160,30 @@ def render_home_hero() -> str:
     return query
 
 
+def render_fragment(name: str, body: Callable[[], None]) -> None:
+    """Render ``body`` inside ``st.fragment`` when available, else run inline."""
+    fragment = getattr(st, "fragment", None)
+    if fragment is None:
+        body()
+        return
+
+    @fragment
+    def _run_fragment() -> None:
+        body()
+
+    _run_fragment()
+
+
+def _request_rerun(prefer_fragment_rerun: bool = False) -> None:
+    if prefer_fragment_rerun:
+        try:
+            st.rerun(scope="fragment")
+            return
+        except Exception:
+            pass
+    st.rerun()
+
+
 def render_tool_section(
     tools: Iterable[ToolMeta],
     query: str = "",
@@ -2142,6 +2191,7 @@ def render_tool_section(
     section_id: str | None = "all-tools",
     key_prefix: str = "tools",
     show_reorder: bool = False,
+    prefer_fragment_rerun: bool = False,
 ) -> None:
     """Render a home page tool card grid.
 
@@ -2154,7 +2204,10 @@ def render_tool_section(
     tools) and Streamlit container keys must be unique. ``show_reorder``
     adds move-earlier/move-later buttons -- pass True only for the
     visitor's own Favorites grid, never for a read-only grid like Shared
-    Favorites or Recently Used.
+    Favorites or Recently Used. ``prefer_fragment_rerun`` uses
+    ``st.rerun(scope="fragment")`` where available, which keeps favorite
+    interactions scoped to the current fragment instead of rerunning the
+    full app shell.
     """
     tools = tuple(tools)
     section_label = heading if heading is not None else ("Matching Tools" if query.strip() else "Popular Tools")
@@ -2189,7 +2242,7 @@ def render_tool_section(
                             disabled=index == 0,
                         ):
                             move_favorite(tool.slug, -1)
-                            st.rerun()
+                            _request_rerun(prefer_fragment_rerun)
                     with fwd_col:
                         if st.button(
                             "",
@@ -2199,7 +2252,7 @@ def render_tool_section(
                             disabled=index == len(tools) - 1,
                         ):
                             move_favorite(tool.slug, 1)
-                            st.rerun()
+                            _request_rerun(prefer_fragment_rerun)
                 else:
                     link_col, fav_col = st.columns([5, 1])
                 with link_col:
@@ -2210,7 +2263,7 @@ def render_tool_section(
                     fav_help = "Remove from favorites" if is_fav else "Add to favorites"
                     if st.button("", icon=fav_icon, key=f"fav_toggle_{key_prefix}_{tool.slug}", help=fav_help):
                         toggle_favorite(tool.slug)
-                        st.rerun()
+                        _request_rerun(prefer_fragment_rerun)
 
 
 def render_feature_strip() -> None:
@@ -2460,21 +2513,29 @@ def render_status_note(title: str, description: str, tone: str = "info") -> None
 def filter_tools(query: str = "", profession: str = "All") -> tuple[ToolMeta, ...]:
     """Return every tool matching both the search text and the profession filter."""
     value = query.strip().lower()
-    matches_query = (
-        (lambda tool: True)
-        if not value
-        else (
-            lambda tool: value in tool.title.lower()
+    normalized_profession = profession if profession in PROFESSIONS else "All"
+    return _filter_tools_cached(value, normalized_profession)
+
+
+@lru_cache(maxsize=512)
+def _filter_tools_cached(value: str, profession: str) -> tuple[ToolMeta, ...]:
+    matches_profession = (
+        (lambda tool: True) if profession == "All" else (lambda tool: profession in tool.professions)
+    )
+    if not value:
+        return tuple(tool for tool in TOOLS if matches_profession(tool))
+    return tuple(
+        tool
+        for tool in TOOLS
+        if matches_profession(tool)
+        and (
+            value in tool.title.lower()
             or value in tool.short_title.lower()
             or value in tool.description.lower()
             or value in tool.slug.replace("_", " ")
             or any(value in alias.lower() for alias in tool.aliases)
         )
     )
-    matches_profession = (
-        (lambda tool: True) if profession not in PROFESSIONS else (lambda tool: profession in tool.professions)
-    )
-    return tuple(tool for tool in TOOLS if matches_query(tool) and matches_profession(tool))
 
 
 def _resolve_slugs(slugs: Iterable[str]) -> list[ToolMeta]:
@@ -2515,6 +2576,11 @@ def recent_or_popular_tools(recent_slugs: Iterable[str]) -> tuple[ToolMeta, ...]
 def favorite_tools() -> tuple[ToolMeta, ...]:
     """Return the visitor's favorited tools, in the order they were favorited. No padding."""
     return tuple(_resolve_slugs(_get_persisted_slugs("fav")))
+
+
+def recent_tool_slugs() -> tuple[str, ...]:
+    """Return persisted recent-tool slugs (already deduped and capped)."""
+    return tuple(_get_persisted_slugs("recent"))
 
 
 def favorites_share_link(tools: Iterable[ToolMeta]) -> str:

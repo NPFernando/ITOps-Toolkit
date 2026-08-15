@@ -3,6 +3,7 @@ from __future__ import annotations
 import pandas as pd
 import streamlit as st
 
+from utils.dev_baseline import mark_page_baseline, render_page_baseline, start_page_baseline
 from utils.dns_tools import MAX_DOMAIN_LENGTH, normalize_domain, resolve_records
 from utils.text_tools import validate_length
 from utils.ui import (
@@ -18,8 +19,10 @@ from utils.ui import (
 )
 
 
+_baseline = start_page_baseline("DNS Record Checker")
 st.set_page_config(page_title="DNS Record Checker", layout="wide")
 apply_app_shell(active_page="DNS Record Checker")
+mark_page_baseline(_baseline, "shell-ready")
 
 
 EXPLANATIONS = {
@@ -114,3 +117,6 @@ if stored is not None:
             file_name=f"dns-{stored['record_type'].lower()}-raw-values.txt",
             mime="text/plain",
         )
+
+mark_page_baseline(_baseline, "content-rendered")
+render_page_baseline(_baseline)

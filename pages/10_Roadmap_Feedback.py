@@ -1,16 +1,23 @@
 from __future__ import annotations
 
 from html import escape
+import os
 
 import streamlit as st
 
 from utils import roadmap
 from utils.ai_tools import optional_ai_configured, summarize_feature_requests_with_azure
+from utils.dev_baseline import mark_page_baseline, render_page_baseline, start_page_baseline
 from utils.ui import apply_app_shell, render_section_heading, render_status_note, roadmap_badge_icon_html
 
 
+_baseline = start_page_baseline("Roadmap & Feedback")
 st.set_page_config(page_title="Roadmap & Feedback", page_icon=":material/route:", layout="wide")
 apply_app_shell(active_page="Roadmap & Feedback")
+
+ROADMAP_BOARD_CACHE_TTL_SECONDS = 300
+ROADMAP_AI_TRIAGE_CACHE_TTL_SECONDS = 3600
+mark_page_baseline(_baseline, "shell-ready")
 
 
 def _status_tone(status: str) -> str:
@@ -102,12 +109,12 @@ def _roadmap_column(status: str, status_items: tuple[roadmap.RoadmapItem, ...]) 
     )
 
 
-@st.cache_data(ttl=300, show_spinner=False)
-def _cached_roadmap_board(repo_url: str, loader_token: int) -> roadmap.RoadmapBoard:
+@st.cache_data(ttl=ROADMAP_BOARD_CACHE_TTL_SECONDS, show_spinner=False)
+def _cached_roadmap_board(repo_url: str, _cache_scope: str) -> roadmap.RoadmapBoard:
     return roadmap.load_roadmap_board(repo_url=repo_url)
 
 
-@st.cache_data(ttl=3600, show_spinner=False)
+@st.cache_data(ttl=ROADMAP_AI_TRIAGE_CACHE_TTL_SECONDS, show_spinner=False)
 def _cached_triage_summary(open_items: tuple[roadmap.RoadmapItem, ...]) -> dict:
     """Cached for an hour so repeated clicks (by any visitor) reuse one AI call
     per hour rather than paying for the same summary over and over."""
@@ -116,7 +123,9 @@ def _cached_triage_summary(open_items: tuple[roadmap.RoadmapItem, ...]) -> dict:
 
 feedback_url = roadmap.github_feature_request_url()
 repo_url = roadmap.github_repository_url()
-board = _cached_roadmap_board(repo_url, id(roadmap.load_roadmap_board))
+# Keep production cache keys stable while allowing isolated cache keys per test case.
+cache_scope = os.getenv("PYTEST_CURRENT_TEST", "").split(" (", 1)[0] or "runtime"
+board = _cached_roadmap_board(repo_url, cache_scope)
 
 st.markdown(
     f"""
@@ -138,6 +147,8 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+mark_page_baseline(_baseline, "content-rendered")
+render_page_baseline(_baseline)
 
 st.markdown(
     '<div class="roadmap-notice-grid">'

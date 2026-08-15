@@ -20,15 +20,10 @@ ROADMAP_PAGE_TIMEOUT = 60
 def _clear_roadmap_cache():
     """Clear st.cache_data before each test in this file.
 
-    pages/10_Roadmap_Feedback.py busts its cache on a monkeypatched
-    load_roadmap_board by keying on id(roadmap.load_roadmap_board). That's
-    reliable in production (the loader is never monkeypatched, so the id
-    never changes), but not across tests in one process: each test defines
-    its own short-lived local `fake_board` closure, and CPython can reuse a
-    garbage-collected function's id for the next one. When that happens,
-    st.cache_data (a process-global cache, not reset between separate
-    AppTest runs) serves a *different* test's cached RoadmapBoard, and this
-    test fails on stale content instead of what it just monkeypatched in.
+    The roadmap page now scopes its board-cache key with PYTEST_CURRENT_TEST
+    for test isolation, but this file still clears process-global
+    st.cache_data between tests to keep each scenario explicit and avoid
+    accidental coupling from unrelated cached calls.
     """
     st.cache_data.clear()
 
@@ -162,6 +157,52 @@ def test_roadmap_feedback_page_ai_triage_runs_when_configured_and_clicked(monkey
     text = _page_text(app)
     assert "AI triage summary" in text
     assert "Prioritize the command palette." in text
+
+
+def test_roadmap_feedback_page_ai_triage_click_reuses_cache(monkeypatch):
+    from utils import ai_tools
+
+    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+    monkeypatch.setenv("AZURE_OPENAI_API_KEY", "test-key")
+    monkeypatch.setenv("AZURE_OPENAI_ENDPOINT", "https://example.openai.azure.com/")
+    monkeypatch.setenv("AZURE_OPENAI_DEPLOYMENT", "gpt-test")
+    monkeypatch.setattr(
+        roadmap,
+        "load_roadmap_board",
+        lambda repo_url=None: roadmap.RoadmapBoard(
+            (
+                roadmap.RoadmapItem(
+                    title="Cached triage item",
+                    category="Tools",
+                    status="Planned",
+                    votes=7,
+                    description="Cache this",
+                    rationale="Keep behavior",
+                    source="seed",
+                ),
+            )
+        ),
+    )
+    calls = {"count": 0}
+
+    def fake_summarize(items, client_factory=None):
+        calls["count"] += 1
+        return {"enabled": True, "provider": "azure_openai", "status": "success", "summary": "Cached summary."}
+
+    monkeypatch.setattr(ai_tools, "summarize_feature_requests_with_azure", fake_summarize)
+
+    app = AppTest.from_file(ROADMAP_PAGE, default_timeout=ROADMAP_PAGE_TIMEOUT)
+    app.run()
+    assert not app.exception
+
+    button = next(b for b in app.button if b.label.startswith("Summarize"))
+    button.click().run()
+    button = next(b for b in app.button if b.label.startswith("Summarize"))
+    button.click().run()
+
+    assert not app.exception
+    assert calls["count"] == 1
+    assert "Cached summary." in _page_text(app)
 
 
 def test_roadmap_feedback_page_renders_github_fallback_note(monkeypatch):

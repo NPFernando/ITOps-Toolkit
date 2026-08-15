@@ -7,6 +7,7 @@ from typing import Any
 import pandas as pd
 import streamlit as st
 
+from utils.dev_baseline import mark_page_baseline, render_page_baseline, start_page_baseline
 from utils.dns_tools import MAX_DOMAIN_LENGTH, normalize_domain
 from utils.ssl_tools import get_certificate_info
 from utils.text_tools import validate_length
@@ -24,8 +25,10 @@ from utils.ui import (
 )
 
 
+_baseline = start_page_baseline("SSL Certificate Checker")
 st.set_page_config(page_title="SSL Certificate Checker", layout="wide")
 apply_app_shell(active_page="SSL Certificate Checker")
+mark_page_baseline(_baseline, "shell-ready")
 
 
 def _format_dt(value: Any) -> str:
@@ -151,3 +154,6 @@ if result is not None:
             file_name="ssl-certificate-result.json",
             mime="application/json",
         )
+
+mark_page_baseline(_baseline, "content-rendered")
+render_page_baseline(_baseline)

@@ -136,3 +136,10 @@ This guide documents the UI direction used for the Streamlit dashboard and tool 
 - Any new user-facing page should call `apply_app_shell` immediately after `st.set_page_config`.
 - Any new preloader, spinner, skeleton, or transition styling must use the light blue/white work area and dark sidebar tokens. Avoid default gray loading surfaces.
 - Any material change to the shell, home layout, or tool navigation should update this file and `docs/architecture.md` when boundaries change.
+
+## Phase 3 Performance Playbook
+
+- Place **fragment** patterns (`st.fragment`) in shell/home UI hotspots (`app.py`, `utils/ui.py`) where quick interactions should rerun locally instead of rerunning the full app shell.
+- Place **cache** patterns (`st.cache_data`) in read-only page data loaders/adapters with short TTLs and clear freshness copy in the UI.
+- Place **state** patterns (`st.session_state`) in page-level workflows for transient form/results state; never persist user-entered diagnostics content.
+- Keep **dev baseline instrumentation** local-only (`ITOPS_DEV_BASELINE=1`) and limited to baseline surfaces (Home, Roadmap & Feedback, Domain Health Checker, DNS Record Checker, SSL Certificate Checker, HTTP Status Checker).

@@ -21,6 +21,10 @@ def test_bulk_domain_health_page_clicking_download_does_not_hide_results():
     assert not app.exception
     assert len(app.dataframe) == 1
     assert app.download_button
+    assert "bulk_domain_health_state" in app.session_state
+    state = app.session_state["bulk_domain_health_state"]
+    assert {"frame", "csv_data", "summary"} <= set(state.keys())
+    assert state["summary"]["healthy"] >= 0
 
     app.download_button[0].click()
     app.run(timeout=60)
