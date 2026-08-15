@@ -344,6 +344,20 @@ def test_tool_card_icon_asset_maps_wave6_weak_cue_tools():
         assert ui._tool_card_icon_asset(tool) == expected
 
 
+def test_tool_card_icon_asset_maps_wave7_weak_cue_tools():
+    expected_assets = {
+        "m365_sku_decoder": "icons/exported/icon-workflow-m365-sku-lookup-outline-24x24-v01.svg",
+        "chmod_calculator": "icons/exported/icon-workflow-permission-bits-outline-24x24-v01.svg",
+        "semver_tools": "icons/exported/icon-workflow-semver-compare-outline-24x24-v01.svg",
+        "iso8601_duration": "icons/exported/icon-workflow-duration-timeline-outline-24x24-v01.svg",
+        "ssh_config_validator": "icons/exported/icon-workflow-ssh-config-check-outline-24x24-v01.svg",
+    }
+
+    for slug, expected in expected_assets.items():
+        tool = next(item for item in TOOLS if item.slug == slug)
+        assert ui._tool_card_icon_asset(tool) == expected
+
+
 def test_tool_card_html_wave4_slug_specific_mapping_precedes_category_default_during_render(monkeypatch):
     tool = next(item for item in TOOLS if item.slug == "basic_auth_tool")
 
@@ -381,6 +395,22 @@ def test_tool_card_html_wave6_slug_specific_mapping_precedes_category_default_du
 
     def fake_svg_img_html(path, *args, **kwargs):
         if path == "icons/exported/icon-workflow-dns-lookup-outline-24x24-v01.svg":
+            return '<img class="tool-card-icon-image" data-icon="category-default" />'
+        return None
+
+    monkeypatch.setattr(ui, "_svg_img_html", fake_svg_img_html)
+
+    html = ui._tool_card_html(tool)
+
+    assert "tool-card-icon-image" not in html
+    assert f">{tool.icon}<" in html
+
+
+def test_tool_card_html_wave7_slug_specific_mapping_precedes_category_default_during_render(monkeypatch):
+    tool = next(item for item in TOOLS if item.slug == "semver_tools")
+
+    def fake_svg_img_html(path, *args, **kwargs):
+        if path == "icons/exported/icon-workflow-automation-runbook-outline-24x24-v01.svg":
             return '<img class="tool-card-icon-image" data-icon="category-default" />'
         return None
 

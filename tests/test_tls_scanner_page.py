@@ -32,11 +32,13 @@ def test_scan_renders_results_table(monkeypatch):
     app.button[0].click().run()
     assert not app.exception
 
-    tables = app.table
-    assert len(tables) == 1
-    rendered = str(tables[0].value)
+    dataframes = app.dataframe
+    assert len(dataframes) == 1
+    rendered = str(dataframes[0].value)
     assert "Not testable" in rendered
     assert "Accepted" in rendered
+    assert any("TLS scan complete" in m.value for m in app.markdown)
+    assert any("Accepted: 1. Rejected: 0. Not testable: 1." in m.value for m in app.markdown)
 
 
 def test_empty_host_shows_validation_error():
@@ -47,6 +49,7 @@ def test_empty_host_shows_validation_error():
     app.button[0].click().run()
     assert not app.exception
     assert any("Enter a host name" in e.value for e in app.error)
+    assert any("Host input required" in m.value for m in app.markdown)
 
 
 def test_empty_state_shown_before_submit():
@@ -66,10 +69,10 @@ def test_results_persist_after_sidebar_interaction(monkeypatch):
     app.text_input[0].set_value("example.com")
     app.button[0].click().run()
     assert not app.exception
-    before = len(app.table)
+    before = len(app.dataframe)
     assert before > 0
 
     search = next(t for t in app.text_input if t.key == "sidebar_quick_search")
     search.set_value("test").run()
     assert not app.exception
-    assert len(app.table) == before
+    assert len(app.dataframe) == before

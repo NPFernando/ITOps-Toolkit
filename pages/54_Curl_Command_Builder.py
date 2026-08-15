@@ -10,6 +10,7 @@ from utils.ui import (
     render_form_intro,
     render_page_header,
     render_section_heading,
+    render_status_note,
     tool_form_panel,
     tool_result_panel,
 )
@@ -27,7 +28,7 @@ render_page_header(
 )
 
 with tool_form_panel("curl_builder"):
-    render_form_intro("Build a request", "Choose a method, enter a URL, and optionally add headers and a body.")
+    render_form_intro("Build a curl command", "Choose a method, enter a URL, and optionally add headers and a body.")
     with st.form("curl-builder-form"):
         method_col, url_col = st.columns([1, 4])
         method = method_col.selectbox("Method", ALLOWED_METHODS)
@@ -52,12 +53,27 @@ if submitted:
 result = st.session_state.get("curl_builder_result")
 
 if result is None:
-    render_empty_state("Ready to build", "The curl command appears here after you build one.")
+    render_empty_state("Ready to build a command", "The generated curl command appears here after you build one.")
+    render_status_note(
+        "Awaiting inputs",
+        "Pick a method, provide a URL, and submit to generate a shell-ready command.",
+        tone="neutral",
+    )
 
 if result is not None:
     with tool_result_panel("curl_builder_result_panel", related_to="curl_builder"):
-        render_section_heading("curl command", "Copy this into a terminal, script, or ticket.")
+        render_section_heading("Generated curl command", "Copy this into a terminal, script, or ticket.", eyebrow="Result")
         if not result["ok"]:
             st.error(result["error"])
+            render_status_note(
+                "Command not generated",
+                "Fix the highlighted validation issue, then build the command again.",
+                tone="warning",
+            )
         else:
             st.code(result["command"], language="bash")
+            render_status_note(
+                "Command ready for copy",
+                "Use keyboard focus or your pointer to copy the generated command block.",
+                tone="success",
+            )
