@@ -251,6 +251,15 @@ When a roadmap badge asset is unavailable, compact text fallback glyphs are used
 - Markdown link extraction icon: `markdown_link_extractor`
 - Health diagnostics icon: `health_diagnostics`
 
+### Phase 29 Wave 22 icon mapping coverage
+
+- Docker run conversion icon: `docker_run_to_compose`
+- NATO phonetic conversion icon: `nato_phonetic_converter`
+- WiFi QR generation icon: `wifi_qr_generator`
+- HMAC digest icon: `hmac_generator`
+- IPv6 ULA generation icon: `ipv6_ula_generator`
+- Random MAC generation icon: `random_mac_generator`
+
 ### Phase 12 Wave 5 add-on QA focus
 
 - Confirm wave-5 slugs resolve to slug-specific assets before category defaults.
@@ -386,6 +395,14 @@ When a roadmap badge asset is unavailable, compact text fallback glyphs are used
 - Include one shell pass confirming shared shell + baseline markers remain visible/unchanged on Home, Roadmap, and wave-21 touchpoint pages.
 - Include one `<=720px` viewport pass to confirm Home controls, Roadmap filters/AI triage action, and wave-21 submit/runbook actions stay full-width/tap-friendly with no clipping/overflow.
 - Include one keyboard-only pass to confirm wave-21 notice semantics and focus visibility remain intact.
+
+### Phase 29 Wave 22 add-on QA focus
+
+- Confirm wave-22 touchpoint slugs resolve to slug-specific assets before category defaults (`docker_run_to_compose`, `nato_phonetic_converter`, `wifi_qr_generator`, `hmac_generator`, `ipv6_ula_generator`, `random_mac_generator`).
+- Confirm wave-22 slug-specific icons still fall back to text badges when SVG rendering is unavailable.
+- Include one shell pass confirming shared shell + baseline markers remain visible/unchanged on Home, Roadmap, and wave-22 touchpoint pages.
+- Include one `<=720px` viewport pass to confirm Home controls, Roadmap filters/AI triage action, and wave-22 submit actions stay full-width/tap-friendly with no clipping/overflow.
+- Include one keyboard-only pass to confirm wave-22 notice semantics and focus visibility remain intact.
 
 ## Docs/release media inventory
 

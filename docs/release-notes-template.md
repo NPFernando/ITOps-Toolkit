@@ -29,6 +29,7 @@ Use this template for deployment notes, GitHub releases, or pull request summari
 - QA baseline add-on: Phase 26 wave-19 shell/mobile/visual/a11y QA gates completed
 - QA baseline add-on: Phase 27 wave-20 shell/mobile/visual/a11y QA gates completed
 - QA baseline add-on: Phase 28 wave-21 shell/mobile/visual/a11y QA gates completed
+- QA baseline add-on: Phase 29 wave-22 shell/mobile/visual/a11y QA gates completed
 
 ## User-Facing Changes
 
@@ -141,6 +142,10 @@ curl http://localhost:8502/_stcore/health
 - Wave 21 mobile readability spot check (`<=720px`, grouped controls stay single-column readable, Home controls + Roadmap filters/AI triage action + wave-21 submit/runbook actions stay full-width/tap-friendly, no clipping/overflow):
 - Wave 21 visual mapping spot check (wave-21 touchpoint slug-specific icon priority + fallback for `unified_diff_generator`, `jwk_pem_converter`, `cert_chain_validator`, `wsl_path_converter`, `markdown_link_extractor`, `health_diagnostics`):
 - Wave 21 accessibility spot check (status/failure note semantics + keyboard/focus):
+- Wave 22 shell consistency spot check (shared shell + baseline markers on Home/Roadmap/Docker Run to Compose/NATO Phonetic Converter/WiFi QR Code Generator/HMAC Generator/IPv6 ULA Generator/Random MAC Address Generator):
+- Wave 22 mobile readability spot check (`<=720px`, grouped controls stay single-column readable, Home controls + Roadmap filters/AI triage action + wave-22 submit actions stay full-width/tap-friendly, no clipping/overflow):
+- Wave 22 visual mapping spot check (wave-22 touchpoint slug-specific icon priority + fallback for `docker_run_to_compose`, `nato_phonetic_converter`, `wifi_qr_generator`, `hmac_generator`, `ipv6_ula_generator`, `random_mac_generator`):
+- Wave 22 accessibility spot check (status/failure note semantics + keyboard/focus):
 - Log Troubleshooting AI unavailable state:
 - Optional Azure AI state, if secrets were available:
 
