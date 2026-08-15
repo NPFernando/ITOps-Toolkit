@@ -441,6 +441,17 @@ Confirm these release-blocking checks pass:
 - **Deterministic regression tests:** run and pass `tests/test_ui_helpers.py` (slug precedence + alias mapping), `tests/test_wave36_shell_mobile_markers.py` (shell/mobile marker + read-order guardrails), and `tests/test_wave36_accessibility_guardrails.py` (status semantics + deterministic outcomes).
 - **Release evidence:** Wave 36 outcomes are captured in `docs/release-notes-template.md` with synthetic/sanitized QA evidence only.
 
+### 4.38 Phase 44 Wave 37 Regression Checklist (Shell/Mobile/Visual/A11y QA Gates)
+
+Confirm these release-blocking checks pass:
+
+- **Shell consistency:** shared shell + baseline markers (`shell-ready`, `content-rendered`, `wave37-shell-mobile`) remain present on Home, Roadmap & Feedback, Lorem Ipsum Generator, and Text to Binary/Hex/Octal Converter.
+- **Mobile (`<=720px`):** Step 1/Step 2 heading hierarchy copy remains concise/readable, grouped controls stay single-column readable with shared headings, and Home controls, Roadmap filters/AI triage action, plus wave-37 generate/convert actions remain full-width/tap-friendly with no clipping/overflow.
+- **Visual mapping (wave-37 focus):** placeholder-to-real alias routing notes are documented and validated for wave-37 governance (`167_tool_slug_pending_roadmap` + `167_<tool_slug_pending_roadmap>` → wave-37 lorem touchpoint `141_Lorem_Ipsum_Generator.py`/`lorem_ipsum_generator`; `168_tool_slug_pending_roadmap` + `168_<tool_slug_pending_roadmap>` → wave-37 converter touchpoint `142_Text_to_Binary_Hex_Octal_Converter.py`/`text_to_binary_hex_octal_converter`) while deterministic slug-first icon lookup still precedes category defaults and readable text fallback badges remain available.
+- **Accessibility:** keyboard-only navigation remains intact, focus rings stay visible, and explicit status semantics (`role="status"`/`role="alert"` with `aria-live`) remain present for Home/Roadmap and wave-37 tool outcomes.
+- **Deterministic regression tests:** run and pass `tests/test_ui_helpers.py` (slug precedence + alias mapping), `tests/test_wave37_shell_mobile_markers.py` (shell/mobile marker + heading hierarchy guardrails), and `tests/test_wave37_accessibility_guardrails.py` (status semantics + deterministic outcomes).
+- **Release evidence:** Wave 37 outcomes are captured in `docs/release-notes-template.md` with synthetic/sanitized QA evidence only.
+
 ## 5. Log Troubleshooting AI States
 
 Without Azure secrets:
@@ -494,7 +505,7 @@ git diff --cached --check
 
 ## 9. Release Notes
 
-Use `docs/release-notes-template.md` to summarize the release, QA commands, privacy posture, known limitations, Wave 2/Wave 3/Wave 4/Wave 5/Wave 6/Wave 7/Wave 8/Wave 9/Wave 10/Wave 11/Wave 12/Wave 13/Wave 14/Wave 15/Wave 16/Wave 17/Wave 18/Wave 19/Wave 20/Wave 21/Wave 22/Wave 23/Wave 24/Wave 25/Wave 26/Wave 27/Wave 28/Wave 29/Wave 30/Wave 31/Wave 32/Wave 33/Wave 34/Wave 35/Wave 36 shell-mobile-visual-a11y outcomes, and the UX Quality Outcomes release reporting kit.
+Use `docs/release-notes-template.md` to summarize the release, QA commands, privacy posture, known limitations, Wave 2/Wave 3/Wave 4/Wave 5/Wave 6/Wave 7/Wave 8/Wave 9/Wave 10/Wave 11/Wave 12/Wave 13/Wave 14/Wave 15/Wave 16/Wave 17/Wave 18/Wave 19/Wave 20/Wave 21/Wave 22/Wave 23/Wave 24/Wave 25/Wave 26/Wave 27/Wave 28/Wave 29/Wave 30/Wave 31/Wave 32/Wave 33/Wave 34/Wave 35/Wave 36/Wave 37 shell-mobile-visual-a11y outcomes, and the UX Quality Outcomes release reporting kit.
 
 Minimum UX reporting before publish:
 - Record one outcome each for navigation, readability/layout, task completion confidence, and public-safe behavior.
