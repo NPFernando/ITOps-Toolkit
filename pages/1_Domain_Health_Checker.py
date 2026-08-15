@@ -7,6 +7,7 @@ import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
 
+from utils.dev_baseline import mark_page_baseline, render_page_baseline, start_page_baseline
 from utils.dns_tools import MAX_DOMAIN_LENGTH, get_dns_summary, normalize_domain
 from utils.http_tools import check_http_status
 from utils.reporting import (
@@ -31,8 +32,10 @@ from utils.ui import (
 )
 
 
+_baseline = start_page_baseline("Domain Health Checker")
 st.set_page_config(page_title="Domain Health Checker", layout="wide")
 apply_app_shell(active_page="Domain Health Checker")
+mark_page_baseline(_baseline, "shell-ready")
 
 
 def _display_status(status: str) -> None:
@@ -362,3 +365,6 @@ if state is not None:
             with tab:
                 incident_message = build_domain_health_incident_message(normalized, dns_summary, ssl_result, http_result, risk, target)
                 st.code(incident_message["message"], language=None)
+
+mark_page_baseline(_baseline, "content-rendered")
+render_page_baseline(_baseline)

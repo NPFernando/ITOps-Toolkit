@@ -3,6 +3,7 @@ from __future__ import annotations
 import pandas as pd
 import streamlit as st
 
+from utils.dev_baseline import mark_page_baseline, render_page_baseline, start_page_baseline
 from utils.http_tools import MAX_URL_LENGTH, check_http_status
 from utils.text_tools import validate_length
 from utils.ui import (
@@ -19,8 +20,10 @@ from utils.ui import (
 )
 
 
+_baseline = start_page_baseline("HTTP Status Checker")
 st.set_page_config(page_title="HTTP Status Checker", layout="wide")
 apply_app_shell(active_page="HTTP Status Checker")
+mark_page_baseline(_baseline, "shell-ready")
 
 
 render_page_header(
@@ -126,3 +129,6 @@ if result is not None:
             file_name="http-status-redirects.csv",
             mime="text/csv",
         )
+
+mark_page_baseline(_baseline, "content-rendered")
+render_page_baseline(_baseline)

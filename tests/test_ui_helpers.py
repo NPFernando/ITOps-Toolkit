@@ -220,6 +220,10 @@ def test_filter_tools_unknown_profession_behaves_like_all():
     assert filter_tools(profession="Not A Real Profession") == TOOLS
 
 
+def test_filter_tools_cache_treats_unknown_profession_like_all():
+    assert filter_tools(query="jwt", profession="All") == filter_tools(query="jwt", profession="Nope")
+
+
 def test_filter_tools_covers_every_declared_profession():
     for profession in PROFESSIONS:
         assert filter_tools(profession=profession), f"no tool tagged with {profession!r}"
@@ -344,6 +348,31 @@ def test_record_recent_visit_prepends_dedupes_and_caps(monkeypatch):
     assert ui.st.query_params["recent"] == "hash_generator,mac_address_tool"
 
 
+def test_record_recent_visit_noops_when_slug_already_most_recent(monkeypatch):
+    class _TrackedParams(dict):
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            self.set_calls = 0
+            self.pop_calls = 0
+
+        def __setitem__(self, key, value):
+            self.set_calls += 1
+            return super().__setitem__(key, value)
+
+        def pop(self, key, default=None):
+            self.pop_calls += 1
+            return super().pop(key, default)
+
+    params = _TrackedParams({"recent": "hash_generator,mac_address_tool"})
+    monkeypatch.setattr(ui.st, "query_params", params)
+
+    record_recent_visit("hash_generator")
+
+    assert params["recent"] == "hash_generator,mac_address_tool"
+    assert params.set_calls == 0
+    assert params.pop_calls == 0
+
+
 def test_record_recent_visit_caps_at_max_recent_tools(monkeypatch):
     monkeypatch.setattr(ui.st, "query_params", {})
     slugs = [tool.slug for tool in TOOLS[:6]]
@@ -354,6 +383,12 @@ def test_record_recent_visit_caps_at_max_recent_tools(monkeypatch):
     stored = ui.st.query_params["recent"].split(",")
     assert len(stored) == ui.MAX_RECENT_TOOLS
     assert stored[0] == slugs[-1]
+
+
+def test_get_persisted_slugs_dedupes_empties_and_caps_recent(monkeypatch):
+    monkeypatch.setattr(ui.st, "query_params", {"recent": "a,,b,a,c,d,e,f"})
+
+    assert ui._get_persisted_slugs("recent") == ["a", "b", "c", "d", "e"]
 
 
 def test_toggle_favorite_adds_and_removes(monkeypatch):
@@ -422,6 +457,34 @@ def test_shared_favorites_param_is_excluded_from_local_storage_mirror():
     # Sharing a favorites link must never overwrite the visitor's own saved
     # favorites -- confirm the mirror only ever touches "recent"/"fav".
     assert SHARED_FAVORITES_PARAM not in ui.PERSISTED_LIST_PARAMS
+
+
+def test_request_rerun_uses_fragment_scope_when_available(monkeypatch):
+    calls = []
+
+    def fake_rerun(*args, **kwargs):
+        calls.append(kwargs)
+
+    monkeypatch.setattr(ui.st, "rerun", fake_rerun)
+
+    ui._request_rerun(prefer_fragment_rerun=True)
+
+    assert calls == [{"scope": "fragment"}]
+
+
+def test_request_rerun_falls_back_to_full_app_when_fragment_scope_unsupported(monkeypatch):
+    calls = []
+
+    def fake_rerun(*args, **kwargs):
+        calls.append(kwargs)
+        if kwargs.get("scope") == "fragment":
+            raise RuntimeError("fragment scope unavailable")
+
+    monkeypatch.setattr(ui.st, "rerun", fake_rerun)
+
+    ui._request_rerun(prefer_fragment_rerun=True)
+
+    assert calls == [{"scope": "fragment"}, {}]
 
 
 def test_related_tools_resolves_bundle_slugs_in_order():

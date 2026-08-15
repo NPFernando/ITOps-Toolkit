@@ -88,6 +88,22 @@ Then open the local Streamlit URL shown in the terminal.
 
 Local Streamlit file watching is disabled in `.streamlit/config.toml` for stability on WSL-mounted Windows drives. Restart the Streamlit command after editing files.
 
+### Dev baseline instrumentation (optional)
+
+For lightweight local timing baselines on key surfaces (Home, Roadmap & Feedback, Domain Health Checker, DNS Record Checker, SSL Certificate Checker, HTTP Status Checker), run:
+
+```bash
+ITOPS_DEV_BASELINE=1 streamlit run app.py
+```
+
+Then open those pages and check **Sidebar → "Dev baseline metrics"**:
+
+- `render` metric = total page script render time for that rerun
+- `Checkpoints` = coarse milestones (`shell-ready`, `content-rendered`)
+- `Recent samples` = latest session-only timings for quick comparisons
+
+This is dev-only (off by default) and captures only surface labels + timings. It does not persist or export user-entered domains, URLs, logs, JWTs, JSON, or other inputs.
+
 ## Local Secrets
 
 The app does not require secrets for normal rule-based operation. Optional Azure AI summaries for the Log Troubleshooting Assistant require a local-only Streamlit secrets file:
@@ -150,6 +166,14 @@ Before deployment, use [docs/release-checklist.md](docs/release-checklist.md). F
 ## UI Design Notes
 
 The dashboard shell, tool metadata, navigation, and reusable visual components live in `utils/ui.py`. Future UI changes should follow `docs/design-system.md`.
+For Phase 3 recommendations on caching/reruns/session-state/navigation/performance, see `docs/streamlit-performance-audit.md`.
+
+### Phase 3 performance playbook
+
+- **Fragments (`st.fragment`)**: keep these in shell/home rerun hot paths (`app.py` + `utils/ui.py`) so favorite/reorder interactions can rerun locally.
+- **Caching (`st.cache_data`)**: keep short-TTL read caching near page-level data loaders and merge helpers (for example, Roadmap board loaders in `pages/10_Roadmap_Feedback.py`).
+- **Session state (`st.session_state`)**: keep per-session UI/result state in page modules; do not persist user-entered domains, URLs, logs, JWTs, JSON, or encoded text.
+- **Dev baseline instrumentation**: local/dev-only via `ITOPS_DEV_BASELINE=1`, currently wired for Home, Roadmap & Feedback, Domain Health Checker, DNS Record Checker, SSL Certificate Checker, and HTTP Status Checker.
 
 - Sidebar navigation is shell-managed (Home, Roadmap & Feedback, grouped tool links) with quick search.
 - Home navigation supports **Quick access** and **All tools** modes, with favorites, recently used/popular, shared favorites, and new tool sections.

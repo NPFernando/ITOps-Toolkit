@@ -54,8 +54,22 @@ if submitted:
         truncated = len(domains) > MAX_DOMAINS_PER_BATCH
         with st.spinner(f"Checking {min(len(domains), MAX_DOMAINS_PER_BATCH)} domains..."):
             results = run_bulk_health_check(domains, include_dmarc=include_dmarc)
+        frame = pd.DataFrame(results)
+        summary = {
+            "healthy": sum(1 for r in results if r["risk_status"] == "Healthy"),
+            "warning": sum(1 for r in results if r["risk_status"] == "Warning"),
+            "critical": sum(1 for r in results if r["risk_status"] == "Critical"),
+            "errored": sum(1 for r in results if r["risk_status"] == "Unknown"),
+        }
         st.session_state["bulk_domain_health_validation_error"] = None
-        st.session_state["bulk_domain_health_state"] = {"results": results, "truncated": truncated, "total_domains": len(domains)}
+        st.session_state["bulk_domain_health_state"] = {
+            "results": results,
+            "frame": frame,
+            "csv_data": frame.to_csv(index=False).encode("utf-8"),
+            "summary": summary,
+            "truncated": truncated,
+            "total_domains": len(domains),
+        }
 
 validation_error = st.session_state.get("bulk_domain_health_validation_error")
 state = st.session_state.get("bulk_domain_health_state")
@@ -67,26 +81,21 @@ if validation_error is not None:
     st.error(validation_error)
 
 if state is not None:
-    results = state["results"]
+    frame = state["frame"]
+    summary = state["summary"]
     with tool_result_panel("bulk_domain_health_result"):
         render_section_heading("Batch results", eyebrow="Result")
         if state["truncated"]:
             st.warning(f"{state['total_domains']} domains were provided; only the first {MAX_DOMAINS_PER_BATCH} were checked.")
 
-        frame = pd.DataFrame(results)
         st.dataframe(frame, width="stretch", hide_index=True)
 
-        healthy = sum(1 for r in results if r["risk_status"] == "Healthy")
-        warning = sum(1 for r in results if r["risk_status"] == "Warning")
-        critical = sum(1 for r in results if r["risk_status"] == "Critical")
-        errored = sum(1 for r in results if r["risk_status"] == "Unknown")
         m1, m2, m3, m4 = st.columns(4)
-        m1.metric("Healthy", healthy)
-        m2.metric("Warning", warning)
-        m3.metric("Critical", critical)
-        m4.metric("Errored", errored)
+        m1.metric("Healthy", summary["healthy"])
+        m2.metric("Warning", summary["warning"])
+        m3.metric("Critical", summary["critical"])
+        m4.metric("Errored", summary["errored"])
 
-    csv_data = frame.to_csv(index=False).encode("utf-8")
     with tool_download_panel("bulk_domain_health_export", related_to="bulk_domain_health"):
         render_section_heading("Export", "Download the current in-memory results.", eyebrow="Downloads")
-        st.download_button("Download results as CSV", csv_data, file_name="bulk-domain-health.csv", mime="text/csv")
+        st.download_button("Download results as CSV", state["csv_data"], file_name="bulk-domain-health.csv", mime="text/csv")

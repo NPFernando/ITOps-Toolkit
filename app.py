@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import streamlit as st
 
+from utils.dev_baseline import mark_page_baseline, render_page_baseline, start_page_baseline
 from utils.ui import (
     PROFESSIONS,
     TOOLS,
@@ -11,7 +12,9 @@ from utils.ui import (
     filter_tools,
     github_url,
     recent_or_popular_tools,
+    recent_tool_slugs,
     render_feature_strip,
+    render_fragment,
     render_home_hero,
     render_important_notice,
     render_tool_section,
@@ -20,8 +23,10 @@ from utils.ui import (
 )
 
 
+_baseline = start_page_baseline("Home")
 st.set_page_config(page_title="ITOps Toolkit", page_icon=":material/build:", layout="wide")
 apply_app_shell(active_page="Home")
+mark_page_baseline(_baseline, "shell-ready")
 
 
 repo_url = github_url()
@@ -34,8 +39,7 @@ search_query = render_home_hero()
 
 shared_favorites = shared_favorite_tools()
 favorites = favorite_tools()
-recent_param = st.query_params.get("recent", "")
-recent_slugs = [slug for slug in recent_param.split(",") if slug]
+recent_slugs = list(recent_tool_slugs())
 recent_tools = recent_or_popular_tools(recent_slugs)
 newest_tools = tuple(tool for tool in TOOLS if tool.is_new)
 
@@ -83,6 +87,7 @@ if st.button(button_label, icon=button_icon):
     st.rerun()
 
 if show_all:
+    filtered_tools = filter_tools(search_query, profession)
     if search_query.strip():
         all_heading = "Matching Tools"
     elif profession != "All":
@@ -101,9 +106,18 @@ if show_all:
         key="home_sort_mode",
     )
     sort_mode = {"Default": "default", "A-Z": "az", "Z-A": "za"}[sort_mode_label]
-    all_tools = sort_tools(filter_tools(search_query, profession), sort_mode)
-    render_tool_section(all_tools, heading=all_heading, key_prefix="all")
+    all_tools = sort_tools(filtered_tools, sort_mode)
+    render_fragment(
+        "home_all_tools",
+        lambda: render_tool_section(
+            all_tools,
+            heading=all_heading,
+            key_prefix="all",
+            prefer_fragment_rerun=True,
+        ),
+    )
 else:
+    searched_tools = filter_tools(search_query, profession) if search_query.strip() else ()
     quick_access_tools = sort_tools(filter_tools("", profession), "default")
     quick_access_slugs = {tool.slug for tool in quick_access_tools}
 
@@ -111,14 +125,24 @@ else:
         matches = tuple(tool for tool in items if tool.slug in quick_access_slugs)
         if not search_query.strip():
             return matches
-        searched = {tool.slug for tool in filter_tools(search_query, profession)}
+        searched = {tool.slug for tool in searched_tools}
         return tuple(tool for tool in matches if tool.slug in searched)
 
     st.markdown('<div class="tool-panel-eyebrow">Quick access</div>', unsafe_allow_html=True)
     if favorites:
         scoped_favorites = _scoped(favorites)
         if scoped_favorites:
-            render_tool_section(scoped_favorites, heading="Your Favorites", section_id=None, key_prefix="fav", show_reorder=True)
+            render_fragment(
+                "home_favorites_tools",
+                lambda: render_tool_section(
+                    scoped_favorites,
+                    heading="Your Favorites",
+                    section_id=None,
+                    key_prefix="fav",
+                    show_reorder=True,
+                    prefer_fragment_rerun=True,
+                ),
+            )
             with st.popover("Share favorites", icon=":material/share:"):
                 st.caption("Anyone with this link can view your current favorites list. It won't affect their own favorites.")
                 st.code(favorites_share_link(favorites), language=None)
@@ -126,18 +150,47 @@ else:
     scoped_recent_tools = _scoped(recent_tools)
     if scoped_recent_tools:
         recents_heading = "Recently Used" if recent_slugs else "Popular to Start"
-        render_tool_section(scoped_recent_tools, heading=recents_heading, section_id=None, key_prefix="recent")
+        render_fragment(
+            "home_recent_tools",
+            lambda: render_tool_section(
+                scoped_recent_tools,
+                heading=recents_heading,
+                section_id=None,
+                key_prefix="recent",
+                prefer_fragment_rerun=True,
+            ),
+        )
 
     if shared_favorites:
         scoped_shared = _scoped(shared_favorites)
         if scoped_shared:
-            render_tool_section(scoped_shared, heading="Shared Favorites", section_id=None, key_prefix="shared")
+            render_fragment(
+                "home_shared_favorites_tools",
+                lambda: render_tool_section(
+                    scoped_shared,
+                    heading="Shared Favorites",
+                    section_id=None,
+                    key_prefix="shared",
+                    prefer_fragment_rerun=True,
+                ),
+            )
             st.caption("Someone shared this list with you. It's separate from your own favorites.")
 
     if newest_tools:
         scoped_new = _scoped(newest_tools)
         if scoped_new:
-            render_tool_section(scoped_new, heading="New & Noteworthy", section_id=None, key_prefix="new")
+            render_fragment(
+                "home_new_tools",
+                lambda: render_tool_section(
+                    scoped_new,
+                    heading="New & Noteworthy",
+                    section_id=None,
+                    key_prefix="new",
+                    prefer_fragment_rerun=True,
+                ),
+            )
 
 render_feature_strip()
 render_important_notice()
+mark_page_baseline(_baseline, "content-rendered")
+render_page_baseline(_baseline)
