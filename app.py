@@ -41,6 +41,7 @@ mark_page_baseline(_baseline, "wave31-shell-mobile")
 mark_page_baseline(_baseline, "wave32-shell-mobile")
 mark_page_baseline(_baseline, "wave33-shell-mobile")
 mark_page_baseline(_baseline, "wave34-shell-mobile")
+mark_page_baseline(_baseline, "wave35-shell-mobile")
 
 
 repo_url = github_url()
@@ -65,6 +66,7 @@ with tool_form_panel("home_navigation_controls"):
         "Browsing setup",
         description="Pick a profession lens and choose quick access or full catalog before running actions.",
         eyebrow="Step 1",
+        heading_level="h3",
     )
     render_control_heading("Filter by profession")
     profession = st.pills(
@@ -105,9 +107,11 @@ with tool_form_panel("home_primary_action"):
         "Catalog visibility",
         description="Run one full-width action to reveal or collapse catalog results after setup is complete.",
         eyebrow="Step 2",
+        heading_level="h3",
     )
     render_control_heading("Catalog action")
     st.caption("Read order: review browsing setup, run this full-width action, then verify status notes and tool results.")
+    st.caption("If you're new, begin in favorites/recent before opening the full catalog.")
     if st.button(button_label, icon=button_icon, use_container_width=True):
         if show_all and navigation_mode == "All tools" and not search_query.strip() and profession == "All":
             st.session_state["home_force_quick_access"] = True
@@ -144,12 +148,14 @@ if show_all:
             f"Showing {len(all_tools)} tool(s) in {all_heading}. Refine results with search, profession, or sort.",
             tone="success",
         )
+        st.caption("New here? Start with one profession filter, then use search to narrow results.")
     else:
         render_status_note(
             "Outcome: catalog filters need adjustment",
             "No tools matched the active filters. Clear or broaden search and profession settings, then try again.",
             tone="warning",
         )
+        st.caption("Tip for beginners: clear filters, then apply search or profession one at a time.")
     render_fragment(
         "home_all_tools",
         lambda: render_tool_section(
@@ -165,6 +171,7 @@ else:
         "Quick access sections are active. Browse favorites and recent tools, or open the full catalog when needed.",
         tone="neutral",
     )
+    st.caption("If you're new, begin in favorites/recent before opening the full catalog.")
     searched_tools = filter_tools(search_query, profession) if search_query.strip() else ()
     quick_access_tools = sort_tools(filter_tools("", profession), "default")
     quick_access_slugs = {tool.slug for tool in quick_access_tools}

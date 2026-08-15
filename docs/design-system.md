@@ -600,6 +600,20 @@ This guide documents the UI direction used for the Streamlit dashboard and tool 
 - Record Wave 34 outcomes in `docs/release-notes-template.md` using synthetic/sanitized evidence only.
 - Confirm 161/162 placeholder mapping notes, 159/160 alias handling, and deterministic shell/mobile/visual/a11y outcomes remain unchanged after UI refinements.
 
+## Phase 42 Wave 35 Standards (Shell, Mobile, Visual, A11y + QA Gates)
+
+- **Shell consistency:** keep shared shell + baseline markers (`shell-ready`, `content-rendered`, `wave35-shell-mobile`) stable on Home, Roadmap & Feedback, Lorem Ipsum Generator, and Text to Binary/Hex/Octal Converter.
+- **Mobile baseline (`<=720px`):** keep Step 1/Step 2 hierarchy copy concise/readable, maintain grouped controls in single-column flow, and keep Home controls, Roadmap filters/AI triage action, plus wave-35 generate/convert actions full-width/tap-friendly with no clipping/overflow.
+- **Visual mapping integrity:** keep deterministic slug-first icon lookup (`TOOL_CARD_ICON_ASSETS` before `CATEGORY_TOOL_CARD_ICON_ASSETS`) and document wave-35 placeholder mappings (`163_tool_slug_pending_roadmap` + `163_<tool_slug_pending_roadmap>` → `lorem_ipsum_generator`; `164_tool_slug_pending_roadmap` + `164_<tool_slug_pending_roadmap>` → `text_to_binary_hex_octal_converter`) while retaining prior wave placeholder alias continuity for deterministic release evidence.
+- **Accessibility guardrail:** keep keyboard flow/focus visibility intact and preserve explicit status semantics (`role="status"`/`role="alert"` + `aria-live`) for Home, Roadmap, and wave-35 tool outcomes.
+- **QA/test guardrail:** treat deterministic guardrails in `tests/test_ui_helpers.py`, `tests/test_wave35_shell_mobile_markers.py`, and `tests/test_wave35_accessibility_guardrails.py` as release blockers.
+
+### Wave 35 QA handoff guidance
+
+- Run Wave 35 checks in `docs/release-checklist.md` before release.
+- Record Wave 35 outcomes in `docs/release-notes-template.md` using synthetic/sanitized evidence only.
+- Confirm 163/164 placeholder mapping notes, shell/mobile/read-order guardrails, and deterministic shell/mobile/visual/a11y outcomes remain unchanged after UI refinements.
+
 ## Maintenance Rules
 
 - Do not duplicate tool titles, descriptions, paths, or accent colors outside `utils/ui.py`.
