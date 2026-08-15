@@ -47,6 +47,21 @@ TOOL_CARD_ICON_ASSETS: dict[str, str] = {
     "json_path_query": "icons/exported/icon-workflow-json-validate-outline-24x24-v01.svg",
     "json_merge_patch": "icons/exported/icon-workflow-json-validate-outline-24x24-v01.svg",
     "json_to_typescript": "icons/exported/icon-workflow-json-validate-outline-24x24-v01.svg",
+    "base64_tool": "icons/exported/icon-workflow-encoding-tools-outline-24x24-v01.svg",
+    "base32_tools": "icons/exported/icon-workflow-encoding-tools-outline-24x24-v01.svg",
+    "base58_tool": "icons/exported/icon-workflow-encoding-tools-outline-24x24-v01.svg",
+    "base62_tool": "icons/exported/icon-workflow-encoding-tools-outline-24x24-v01.svg",
+    "base_converter": "icons/exported/icon-workflow-encoding-tools-outline-24x24-v01.svg",
+    "regex_tester": "icons/exported/icon-workflow-regex-match-outline-24x24-v01.svg",
+    "regex_replace": "icons/exported/icon-workflow-regex-match-outline-24x24-v01.svg",
+    "regex_cheat_sheet": "icons/exported/icon-workflow-regex-match-outline-24x24-v01.svg",
+    "pattern_extractor": "icons/exported/icon-workflow-regex-match-outline-24x24-v01.svg",
+    "cron_explainer": "icons/exported/icon-workflow-cron-schedule-outline-24x24-v01.svg",
+    "cron_builder": "icons/exported/icon-workflow-cron-schedule-outline-24x24-v01.svg",
+    "cron_overlap": "icons/exported/icon-workflow-cron-schedule-outline-24x24-v01.svg",
+    "hash_generator": "icons/exported/icon-workflow-hash-digest-outline-24x24-v01.svg",
+    "file_integrity": "icons/exported/icon-workflow-hash-digest-outline-24x24-v01.svg",
+    "bcrypt_tool": "icons/exported/icon-workflow-hash-digest-outline-24x24-v01.svg",
     "port_reference": "icons/exported/icon-workflow-port-scan-outline-24x24-v01.svg",
     "tls_scanner": "icons/exported/icon-workflow-port-scan-outline-24x24-v01.svg",
 }
@@ -2477,6 +2492,7 @@ def render_page_header(
         else None
     )
     layout_class = " tool-page-header-with-illustration" if illustration_html else ""
+    header_id = f"tool-page-title-{_key_slug(title)}"
     illustration_slot = (
         f'<div class="tool-page-header-illustration" aria-hidden="true">{illustration_html}</div>'
         if illustration_html
@@ -2484,12 +2500,12 @@ def render_page_header(
     )
     st.markdown(
         f"""
-        <section class="tool-page-header{layout_class}" style="--tool-accent: {accent}; --tool-icon-text: {icon_text};">
+        <section class="tool-page-header{layout_class}" style="--tool-accent: {accent}; --tool-icon-text: {icon_text};" aria-labelledby="{header_id}">
             <div class="tool-page-header-main">
                 <div class="tool-page-icon">{escape(icon)}</div>
                 <div>
                     <p class="tool-page-overline">{escape(overline)}</p>
-                    <h1>{escape(title)}</h1>
+                    <h1 id="{header_id}">{escape(title)}</h1>
                     <p>{escape(description)}</p>
                 </div>
             </div>
@@ -2540,11 +2556,12 @@ def display_rows_frame(rows: Iterable[dict[str, Any]]) -> pd.DataFrame:
 
 
 def render_form_intro(title: str, description: str) -> None:
+    intro_id = f"tool-form-intro-{_key_slug(title)}"
     st.markdown(
         f"""
-        <div class="tool-form-intro">
+        <div class="tool-form-intro" role="group" aria-labelledby="{intro_id}">
             <div class="tool-panel-eyebrow">Input</div>
-            <h2>{escape(title)}</h2>
+            <h2 id="{intro_id}">{escape(title)}</h2>
             <p>{escape(description)}</p>
         </div>
         """,
@@ -2584,7 +2601,7 @@ def render_empty_state(title: str, description: str, illustration: str | None = 
     )
     st.markdown(
         f"""
-        <div class="tool-empty-state">
+        <div class="tool-empty-state" role="status" aria-live="polite" aria-label="{escape(title)}">
             <div class="tool-empty-mark">IT</div>
             {illustration_slot}
             <div>
@@ -2652,9 +2669,11 @@ def render_status_note(title: str, description: str, tone: str = "info") -> None
         "ai": "AI",
     }
     description_html = escape(description).replace("\n", "<br>")
+    role = "alert" if normalized_tone == "warning" else "status"
+    aria_live = "assertive" if normalized_tone == "warning" else "polite"
     st.markdown(
         f"""
-        <div class="tool-status-note tool-status-note-{normalized_tone}">
+        <div class="tool-status-note tool-status-note-{normalized_tone}" role="{role}" aria-live="{aria_live}">
             <div class="tool-status-mark">{escape(marks[normalized_tone])}</div>
             <div>
                 <strong>{escape(title)}</strong>

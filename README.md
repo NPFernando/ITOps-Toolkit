@@ -165,6 +165,7 @@ No database or background worker is required. Roadmap feedback reads public GitH
 ## Release Readiness
 
 Before deployment, use [docs/release-checklist.md](docs/release-checklist.md). For release summaries, use [docs/release-notes-template.md](docs/release-notes-template.md), including the concise UX Quality Outcomes section for public-safe release reporting.
+For Phase 8 cross-page consistency standards and documented exceptions, use [docs/ui-consistency-audit-matrix-phase8.md](docs/ui-consistency-audit-matrix-phase8.md).
 For runtime troubleshooting and diagnostics interpretation, use [docs/ops-runbook.md](docs/ops-runbook.md).
 For adapter timeout/retry/error/cache/privacy reliability standards, see [docs/reliability-contract.md](docs/reliability-contract.md).
 
@@ -183,7 +184,7 @@ For Phase 4 reliability/performance alignment notes, see `docs/streamlit-perform
 
 - Sidebar navigation is shell-managed (Home, Roadmap & Feedback, grouped tool links) with quick search.
 - Home navigation supports **Quick access** and **All tools** modes, with favorites, recently used/popular, shared favorites, and new tool sections.
-- The phase2 visual system uses generated SVG hooks in `utils/ui.py` (home hero, tool-card icons, category header illustrations, empty-state illustrations, roadmap badges) with graceful fallback rendering if an asset is unavailable.
+- The Phase 8 visual system uses generated SVG hooks in `utils/ui.py` (home hero, tool-card icons, category header illustrations, empty-state illustrations, roadmap badges) with graceful fallback rendering if an asset is unavailable.
 - Generated assets and source/export structure are documented under `docs/assets/README.md` and `docs/assets/INDEX.md`.
 
 ## Roadmap Feedback
@@ -210,7 +211,7 @@ Maintainer labels:
 
 ## Screenshots
 
-Use [docs/screenshot-guide.md](docs/screenshot-guide.md) for release QA capture targets. Save temporary screenshots outside the repository, such as `/tmp/itops-screenshots`.
+Use [docs/screenshot-guide.md](docs/screenshot-guide.md) for release QA capture targets. Save temporary screenshots in a local untracked workspace folder such as `.artifacts/qa-screenshots/`.
 
 ## Future Roadmap
 

@@ -1,4 +1,4 @@
-# Assets Index (phase2)
+# Assets Index (phase8)
 
 Generated assets available under `docs/assets/**/exported`. Runtime mappings are implemented in `utils/ui.py`.
 
@@ -24,6 +24,14 @@ Generated assets available under `docs/assets/**/exported`. Runtime mappings are
   - `jwt_decoder`, `jwt_encoder`, `jwt_weak_secret`, `jwt_claims_reference`
 - JSON validate icon:
   - `json_formatter`, `json_diff`, `json_path_query`, `json_merge_patch`, `json_to_typescript`
+- Encoding tools icon:
+  - `base64_tool`, `base32_tools`, `base58_tool`, `base62_tool`, `base_converter`
+- Regex match icon:
+  - `regex_tester`, `regex_replace`, `regex_cheat_sheet`, `pattern_extractor`
+- Cron schedule icon:
+  - `cron_explainer`, `cron_builder`, `cron_overlap`
+- Hash digest icon:
+  - `hash_generator`, `file_integrity`, `bcrypt_tool`
 - Port scan icon:
   - `port_reference`, `tls_scanner`
 
@@ -61,6 +69,12 @@ When a tool has no slug-specific icon mapping, card icons now fall back to categ
 - Source: seed, GitHub
 
 When a roadmap badge asset is unavailable, compact text fallback glyphs are used.
+
+### Phase 8 QA focus for visual mappings
+
+- Verify mapped SVGs render on Home, at least one page per category, and Roadmap badges.
+- Verify fallback text badges/glyphs remain readable when any mapped SVG is missing.
+- Keep mappings centralized in `utils/ui.py`; do not duplicate page-local icon maps.
 
 ## Docs/release media inventory
 

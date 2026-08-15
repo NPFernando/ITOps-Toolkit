@@ -40,7 +40,9 @@ def test_invalid_csr_shows_error():
     app.text_area[0].set_value("not a csr")
     app.button[0].click().run()
     assert not app.exception
-    assert any("Could not parse CSR" in e.value for e in app.error)
+    md = " ".join(m.value for m in app.markdown)
+    assert "tool-status-note-warning" in md
+    assert "CSR decode needs attention" in md
 
 
 def test_empty_state_shown_before_submit():
