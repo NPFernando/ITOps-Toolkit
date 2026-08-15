@@ -7,7 +7,6 @@ from utils.dev_baseline import mark_page_baseline, render_page_baseline, start_p
 from utils.ui import (
     apply_app_shell,
     render_empty_state,
-    render_failure_note,
     render_form_intro,
     render_page_header,
     render_section_heading,
@@ -36,10 +35,10 @@ with tool_form_panel("csr_generator"):
         c1, c2 = st.columns(2)
         organization = c1.text_input("Organization", placeholder="Acme Inc")
         organizational_unit = c2.text_input("Organizational Unit", placeholder="Engineering")
-        c3, c4, c5 = st.columns(3)
+        c3, c4 = st.columns(2)
         locality = c3.text_input("Locality (city)")
         state = c4.text_input("State/Province")
-        country = c5.text_input("Country (2-letter)", placeholder="US", max_chars=2)
+        country = st.text_input("Country (2-letter)", placeholder="US", max_chars=2)
         san_input = st.text_input("Subject Alternative Names (comma-separated)", placeholder="example.com, www.example.com")
         rsa_key_size = st.selectbox("RSA key size", RSA_KEY_SIZES, index=0)
         submitted = st.form_submit_button("Generate CSR", use_container_width=True)
@@ -64,10 +63,10 @@ if result is not None:
     with tool_result_panel("csr_generator_result_panel", related_to="csr_generator"):
         render_section_heading("Generated CSR", eyebrow="Result")
         if not result["ok"]:
-            render_failure_note(
-                "CSR generation",
-                result["error"],
-                remediation="Provide a Common Name and valid optional fields, then generate the CSR again.",
+            render_status_note(
+                "Cannot generate CSR yet",
+                f"{result['error']} Provide a Common Name and valid optional fields, then generate the CSR again.",
+                tone="warning",
             )
         else:
             render_status_note(

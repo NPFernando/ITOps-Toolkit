@@ -7,7 +7,6 @@ from utils.dev_baseline import mark_page_baseline, render_page_baseline, start_p
 from utils.ui import (
     apply_app_shell,
     render_empty_state,
-    render_failure_note,
     render_form_intro,
     render_page_header,
     render_section_heading,
@@ -32,7 +31,7 @@ encode_tab, decode_tab = st.tabs(["Encode", "Decode"])
 
 with encode_tab:
     with tool_form_panel("base62_encode"):
-        render_form_intro("Enter a non-negative integer", "")
+        render_form_intro("Enter a non-negative integer", "Convert decimal input into a URL-safe Base62 identifier.")
         with st.form("base62-encode-form"):
             number_input = st.text_input("Number", placeholder="12345")
             encode_submitted = st.form_submit_button("Encode", use_container_width=True)
@@ -50,10 +49,10 @@ with encode_tab:
         with tool_result_panel("base62_encode_result_panel", related_to="base62_tool"):
             render_section_heading("Base62", eyebrow="Result")
             if not encode_result["ok"]:
-                render_failure_note(
-                    "Base62 encode",
-                    encode_result["error"],
-                    remediation="Provide a valid non-negative integer and run encoding again.",
+                render_status_note(
+                    "Cannot encode to Base62 yet",
+                    f"{encode_result['error']} Provide a valid non-negative integer and run encoding again.",
+                    tone="warning",
                 )
             else:
                 render_status_note("Encoding complete", "Base62 output is ready below.", tone="success")
@@ -61,7 +60,7 @@ with encode_tab:
 
 with decode_tab:
     with tool_form_panel("base62_decode"):
-        render_form_intro("Enter a Base62 string to decode", "")
+        render_form_intro("Enter a Base62 string to decode", "Decode a Base62 token back to its decimal integer value.")
         with st.form("base62-decode-form"):
             encoded_input = st.text_input("Base62", placeholder="3D7")
             decode_submitted = st.form_submit_button("Decode", use_container_width=True)
@@ -79,10 +78,10 @@ with decode_tab:
         with tool_result_panel("base62_decode_result_panel", related_to="base62_tool"):
             render_section_heading("Decoded integer", eyebrow="Result")
             if not decode_result["ok"]:
-                render_failure_note(
-                    "Base62 decode",
-                    decode_result["error"],
-                    remediation="Use only Base62 characters (0-9, A-Z, a-z) and run decoding again.",
+                render_status_note(
+                    "Cannot decode Base62 yet",
+                    f"{decode_result['error']} Use only Base62 characters (0-9, A-Z, a-z) and run decoding again.",
+                    tone="warning",
                 )
             else:
                 render_status_note("Decoding complete", "Decoded integer output is ready below.", tone="success")

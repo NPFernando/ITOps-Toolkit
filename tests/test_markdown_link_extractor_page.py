@@ -45,7 +45,7 @@ def test_input_without_links_shows_warning_status():
 
     md = " ".join(m.value for m in app.markdown)
     assert "tool-status-note-warning" in md
-    assert "Link extraction needs attention" in md
+    assert "Cannot extract links yet" in md
 
 
 def test_results_persist_after_sidebar_interaction():

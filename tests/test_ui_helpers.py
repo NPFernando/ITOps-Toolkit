@@ -429,8 +429,8 @@ def test_tool_card_icon_asset_maps_wave11_visual_targets():
         "csv_column_selector": "icons/exported/icon-workflow-list-transform-outline-24x24-v01.svg",
         "line_numberer": "icons/exported/icon-workflow-id-sequence-outline-24x24-v01.svg",
         "column_aligner": "icons/exported/icon-workflow-column-align-outline-24x24-v01.svg",
-        "csr_generator": "icons/exported/icon-workflow-cert-chain-outline-24x24-v01.svg",
-        "caa_record_builder": "icons/exported/icon-workflow-policy-controls-outline-24x24-v01.svg",
+        "csr_generator": "icons/exported/icon-workflow-csr-generator-outline-24x24-v01.svg",
+        "caa_record_builder": "icons/exported/icon-workflow-caa-record-builder-outline-24x24-v01.svg",
     }
 
     for slug, expected in expected_assets.items():
@@ -463,6 +463,30 @@ def test_tool_card_icon_asset_maps_wave13_visual_targets():
 
     for slug, expected in expected_assets.items():
         tool = next(item for item in TOOLS if item.slug == slug)
+        assert ui._tool_card_icon_asset(tool) == expected
+
+
+def test_tool_card_icon_asset_maps_wave14_visual_targets():
+    expected_assets = {
+        "ssh_config_validator": "icons/exported/icon-workflow-ssh-config-check-outline-24x24-v01.svg",
+        "csr_generator": "icons/exported/icon-workflow-csr-generator-outline-24x24-v01.svg",
+        "caa_record_builder": "icons/exported/icon-workflow-caa-record-builder-outline-24x24-v01.svg",
+        "base62_encoder_decoder": "icons/exported/icon-workflow-base62-encoder-decoder-outline-24x24-v01.svg",
+    }
+    tools_by_slug = {tool.slug: tool for tool in TOOLS}
+
+    for slug, expected in expected_assets.items():
+        tool = tools_by_slug.get(slug) or ui.ToolMeta(
+            title="Base62 encoder/decoder",
+            short_title="Base62",
+            description="planned",
+            path="pages/122_Base62_Encoder_Decoder.py",
+            icon="62",
+            accent="#2e8bff",
+            slug=slug,
+            professions=("Support Engineer",),
+            category="Data & Text",
+        )
         assert ui._tool_card_icon_asset(tool) == expected
 
 
@@ -596,6 +620,32 @@ def test_tool_card_html_wave12_slug_specific_mapping_precedes_category_default_d
 
 def test_tool_card_html_wave13_slug_specific_mapping_precedes_category_default_during_render(monkeypatch):
     tool = next(item for item in TOOLS if item.slug == "json_merge_patch")
+
+    def fake_svg_img_html(path, *args, **kwargs):
+        if path == "icons/exported/icon-workflow-json-validate-outline-24x24-v01.svg":
+            return '<img class="tool-card-icon-image" data-icon="category-default" />'
+        return None
+
+    monkeypatch.setattr(ui, "_svg_img_html", fake_svg_img_html)
+
+    html = ui._tool_card_html(tool)
+
+    assert "tool-card-icon-image" not in html
+    assert f">{tool.icon}<" in html
+
+
+def test_tool_card_html_wave14_slug_specific_mapping_precedes_category_default_during_render(monkeypatch):
+    tool = ui.ToolMeta(
+        title="Base62 encoder/decoder",
+        short_title="Base62",
+        description="planned",
+        path="pages/122_Base62_Encoder_Decoder.py",
+        icon="62",
+        accent="#2e8bff",
+        slug="base62_encoder_decoder",
+        professions=("Support Engineer",),
+        category="Data & Text",
+    )
 
     def fake_svg_img_html(path, *args, **kwargs):
         if path == "icons/exported/icon-workflow-json-validate-outline-24x24-v01.svg":

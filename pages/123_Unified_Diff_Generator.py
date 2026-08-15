@@ -7,7 +7,6 @@ from utils.dev_baseline import mark_page_baseline, render_page_baseline, start_p
 from utils.ui import (
     apply_app_shell,
     render_empty_state,
-    render_failure_note,
     render_form_intro,
     render_page_header,
     render_section_heading,
@@ -53,13 +52,17 @@ if result is not None:
     with tool_result_panel("unified_diff_result_panel", related_to="unified_diff_generator"):
         render_section_heading("Unified diff", eyebrow="Result")
         if not result["ok"]:
-            render_failure_note(
-                "Diff generation",
-                result["error"],
-                remediation="Review both text inputs and file names, then generate the diff again.",
+            render_status_note(
+                "Cannot generate diff yet",
+                f"{result['error']} Review both text inputs and file names, then generate the diff again.",
+                tone="warning",
             )
         elif result["identical"]:
-            render_status_note("No changes detected", "Both inputs are identical, so no patch output was produced.", tone="neutral")
+            render_status_note(
+                "No changes detected",
+                "Both inputs are identical, so no patch output was produced.",
+                tone="neutral",
+            )
         else:
             render_status_note("Diff generation complete", "The patch output is ready below and can be downloaded as a .patch file.", tone="success")
             st.code(result["output"], language="diff")

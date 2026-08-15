@@ -48,7 +48,7 @@ def test_invalid_jwk_shows_warning_status():
 
     md = " ".join(m.value for m in app.markdown)
     assert "tool-status-note-warning" in md
-    assert "JWK to PEM conversion needs attention" in md
+    assert "Cannot convert JWK to PEM yet" in md
 
 
 def test_results_persist_after_sidebar_interaction():

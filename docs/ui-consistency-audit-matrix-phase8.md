@@ -111,3 +111,8 @@ Use this matrix as a quick release gate:
 
 - Wave 13 release docs now extend shell/mobile/visual/a11y gates for shared shell baseline-marker coverage on Home/Roadmap plus wave-13 pages, full-width mobile primary actions, and slug-specific icon mapping checks.
 - This matrix remains the Phase 8 baseline; Wave 13 adds release-playbook QA evidence requirements without changing core consistency rules.
+
+## Wave 14 Documentation Sync Note (Phase 21)
+
+- Wave 14 release docs now extend shell/mobile/visual/a11y gates for shared shell baseline-marker coverage on Home/Roadmap plus wave-14 pages, full-width mobile primary actions, and touchpoint slug icon mapping checks.
+- This matrix remains the Phase 8 baseline; Wave 14 adds release-playbook QA evidence requirements without changing core consistency rules.

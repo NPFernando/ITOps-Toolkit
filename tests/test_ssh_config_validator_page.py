@@ -37,6 +37,19 @@ def test_lint_shows_issues():
     assert "Lint issues detected" in md
 
 
+def test_empty_submission_shows_warning_status():
+    app = AppTest.from_file(PAGE, default_timeout=30)
+    app.run()
+    assert not app.exception
+
+    app.button[0].click().run()
+    assert not app.exception
+
+    md = " ".join(m.value for m in app.markdown)
+    assert "tool-status-note-warning" in md
+    assert "Cannot lint SSH config yet" in md
+
+
 def test_empty_state_shown_before_submit():
     app = AppTest.from_file(PAGE, default_timeout=30)
     app.run()
