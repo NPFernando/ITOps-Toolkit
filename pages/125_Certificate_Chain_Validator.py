@@ -31,6 +31,7 @@ render_page_header(
 with tool_form_panel("cert_chain_validator"):
     render_form_intro("Paste a PEM certificate chain", "Leaf certificate first, then each issuer in order.")
     with st.form("cert-chain-validator-form"):
+        st.markdown('<div class="tool-panel-eyebrow">PEM chain input</div>', unsafe_allow_html=True)
         pem_input = st.text_area("Certificate chain", height=280, max_chars=MAX_INPUT_LENGTH, placeholder="-----BEGIN CERTIFICATE-----\n...\n-----END CERTIFICATE-----")
         submitted = st.form_submit_button("Validate chain", use_container_width=True)
 
@@ -52,7 +53,7 @@ if result is not None:
         render_section_heading("Chain validation", eyebrow="Result")
         if not result["ok"]:
             render_status_note(
-                "Certificate chain validation needs input fixes",
+                "Outcome: certificate input validation required",
                 f"{result['error']} Provide at least two valid PEM certificates ordered from leaf to issuer, then validate again.",
                 tone="warning",
             )
@@ -64,13 +65,13 @@ if result is not None:
             )
             if result["chain_valid"]:
                 render_status_note(
-                    "Certificate chain is consistent",
+                    "Outcome: chain validation passed",
                     "Validation passed: each certificate link matched issuer naming and signature checks.",
                     tone="success",
                 )
             else:
                 render_status_note(
-                    "Certificate chain needs attention",
+                    "Outcome: chain issues detected",
                     f"Validation found {failing_links} certificate link issue(s). Review the link table below for exact mismatches.",
                     tone="warning",
                 )

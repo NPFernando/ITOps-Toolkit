@@ -736,6 +736,39 @@ def test_tool_card_html_uses_wave20_generated_icons_when_mapped():
         assert "data:image/svg+xml;base64," in html
 
 
+def test_tool_card_icon_asset_maps_wave21_visual_targets():
+    expected_assets = {
+        "unified_diff_generator": "icons/exported/icon-workflow-unified-diff-generator-outline-24x24-v01.svg",
+        "jwk_pem_converter": "icons/exported/icon-workflow-jwk-pem-converter-outline-24x24-v01.svg",
+        "cert_chain_validator": "icons/exported/icon-workflow-cert-chain-validator-outline-24x24-v01.svg",
+        "wsl_path_converter": "icons/exported/icon-workflow-wsl-path-converter-outline-24x24-v01.svg",
+        "markdown_link_extractor": "icons/exported/icon-workflow-markdown-link-extractor-outline-24x24-v01.svg",
+        "health_diagnostics": "icons/exported/icon-workflow-health-diagnostics-outline-24x24-v01.svg",
+    }
+    tools_by_slug = {tool.slug: tool for tool in TOOLS}
+
+    for slug, expected in expected_assets.items():
+        tool = tools_by_slug[slug]
+        assert ui._tool_card_icon_asset(tool) == expected
+
+
+def test_tool_card_html_uses_wave21_generated_icons_when_mapped():
+    tools_by_slug = {tool.slug: tool for tool in TOOLS}
+    tools = [tools_by_slug[slug] for slug in (
+        "unified_diff_generator",
+        "jwk_pem_converter",
+        "cert_chain_validator",
+        "wsl_path_converter",
+        "markdown_link_extractor",
+        "health_diagnostics",
+    )]
+
+    for tool in tools:
+        html = ui._tool_card_html(tool)
+        assert "tool-card-icon-image" in html
+        assert "data:image/svg+xml;base64," in html
+
+
 def test_tool_card_html_wave4_slug_specific_mapping_precedes_category_default_during_render(monkeypatch):
     tool = next(item for item in TOOLS if item.slug == "basic_auth_tool")
 
@@ -1093,11 +1126,53 @@ def test_tool_card_html_wave20_slug_specific_mapping_precedes_category_default_d
         assert f">{tool.icon}<" in html
 
 
+def test_tool_card_html_wave21_slug_specific_mapping_precedes_category_default_during_render(monkeypatch):
+    category_defaults = {
+        "unified_diff_generator": "icons/exported/icon-workflow-http-probe-outline-24x24-v01.svg",
+        "jwk_pem_converter": "icons/exported/icon-workflow-incident-response-outline-24x24-v01.svg",
+        "cert_chain_validator": "icons/exported/icon-workflow-incident-response-outline-24x24-v01.svg",
+        "wsl_path_converter": "icons/exported/icon-workflow-automation-runbook-outline-24x24-v01.svg",
+        "markdown_link_extractor": "icons/exported/icon-workflow-http-probe-outline-24x24-v01.svg",
+        "health_diagnostics": "icons/exported/icon-workflow-automation-runbook-outline-24x24-v01.svg",
+    }
+
+    def fake_svg_img_html(path, *args, **kwargs):
+        if path in set(category_defaults.values()):
+            return '<img class="tool-card-icon-image" data-icon="category-default" />'
+        return None
+
+    monkeypatch.setattr(ui, "_svg_img_html", fake_svg_img_html)
+    tools_by_slug = {tool.slug: tool for tool in TOOLS}
+
+    for slug, category_default in category_defaults.items():
+        tool = tools_by_slug[slug]
+        html = ui._tool_card_html(tool)
+        assert ui._tool_card_icon_asset(tool) != category_default
+        assert "tool-card-icon-image" not in html
+        assert f">{tool.icon}<" in html
+
+
 def test_tool_card_icon_asset_wave3_slug_specific_mapping_precedes_category_default():
     tool = next(item for item in TOOLS if item.slug == "unified_diff_generator")
 
     assert tool.category == "Web & Dev"
     assert ui._tool_card_icon_asset(tool) == "icons/exported/icon-workflow-unified-diff-generator-outline-24x24-v01.svg"
+
+
+def test_material_icon_for_wave21_targets_and_unknown_fallback():
+    expected_icons = {
+        "unified_diff_generator": ":material/difference:",
+        "jwk_pem_converter": ":material/key:",
+        "cert_chain_validator": ":material/link:",
+        "wsl_path_converter": ":material/drive_file_move:",
+        "markdown_link_extractor": ":material/insert_link:",
+        "health_diagnostics": ":material/health_and_safety:",
+    }
+
+    for slug, expected in expected_icons.items():
+        assert ui._material_icon_for(slug) == expected
+
+    assert ui._material_icon_for("not-a-real-slug") == ":material/build:"
 
 
 def test_tool_card_html_uses_wave10_generated_icon_when_planned_slug_is_mapped():

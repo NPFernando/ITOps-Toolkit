@@ -23,7 +23,7 @@ def test_generate_shows_result():
     assert "+CHANGED" in code
     markdown = " ".join(m.value for m in app.markdown)
     assert "tool-status-note-success" in markdown
-    assert "Patch output ready" in markdown
+    assert "Outcome: patch generated" in markdown
     assert 'role="status"' in markdown
     assert 'aria-live="polite"' in markdown
 
@@ -50,9 +50,25 @@ def test_empty_submission_shows_warning_status():
 
     md = " ".join(m.value for m in app.markdown)
     assert "tool-status-note-warning" in md
-    assert "Diff generation needs input fixes" in md
+    assert "Outcome: input validation required" in md
     assert 'role="alert"' in md
     assert 'aria-live="assertive"' in md
+
+
+def test_identical_input_shows_neutral_status():
+    app = AppTest.from_file(PAGE, default_timeout=30)
+    app.run()
+    assert not app.exception
+
+    app.text_area[0].set_value("line1\nline2")
+    app.text_area[1].set_value("line1\nline2")
+    app.button[0].click().run()
+    assert not app.exception
+
+    md = " ".join(m.value for m in app.markdown)
+    assert "tool-status-note-neutral" in md
+    assert "Outcome: no differences detected" in md
+    assert 'role="status"' in md
 
 
 def test_results_persist_after_sidebar_interaction():

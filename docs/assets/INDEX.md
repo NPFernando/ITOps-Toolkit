@@ -242,6 +242,15 @@ When a roadmap badge asset is unavailable, compact text fallback glyphs are used
 - CAA record builder icon: `caa_record_builder`
 - Base62 encoding icon: `base62_tool`
 
+### Phase 28 Wave 21 icon mapping coverage
+
+- Unified diff icon: `unified_diff_generator`
+- JWK/PEM conversion icon: `jwk_pem_converter`
+- Certificate chain validation icon: `cert_chain_validator`
+- WSL path conversion icon: `wsl_path_converter`
+- Markdown link extraction icon: `markdown_link_extractor`
+- Health diagnostics icon: `health_diagnostics`
+
 ### Phase 12 Wave 5 add-on QA focus
 
 - Confirm wave-5 slugs resolve to slug-specific assets before category defaults.
@@ -369,6 +378,14 @@ When a roadmap badge asset is unavailable, compact text fallback glyphs are used
 - Include one shell pass confirming shared shell + baseline markers remain visible/unchanged on Home, Roadmap, and wave-20 touchpoint pages.
 - Include one `<=720px` viewport pass to confirm Home controls, Roadmap filters/AI triage action, and wave-20 submit actions stay full-width/tap-friendly with no clipping/overflow.
 - Include one keyboard-only pass to confirm wave-20 notice semantics and focus visibility remain intact.
+
+### Phase 28 Wave 21 add-on QA focus
+
+- Confirm wave-21 touchpoint slugs resolve to slug-specific assets before category defaults (`unified_diff_generator`, `jwk_pem_converter`, `cert_chain_validator`, `wsl_path_converter`, `markdown_link_extractor`, `health_diagnostics`).
+- Confirm wave-21 slug-specific icons still fall back to text badges when SVG rendering is unavailable.
+- Include one shell pass confirming shared shell + baseline markers remain visible/unchanged on Home, Roadmap, and wave-21 touchpoint pages.
+- Include one `<=720px` viewport pass to confirm Home controls, Roadmap filters/AI triage action, and wave-21 submit/runbook actions stay full-width/tap-friendly with no clipping/overflow.
+- Include one keyboard-only pass to confirm wave-21 notice semantics and focus visibility remain intact.
 
 ## Docs/release media inventory
 

@@ -214,7 +214,9 @@ st.markdown(
 render_section_heading("Browse roadmap items", "Use search and category filters to focus the board view.", eyebrow="Explore")
 with tool_form_panel("roadmap_filters"):
     render_form_intro("Search and filter roadmap", "Use keyword search and category pills to narrow the board.")
+    st.markdown('<div class="tool-panel-eyebrow">Keyword search</div>', unsafe_allow_html=True)
     query = st.text_input("Search roadmap", placeholder="Search features, categories, or ideas...")
+    st.markdown('<div class="tool-panel-eyebrow">Category filter</div>', unsafe_allow_html=True)
     category = st.pills(
         "Filter category",
         options=("All", *roadmap.roadmap_categories()),
@@ -268,6 +270,7 @@ else:
             "Generate optional AI triage",
             "Runs only when clicked and uses public roadmap item text already shown on this page.",
         )
+        st.markdown('<div class="tool-panel-eyebrow">Triage action</div>', unsafe_allow_html=True)
         summarize_with_ai = st.button(f"Summarize {len(open_items)} open items with AI", icon=":material/auto_awesome:", use_container_width=True)
     if summarize_with_ai:
         triage_cache_key = compose_cache_key(
