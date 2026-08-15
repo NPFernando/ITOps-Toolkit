@@ -388,6 +388,20 @@ This guide documents the UI direction used for the Streamlit dashboard and tool 
 - Record Wave 19 outcomes in `docs/release-notes-template.md` using synthetic/sanitized evidence only.
 - Keep non-tool exceptions explicit and confirm desktop/mobile readability after wave-19 updates.
 
+## Phase 27 Wave 20 Standards (Shell, Mobile, Visual, A11y + QA Gates)
+
+- **Shell consistency:** keep shared shell + baseline markers (`shell-ready`, `content-rendered`) stable on Home, Roadmap & Feedback, JSON Merge Patch, Column Aligner, SSH Config Validator, CSR Generator, CAA Record Builder, and Base62 Encoder/Decoder.
+- **Mobile baseline (`<=720px`):** keep wave-20 form panels and primary actions full-width/tap-friendly (`use_container_width=True`), keep wave-20 controls single-column readable, and avoid forced two-column control layouts on wave-20 touchpoint pages.
+- **Visual mapping integrity:** keep wave-20 touchpoint slug mappings readable (`json_merge_patch`, `column_aligner`, `ssh_config_validator`, `csr_generator`, `caa_record_builder`, `base62_tool`) before category defaults, with text badge fallback always readable.
+- **Accessibility guardrail:** keep keyboard flow and visible focus rings intact for Home controls, Roadmap filters/AI triage action, and wave-20 form actions, with neutral/blocking outcomes aligned to shared status/failure note semantics.
+- **QA gate behavior:** treat Wave 20 shell/mobile/visual/a11y regressions as release blockers unless an intentional exception is documented.
+
+### Wave 20 QA handoff guidance
+
+- Run Wave 20 checks in `docs/release-checklist.md` before release.
+- Record Wave 20 outcomes in `docs/release-notes-template.md` using synthetic/sanitized evidence only.
+- Keep non-tool exceptions explicit and confirm desktop/mobile readability after wave-20 updates.
+
 ## Maintenance Rules
 
 - Do not duplicate tool titles, descriptions, paths, or accent colors outside `utils/ui.py`.

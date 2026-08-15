@@ -32,9 +32,10 @@ render_page_header(
 with tool_form_panel("json_merge_patch"):
     render_form_intro("Paste the target JSON and the patch to apply", "")
     with st.form("json-merge-patch-form"):
-        col_a, col_b = st.columns(2, gap="small")
-        target_input = col_a.text_area("Target JSON", height=280, max_chars=MAX_INPUT_LENGTH, placeholder='{"a": "b", "c": {"d": "e"}}')
-        patch_input = col_b.text_area("Patch JSON", height=280, max_chars=MAX_INPUT_LENGTH, placeholder='{"a": "z", "c": {"d": null}}')
+        st.markdown('<div class="tool-panel-eyebrow">Target JSON</div>', unsafe_allow_html=True)
+        target_input = st.text_area("Target JSON", height=280, max_chars=MAX_INPUT_LENGTH, placeholder='{"a": "b", "c": {"d": "e"}}')
+        st.markdown('<div class="tool-panel-eyebrow">Patch JSON</div>', unsafe_allow_html=True)
+        patch_input = st.text_area("Patch JSON", height=280, max_chars=MAX_INPUT_LENGTH, placeholder='{"a": "z", "c": {"d": null}}')
         submitted = st.form_submit_button("Merge", use_container_width=True)
 
 if submitted:
@@ -44,7 +45,11 @@ result = st.session_state.get("json_merge_patch_result")
 
 if result is None:
     render_empty_state("Ready to merge", "The merged JSON appears here.")
-    render_status_note("Awaiting JSON input", "Provide both target and patch JSON, then run merge.", tone="neutral")
+    render_status_note(
+        "Ready for JSON input",
+        "No merge has run yet. Provide target and patch JSON, then select Merge.",
+        tone="neutral",
+    )
 
 if result is not None:
     with tool_result_panel("json_merge_patch_result_panel", related_to="json_merge_patch"):
@@ -57,7 +62,11 @@ if result is not None:
             )
         else:
             st.code(result["output"], language="json")
-            render_status_note("Merged successfully", "Patch applied per RFC 7396 merge rules.", tone="success")
+            render_status_note(
+                "JSON merge patch applied",
+                "Patch merged successfully using RFC 7396 rules.",
+                tone="success",
+            )
 
 mark_page_baseline(_baseline, "content-rendered")
 render_page_baseline(_baseline)

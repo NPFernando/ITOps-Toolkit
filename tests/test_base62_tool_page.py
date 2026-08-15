@@ -21,7 +21,7 @@ def test_encode_tab_shows_result():
     assert "3D7" in code
     md = " ".join(m.value for m in app.markdown)
     assert "tool-status-note-success" in md
-    assert "Encoding complete" in md
+    assert "Base62 encoding complete" in md
 
 
 def test_decode_tab_shows_result():
@@ -37,7 +37,7 @@ def test_decode_tab_shows_result():
     assert "12345" in code
     md = " ".join(m.value for m in app.markdown)
     assert "tool-status-note-success" in md
-    assert "Decoding complete" in md
+    assert "Base62 decoding complete" in md
 
 
 def test_empty_state_shown_before_submit():
@@ -48,8 +48,8 @@ def test_empty_state_shown_before_submit():
     md = " ".join(m.value for m in app.markdown)
     assert "tool-empty-state" in md
     assert "tool-status-note-neutral" in md
-    assert "Awaiting number input" in md
-    assert "Awaiting Base62 input" in md
+    assert "Ready for number input" in md
+    assert "Ready for Base62 input" in md
 
 
 def test_encode_empty_submission_shows_warning_status():
@@ -62,7 +62,7 @@ def test_encode_empty_submission_shows_warning_status():
 
     md = " ".join(m.value for m in app.markdown)
     assert "tool-status-note-warning" in md
-    assert "Cannot encode to Base62 yet" in md
+    assert "Base62 encoding needs attention" in md
 
 
 def test_decode_invalid_input_shows_warning_status():
@@ -76,7 +76,7 @@ def test_decode_invalid_input_shows_warning_status():
 
     md = " ".join(m.value for m in app.markdown)
     assert "tool-status-note-warning" in md
-    assert "Cannot decode Base62 yet" in md
+    assert "Base62 decoding needs attention" in md
 
 
 def test_results_persist_after_sidebar_interaction():

@@ -141,3 +141,8 @@ Use this matrix as a quick release gate:
 
 - Wave 19 release docs now extend shell/mobile/visual/a11y gates for shared shell baseline-marker coverage on Home/Roadmap plus PII Redactor/Env File Diff/Cron Overlap Checker/Test Data Generator/Password Policy Checker/ISO8601 Duration Tool, full-width mobile form-panel actions, and wave-19 touchpoint visual mapping checks.
 - This matrix remains the Phase 8 baseline; Wave 19 adds release-playbook QA evidence requirements without changing core consistency rules.
+
+## Wave 20 Documentation Sync Note (Phase 27)
+
+- Wave 20 release docs now extend shell/mobile/visual/a11y gates for shared shell baseline-marker coverage on Home/Roadmap plus JSON Merge Patch/Column Aligner/SSH Config Validator/CSR Generator/CAA Record Builder/Base62 Encoder Decoder, full-width mobile form-panel actions, and wave-20 touchpoint visual mapping checks.
+- This matrix remains the Phase 8 baseline; Wave 20 adds release-playbook QA evidence requirements without changing core consistency rules.
