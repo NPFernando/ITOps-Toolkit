@@ -77,6 +77,25 @@ def test_classify_failure_mode_distinguishes_transient_and_persistent():
     assert ui.classify_failure_mode("Domain does not exist.") == "persistent"
 
 
+def test_classify_failure_mode_handles_phase4_adapter_error_taxonomy_messages():
+    transient_cases = [
+        "DNS lookup timed out after 3 attempts.",
+        "GitHub issues timed out or could not connect after 3 attempts. Showing seed roadmap data.",
+        "Connection failed after 3 attempts: connection reset",
+    ]
+    persistent_cases = [
+        "GitHub repository URL is invalid. Showing seed roadmap data.",
+        "Domain does not exist.",
+        "Port must be between 1 and 65535.",
+    ]
+
+    for message in transient_cases:
+        assert ui.classify_failure_mode(message) == "transient"
+
+    for message in persistent_cases:
+        assert ui.classify_failure_mode(message) == "persistent"
+
+
 def test_render_failure_note_hides_raw_sensitive_error(monkeypatch):
     rendered = []
 

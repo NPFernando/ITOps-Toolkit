@@ -35,7 +35,10 @@ def test_health_diagnostics_page_renders_key_sections():
     assert "Optional integrations" in page_markdown
     assert "Feature flags" in page_markdown
     assert "Safe smoke checks" in page_markdown
-    assert len(app.dataframe) >= 4
+    assert "Adapter capabilities" in page_markdown
+    assert "Reliability score" in page_markdown
+    assert "Remediation hints" in page_markdown
+    assert len(app.dataframe) >= 7
 
 
 def test_health_diagnostics_page_reflects_feature_and_integration_status(monkeypatch):
@@ -50,3 +53,13 @@ def test_health_diagnostics_page_reflects_feature_and_integration_status(monkeyp
     assert _row_by_check(rows, "Azure OpenAI (optional)")["Status"] == "Configured"
     assert _row_by_check(rows, "Cache probe")["Status"] == "Pass"
     assert _row_by_check(rows, "Roadmap seed parse")["Status"] == "Pass"
+    assert _row_by_check(rows, "HTTP adapter callable")["Status"] == "Pass"
+
+
+def test_health_diagnostics_redacts_github_url_userinfo(monkeypatch):
+    monkeypatch.setenv("ITOPS_GITHUB_URL", "https://token-value@github.com/NPFernando/ITOps-Toolkit")
+
+    rows = _table_rows(_run_page())
+    github_row = _row_by_check(rows, "Configured GitHub repo")
+    assert "token-value" not in github_row["Details"]
+    assert github_row["Details"] == "https://github.com/NPFernando/ITOps-Toolkit"

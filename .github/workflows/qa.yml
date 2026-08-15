@@ -35,6 +35,9 @@ jobs:
         if: matrix.python-version == '3.11'
         run: >-
           python -m pytest
+          tests/test_health_diagnostics_page.py
+          tests/test_cache_policy.py
+          tests/test_maintenance_consistency.py
           tests/test_cve_tools.py
           tests/test_totp_tools.py
           tests/test_log_ai_page.py

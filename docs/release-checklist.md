@@ -20,6 +20,14 @@ If the virtual environment already exists, refresh dependencies:
 
 ## 2. Run Automated Checks
 
+Fast confidence gate (pre-merge):
+
+```bash
+make release-gates
+```
+
+Full release gate:
+
 ```bash
 .venv/bin/python -m compileall app.py pages utils
 .venv/bin/python -m pytest
@@ -112,3 +120,5 @@ git diff --cached --check
 ## 9. Release Notes
 
 Use `docs/release-notes-template.md` to summarize the release, QA commands, privacy posture, and known limitations.
+
+For incident triage and diagnostics interpretation during or after rollout, see `docs/ops-runbook.md`.

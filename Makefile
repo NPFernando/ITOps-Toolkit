@@ -1,4 +1,4 @@
-.PHONY: help setup install install-dev run test compile qa clean
+.PHONY: help setup install install-dev run test compile qa release-gates pre-merge pre-release clean
 
 PYTHON ?= python3
 VENV ?= .venv
@@ -6,6 +6,14 @@ VENV_PYTHON := $(VENV)/bin/python
 VENV_PIP := $(VENV)/bin/pip
 STREAMLIT := $(VENV)/bin/streamlit
 PORT ?= 8502
+RELEASE_GATES_TESTS := \
+	tests/test_streamlit_pages.py \
+	tests/test_health_diagnostics_page.py \
+	tests/test_cache_policy.py \
+	tests/test_adapters.py \
+	tests/test_github_issues.py \
+	tests/test_ai_tools.py \
+	tests/test_maintenance_consistency.py
 
 help: ## Show available commands
 	@awk 'BEGIN {FS = ":.*##"; printf "Available commands:\n"} /^[a-zA-Z_-]+:.*##/ {printf "  %-12s %s\n", $$1, $$2}' $(MAKEFILE_LIST)
@@ -45,6 +53,13 @@ test: ## Run pytest
 	$(VENV_PYTHON) -m pytest
 
 qa: compile test ## Run local quality checks
+
+release-gates: compile ## Run fast pre-merge reliability/release checks
+	$(VENV_PYTHON) -m pytest $(RELEASE_GATES_TESTS)
+
+pre-merge: release-gates ## Alias: run pre-merge confidence gates
+
+pre-release: qa ## Alias: run full pre-release quality checks
 
 clean: ## Remove local Python caches and pytest cache
 	find . -type d \( -name '__pycache__' -o -name '.pytest_cache' \) -prune -exec rm -rf {} +

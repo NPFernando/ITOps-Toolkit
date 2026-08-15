@@ -1,4 +1,5 @@
 from datetime import UTC, datetime
+import errno
 import socket
 import ssl
 
@@ -91,6 +92,43 @@ def test_resolve_records_retries_timeout_then_succeeds(monkeypatch):
     result = dns_tools.resolve_records("example.com", "A")
 
     assert result["ok"] is True
+    assert calls["count"] == 3
+
+
+def test_get_certificate_info_non_retryable_os_error_stops_immediately(monkeypatch):
+    calls = {"count": 0}
+
+    def invalid_connection(*args, **kwargs):
+        calls["count"] += 1
+        raise OSError(errno.EINVAL, "invalid argument")
+
+    monkeypatch.setattr(ssl_tools.ssl, "create_default_context", lambda: FakeContext())
+    monkeypatch.setattr(ssl_tools.socket, "create_connection", invalid_connection)
+
+    result = ssl_tools.get_certificate_info("example.com")
+
+    assert result["ok"] is False
+    assert result["tls_status"] == "Unknown"
+    assert "Could not connect to TLS endpoint" in result["error"]
+    assert calls["count"] == 1
+
+
+def test_resolve_records_retries_no_nameservers_then_returns_error(monkeypatch):
+    calls = {"count": 0}
+
+    class FailingResolver:
+        def resolve(self, query_name, query_type):
+            calls["count"] += 1
+            raise dns.resolver.NoNameservers()
+
+    monkeypatch.setattr(dns_tools, "get_resolver", lambda: FailingResolver())
+    monkeypatch.setattr(dns_tools.time, "sleep", lambda *_: None)
+
+    result = dns_tools.resolve_records("example.com", "A")
+
+    assert result["ok"] is False
+    assert result["status"] == "Nameserver Error"
+    assert "after 3 attempts" in result["error"]
     assert calls["count"] == 3
 
 
@@ -292,6 +330,25 @@ def test_check_http_status_retries_retryable_status_and_uses_last_response(monke
         if calls["count"] < 3:
             return RetryResponse(503, "Service Unavailable")
         return RetryResponse(200, "OK")
+
+    monkeypatch.setattr(http_tools.requests, "get", fake_get)
+    monkeypatch.setattr(http_tools.time, "sleep", lambda *_: None)
+
+    result = http_tools.check_http_status("https://example.com")
+
+    assert result["ok"] is True
+    assert result["status_code"] == 200
+    assert calls["count"] == 3
+
+
+def test_check_http_status_retries_connection_error_then_succeeds(monkeypatch):
+    calls = {"count": 0}
+
+    def fake_get(*args, **kwargs):
+        calls["count"] += 1
+        if calls["count"] < 3:
+            raise requests.exceptions.ConnectionError("connection reset by peer")
+        return FakeResponse()
 
     monkeypatch.setattr(http_tools.requests, "get", fake_get)
     monkeypatch.setattr(http_tools.time, "sleep", lambda *_: None)
