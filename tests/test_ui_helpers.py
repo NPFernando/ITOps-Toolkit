@@ -302,6 +302,36 @@ def test_tool_card_icon_asset_maps_wave3_weak_cue_tools():
         assert ui._tool_card_icon_asset(tool) == expected
 
 
+def test_tool_card_icon_asset_maps_wave4_weak_cue_tools():
+    expected_assets = {
+        "basic_auth_tool": "icons/exported/icon-workflow-auth-controls-outline-24x24-v01.svg",
+        "password_policy_checker": "icons/exported/icon-workflow-auth-controls-outline-24x24-v01.svg",
+        "business_hours": "icons/exported/icon-workflow-time-operations-outline-24x24-v01.svg",
+        "pii_redactor": "icons/exported/icon-workflow-data-sanitization-outline-24x24-v01.svg",
+        "windows_event_reference": "icons/exported/icon-workflow-api-reference-outline-24x24-v01.svg",
+    }
+
+    for slug, expected in expected_assets.items():
+        tool = next(item for item in TOOLS if item.slug == slug)
+        assert ui._tool_card_icon_asset(tool) == expected
+
+
+def test_tool_card_html_wave4_slug_specific_mapping_precedes_category_default_during_render(monkeypatch):
+    tool = next(item for item in TOOLS if item.slug == "basic_auth_tool")
+
+    def fake_svg_img_html(path, *args, **kwargs):
+        if path == "icons/exported/icon-workflow-incident-response-outline-24x24-v01.svg":
+            return '<img class="tool-card-icon-image" data-icon="category-default" />'
+        return None
+
+    monkeypatch.setattr(ui, "_svg_img_html", fake_svg_img_html)
+
+    html = ui._tool_card_html(tool)
+
+    assert "tool-card-icon-image" not in html
+    assert f">{tool.icon}<" in html
+
+
 def test_tool_card_icon_asset_wave3_slug_specific_mapping_precedes_category_default():
     tool = next(item for item in TOOLS if item.slug == "unified_diff_generator")
 

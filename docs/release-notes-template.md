@@ -11,6 +11,7 @@ Use this template for deployment notes, GitHub releases, or pull request summari
 - Optional visual header: `docs/assets/posters/exported/poster-toolkit-trust-shield-hero-portrait-1080x1350-v01.svg`
 - QA baseline: Phase 9 wave-2 shell/mobile/visual/a11y checks completed
 - QA baseline add-on: Phase 10 wave-3 shell/mobile/visual/a11y QA gates completed
+- QA baseline add-on: Phase 11 wave-4 shell/mobile/visual/a11y QA gates completed
 
 ## User-Facing Changes
 
@@ -51,6 +52,10 @@ curl http://localhost:8502/_stcore/health
 - Wave 3 mobile cue readability spot check (`<=720px`, no badge/chip clipping):
 - Wave 3 visual mapping spot check (weak-cue slug-specific icon priority + fallback):
 - Wave 3 accessibility spot check (decorative SVG semantics + keyboard/focus):
+- Wave 4 shell consistency spot check (sidebar/groups/search/command palette):
+- Wave 4 mobile readability spot check (`<=720px`, labels/chips wrap, no overflow):
+- Wave 4 visual mapping spot check (wave-4 slug-specific icon priority + fallback):
+- Wave 4 accessibility spot check (keyboard/focus/notice semantics):
 - Log Troubleshooting AI unavailable state:
 - Optional Azure AI state, if secrets were available:
 
