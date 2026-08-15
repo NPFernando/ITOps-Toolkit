@@ -3,6 +3,7 @@ from __future__ import annotations
 import pandas as pd
 import streamlit as st
 
+from utils.dev_baseline import mark_page_baseline, render_page_baseline, start_page_baseline
 from utils.dkim_tools import MAX_SELECTOR_LENGTH, lookup_dkim
 from utils.dns_tools import MAX_DOMAIN_LENGTH, normalize_domain
 from utils.text_tools import validate_length
@@ -20,8 +21,10 @@ from utils.ui import (
 )
 
 
+_baseline = start_page_baseline("DKIM Selector Lookup")
 st.set_page_config(page_title="DKIM Selector Lookup", layout="wide")
 apply_app_shell(active_page="DKIM Selector Lookup")
+mark_page_baseline(_baseline, "shell-ready")
 
 
 render_page_header(
@@ -80,11 +83,16 @@ if validation_error is not None:
 
 if result is not None:
     with tool_result_panel("dkim_result", related_to="dkim_lookup"):
-        render_section_heading("DKIM record", f"Queried {result['query_name'] or 'the selector record'}.")
+        render_section_heading("Lookup outcome", f"Queried {result['query_name'] or 'the selector record'}.", eyebrow="Result")
         if result["status"] == "Healthy":
             render_status_note("Status: Healthy", "The selector record was found and parsed successfully.", tone="success")
         elif result["ok"]:
-            render_status_note(f"Status: {result['status']}", "The selector record was found, but it needs review.", tone="warning")
+            tone = "warning" if result["status"] in {"Warning", "Critical"} else "neutral"
+            render_status_note(
+                f"Status: {result['status']}",
+                "The selector record was found. Review parsed fields before publishing or rotating keys.",
+                tone=tone,
+            )
             if result["error"]:
                 render_failure_note(
                     "DKIM selector lookup",
@@ -100,8 +108,12 @@ if result is not None:
             )
 
         if result["ok"]:
+            render_section_heading("DKIM fields", eyebrow="Data")
             rows = [{"field": key, "value": value} for key, value in result["fields"].items()]
             st.dataframe(pd.DataFrame(rows), width="stretch", hide_index=True)
 
             with st.expander("Raw record"):
                 st.code(result["raw_value"])
+
+mark_page_baseline(_baseline, "content-rendered")
+render_page_baseline(_baseline)

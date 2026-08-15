@@ -166,6 +166,16 @@ Confirm these release-blocking checks pass:
 - **Accessibility:** keyboard-only navigation, visible focus rings, and notice semantics remain intact on Home, one wave-9 tool page, and Roadmap.
 - **Release evidence:** Wave 9 outcomes are captured in `docs/release-notes-template.md` with synthetic/sanitized QA evidence only.
 
+### 4.11 Phase 17 Wave 10 Regression Checklist (Shell/Mobile/Visual/A11y QA Gates)
+
+Confirm these release-blocking checks pass:
+
+- **Shell consistency:** shared shell + baseline markers (`shell-ready`, `content-rendered`) remain present on Home, Roadmap, Domain Health Checker, WHOIS Lookup, Bulk Domain Health, DNS Propagation Checker, DKIM Selector Lookup, Email Record Builder, and Health Diagnostics.
+- **Mobile (`<=720px`):** wave-10 pages stay readable/tap-friendly with no clipped labels or horizontal overflow, and no page-scoped mobile CSS is required to keep layouts stable.
+- **Visual mapping (wave-10 focus):** wave-10 planned slugs resolve to slug-specific icon assets before category defaults; when assets are missing, text fallback badges remain readable.
+- **Accessibility:** neutral outcomes use shared status-note semantics, blocking errors use shared failure semantics, keyboard-only navigation remains intact, and focus rings stay visible.
+- **Release evidence:** Wave 10 outcomes are captured in `docs/release-notes-template.md` with synthetic/sanitized QA evidence only.
+
 ## 5. Log Troubleshooting AI States
 
 Without Azure secrets:
@@ -219,7 +229,7 @@ git diff --cached --check
 
 ## 9. Release Notes
 
-Use `docs/release-notes-template.md` to summarize the release, QA commands, privacy posture, known limitations, Wave 2/Wave 3/Wave 4/Wave 5/Wave 6/Wave 7/Wave 8/Wave 9 shell-mobile-visual-a11y outcomes, and the UX Quality Outcomes release reporting kit.
+Use `docs/release-notes-template.md` to summarize the release, QA commands, privacy posture, known limitations, Wave 2/Wave 3/Wave 4/Wave 5/Wave 6/Wave 7/Wave 8/Wave 9/Wave 10 shell-mobile-visual-a11y outcomes, and the UX Quality Outcomes release reporting kit.
 
 Minimum UX reporting before publish:
 - Record one outcome each for navigation, readability/layout, task completion confidence, and public-safe behavior.

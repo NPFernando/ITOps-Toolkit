@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import streamlit as st
 
+from utils.dev_baseline import mark_page_baseline, render_page_baseline, start_page_baseline
 from utils.email_record_builder import (
     DMARC_ALIGNMENT_MODES,
     DMARC_POLICIES,
@@ -23,8 +24,10 @@ from utils.ui import (
 )
 
 
+_baseline = start_page_baseline("Email Record Builder")
 st.set_page_config(page_title="Email Record Builder", layout="wide")
 apply_app_shell(active_page="Email Record Builder")
+mark_page_baseline(_baseline, "shell-ready")
 
 
 render_page_header(
@@ -69,7 +72,14 @@ with spf_tab:
                     remediation="Review the input values and rebuild the SPF record.",
                 )
             else:
-                render_status_note("SPF record ready", "Copy and publish this TXT record at the root domain.", tone="success")
+                if result["warnings"]:
+                    render_status_note(
+                        "SPF record generated with warnings",
+                        "Record formatting succeeded, but review guidance before publishing.",
+                        tone="warning",
+                    )
+                else:
+                    render_status_note("SPF record ready", "Copy and publish this TXT record at the root domain.", tone="success")
                 st.code(result["record"], language=None)
                 for warning in result["warnings"]:
                     render_status_note("SPF guidance", warning, tone="warning")
@@ -108,7 +118,14 @@ with dmarc_tab:
                     remediation="Check policy/reporting inputs and rebuild the DMARC record.",
                 )
             else:
-                render_status_note("DMARC record ready", "Copy and publish this TXT record at _dmarc.<domain>.", tone="success")
+                if result["warnings"]:
+                    render_status_note(
+                        "DMARC record generated with warnings",
+                        "Record formatting succeeded, but review guidance before publishing.",
+                        tone="warning",
+                    )
+                else:
+                    render_status_note("DMARC record ready", "Copy and publish this TXT record at _dmarc.<domain>.", tone="success")
                 st.code(result["record"], language=None)
                 for warning in result["warnings"]:
                     render_status_note("DMARC guidance", warning, tone="warning")
@@ -140,8 +157,18 @@ with dkim_tab:
                     remediation="Provide selector, domain, and public key, then rebuild the DKIM record.",
                 )
             else:
-                render_status_note("DKIM record ready", "Copy and publish this TXT record at the shown selector name.", tone="success")
+                if result["warnings"]:
+                    render_status_note(
+                        "DKIM record generated with warnings",
+                        "Record formatting succeeded, but review guidance before publishing.",
+                        tone="warning",
+                    )
+                else:
+                    render_status_note("DKIM record ready", "Copy and publish this TXT record at the shown selector name.", tone="success")
                 st.caption(f"Record name: {result['query_name']}")
                 st.code(result["record"], language=None)
                 for warning in result["warnings"]:
                     render_status_note("DKIM guidance", warning, tone="warning")
+
+mark_page_baseline(_baseline, "content-rendered")
+render_page_baseline(_baseline)

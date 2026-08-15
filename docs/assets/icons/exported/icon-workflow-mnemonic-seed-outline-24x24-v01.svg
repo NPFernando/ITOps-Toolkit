@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+  <title>Mnemonic seed workflow icon</title>
+  <path d="M12 4v16" />
+  <path d="M8 8h8" />
+  <path d="M7 14h10" />
+  <path d="M12 4c-2.3 0-4 1.7-4 4" />
+  <path d="M12 4c2.3 0 4 1.7 4 4" />
+</svg>

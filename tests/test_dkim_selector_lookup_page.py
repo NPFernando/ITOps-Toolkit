@@ -57,3 +57,28 @@ def test_dkim_selector_lookup_requires_selector():
     markdown = " ".join(block.value for block in app.markdown)
     assert "DKIM input needs attention" in markdown
     assert "Provide a valid public domain and DKIM selector" in markdown
+
+
+def test_dkim_selector_lookup_unknown_status_uses_neutral_note(monkeypatch):
+    monkeypatch.setattr(
+        "utils.dkim_tools.lookup_dkim",
+        lambda domain, selector: {
+            "ok": True,
+            "status": "Unknown",
+            "error": "",
+            "query_name": f"{selector}._domainkey.{domain}",
+            "fields": {"v": "DKIM1", "k": "rsa", "p": ""},
+            "raw_value": "v=DKIM1; k=rsa; p=",
+        },
+    )
+
+    app = AppTest.from_file(PAGE, default_timeout=30)
+    app.run()
+    app.text_input[0].set_value("example.com")
+    app.text_input[1].set_value("default")
+    app.button[0].click().run()
+    assert not app.exception
+
+    markdown = " ".join(block.value for block in app.markdown)
+    assert "Status: Unknown" in markdown
+    assert 'role="status"' in markdown

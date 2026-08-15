@@ -3,6 +3,7 @@ from __future__ import annotations
 import pandas as pd
 import streamlit as st
 
+from utils.dev_baseline import mark_page_baseline, render_page_baseline, start_page_baseline
 from utils.dns_propagation import PUBLIC_RESOLVERS, SUPPORTED_RECORD_TYPES, check_propagation
 from utils.dns_tools import MAX_DOMAIN_LENGTH, normalize_domain
 from utils.text_tools import validate_length
@@ -20,39 +21,10 @@ from utils.ui import (
 )
 
 
+_baseline = start_page_baseline("DNS Propagation Checker")
 st.set_page_config(page_title="DNS Propagation Checker", layout="wide")
 apply_app_shell(active_page="DNS Propagation Checker")
-
-st.markdown(
-    """
-    <style>
-    @media (max-width: 768px) {
-      div[data-testid="stFormSubmitButton"] > button {
-        min-height: 2.75rem;
-        font-size: 1rem;
-      }
-      div[data-testid="stTextInput"] input,
-      div[data-testid="stSelectbox"] div[data-baseweb="select"] {
-        font-size: 1rem;
-      }
-      section.main div[data-testid="stHorizontalBlock"] {
-        flex-wrap: wrap;
-        gap: 0.5rem;
-      }
-      section.main div[data-testid="column"] {
-        flex: 1 1 100% !important;
-        width: 100% !important;
-      }
-      div[data-testid="stTable"] table th,
-      div[data-testid="stTable"] table td {
-        white-space: normal !important;
-        word-break: break-word;
-      }
-    }
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
+mark_page_baseline(_baseline, "shell-ready")
 
 
 render_page_header(
@@ -64,8 +36,9 @@ render_page_header(
 with tool_form_panel("dns_propagation"):
     render_form_intro("Check propagation", "Choose a domain and record type to query across multiple public resolvers.")
     with st.form("dns-propagation-form"):
-        domain = st.text_input("Domain", placeholder="example.com", max_chars=MAX_DOMAIN_LENGTH)
-        record_type = st.selectbox("Record type", SUPPORTED_RECORD_TYPES)
+        domain_col, type_col = st.columns([1.25, 1], gap="medium")
+        domain = domain_col.text_input("Domain", placeholder="example.com", max_chars=MAX_DOMAIN_LENGTH)
+        record_type = type_col.selectbox("Record type", SUPPORTED_RECORD_TYPES)
         submitted = st.form_submit_button("Check propagation", use_container_width=True)
 
 if submitted:
@@ -124,8 +97,8 @@ if stored is not None:
             else:
                 render_status_note(
                     "No resolver returned an answer",
-                    "Try again shortly or verify that the selected record type exists for this domain.",
-                    tone="warning",
+                    "No resolver returned records yet. Verify the record type or retry after DNS propagation time.",
+                    tone="neutral",
                 )
 
             for entry in result["resolvers"]:
@@ -138,3 +111,6 @@ if stored is not None:
                             entry["error"],
                             remediation="Retry shortly or test with an alternate public resolver.",
                         )
+
+mark_page_baseline(_baseline, "content-rendered")
+render_page_baseline(_baseline)

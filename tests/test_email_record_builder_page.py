@@ -31,3 +31,15 @@ def test_email_record_builder_builds_spf_record():
     assert "v=spf1" in code
     assert "SPF record ready" in markdown
 
+
+def test_email_record_builder_spf_warning_outcome_is_shown():
+    app = AppTest.from_file(PAGE, default_timeout=30)
+    app.run()
+    assert not app.exception
+
+    app.button[0].click().run()
+    assert not app.exception
+
+    markdown = " ".join(block.value for block in app.markdown)
+    assert "SPF record generated with warnings" in markdown
+    assert "SPF guidance" in markdown

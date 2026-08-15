@@ -155,11 +155,11 @@ with tool_form_panel("domain_health"):
         "Enter a public domain to check DNS, TLS, HTTP reachability, and email security signals.",
     )
     with st.form("domain-health-form"):
-        domain = st.text_input("Domain name", placeholder="example.com", max_chars=MAX_DOMAIN_LENGTH)
-        col_a, col_b = st.columns(2)
-        check_www = col_a.checkbox("Check www subdomain", value=True)
-        include_dmarc = col_b.checkbox("Include DMARC check", value=True)
-        submitted = st.form_submit_button("Run health check")
+        domain_col, options_col = st.columns([1.3, 1], gap="medium")
+        domain = domain_col.text_input("Domain name", placeholder="example.com", max_chars=MAX_DOMAIN_LENGTH)
+        check_www = options_col.checkbox("Check www subdomain", value=True)
+        include_dmarc = options_col.checkbox("Include DMARC check", value=True)
+        submitted = st.form_submit_button("Run health check", use_container_width=True)
 
 if submitted:
     ok, error = validate_length(domain, MAX_DOMAIN_LENGTH, "Domain")

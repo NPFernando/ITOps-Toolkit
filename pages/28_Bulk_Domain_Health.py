@@ -3,6 +3,7 @@ from __future__ import annotations
 import pandas as pd
 import streamlit as st
 
+from utils.dev_baseline import mark_page_baseline, render_page_baseline, start_page_baseline
 from utils.bulk_domain_health import MAX_DOMAINS_PER_BATCH, parse_domain_list, run_bulk_health_check
 from utils.ui import (
     apply_app_shell,
@@ -18,8 +19,10 @@ from utils.ui import (
 )
 
 
+_baseline = start_page_baseline("Bulk Domain Health")
 st.set_page_config(page_title="Bulk Domain Health", layout="wide")
 apply_app_shell(active_page="Bulk Domain Health")
+mark_page_baseline(_baseline, "shell-ready")
 
 
 render_page_header(
@@ -37,7 +40,7 @@ with tool_form_panel("bulk_domain_health"):
         uploaded_file = st.file_uploader("CSV or text file", type=["csv", "txt"])
         pasted_text = st.text_area("Or paste domains here (one per line)", height=140, placeholder="example.com\nexample.org")
         include_dmarc = st.checkbox("Include DMARC check", value=True)
-        submitted = st.form_submit_button("Run checks")
+        submitted = st.form_submit_button("Run checks", use_container_width=True)
 
 if submitted:
     # Stored in session_state (not rendered directly here) because the export
@@ -92,6 +95,7 @@ if validation_error is not None:
 if state is not None:
     frame = state["frame"]
     summary = state["summary"]
+    total_processed = len(state["results"])
     with tool_result_panel("bulk_domain_health_result"):
         render_section_heading("Batch results", eyebrow="Result")
         if summary["critical"] > 0 or summary["errored"] > 0:
@@ -100,12 +104,23 @@ if state is not None:
                 "One or more domains returned critical or unknown status. Review flagged rows before sharing the report.",
                 tone="warning",
             )
+        elif summary["warning"] > 0:
+            render_status_note(
+                "Bulk check completed with review items",
+                "No critical failures were detected, but one or more domains returned warning-level findings to review.",
+                tone="neutral",
+            )
         else:
             render_status_note(
                 "Bulk check completed",
                 "All processed domains returned healthy or warning-level results.",
                 tone="success",
             )
+        render_status_note(
+            "Processing summary",
+            f"Processed {total_processed} domain(s) in this run. Export includes only current in-memory results.",
+            tone="neutral",
+        )
         if state["truncated"]:
             render_status_note(
                 "Input list truncated",
@@ -123,4 +138,13 @@ if state is not None:
 
     with tool_download_panel("bulk_domain_health_export", related_to="bulk_domain_health"):
         render_section_heading("Export", "Download the current in-memory results.", eyebrow="Downloads")
-        st.download_button("Download results as CSV", state["csv_data"], file_name="bulk-domain-health.csv", mime="text/csv")
+        st.download_button(
+            "Download results as CSV",
+            state["csv_data"],
+            file_name="bulk-domain-health.csv",
+            mime="text/csv",
+            use_container_width=True,
+        )
+
+mark_page_baseline(_baseline, "content-rendered")
+render_page_baseline(_baseline)

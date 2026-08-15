@@ -1,4 +1,4 @@
-# Assets Index (phase8 + wave2 + wave3 + wave4 + wave5 + wave6 + wave7 + wave8 + wave9)
+# Assets Index (phase8 + wave2 + wave3 + wave4 + wave5 + wave6 + wave7 + wave8 + wave9 + wave10)
 
 Generated assets available under `docs/assets/**/exported`. Runtime mappings are implemented in `utils/ui.py`.
 
@@ -155,6 +155,24 @@ When a roadmap badge asset is unavailable, compact text fallback glyphs are used
 - CIDR aggregation icon: `cidr_aggregator`
 - IPv6 compression icon: `ipv6_compressor`
 
+### Phase 17 Wave 10 icon mapping extensions
+
+- Safe Links decode icon: `outlook_safelinks_decoder` (`safelinks_decoder`, `m365_safelinks_decoder`)
+- Docker run/compose conversion icon: `docker_run_compose_converter` (`docker_compose_converter`)
+- NATO phonetic conversion icon: `nato_phonetic_converter` (`nato_alphabet_converter`)
+- Wi-Fi QR generation icon: `wifi_qr_generator` (`wifi_qr_code_generator`)
+- HMAC generation icon: `hmac_generator`
+- IPv6 ULA generation icon: `ipv6_ula_generator`
+- Random MAC generation icon: `random_mac_generator` (`random_mac_address_generator`)
+- List conversion icon: `list_converter`
+- Email normalization icon: `email_normalizer` (`email_address_normalizer`)
+- IPv4 format conversion icon: `ipv4_format_converter`
+- IPv4 range expansion icon: `ipv4_range_expander`
+- Git command reference icon: `git_command_cheat_sheet`
+- BIP39 mnemonic icon: `bip39_mnemonic` (`bip39_mnemonic_generator_validator`)
+- Lorem ipsum generation icon: `lorem_ipsum_generator`
+- Text radix conversion icon: `text_radix_converter`
+
 ### Phase 12 Wave 5 add-on QA focus
 
 - Confirm wave-5 slugs resolve to slug-specific assets before category defaults.
@@ -194,6 +212,14 @@ When a roadmap badge asset is unavailable, compact text fallback glyphs are used
 - Include one shell pass confirming grouped navigation + quick search + command palette still expose readable text cues after wave-9 icon updates.
 - Include one `<=720px` viewport pass to confirm wave-9 labels/badges/chips/helper text stay readable with no clipping/overflow.
 - Include one keyboard-only pass to confirm wave-9 visual changes do not hide actionable meaning or break focus visibility.
+
+### Phase 17 Wave 10 add-on QA focus
+
+- Confirm wave-10 planned slugs resolve to slug-specific assets before category defaults.
+- Confirm slug-specific wave-10 icons still fall back to text badges when SVG rendering is unavailable.
+- Include one shell pass confirming shared shell + baseline markers remain visible/unchanged on wave-10 pages.
+- Include one `<=720px` viewport pass to confirm wave-10 forms/results stay readable without page-scoped mobile CSS overrides.
+- Include one keyboard-only pass to confirm wave-10 notice semantics and focus visibility remain intact.
 
 ## Docs/release media inventory
 
