@@ -42,6 +42,7 @@ mark_page_baseline(_baseline, "wave34-shell-mobile")
 mark_page_baseline(_baseline, "wave35-shell-mobile")
 mark_page_baseline(_baseline, "wave36-shell-mobile")
 mark_page_baseline(_baseline, "wave37-shell-mobile")
+mark_page_baseline(_baseline, "wave38-shell-mobile")
 
 
 def _status_tone(status: str) -> str:
@@ -209,7 +210,12 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-render_section_heading("Browse roadmap items", "Use search and category filters to focus the board view.", eyebrow="Explore")
+render_section_heading(
+    "Browse roadmap items",
+    "Use search and category filters to focus the board view.",
+    eyebrow="Step 1",
+    heading_level="h3",
+)
 with tool_form_panel("roadmap_filters"):
     render_form_intro("Search and filter roadmap", "Use keyword search and category pills to narrow the board.")
     render_section_heading(
@@ -298,7 +304,8 @@ st.markdown(
 render_section_heading(
     "AI-assisted triage",
     "Summarize open (not-yet-Complete) roadmap items into a short, maintainer-facing prioritization -- opt-in, and only sends public roadmap data (titles, descriptions, vote counts) already shown above.",
-    eyebrow="Optional",
+    eyebrow="Step 3",
+    heading_level="h3",
 )
 open_items = [item for item in board.items if item.status != "Complete"]
 ai_available = optional_ai_configured()

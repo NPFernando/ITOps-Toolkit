@@ -2970,6 +2970,78 @@ def test_tool_card_icon_asset_wave37_slug_first_precedence_uses_normalized_slug_
     assert ui._tool_card_icon_asset(tool) == normalized_asset
 
 
+def test_tool_card_icon_asset_wave38_slug_first_precedence_keeps_falsey_exact_before_normalized(monkeypatch):
+    raw_slug = "wave38_slug<>"
+    normalized_slug = "wave38_slug"
+    normalized_asset = "icons/exported/icon-wave38-normalized.svg"
+    category_asset = "icons/exported/icon-wave38-category.svg"
+    category = "Wave 38 category"
+    tool = ui.ToolMeta(
+        title="Wave-38 falsey exact slug precedence",
+        short_title="Wave38 falsey exact",
+        description="planned",
+        path="pages/wave38_slug.py",
+        icon="W38",
+        accent="#0f4c5c",
+        slug=raw_slug,
+        professions=("Support Engineer",),
+        category=category,
+    )
+
+    icon_assets = dict(ui.TOOL_CARD_ICON_ASSETS)
+    category_assets = dict(ui.CATEGORY_TOOL_CARD_ICON_ASSETS)
+    icon_assets.update({raw_slug: "", normalized_slug: normalized_asset})
+    category_assets[category] = category_asset
+    monkeypatch.setattr(ui, "TOOL_CARD_ICON_ASSETS", icon_assets)
+    monkeypatch.setattr(ui, "CATEGORY_TOOL_CARD_ICON_ASSETS", category_assets)
+
+    assert ui._tool_card_icon_asset(tool) == ""
+
+
+def test_tool_card_html_wave38_slug_first_falsey_exact_skips_normalized_and_category_fallback(monkeypatch):
+    raw_slug = "wave38_slug<>"
+    normalized_slug = "wave38_slug"
+    normalized_asset = "icons/exported/icon-wave38-normalized.svg"
+    category_default = "icons/exported/icon-wave38-category.svg"
+    requested_paths: list[str] = []
+
+    def fake_svg_img_html(path, *args, **kwargs):
+        requested_paths.append(path)
+        if path == category_default:
+            return '<img class="tool-card-icon-image" data-icon="category-default" />'
+        if path == normalized_asset:
+            return '<img class="tool-card-icon-image" data-icon="normalized" />'
+        return None
+
+    monkeypatch.setattr(ui, "_svg_img_html", fake_svg_img_html)
+
+    icon_assets = dict(ui.TOOL_CARD_ICON_ASSETS)
+    category_assets = dict(ui.CATEGORY_TOOL_CARD_ICON_ASSETS)
+    icon_assets.update({raw_slug: "", normalized_slug: normalized_asset})
+    category_assets["Wave 38 category"] = category_default
+    monkeypatch.setattr(ui, "TOOL_CARD_ICON_ASSETS", icon_assets)
+    monkeypatch.setattr(ui, "CATEGORY_TOOL_CARD_ICON_ASSETS", category_assets)
+
+    tool = ui.ToolMeta(
+        title="Wave-38 falsey exact slug precedence",
+        short_title="Wave38 falsey exact",
+        description="planned",
+        path="pages/wave38_slug.py",
+        icon="W38",
+        accent="#0f4c5c",
+        slug=raw_slug,
+        professions=("Support Engineer",),
+        category="Wave 38 category",
+    )
+    html = ui._tool_card_html(tool)
+
+    assert requested_paths == []
+    assert normalized_asset not in requested_paths
+    assert category_default not in requested_paths
+    assert "tool-card-icon-image" not in html
+    assert f">{tool.icon}<" in html
+
+
 def test_tool_card_html_wave36_slug_first_precedence_skips_category_fallback(monkeypatch):
     slug = "160_tool_slug_pending_roadmap"
     expected_asset = "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg"
@@ -3103,6 +3175,62 @@ def test_tool_card_html_wave36_slug_first_precedence_skips_category_fallback(mon
         path=f"pages/{slug}.py",
         icon="W36",
         accent="#2f4858",
+        slug=slug,
+        professions=("Support Engineer",),
+        category="Data & Text",
+    )
+    html = ui._tool_card_html(tool)
+
+    assert requested_paths == [expected_asset]
+    assert requested_paths[0] != category_default
+    assert "tool-card-icon-image" not in html
+    assert f">{tool.icon}<" in html
+
+
+def test_tool_card_icon_asset_wave38_slug_first_precedence_remains_deterministic():
+    expected_assets = {
+        "169_tool_slug_pending_roadmap": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
+        "170_tool_slug_pending_roadmap": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
+        "169_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
+        "170_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
+    }
+
+    for slug, expected in expected_assets.items():
+        tool = ui.ToolMeta(
+            title=f"Wave-38 {slug}",
+            short_title=slug,
+            description="planned",
+            path=f"pages/{slug}.py",
+            icon="W38",
+            accent="#0a9396",
+            slug=slug,
+            professions=("Support Engineer",),
+            category="Data & Text",
+        )
+        assert ui._tool_card_icon_asset(tool) == expected
+
+
+def test_tool_card_html_wave38_slug_first_precedence_skips_category_fallback(monkeypatch):
+    slug = "169_tool_slug_pending_roadmap"
+    expected_asset = "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg"
+    category_default = "icons/exported/icon-workflow-json-validate-outline-24x24-v01.svg"
+    requested_paths: list[str] = []
+
+    def fake_svg_img_html(path, *args, **kwargs):
+        requested_paths.append(path)
+        if path == category_default:
+            return '<img class="tool-card-icon-image" data-icon="category-default" />'
+        return None
+
+    monkeypatch.setattr(ui, "_svg_img_html", fake_svg_img_html)
+
+    tool = ui.ToolMeta(
+        title=f"Wave-38 {slug}",
+        short_title=slug,
+        description="planned",
+        path=f"pages/{slug}.py",
+        icon="W38",
+        accent="#0a9396",
         slug=slug,
         professions=("Support Engineer",),
         category="Data & Text",
