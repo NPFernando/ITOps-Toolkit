@@ -32,7 +32,9 @@ render_page_header(
 with tool_form_panel("pii_redactor"):
     render_form_intro("Paste text and choose what to redact", "Select one or more pattern types to replace with redaction tokens.")
     with st.form("pii-redactor-form"):
+        st.markdown('<div class="tool-panel-eyebrow">Input text</div>', unsafe_allow_html=True)
         text_input = st.text_area("Input", height=280, max_chars=MAX_INPUT_LENGTH, placeholder="Contact alice@example.com or 555-123-4567.")
+        st.markdown('<div class="tool-panel-eyebrow">Pattern types</div>', unsafe_allow_html=True)
         selected = st.multiselect("Redact", list(LABELS.keys()), default=list(LABELS.keys()), format_func=lambda k: LABELS[k])
         submitted = st.form_submit_button("Redact", use_container_width=True)
 
@@ -64,7 +66,7 @@ if result is not None:
             else:
                 render_status_note(
                     "No matches detected",
-                    "No selected sensitive-looking patterns were found in the submitted text.",
+                    "No selected sensitive-looking patterns were found, so the output is unchanged.",
                     tone="neutral",
                 )
 

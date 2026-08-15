@@ -18,6 +18,20 @@ def test_generate_shows_result():
 
     assert len(app.dataframe) > 0
     md = " ".join(m.value for m in app.markdown)
+    assert "tool-status-note-warning" in md
+    assert "Generated with random seed" in md
+
+
+def test_generate_with_seed_shows_success_status():
+    app = AppTest.from_file(PAGE, default_timeout=30)
+    app.run()
+    assert not app.exception
+
+    app.number_input[1].set_value(42)
+    app.button[0].click().run()
+    assert not app.exception
+
+    md = " ".join(m.value for m in app.markdown)
     assert "tool-status-note-success" in md
     assert "Generation complete" in md
 

@@ -374,6 +374,20 @@ This guide documents the UI direction used for the Streamlit dashboard and tool 
 - Record Wave 18 outcomes in `docs/release-notes-template.md` using synthetic/sanitized evidence only.
 - Keep non-tool exceptions explicit and confirm desktop/mobile readability after wave-18 updates.
 
+## Phase 26 Wave 19 Standards (Shell, Mobile, Visual, A11y + QA Gates)
+
+- **Shell consistency:** keep shared shell + baseline markers (`shell-ready`, `content-rendered`) stable on Home, Roadmap & Feedback, PII Redactor, Env File Diff, Cron Overlap Checker, Test Data Generator, Password Policy Checker, and ISO8601 Duration Tool.
+- **Mobile baseline (`<=720px`):** keep wave-19 form panels and primary actions full-width/tap-friendly (`use_container_width=True`), keep wave-19 controls single-column readable, and avoid forced two-column control layouts on wave-19 touchpoint pages.
+- **Visual mapping integrity:** keep wave-19 touchpoint slug mappings readable (`pii_redactor`, `env_file_diff`, `cron_overlap_checker`, `test_data_generator`, `password_policy_checker`, `iso8601_duration`) before category defaults, with text badge fallback always readable.
+- **Accessibility guardrail:** keep keyboard flow and visible focus rings intact for Home controls, Roadmap filters/AI triage action, and wave-19 form actions, with neutral/blocking outcomes aligned to shared status/failure note semantics.
+- **QA gate behavior:** treat Wave 19 shell/mobile/visual/a11y regressions as release blockers unless an intentional exception is documented.
+
+### Wave 19 QA handoff guidance
+
+- Run Wave 19 checks in `docs/release-checklist.md` before release.
+- Record Wave 19 outcomes in `docs/release-notes-template.md` using synthetic/sanitized evidence only.
+- Keep non-tool exceptions explicit and confirm desktop/mobile readability after wave-19 updates.
+
 ## Maintenance Rules
 
 - Do not duplicate tool titles, descriptions, paths, or accent colors outside `utils/ui.py`.

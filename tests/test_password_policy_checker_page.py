@@ -53,10 +53,11 @@ def test_results_persist_after_sidebar_interaction():
     app.text_input[0].set_value("Abc123!@#xyz")
     app.button[0].click().run()
     assert not app.exception
-    before = len(app.success)
-    assert before > 0
+    before_markdown = " ".join(m.value for m in app.markdown)
+    assert "tool-status-note-success" in before_markdown
 
     search = next(t for t in app.text_input if t.key == "sidebar_quick_search")
     search.set_value("test").run()
     assert not app.exception
-    assert len(app.success) == before
+    after_markdown = " ".join(m.value for m in app.markdown)
+    assert "tool-status-note-success" in after_markdown

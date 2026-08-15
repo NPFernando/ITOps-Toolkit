@@ -621,6 +621,68 @@ def test_tool_card_html_uses_wave18_generated_icons_when_mapped():
         assert "data:image/svg+xml;base64," in html
 
 
+def test_tool_card_icon_asset_maps_wave19_visual_targets():
+    expected_assets = {
+        "pii_redactor": "icons/exported/icon-workflow-data-sanitization-outline-24x24-v01.svg",
+        "env_file_diff": "icons/exported/icon-workflow-env-guard-outline-24x24-v01.svg",
+        "cron_overlap_checker": "icons/exported/icon-workflow-cron-schedule-outline-24x24-v01.svg",
+        "test_data_generator": "icons/exported/icon-workflow-test-data-fixture-outline-24x24-v01.svg",
+        "password_policy_checker": "icons/exported/icon-workflow-password-policy-outline-24x24-v01.svg",
+        "iso8601_duration": "icons/exported/icon-workflow-iso8601-duration-outline-24x24-v01.svg",
+    }
+    tools_by_slug = {tool.slug: tool for tool in TOOLS}
+
+    for slug, expected in expected_assets.items():
+        tool = tools_by_slug.get(slug) or ui.ToolMeta(
+            title=slug.replace("_", " ").title(),
+            short_title=slug,
+            description="planned",
+            path=f"pages/{slug}.py",
+            icon="PLN",
+            accent="#457b39",
+            slug=slug,
+            professions=("Sysadmin / DevOps",),
+            category="Ops & Automation",
+        )
+        assert ui._tool_card_icon_asset(tool) == expected
+
+
+def test_tool_card_html_uses_wave19_generated_icons_when_mapped():
+    tools = [
+        next(item for item in TOOLS if item.slug == "pii_redactor"),
+        next(item for item in TOOLS if item.slug == "test_data_generator"),
+        next(item for item in TOOLS if item.slug == "password_policy_checker"),
+        next(item for item in TOOLS if item.slug == "iso8601_duration"),
+        ui.ToolMeta(
+            title=".env File Diff",
+            short_title="Env Diff",
+            description="planned",
+            path="pages/112_Env_File_Diff.py",
+            icon="ENV",
+            accent="#457b39",
+            slug="env_file_diff",
+            professions=("Sysadmin / DevOps",),
+            category="Ops & Automation",
+        ),
+        ui.ToolMeta(
+            title="Cron Overlap Checker",
+            short_title="Cron Overlap",
+            description="planned",
+            path="pages/113_Cron_Overlap_Checker.py",
+            icon="C+C",
+            accent="#457b39",
+            slug="cron_overlap_checker",
+            professions=("Sysadmin / DevOps",),
+            category="Ops & Automation",
+        ),
+    ]
+
+    for tool in tools:
+        html = ui._tool_card_html(tool)
+        assert "tool-card-icon-image" in html
+        assert "data:image/svg+xml;base64," in html
+
+
 def test_tool_card_html_wave4_slug_specific_mapping_precedes_category_default_during_render(monkeypatch):
     tool = next(item for item in TOOLS if item.slug == "basic_auth_tool")
 
@@ -899,6 +961,42 @@ def test_tool_card_html_wave18_slug_specific_mapping_precedes_category_default_d
             slug=slug,
             professions=("SEO Engineer",),
             category="Security",
+        )
+        html = ui._tool_card_html(tool)
+        assert ui._tool_card_icon_asset(tool) != category_default
+        assert "tool-card-icon-image" not in html
+        assert f">{tool.icon}<" in html
+
+
+def test_tool_card_html_wave19_slug_specific_mapping_precedes_category_default_during_render(monkeypatch):
+    category_defaults = {
+        "pii_redactor": "icons/exported/icon-workflow-incident-response-outline-24x24-v01.svg",
+        "env_file_diff": "icons/exported/icon-workflow-automation-runbook-outline-24x24-v01.svg",
+        "cron_overlap_checker": "icons/exported/icon-workflow-automation-runbook-outline-24x24-v01.svg",
+        "test_data_generator": "icons/exported/icon-workflow-json-validate-outline-24x24-v01.svg",
+        "password_policy_checker": "icons/exported/icon-workflow-incident-response-outline-24x24-v01.svg",
+        "iso8601_duration": "icons/exported/icon-workflow-automation-runbook-outline-24x24-v01.svg",
+    }
+
+    def fake_svg_img_html(path, *args, **kwargs):
+        if path in set(category_defaults.values()):
+            return '<img class="tool-card-icon-image" data-icon="category-default" />'
+        return None
+
+    monkeypatch.setattr(ui, "_svg_img_html", fake_svg_img_html)
+    tools_by_slug = {tool.slug: tool for tool in TOOLS}
+
+    for slug, category_default in category_defaults.items():
+        tool = tools_by_slug.get(slug) or ui.ToolMeta(
+            title=slug.replace("_", " ").title(),
+            short_title=slug,
+            description="planned",
+            path=f"pages/{slug}.py",
+            icon="PLN",
+            accent="#457b39",
+            slug=slug,
+            professions=("Sysadmin / DevOps",),
+            category="Ops & Automation",
         )
         html = ui._tool_card_html(tool)
         assert ui._tool_card_icon_asset(tool) != category_default

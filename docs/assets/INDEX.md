@@ -1,4 +1,4 @@
-# Assets Index (phase8 + wave2 + wave3 + wave4 + wave5 + wave6 + wave7 + wave8 + wave9 + wave10 + wave11 + wave12 + wave13 + wave14 + wave15 + wave16 + wave17)
+# Assets Index (phase8 + wave2 + wave3 + wave4 + wave5 + wave6 + wave7 + wave8 + wave9 + wave10 + wave11 + wave12 + wave13 + wave14 + wave15 + wave16 + wave17 + wave18 + wave19)
 
 Generated assets available under `docs/assets/**/exported`. Runtime mappings are implemented in `utils/ui.py`.
 
@@ -224,6 +224,15 @@ When a roadmap badge asset is unavailable, compact text fallback glyphs are used
 - JWT claims icon: `jwt_claims_reference`
 - CSP header icon: `csp_builder`
 
+### Phase 26 Wave 19 icon mapping coverage
+
+- PII redaction icon: `pii_redactor`
+- Env file diff icon: `env_file_diff`
+- Cron overlap icon: `cron_overlap_checker`
+- Test data fixture icon: `test_data_generator`
+- Password policy icon: `password_policy_checker`
+- ISO 8601 duration icon: `iso8601_duration`
+
 ### Phase 12 Wave 5 add-on QA focus
 
 - Confirm wave-5 slugs resolve to slug-specific assets before category defaults.
@@ -335,6 +344,14 @@ When a roadmap badge asset is unavailable, compact text fallback glyphs are used
 - Include one shell pass confirming shared shell + baseline markers remain visible/unchanged on Home, Roadmap, and wave-18 touchpoint pages.
 - Include one `<=720px` viewport pass to confirm Home controls, Roadmap filters/AI triage action, and wave-18 submit actions stay full-width/tap-friendly with no clipping/overflow.
 - Include one keyboard-only pass to confirm wave-18 notice semantics and focus visibility remain intact.
+
+### Phase 26 Wave 19 add-on QA focus
+
+- Confirm wave-19 touchpoint slugs resolve to slug-specific assets before category defaults (`pii_redactor`, `env_file_diff`, `cron_overlap_checker`, `test_data_generator`, `password_policy_checker`, `iso8601_duration`).
+- Confirm wave-19 slug-specific icons still fall back to text badges when SVG rendering is unavailable.
+- Include one shell pass confirming shared shell + baseline markers remain visible/unchanged on Home, Roadmap, and wave-19 touchpoint pages.
+- Include one `<=720px` viewport pass to confirm Home controls, Roadmap filters/AI triage action, and wave-19 submit actions stay full-width/tap-friendly with no clipping/overflow.
+- Include one keyboard-only pass to confirm wave-19 notice semantics and focus visibility remain intact.
 
 ## Docs/release media inventory
 
