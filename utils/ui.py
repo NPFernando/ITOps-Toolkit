@@ -2,10 +2,13 @@
 
 from __future__ import annotations
 
+import base64
 import json
 from contextlib import contextmanager
 from dataclasses import dataclass
+from functools import lru_cache
 from html import escape
+from pathlib import Path
 from typing import Any, Callable, Iterable
 from urllib.parse import urlencode
 
@@ -23,6 +26,70 @@ PERSISTED_LIST_PARAMS: tuple[str, ...] = ("recent", "fav")
 # persisted favorites -- that would silently overwrite a visitor's saved
 # favorites just from opening a link someone sent them.
 SHARED_FAVORITES_PARAM = "shared_fav"
+ASSETS_ROOT = Path(__file__).resolve().parents[1] / "docs" / "assets"
+
+HOME_HERO_ILLUSTRATION = "illustrations/exported/illustration-home-hero-ops-flow-light-1600x900-v01.svg"
+TOOL_CARD_ICON_ASSETS: dict[str, str] = {
+    "domain_health": "icons/exported/icon-workflow-dns-lookup-outline-24x24-v01.svg",
+    "dns_records": "icons/exported/icon-workflow-dns-lookup-outline-24x24-v01.svg",
+    "ssl_certificate": "icons/exported/icon-workflow-ssl-check-outline-24x24-v01.svg",
+    "http_status": "icons/exported/icon-workflow-http-probe-outline-24x24-v01.svg",
+    "webhook_tester": "icons/exported/icon-workflow-http-probe-outline-24x24-v01.svg",
+    "uptime_trend": "icons/exported/icon-workflow-uptime-monitor-outline-24x24-v01.svg",
+    "security_headers": "icons/exported/icon-workflow-incident-response-outline-24x24-v01.svg",
+    "cve_lookup": "icons/exported/icon-workflow-incident-response-outline-24x24-v01.svg",
+    "jwt_decoder": "icons/exported/icon-workflow-jwt-inspect-outline-24x24-v01.svg",
+    "jwt_encoder": "icons/exported/icon-workflow-jwt-inspect-outline-24x24-v01.svg",
+    "jwt_weak_secret": "icons/exported/icon-workflow-jwt-inspect-outline-24x24-v01.svg",
+    "jwt_claims_reference": "icons/exported/icon-workflow-jwt-inspect-outline-24x24-v01.svg",
+    "json_formatter": "icons/exported/icon-workflow-json-validate-outline-24x24-v01.svg",
+    "json_diff": "icons/exported/icon-workflow-json-validate-outline-24x24-v01.svg",
+    "json_path_query": "icons/exported/icon-workflow-json-validate-outline-24x24-v01.svg",
+    "json_merge_patch": "icons/exported/icon-workflow-json-validate-outline-24x24-v01.svg",
+    "json_to_typescript": "icons/exported/icon-workflow-json-validate-outline-24x24-v01.svg",
+    "port_reference": "icons/exported/icon-workflow-port-scan-outline-24x24-v01.svg",
+    "tls_scanner": "icons/exported/icon-workflow-port-scan-outline-24x24-v01.svg",
+}
+TOOL_HEADER_ILLUSTRATION_BY_CATEGORY: dict[str, str] = {
+    "Network": "illustrations/exported/illustration-tool-network-header-flow-light-1600x900-v01.svg",
+    "Security": "illustrations/exported/illustration-tool-security-header-shield-light-1600x900-v01.svg",
+    "Web & Dev": "illustrations/exported/illustration-tool-web-dev-header-http-light-1600x900-v01.svg",
+    "Data & Text": "illustrations/exported/illustration-tool-data-text-header-parse-light-1600x900-v01.svg",
+    "Ops & Automation": "illustrations/exported/illustration-tool-ops-automation-header-pipeline-light-1600x900-v01.svg",
+    "Reference": "illustrations/exported/illustration-tool-reference-header-catalog-light-1600x900-v01.svg",
+}
+EMPTY_STATE_ILLUSTRATIONS: dict[str, str] = {
+    "ready": "illustrations/exported/illustration-empty-state-ready-checklist-light-1200x675-v01.svg",
+    "network": "illustrations/exported/illustration-empty-state-ready-network-light-1200x675-v01.svg",
+    "security": "illustrations/exported/illustration-empty-state-ready-shield-light-1200x675-v01.svg",
+}
+ROADMAP_BADGE_ICONS: dict[str, str] = {
+    "status_planned": "icons/exported/icon-roadmap-planned-badge-24x24-v01.svg",
+    "status_progress": "icons/exported/icon-roadmap-progress-badge-24x24-v01.svg",
+    "status_done": "icons/exported/icon-roadmap-done-badge-24x24-v01.svg",
+    "status_ai": "icons/exported/icon-roadmap-ai-badge-24x24-v01.svg",
+    "source_seed": "icons/exported/icon-roadmap-seed-badge-24x24-v01.svg",
+    "source_github": "icons/exported/icon-roadmap-github-badge-24x24-v01.svg",
+}
+
+
+@lru_cache(maxsize=256)
+def _svg_data_uri(relative_path: str) -> str | None:
+    asset_path = ASSETS_ROOT / relative_path
+    if not asset_path.exists() or asset_path.suffix.lower() != ".svg":
+        return None
+    return "data:image/svg+xml;base64," + base64.b64encode(asset_path.read_bytes()).decode("ascii")
+
+
+def _svg_img_html(relative_path: str, alt: str, class_name: str, decorative: bool = False) -> str | None:
+    uri = _svg_data_uri(relative_path)
+    if not uri:
+        return None
+    alt_text = "" if decorative else escape(alt)
+    decorative_attrs = ' aria-hidden="true" role="presentation"' if decorative else ""
+    return (
+        f'<img class="{escape(class_name)}" src="{uri}" alt="{alt_text}"{decorative_attrs} loading="lazy" decoding="async">'
+    )
 
 
 @dataclass(frozen=True)
@@ -2173,22 +2240,51 @@ def render_important_notice() -> None:
     )
 
 
-def render_page_header(title: str, description: str, warning: str | None = None) -> None:
+def render_page_header(
+    title: str,
+    description: str,
+    warning: str | None = None,
+    illustration: str | None = None,
+) -> None:
     """Render a compact page header for tool pages."""
     tool = tool_by_title(title)
     icon = tool.icon if tool else "IT"
     accent = tool.accent if tool else "#1668f4"
     overline = f"{tool.category} Tool" if tool else "Tool"
     icon_text = _icon_text_color(accent)
+    illustration_path = (
+        TOOL_HEADER_ILLUSTRATION_BY_CATEGORY.get(illustration, illustration)
+        if illustration
+        else (TOOL_HEADER_ILLUSTRATION_BY_CATEGORY.get(tool.category) if tool else None)
+    )
+    illustration_html = (
+        _svg_img_html(
+            illustration_path,
+            f"{tool.category if tool else 'Tool'} illustration",
+            "tool-page-header-illustration-image",
+            decorative=True,
+        )
+        if illustration_path
+        else None
+    )
+    layout_class = " tool-page-header-with-illustration" if illustration_html else ""
+    illustration_slot = (
+        f'<div class="tool-page-header-illustration" aria-hidden="true">{illustration_html}</div>'
+        if illustration_html
+        else ""
+    )
     st.markdown(
         f"""
-        <section class="tool-page-header" style="--tool-accent: {accent}; --tool-icon-text: {icon_text};">
-            <div class="tool-page-icon">{escape(icon)}</div>
-            <div>
-                <p class="tool-page-overline">{escape(overline)}</p>
-                <h1>{escape(title)}</h1>
-                <p>{escape(description)}</p>
+        <section class="tool-page-header{layout_class}" style="--tool-accent: {accent}; --tool-icon-text: {icon_text};">
+            <div class="tool-page-header-main">
+                <div class="tool-page-icon">{escape(icon)}</div>
+                <div>
+                    <p class="tool-page-overline">{escape(overline)}</p>
+                    <h1>{escape(title)}</h1>
+                    <p>{escape(description)}</p>
+                </div>
             </div>
+            {illustration_slot}
         </section>
         """,
         unsafe_allow_html=True,
@@ -2265,11 +2361,23 @@ def render_section_heading(title: str, description: str | None = None, eyebrow: 
     )
 
 
-def render_empty_state(title: str, description: str) -> None:
+def render_empty_state(title: str, description: str, illustration: str | None = None) -> None:
+    asset = EMPTY_STATE_ILLUSTRATIONS.get(illustration or "")
+    illustration_html = (
+        _svg_img_html(asset, "Empty state illustration", "tool-empty-illustration-image", decorative=True)
+        if asset
+        else None
+    )
+    illustration_slot = (
+        f'<div class="tool-empty-illustration" aria-hidden="true">{illustration_html}</div>'
+        if illustration_html
+        else ""
+    )
     st.markdown(
         f"""
         <div class="tool-empty-state">
             <div class="tool-empty-mark">IT</div>
+            {illustration_slot}
             <div>
                 <strong>{escape(title)}</strong>
                 <p>{escape(description)}</p>
@@ -2514,9 +2622,16 @@ def _tool_card_html(tool: ToolMeta, delay_ms: int = 0) -> str:
     # line as the opening tag means that line is never blank.
     new_badge = '<span class="tool-card-badge-new">NEW</span>' if tool.is_new else ""
     icon_text = _icon_text_color(tool.accent)
+    icon_asset = TOOL_CARD_ICON_ASSETS.get(tool.slug)
+    icon_asset_html = (
+        _svg_img_html(icon_asset, f"{tool.short_title} icon", "tool-card-icon-image", decorative=True)
+        if icon_asset
+        else None
+    )
+    icon_content = icon_asset_html if icon_asset_html else escape(tool.icon)
     return f"""
     <div class="tool-card-shell" style="--tool-accent: {tool.accent}; --tool-icon-text: {icon_text}; animation-delay: {delay_ms}ms;">{new_badge}
-        <div class="tool-card-icon">{escape(tool.icon)}</div>
+        <div class="tool-card-icon">{icon_content}</div>
         <p class="tool-card-category">{escape(tool.category)}</p>
         <h3>{escape(tool.title)}</h3>
         <p>{escape(tool.description)}</p>
@@ -2525,6 +2640,14 @@ def _tool_card_html(tool: ToolMeta, delay_ms: int = 0) -> str:
 
 
 def _hero_visual_html() -> str:
+    generated_hero = _svg_img_html(
+        HOME_HERO_ILLUSTRATION,
+        "ITOps dashboard hero illustration",
+        "hero-visual-image",
+        decorative=True,
+    )
+    if generated_hero:
+        return f'<div class="hero-visual hero-visual-generated" aria-hidden="true">{generated_hero}</div>'
     return """
     <div class="hero-visual" aria-hidden="true">
         <div class="dot-grid dot-grid-a"></div>
@@ -2544,6 +2667,14 @@ def _hero_visual_html() -> str:
         </div>
     </div>
     """
+
+
+def roadmap_badge_icon_html(icon_key: str, fallback: str) -> str:
+    icon_path = ROADMAP_BADGE_ICONS.get(icon_key)
+    icon_html = _svg_img_html(icon_path, "", "roadmap-badge-icon-image", decorative=True) if icon_path else None
+    if icon_html:
+        return f'<span class="roadmap-badge-icon" aria-hidden="true">{icon_html}</span>'
+    return f'<span class="roadmap-badge-icon roadmap-badge-icon-fallback" aria-hidden="true">{escape(fallback)}</span>'
 
 
 def _material_icon_for(slug: str) -> str:
@@ -3136,6 +3267,26 @@ def _inject_global_css(mode: str) -> None:
                 linear-gradient(135deg, rgba(255, 255, 255, 0.35), rgba(235, 243, 255, 0.12));
         }
 
+        .hero-visual-generated {
+            display: grid;
+            place-items: center;
+            padding: 0.35rem;
+            background: var(--itops-surface);
+            border: 1px solid var(--itops-surface-border);
+        }
+
+        .hero-visual-generated::before,
+        .hero-visual-generated::after {
+            display: none;
+        }
+
+        .hero-visual-image {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: var(--card-radius);
+        }
+
         .hero-visual::before,
         .hero-visual::after {
             content: "";
@@ -3443,6 +3594,12 @@ def _inject_global_css(mode: str) -> None:
             box-shadow: 0 14px 24px color-mix(in srgb, var(--tool-accent), transparent 75%);
         }
 
+        .tool-card-icon-image {
+            width: 1.5rem;
+            height: 1.5rem;
+            display: block;
+        }
+
         .tool-card-shell h3 {
             margin: 0.18rem 0 0.58rem;
             font-size: 1.02rem;
@@ -3589,6 +3746,17 @@ def _inject_global_css(mode: str) -> None:
             box-shadow: 0 12px 32px rgba(36, 79, 135, 0.05);
         }
 
+        .tool-page-header-main {
+            display: flex;
+            align-items: center;
+            gap: var(--shell-gap-md);
+            min-width: 0;
+        }
+
+        .tool-page-header-with-illustration {
+            justify-content: space-between;
+        }
+
         .tool-page-icon {
             width: 3.15rem;
             height: 3.15rem;
@@ -3601,6 +3769,20 @@ def _inject_global_css(mode: str) -> None:
             color: var(--tool-icon-text, #ffffff);
             font-weight: 900;
             font-size: 0.76rem;
+        }
+
+        .tool-page-header-illustration {
+            width: min(26vw, 260px);
+            flex: 0 0 min(26vw, 260px);
+        }
+
+        .tool-page-header-illustration-image {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: var(--card-radius);
+            border: 1px solid var(--itops-surface-border);
+            background: var(--itops-surface);
         }
 
         .tool-page-header h1 {
@@ -3692,6 +3874,23 @@ def _inject_global_css(mode: str) -> None:
             background: var(--itops-surface);
             padding: 0.95rem 1rem;
             margin: 1rem 0;
+        }
+
+        .tool-empty-illustration {
+            width: 3.25rem;
+            height: 2.45rem;
+            flex: 0 0 3.25rem;
+            border-radius: var(--card-radius);
+            overflow: hidden;
+            border: 1px solid var(--itops-surface-border);
+            background: var(--itops-surface);
+        }
+
+        .tool-empty-illustration-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
         }
 
         .tool-empty-mark {
@@ -4253,6 +4452,7 @@ def _inject_global_css(mode: str) -> None:
         .roadmap-source-badge {
             display: inline-flex;
             align-items: center;
+            gap: 0.26rem;
             min-height: 1.25rem;
             border-radius: var(--card-radius);
             padding: 0 0.45rem;
@@ -4263,6 +4463,26 @@ def _inject_global_css(mode: str) -> None:
             line-height: 1.2;
             font-weight: 900;
             text-transform: uppercase;
+        }
+
+        .roadmap-badge-icon {
+            width: 0.82rem;
+            height: 0.82rem;
+            display: inline-grid;
+            place-items: center;
+            flex: 0 0 0.82rem;
+        }
+
+        .roadmap-badge-icon-image {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .roadmap-badge-icon-fallback {
+            font-size: 0.58rem;
+            font-weight: 900;
+            line-height: 1;
         }
 
         .roadmap-item-category {
@@ -4445,6 +4665,21 @@ def _inject_global_css(mode: str) -> None:
             .tool-page-header,
             .tool-status-note {
                 align-items: flex-start;
+            }
+
+            .tool-page-header-with-illustration {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .tool-page-header-main {
+                width: 100%;
+            }
+
+            .tool-page-header-illustration {
+                width: 100%;
+                flex-basis: auto;
+                margin-top: 0.75rem;
             }
 
             .roadmap-hero,

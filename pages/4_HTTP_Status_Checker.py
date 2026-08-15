@@ -46,7 +46,11 @@ validation_error = st.session_state.get("http_status_validation_error")
 result = st.session_state.get("http_status_result")
 
 if validation_error is None and result is None:
-    render_empty_state("Ready to check HTTP", "Response status, selected headers, redirects, and recommendations appear after the check.")
+    render_empty_state(
+        "Ready to check HTTP",
+        "Response status, selected headers, redirects, and recommendations appear after the check.",
+        illustration="ready",
+    )
 
 if validation_error is not None:
     st.error(validation_error)

@@ -89,6 +89,51 @@ def test_render_page_header_includes_tool_category_overline(monkeypatch):
     assert f">{tool.category} Tool<" in html
 
 
+def test_render_page_header_renders_generated_illustration_slot(monkeypatch):
+    rendered = []
+
+    monkeypatch.setattr(ui.st, "markdown", lambda value, unsafe_allow_html=False: rendered.append(value))
+
+    tool = TOOLS[0]
+    ui.render_page_header(tool.title, "desc")
+
+    assert "tool-page-header-illustration" in rendered[0]
+    assert "tool-page-header-with-illustration" in rendered[0]
+
+
+def test_render_page_header_falls_back_when_illustration_asset_is_missing(monkeypatch):
+    rendered = []
+
+    monkeypatch.setattr(ui.st, "markdown", lambda value, unsafe_allow_html=False: rendered.append(value))
+
+    tool = TOOLS[0]
+    ui.render_page_header(tool.title, "desc", illustration="illustrations/exported/not-real.svg")
+
+    assert "tool-page-header-illustration" not in rendered[0]
+    assert "tool-page-header-with-illustration" not in rendered[0]
+
+
+def test_render_empty_state_supports_optional_illustration(monkeypatch):
+    rendered = []
+
+    monkeypatch.setattr(ui.st, "markdown", lambda value, unsafe_allow_html=False: rendered.append(value))
+
+    ui.render_empty_state("Ready", "Description", illustration="network")
+
+    assert "tool-empty-illustration" in rendered[0]
+    assert "tool-empty-illustration-image" in rendered[0]
+
+
+def test_render_empty_state_skips_unknown_illustration_key(monkeypatch):
+    rendered = []
+
+    monkeypatch.setattr(ui.st, "markdown", lambda value, unsafe_allow_html=False: rendered.append(value))
+
+    ui.render_empty_state("Ready", "Description", illustration="does-not-exist")
+
+    assert "tool-empty-illustration" not in rendered[0]
+
+
 def test_tool_card_html_includes_category_badge_and_escapes_fields():
     tool = ui.ToolMeta(
         title="Title <x>",
@@ -107,6 +152,43 @@ def test_tool_card_html_includes_category_badge_and_escapes_fields():
     assert ">Ops &amp; Automation<" in html
     assert "Title &lt;x&gt;" in html
     assert "Desc &lt;y&gt;" in html
+
+
+def test_tool_card_html_uses_generated_icon_when_mapped():
+    mapped_tool = next(tool for tool in TOOLS if tool.slug == "dns_records")
+
+    html = ui._tool_card_html(mapped_tool)
+
+    assert "tool-card-icon-image" in html
+    assert 'alt=""' in html
+    assert 'role="presentation"' in html
+    assert "data:image/svg+xml;base64," in html
+
+
+def test_tool_card_html_falls_back_to_text_icon_when_asset_missing(monkeypatch):
+    mapped_tool = next(tool for tool in TOOLS if tool.slug == "dns_records")
+    monkeypatch.setattr(ui, "_svg_img_html", lambda *args, **kwargs: None)
+
+    html = ui._tool_card_html(mapped_tool)
+
+    assert "tool-card-icon-image" not in html
+    assert f">{mapped_tool.icon}<" in html
+
+
+def test_roadmap_badge_icon_html_falls_back_when_asset_missing(monkeypatch):
+    monkeypatch.setattr(ui, "_svg_img_html", lambda *args, **kwargs: None)
+
+    html = ui.roadmap_badge_icon_html("status_planned", "•")
+
+    assert "roadmap-badge-icon-fallback" in html
+
+
+def test_home_hero_html_falls_back_to_css_visual_when_generated_asset_missing(monkeypatch):
+    monkeypatch.setattr(ui, "_svg_img_html", lambda *args, **kwargs: None)
+
+    html = ui._hero_visual_html()
+
+    assert "hero-shield" in html
 
 
 def test_title_to_slug_covers_every_tool():

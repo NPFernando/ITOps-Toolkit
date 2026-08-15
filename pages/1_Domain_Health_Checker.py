@@ -210,6 +210,7 @@ if state is None:
     render_empty_state(
         "Ready for a public domain",
         "Results, recommendations, and exports appear here after the health check completes.",
+        illustration="network",
     )
 
 if state is not None:

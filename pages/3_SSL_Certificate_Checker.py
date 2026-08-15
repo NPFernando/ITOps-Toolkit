@@ -78,7 +78,11 @@ validation_error = st.session_state.get("ssl_certificate_validation_error")
 result = st.session_state.get("ssl_certificate_result")
 
 if validation_error is None and result is None:
-    render_empty_state("Ready to inspect TLS", "Certificate issuer, SANs, validity dates, and expiration status appear after the check.")
+    render_empty_state(
+        "Ready to inspect TLS",
+        "Certificate issuer, SANs, validity dates, and expiration status appear after the check.",
+        illustration="security",
+    )
 
 if validation_error is not None:
     st.error(validation_error)

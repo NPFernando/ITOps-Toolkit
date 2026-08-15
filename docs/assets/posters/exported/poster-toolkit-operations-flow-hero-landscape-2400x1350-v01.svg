@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1350" viewBox="0 0 2400 1350" role="img" aria-labelledby="title desc">
+  <title>ITOps operations flow poster</title>
+  <desc>Clean enterprise operations flow visual suitable for documentation hero placements.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f7fbff"/>
+      <stop offset="1" stop-color="#edf5ff"/>
+    </linearGradient>
+    <linearGradient id="flow" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#126bff"/>
+      <stop offset="1" stop-color="#11aab8"/>
+    </linearGradient>
+    <radialGradient id="haloA" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#126bff" stop-opacity="0.25"/>
+      <stop offset="1" stop-color="#126bff" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="haloB" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#11aab8" stop-opacity="0.2"/>
+      <stop offset="1" stop-color="#11aab8" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="2400" height="1350" fill="url(#bg)"/>
+  <circle cx="1880" cy="180" r="320" fill="url(#haloA)"/>
+  <circle cx="420" cy="1130" r="280" fill="url(#haloB)"/>
+  <g fill="none" stroke="#d7e2f5" stroke-width="4" opacity="0.9">
+    <path d="M120 260h2160"/>
+    <path d="M120 1090h2160"/>
+  </g>
+  <g fill="none" stroke="url(#flow)" stroke-width="28" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M360 710h320l140-220 210 360 250-430 240 330h320"/>
+  </g>
+  <g>
+    <circle cx="360" cy="710" r="66" fill="#ffffff" stroke="#126bff" stroke-width="10"/>
+    <circle cx="680" cy="710" r="66" fill="#ffffff" stroke="#126bff" stroke-width="10"/>
+    <circle cx="820" cy="490" r="66" fill="#ffffff" stroke="#11aab8" stroke-width="10"/>
+    <circle cx="1030" cy="850" r="66" fill="#ffffff" stroke="#126bff" stroke-width="10"/>
+    <circle cx="1280" cy="420" r="66" fill="#ffffff" stroke="#11aab8" stroke-width="10"/>
+    <circle cx="1520" cy="750" r="66" fill="#ffffff" stroke="#126bff" stroke-width="10"/>
+    <circle cx="1840" cy="750" r="66" fill="#ffffff" stroke="#11aab8" stroke-width="10"/>
+  </g>
+  <g fill="#ffffff" stroke="#d7e2f5" stroke-width="6" opacity="0.98">
+    <rect x="200" y="300" width="500" height="240" rx="28"/>
+    <rect x="970" y="920" width="460" height="220" rx="28"/>
+    <rect x="1590" y="300" width="540" height="260" rx="28"/>
+  </g>
+  <g fill="none" stroke="#52637f" stroke-width="10" stroke-linecap="round" opacity="0.85">
+    <path d="M280 380h250"/>
+    <path d="M280 430h170"/>
+    <path d="M280 480h220"/>
+    <path d="M1060 990h280"/>
+    <path d="M1060 1040h210"/>
+    <path d="M1670 390h340"/>
+    <path d="M1670 440h280"/>
+    <path d="M1670 490h220"/>
+  </g>
+</svg>

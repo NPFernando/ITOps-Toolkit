@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1350" viewBox="0 0 1080 1350" role="img" aria-labelledby="title desc">
+  <title>ITOps trust shield poster master</title>
+  <desc>Abstract public-safe shield and telemetry composition for security-oriented documentation.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f8fbff"/>
+      <stop offset="1" stop-color="#eef4ff"/>
+    </linearGradient>
+    <linearGradient id="shield" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#126bff"/>
+      <stop offset="1" stop-color="#7047e8"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#11aab8"/>
+      <stop offset="1" stop-color="#23b84d"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1080" height="1350" fill="url(#bg)"/>
+  <circle cx="860" cy="220" r="180" fill="#126bff" opacity="0.12"/>
+  <circle cx="250" cy="1160" r="170" fill="#11aab8" opacity="0.12"/>
+
+  <g transform="translate(220 180)">
+    <path d="M320 0l250 95v290c0 245-148 420-250 505C218 805 70 630 70 385V95z" fill="url(#shield)"/>
+    <path d="M320 95l170 64v214c0 179-104 309-170 381-66-72-170-202-170-381V159z" fill="#ffffff" opacity="0.92"/>
+    <path d="M252 404l68 68 148-148" fill="none" stroke="url(#accent)" stroke-width="34" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <g fill="none" stroke="#d7e2f5" stroke-width="4">
+    <path d="M120 300h840"/>
+    <path d="M120 1040h840"/>
+  </g>
+
+  <g fill="#ffffff" stroke="#d7e2f5" stroke-width="5">
+    <rect x="120" y="880" width="840" height="120" rx="20"/>
+    <rect x="200" y="1040" width="680" height="96" rx="16"/>
+  </g>
+
+  <g fill="none" stroke="#52637f" stroke-width="9" stroke-linecap="round" opacity="0.85">
+    <path d="M180 935h390"/>
+    <path d="M180 970h250"/>
+    <path d="M260 1088h460"/>
+  </g>
+</svg>
