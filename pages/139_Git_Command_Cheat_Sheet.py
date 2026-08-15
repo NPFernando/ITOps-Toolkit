@@ -42,6 +42,7 @@ _baseline = start_page_baseline("Git Command Cheat Sheet")
 st.set_page_config(page_title="Git Command Cheat Sheet", layout="wide")
 apply_app_shell(active_page="Git Command Cheat Sheet")
 mark_page_baseline(_baseline, "shell-ready")
+mark_page_baseline(_baseline, "wave27-shell-mobile")
 
 render_page_header("Git Command Cheat Sheet", "Filter practical Git commands by category and copy snippets quickly on mobile or desktop.")
 
@@ -53,6 +54,7 @@ with tool_form_panel("git_command_cheat_sheet"):
         query = st.text_input("Search command or description", placeholder="status, rebase, reflog")
         render_control_heading("Category")
         category = st.selectbox("Command category", options=categories)
+        render_control_heading("Primary action")
         submitted = st.form_submit_button("Show matching commands", use_container_width=True)
 
 if submitted or "git_command_cheat_sheet_result" not in st.session_state:
