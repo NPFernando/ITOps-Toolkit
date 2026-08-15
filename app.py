@@ -40,6 +40,7 @@ mark_page_baseline(_baseline, "wave30-shell-mobile")
 mark_page_baseline(_baseline, "wave31-shell-mobile")
 mark_page_baseline(_baseline, "wave32-shell-mobile")
 mark_page_baseline(_baseline, "wave33-shell-mobile")
+mark_page_baseline(_baseline, "wave34-shell-mobile")
 
 
 repo_url = github_url()
@@ -60,7 +61,11 @@ if st.session_state.pop("home_force_quick_access", False):
 
 with tool_form_panel("home_navigation_controls"):
     render_form_intro("Choose how to browse tools", "Filter by profession and switch between quick access or full catalog.")
-    render_section_heading("Browsing setup", eyebrow="Step 1")
+    render_section_heading(
+        "Browsing setup",
+        description="Pick a profession lens and choose quick access or full catalog before running actions.",
+        eyebrow="Step 1",
+    )
     render_control_heading("Filter by profession")
     profession = st.pills(
         "Filter by profession",
@@ -96,9 +101,13 @@ button_label = "Hide all tools" if show_all else "Show all tools"
 button_icon = ":material/expand_less:" if show_all else ":material/apps:"
 with tool_form_panel("home_primary_action"):
     render_form_intro("Toggle catalog visibility", "Use a full-width action to expand or collapse the tool catalog.")
-    render_section_heading("Catalog visibility", eyebrow="Step 2")
+    render_section_heading(
+        "Catalog visibility",
+        description="Run one full-width action to reveal or collapse catalog results after setup is complete.",
+        eyebrow="Step 2",
+    )
     render_control_heading("Catalog action")
-    st.caption("Tip: Keep Quick access for focused mobile browsing, or open the full catalog when you need every tool.")
+    st.caption("Read order: review browsing setup, run this full-width action, then verify status notes and tool results.")
     if st.button(button_label, icon=button_icon, use_container_width=True):
         if show_all and navigation_mode == "All tools" and not search_query.strip() and profession == "All":
             st.session_state["home_force_quick_access"] = True

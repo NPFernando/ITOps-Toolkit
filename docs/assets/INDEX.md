@@ -496,6 +496,16 @@ When a roadmap badge asset is unavailable, compact text fallback glyphs are used
 - Include one deterministic regression-test pass confirming wave-33 guardrails in `tests/test_ui_helpers.py`, `tests/test_wave33_shell_mobile_markers.py`, and `tests/test_wave33_accessibility_guardrails.py`.
 - Include one keyboard-only pass to confirm wave-33 explicit status semantics (`role="status"`/`role="alert"` + `aria-live`) and focus visibility remain intact.
 
+### Phase 41 Wave 34 add-on QA focus
+
+- Confirm placeholder-to-real wave-34 slug alias notes remain explicit for diagnostics/release evidence (`161_tool_slug_pending_roadmap` + `161_<tool_slug_pending_roadmap>` -> `lorem_ipsum_generator`; `162_tool_slug_pending_roadmap` + `162_<tool_slug_pending_roadmap>` -> `text_to_binary_hex_octal_converter`) and keep prior `159*`/`160*` aliases documented for continuity.
+- Confirm deterministic slug-first icon lookup still checks tool slugs before category defaults and preserves readable text badge fallback when SVG assets are unavailable.
+- Include one shell pass confirming shared shell + baseline markers (`shell-ready`, `content-rendered`, `wave34-shell-mobile`) remain visible/unchanged on Home, Roadmap, and wave-34 touchpoint pages.
+- Include one `<=720px` viewport pass to confirm Home controls, Roadmap filters/AI triage action, and wave-34 generate/convert actions (with shared control headings) stay full-width/tap-friendly with no clipping/overflow.
+- Include one UX standards pass confirming Step 1/Step 2 hierarchy descriptions stay concise/readable with no clipped controls across mapped pages.
+- Include one deterministic regression-test pass confirming wave-34 guardrails in `tests/test_ui_helpers.py`, `tests/test_wave34_shell_mobile_markers.py`, and `tests/test_wave34_accessibility_guardrails.py`.
+- Include one keyboard-only pass to confirm wave-34 explicit status semantics (`role="status"`/`role="alert"` + `aria-live`) and focus visibility remain intact.
+
 ## Docs/release media inventory
 
 ### Posters
