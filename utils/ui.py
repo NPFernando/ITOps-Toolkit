@@ -98,6 +98,11 @@ TOOL_CARD_ICON_ASSETS: dict[str, str] = {
     "exit_code_reference": "icons/exported/icon-workflow-api-reference-outline-24x24-v01.svg",
     "timezone_abbreviation_reference": "icons/exported/icon-workflow-api-reference-outline-24x24-v01.svg",
     "http_methods_reference": "icons/exported/icon-workflow-api-reference-outline-24x24-v01.svg",
+    "sql_formatter": "icons/exported/icon-workflow-query-format-outline-24x24-v01.svg",
+    "curl_builder": "icons/exported/icon-workflow-request-builder-outline-24x24-v01.svg",
+    "encoding_detector": "icons/exported/icon-workflow-encoding-detect-outline-24x24-v01.svg",
+    "url_parser": "icons/exported/icon-workflow-url-parse-outline-24x24-v01.svg",
+    "gitignore_tester": "icons/exported/icon-workflow-gitignore-match-outline-24x24-v01.svg",
 }
 CATEGORY_TOOL_CARD_ICON_ASSETS: dict[str, str] = {
     "Network": "icons/exported/icon-workflow-dns-lookup-outline-24x24-v01.svg",

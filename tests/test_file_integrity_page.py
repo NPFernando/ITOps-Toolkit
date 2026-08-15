@@ -19,7 +19,10 @@ def test_file_integrity_page_requires_file_a():
     app = _run_page()
     app.button[0].click().run()
     assert not app.exception
-    assert any("Upload at least File A" in e.value for e in app.error)
+    markdown = " ".join(block.value for block in app.markdown)
+    assert "Input required" in markdown
+    assert "Upload File A before comparing integrity" in markdown
+    assert "tool-status-note-warning" in markdown
 
 
 def test_file_integrity_page_identical_files_match():
@@ -32,7 +35,10 @@ def test_file_integrity_page_identical_files_match():
 
     app.button[0].click().run()
     assert not app.exception
-    assert any("identical" in s.body.lower() for s in app.success)
+    markdown = " ".join(block.value for block in app.markdown)
+    assert "Integrity status: Match" in markdown
+    assert "Files are identical; all digests match." in markdown
+    assert "tool-status-note-success" in markdown
 
 
 def test_file_integrity_page_different_files_do_not_match():
@@ -45,7 +51,10 @@ def test_file_integrity_page_different_files_do_not_match():
 
     app.button[0].click().run()
     assert not app.exception
-    assert any("differ" in e.value.lower() for e in app.error)
+    markdown = " ".join(block.value for block in app.markdown)
+    assert "Integrity status: Mismatch" in markdown
+    assert "Files differ; digests do not match." in markdown
+    assert "tool-status-note-warning" in markdown
 
 
 def test_file_integrity_page_matches_expected_hash():
@@ -59,7 +68,10 @@ def test_file_integrity_page_matches_expected_hash():
 
     app.button[0].click().run()
     assert not app.exception
-    assert any("File A matches the expected hash (SHA256)" in s.body for s in app.success)
+    markdown = " ".join(block.value for block in app.markdown)
+    assert "Integrity status: File A verified" in markdown
+    assert "File A matches the expected hash (SHA256)." in markdown
+    assert "tool-status-note-success" in markdown
 
 
 def test_file_integrity_page_wrong_expected_hash_does_not_match():
@@ -73,4 +85,7 @@ def test_file_integrity_page_wrong_expected_hash_does_not_match():
 
     app.button[0].click().run()
     assert not app.exception
-    assert any("File A does not match" in e.value for e in app.error)
+    markdown = " ".join(block.value for block in app.markdown)
+    assert "Integrity status: File A mismatch" in markdown
+    assert "File A does not match the expected hash against any computed algorithm." in markdown
+    assert "tool-status-note-warning" in markdown
