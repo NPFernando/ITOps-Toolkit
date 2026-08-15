@@ -186,3 +186,8 @@ Use this matrix as a quick release gate:
 
 - Wave 28 release docs now extend shell/mobile/visual/a11y gates for shared shell baseline-marker coverage on Home/Roadmap plus Git Command Cheat Sheet/BIP39 Mnemonic Generator/Validator/Lorem Ipsum Generator/Text to Binary Hex Octal Converter, grouped mobile control readability with shared control headings, explicit status semantics (`role="status"`/`role="alert"` + `aria-live`), and wave-28 touchpoint visual mapping checks.
 - This matrix remains the Phase 8 baseline; Wave 28 adds release-playbook QA evidence requirements without changing core consistency rules.
+
+## Wave 29 Documentation Sync Note (Phase 36)
+
+- Wave 29 release docs now extend shell/mobile/visual/a11y gates for shared shell baseline-marker coverage on Home/Roadmap plus Git Command Cheat Sheet/BIP39 Mnemonic Generator/Validator/Lorem Ipsum Generator/Text to Binary Hex Octal Converter, grouped mobile control readability with shared control headings, explicit status semantics (`role="status"`/`role="alert"` + `aria-live`), and wave-29 touchpoint visual mapping checks.
+- This matrix remains the Phase 8 baseline; Wave 29 adds release-playbook QA evidence requirements without changing core consistency rules.

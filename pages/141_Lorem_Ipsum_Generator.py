@@ -58,6 +58,7 @@ st.set_page_config(page_title="Lorem Ipsum Generator", layout="wide")
 apply_app_shell(active_page="Lorem Ipsum Generator")
 mark_page_baseline(_baseline, "shell-ready")
 mark_page_baseline(_baseline, "wave27-shell-mobile")
+mark_page_baseline(_baseline, "wave29-shell-mobile")
 
 render_page_header("Lorem Ipsum Generator", "Generate deterministic placeholder text by words, sentences, or paragraphs.")
 
@@ -81,9 +82,17 @@ with tool_result_panel("lorem_ipsum_result", related_to="lorem_ipsum_generator")
     render_section_heading("Generated text", eyebrow="Result")
     if result is None:
         render_empty_state("Ready to generate", "Generated lorem ipsum text appears here after submission.")
-        render_status_note("Outcome: lorem generation awaiting input", "Choose output shape and count, then generate text.", tone="neutral")
+        render_status_note(
+            "Outcome: lorem generation awaiting input",
+            "Choose output shape and count, then select Generate lorem ipsum.",
+            tone="neutral",
+        )
     else:
-        render_status_note("Outcome: lorem text generated", "Placeholder text is ready to copy from the output block below.", tone="success")
+        render_status_note(
+            "Outcome: lorem text generated",
+            "Placeholder text is ready to copy from the output block below.",
+            tone="success",
+        )
         st.code(str(result), language=None)
 
 mark_page_baseline(_baseline, "content-rendered")

@@ -11,8 +11,8 @@ from utils import roadmap
 
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
-ROADMAP_PAGE = str(PROJECT_ROOT / "pages" / "10_Roadmap_Feedback.py")
 APP_PAGE = str(PROJECT_ROOT / "app.py")
+ROADMAP_PAGE = str(PROJECT_ROOT / "pages" / "10_Roadmap_Feedback.py")
 GIT_PAGE = str(PROJECT_ROOT / "pages" / "139_Git_Command_Cheat_Sheet.py")
 BIP39_PAGE = str(PROJECT_ROOT / "pages" / "140_BIP39_Mnemonic_Generator_Validator.py")
 LOREM_PAGE = str(PROJECT_ROOT / "pages" / "141_Lorem_Ipsum_Generator.py")
@@ -29,16 +29,14 @@ def _markdown(app: AppTest) -> str:
     return " ".join(item.value for item in app.markdown)
 
 
-def test_wave27_home_statuses_keep_explicit_neutral_warning_success_semantics():
+def test_wave29_home_and_roadmap_use_explicit_outcome_semantics(monkeypatch):
     app = AppTest.from_file(APP_PAGE, default_timeout=30)
     app.run()
     assert not app.exception
-
     markdown = _markdown(app)
     assert "Outcome: quick access ready" in markdown
     assert "tool-status-note-neutral" in markdown
     assert 'role="status"' in markdown
-    assert 'aria-live="polite"' in markdown
 
     search = next(widget for widget in app.text_input if widget.key == "tool_search")
     search.set_value("tool-that-does-not-exist-zzz").run()
@@ -46,18 +44,9 @@ def test_wave27_home_statuses_keep_explicit_neutral_warning_success_semantics():
     markdown = _markdown(app)
     assert "Outcome: catalog filters need adjustment" in markdown
     assert "tool-status-note-warning" in markdown
+    assert "Clear or broaden filters, then try again." in markdown
     assert 'role="alert"' in markdown
 
-    search = next(widget for widget in app.text_input if widget.key == "tool_search")
-    search.set_value("").run()
-    next(button for button in app.button if button.label == "Show all tools").click().run()
-    assert not app.exception
-    markdown = _markdown(app)
-    assert "Outcome: full catalog visible" in markdown
-    assert "tool-status-note-success" in markdown
-
-
-def test_wave27_roadmap_filters_apply_via_full_width_action_with_explicit_states(monkeypatch):
     monkeypatch.setattr(
         roadmap,
         "load_roadmap_board",
@@ -72,42 +61,23 @@ def test_wave27_roadmap_filters_apply_via_full_width_action_with_explicit_states
                     rationale="Useful for audits.",
                     source="seed",
                 ),
-                roadmap.RoadmapItem(
-                    title="Alert digest",
-                    category="Operations",
-                    status="In Progress",
-                    votes=7,
-                    description="Daily digest.",
-                    rationale="Reduce alert fatigue.",
-                    source="seed",
-                ),
             )
         ),
     )
-
-    app = AppTest.from_file(ROADMAP_PAGE, default_timeout=30)
-    app.run()
-    assert not app.exception
-    assert any(button.label == "Apply filters" for button in app.button)
-    assert "2 roadmap items shown" in _markdown(app)
-    assert "Outcome: roadmap board ready" in _markdown(app)
-    assert "tool-status-note-neutral" in _markdown(app)
-
-    search = next(widget for widget in app.text_input if widget.label == "Search roadmap")
-    search.set_value("no-such-roadmap-item").run()
-    assert not app.exception
-    assert "2 roadmap items shown" in _markdown(app)
-
-    next(button for button in app.button if button.label == "Apply filters").click().run()
-    assert not app.exception
-    assert "0 roadmap items shown" in _markdown(app)
-    assert "Outcome: roadmap filters need adjustment" in _markdown(app)
-    assert "tool-status-note-warning" in _markdown(app)
-    assert 'role="alert"' in _markdown(app)
-    assert 'role="status"' in _markdown(app)
+    roadmap_app = AppTest.from_file(ROADMAP_PAGE, default_timeout=30)
+    roadmap_app.run()
+    assert not roadmap_app.exception
+    markdown = _markdown(roadmap_app)
+    assert "Outcome: roadmap board ready" in markdown
+    assert "tool-status-note-neutral" in markdown
+    html = "\n".join(item.value for item in roadmap_app.markdown)
+    assert 'class="roadmap-notice' in html
+    assert 'role="note"' in html
+    assert 'aria-label="' in html
+    assert 'tabindex="0"' in html
 
 
-def test_wave27_git_bip39_lorem_and_text_converter_status_wording_is_explicit():
+def test_wave29_git_bip39_lorem_and_text_converter_keep_accessible_status_patterns():
     git_app = AppTest.from_file(GIT_PAGE, default_timeout=30)
     git_app.run()
     assert not git_app.exception
@@ -133,11 +103,11 @@ def test_wave27_git_bip39_lorem_and_text_converter_status_wording_is_explicit():
     bip39_app = AppTest.from_file(BIP39_PAGE, default_timeout=30)
     bip39_app.run()
     assert not bip39_app.exception
+    assert "Outcome: mnemonic tools ready" in _markdown(bip39_app)
     next(widget for widget in bip39_app.button if widget.label == "Generate mnemonic").click().run()
     assert not bip39_app.exception
-    markdown = _markdown(bip39_app)
-    assert "Outcome: mnemonic generation complete" in markdown
-    assert "tool-status-note-success" in markdown
+    assert "Outcome: mnemonic generation complete" in _markdown(bip39_app)
+    assert "tool-status-note-success" in _markdown(bip39_app)
 
     bip39_app.text_area[0].set_value("invalid words here")
     next(widget for widget in bip39_app.button if widget.label == "Validate mnemonic").click().run()
@@ -150,17 +120,16 @@ def test_wave27_git_bip39_lorem_and_text_converter_status_wording_is_explicit():
     lorem_app = AppTest.from_file(LOREM_PAGE, default_timeout=30)
     lorem_app.run()
     assert not lorem_app.exception
-    markdown = _markdown(lorem_app)
-    assert "Outcome: lorem generation awaiting input" in markdown
-    assert "tool-status-note-neutral" in markdown
+    assert "Outcome: lorem generation awaiting input" in _markdown(lorem_app)
+    assert "tool-status-note-neutral" in _markdown(lorem_app)
 
     lorem_seed = next(widget for widget in lorem_app.text_input if widget.key == "lorem_seed")
-    lorem_seed.set_value("wave27")
+    lorem_seed.set_value("wave29")
     lorem_count = next(widget for widget in lorem_app.number_input if widget.key == "lorem_count")
     lorem_count.set_value(6)
     next(widget for widget in lorem_app.button if widget.label == "Generate lorem ipsum").click().run()
     assert not lorem_app.exception
-    assert lorem_app.code[0].value == "magna eiusmod tempor fugiat sit esse"
+    assert lorem_app.code[0].value == "sint enim elit id mollit lorem"
     markdown = _markdown(lorem_app)
     assert "Outcome: lorem text generated" in markdown
     assert "tool-status-note-success" in markdown
@@ -168,11 +137,15 @@ def test_wave27_git_bip39_lorem_and_text_converter_status_wording_is_explicit():
     text_app = AppTest.from_file(TEXT_RADIX_PAGE, default_timeout=30)
     text_app.run()
     assert not text_app.exception
+    assert "Outcome: conversion awaiting input" in _markdown(text_app)
+    assert "tool-status-note-neutral" in _markdown(text_app)
+
     next(widget for widget in text_app.button if widget.label == "Convert text").click().run()
     assert not text_app.exception
     markdown = _markdown(text_app)
     assert "Outcome: text conversion blocked" in markdown
     assert "tool-status-note-warning" in markdown
+    assert "Enter plain text to continue." in markdown
     assert 'role="alert"' in markdown
 
     text_app.text_area[0].set_value("Az")

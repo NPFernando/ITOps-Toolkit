@@ -1,7 +1,10 @@
 from __future__ import annotations
 
+import os
 from pathlib import Path
 
+import pytest
+import streamlit as st
 from streamlit.testing.v1 import AppTest
 
 from utils import roadmap
@@ -14,6 +17,12 @@ CSR_PAGE = str(PROJECT_ROOT / "pages" / "120_CSR_Generator.py")
 CAA_PAGE = str(PROJECT_ROOT / "pages" / "121_CAA_Record_Builder.py")
 GIT_PAGE = str(PROJECT_ROOT / "pages" / "139_Git_Command_Cheat_Sheet.py")
 BIP39_PAGE = str(PROJECT_ROOT / "pages" / "140_BIP39_Mnemonic_Generator_Validator.py")
+
+
+@pytest.fixture(autouse=True)
+def _clear_cache_scope(monkeypatch):
+    st.cache_data.clear()
+    monkeypatch.setenv("ITOPS_CACHE_SCOPE", os.getenv("PYTEST_CURRENT_TEST", "runtime"))
 
 
 def _markdown(app: AppTest) -> str:

@@ -164,8 +164,8 @@ def test_roadmap_feedback_page_ai_triage_runs_when_configured_and_clicked(monkey
     text = _page_text(app)
     assert "Outcome: AI triage cache checked" in text
     assert "Outcome: AI triage generated" in text
+    assert "Outcome: AI triage summary ready" in text
     assert "Cached for up to 1 hour." in text
-    assert "AI triage summary" in text
     assert "Prioritize the command palette." in text
 
 

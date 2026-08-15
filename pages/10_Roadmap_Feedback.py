@@ -33,6 +33,7 @@ apply_app_shell(active_page="Roadmap & Feedback")
 mark_page_baseline(_baseline, "shell-ready")
 mark_page_baseline(_baseline, "wave27-shell-mobile")
 mark_page_baseline(_baseline, "wave28-shell-mobile")
+mark_page_baseline(_baseline, "wave29-shell-mobile")
 
 
 def _status_tone(status: str) -> str:
@@ -63,8 +64,9 @@ def _board_card(label: str, count: int) -> str:
 
 
 def _roadmap_notice(title: str, description: str, tone: str, mark: str) -> str:
+    aria_label = f"{title}: {description}"
     return (
-        f'<div class="roadmap-notice roadmap-notice-{escape(tone)}" role="note">'
+        f'<div class="roadmap-notice roadmap-notice-{escape(tone)}" role="note" aria-label="{escape(aria_label)}" tabindex="0">'
         f'<div class="roadmap-notice-mark" aria-hidden="true">{escape(mark)}</div>'
         '<div>'
         f"<strong>{escape(title)}</strong>"
@@ -254,13 +256,13 @@ items_by_status = roadmap.roadmap_items_by_status(filtered_items)
 if not filtered_items:
     render_status_note(
         "Outcome: roadmap filters need adjustment",
-        "No roadmap items matched the active search and category filters. Adjust filters to continue.",
+        "No roadmap items matched the active search and category filters. Change filters to continue.",
         tone="warning",
     )
 elif query_state.strip() or selected_category != "All":
     render_status_note(
         "Outcome: roadmap filters applied",
-        f"Showing {len(filtered_items)} roadmap item(s) for the active filters.",
+        f"Showing {len(filtered_items)} roadmap item(s) that match the active filters.",
         tone="success",
     )
 else:
@@ -331,7 +333,7 @@ else:
                 "AI prioritization summary is available below for maintainer review.",
                 tone="success",
             )
-            render_status_note("AI triage summary", triage["summary"], tone="ai")
+            render_status_note("Outcome: AI triage summary ready", triage["summary"], tone="neutral")
         else:
             if triage.get("status") == "error":
                 render_failure_note(
