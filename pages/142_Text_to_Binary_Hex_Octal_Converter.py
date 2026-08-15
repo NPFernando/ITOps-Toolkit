@@ -42,6 +42,7 @@ mark_page_baseline(_baseline, "wave31-shell-mobile")
 mark_page_baseline(_baseline, "wave32-shell-mobile")
 mark_page_baseline(_baseline, "wave33-shell-mobile")
 mark_page_baseline(_baseline, "wave34-shell-mobile")
+mark_page_baseline(_baseline, "wave35-shell-mobile")
 
 render_page_header("Text to Binary Hex Octal Converter", "Convert plain text into binary, hexadecimal, and octal byte sequences.")
 
@@ -51,6 +52,7 @@ with tool_form_panel("text_to_binary_hex_octal_converter"):
         "Input setup",
         description="Enter source text, then run one action to produce all byte-format outputs.",
         eyebrow="Step 1",
+        heading_level="h3",
     )
     with st.form("text-to-binary-hex-octal-converter-form"):
         render_control_heading("Source text")
@@ -58,6 +60,7 @@ with tool_form_panel("text_to_binary_hex_octal_converter"):
         st.caption("Conversion uses UTF-8 bytes and updates all three outputs together for easier verification.")
         render_control_heading("Primary action")
         st.caption("Read order: enter source text, run convert, then confirm status and compare all three encoded outputs.")
+        st.caption("If you're new, start with a short word first, then compare all three encodings.")
         submitted = st.form_submit_button("Convert text", use_container_width=True)
 
 if submitted:
@@ -69,18 +72,21 @@ with tool_result_panel("text_radix_result", related_to="text_to_binary_hex_octal
         "Encoded output",
         description="Scan binary, hexadecimal, and octal rows together for quick verification.",
         eyebrow="Step 2",
+        heading_level="h3",
     )
     if result is None:
         render_empty_state("Ready to encode", "Binary, hex, and octal output appears here after submission.")
         render_status_note("Outcome: conversion awaiting input", "Paste source text, then choose Convert text.", tone="neutral")
     elif not bool(result["ok"]):
         render_status_note("Outcome: text conversion blocked", f"{result['error']} Add plain text and run conversion again.", tone="warning")
+        st.caption("If you're new, start with a short word first, then compare all three encodings.")
     else:
         render_status_note(
             "Outcome: text conversion complete",
             "UTF-8 byte values in binary, hexadecimal, and octal are ready.",
             tone="success",
         )
+        st.caption("Tip: compare the same byte order across binary, hex, and octal for easier checks.")
         st.code(f"Binary: {result['binary']}\nHex: {result['hex']}\nOctal: {result['octal']}", language=None)
 
 mark_page_baseline(_baseline, "content-rendered")

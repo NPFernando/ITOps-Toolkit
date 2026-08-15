@@ -2851,18 +2851,24 @@ def render_control_heading(label: str) -> None:
     st.markdown(f'<div class="tool-panel-eyebrow">{escape(label)}</div>', unsafe_allow_html=True)
 
 
-def render_section_heading(title: str, description: str | None = None, eyebrow: str = "Results") -> None:
+def render_section_heading(
+    title: str,
+    description: str | None = None,
+    eyebrow: str = "Results",
+    heading_level: str = "h2",
+) -> None:
     # description_html sits on the same line as </h2> above, not alone on its
     # own line, because when it's "" (no description) a whitespace-only line
     # there is a blank line per CommonMark -- which ends this raw HTML block
     # early and drops everything after it to a literal-text code block
     # instead of rendering as HTML. See _tool_card_html for the same fix.
     description_html = f"<p>{escape(description)}</p>" if description else ""
+    heading_tag = "h3" if heading_level == "h3" else "h2"
     st.markdown(
         f"""
         <div class="tool-section-heading">
             <div class="tool-panel-eyebrow">{escape(eyebrow)}</div>
-            <h2>{escape(title)}</h2>{description_html}
+            <{heading_tag}>{escape(title)}</{heading_tag}>{description_html}
         </div>
         """,
         unsafe_allow_html=True,

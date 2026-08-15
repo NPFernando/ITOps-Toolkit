@@ -39,6 +39,7 @@ mark_page_baseline(_baseline, "wave31-shell-mobile")
 mark_page_baseline(_baseline, "wave32-shell-mobile")
 mark_page_baseline(_baseline, "wave33-shell-mobile")
 mark_page_baseline(_baseline, "wave34-shell-mobile")
+mark_page_baseline(_baseline, "wave35-shell-mobile")
 
 
 def _status_tone(status: str) -> str:
@@ -213,6 +214,7 @@ with tool_form_panel("roadmap_filters"):
         "Filter setup",
         description="Set search terms and category scope first so roadmap results are easier to scan.",
         eyebrow="Step 1",
+        heading_level="h3",
     )
     with st.form("roadmap-filters-form"):
         render_control_heading("Keyword search")
@@ -248,7 +250,9 @@ render_section_heading(
     "Roadmap results",
     description="Review status outcomes first, then scan grouped columns for matching roadmap cards.",
     eyebrow="Step 2",
+    heading_level="h3",
 )
+st.caption("If you're new, begin with Planned and In Progress columns before opening issue links.")
 
 if not filtered_items:
     render_status_note(
@@ -256,18 +260,21 @@ if not filtered_items:
         "No roadmap items matched the active search and category filters. Change filters to continue.",
         tone="warning",
     )
+    st.caption("If you're new, clear all filters, then add search or category one step at a time.")
 elif query_state.strip() or selected_category != "All":
     render_status_note(
         "Outcome: roadmap filters applied",
         f"Showing {len(filtered_items)} roadmap item(s) that match the active filters.",
         tone="success",
     )
+    st.caption("New to roadmap review? Start with In Progress cards, then scan Planned and Complete.")
 else:
     render_status_note(
         "Outcome: roadmap board ready",
         f"Showing all {len(filtered_items)} roadmap item(s). Apply search and category filters to narrow the board.",
         tone="neutral",
     )
+    st.caption("If you're new, begin with Planned and In Progress columns before opening issue links.")
 
 st.markdown(
     f"""
@@ -307,7 +314,7 @@ else:
             "Generate optional AI triage",
             "Runs only when clicked and uses public roadmap item text already shown on this page.",
         )
-        render_section_heading("Optional triage", eyebrow="Step 2")
+        render_section_heading("Optional triage", eyebrow="Step 2", heading_level="h3")
         render_control_heading("Triage action")
         st.caption("Use this after filtering so the summary reflects the items you are actively reviewing.")
         summarize_with_ai = st.button(f"Summarize {len(open_items)} open items with AI", icon=":material/auto_awesome:", use_container_width=True)

@@ -220,6 +220,34 @@ def test_render_form_intro_sets_group_semantics(monkeypatch):
     assert '<h2 id="tool-form-intro-enter_input">Enter input</h2>' in html
 
 
+def test_render_section_heading_defaults_to_h2_semantics(monkeypatch):
+    rendered = []
+
+    monkeypatch.setattr(ui.st, "markdown", lambda value, unsafe_allow_html=False: rendered.append((value, unsafe_allow_html)))
+
+    ui.render_section_heading("Section title", "Section description", eyebrow="Step 1")
+
+    html, unsafe = rendered[0]
+    assert unsafe is True
+    assert 'class="tool-section-heading"' in html
+    assert ">Step 1<" in html
+    assert "<h2>Section title</h2>" in html
+    assert "<p>Section description</p>" in html
+
+
+def test_render_section_heading_supports_h3_hierarchy_when_requested(monkeypatch):
+    rendered = []
+
+    monkeypatch.setattr(ui.st, "markdown", lambda value, unsafe_allow_html=False: rendered.append((value, unsafe_allow_html)))
+
+    ui.render_section_heading("Nested section", eyebrow="Step 2", heading_level="h3")
+
+    html, unsafe = rendered[0]
+    assert unsafe is True
+    assert "<h3>Nested section</h3>" in html
+    assert "<h2>Nested section</h2>" not in html
+
+
 def test_tool_card_html_includes_category_badge_and_escapes_fields():
     tool = ui.ToolMeta(
         title="Title <x>",
@@ -2800,3 +2828,59 @@ def test_tool_card_html_wave34_placeholder_alias_mapping_precedes_category_defau
 
     assert requested_paths == list(expected_assets.values())
     assert category_default not in requested_paths
+
+
+def test_tool_card_icon_asset_wave35_slug_first_precedence_remains_deterministic():
+    expected_assets = {
+        "159_tool_slug_pending_roadmap": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
+        "160_tool_slug_pending_roadmap": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
+        "159_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
+        "160_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
+    }
+
+    for slug, expected in expected_assets.items():
+        tool = ui.ToolMeta(
+            title=f"Wave-35 {slug}",
+            short_title=slug,
+            description="planned",
+            path=f"pages/{slug}.py",
+            icon="W35",
+            accent="#3f3d56",
+            slug=slug,
+            professions=("Support Engineer",),
+            category="Data & Text",
+        )
+        assert ui._tool_card_icon_asset(tool) == expected
+
+
+def test_tool_card_html_wave35_slug_first_precedence_skips_category_fallback(monkeypatch):
+    slug = "159_tool_slug_pending_roadmap"
+    expected_asset = "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg"
+    category_default = "icons/exported/icon-workflow-json-validate-outline-24x24-v01.svg"
+    requested_paths: list[str] = []
+
+    def fake_svg_img_html(path, *args, **kwargs):
+        requested_paths.append(path)
+        if path == category_default:
+            return '<img class="tool-card-icon-image" data-icon="category-default" />'
+        return None
+
+    monkeypatch.setattr(ui, "_svg_img_html", fake_svg_img_html)
+
+    tool = ui.ToolMeta(
+        title=f"Wave-35 {slug}",
+        short_title=slug,
+        description="planned",
+        path=f"pages/{slug}.py",
+        icon="W35",
+        accent="#3f3d56",
+        slug=slug,
+        professions=("Support Engineer",),
+        category="Data & Text",
+    )
+    html = ui._tool_card_html(tool)
+
+    assert requested_paths == [expected_asset]
+    assert requested_paths[0] != category_default
+    assert "tool-card-icon-image" not in html
+    assert f">{tool.icon}<" in html

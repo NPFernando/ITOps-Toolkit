@@ -64,6 +64,7 @@ mark_page_baseline(_baseline, "wave31-shell-mobile")
 mark_page_baseline(_baseline, "wave32-shell-mobile")
 mark_page_baseline(_baseline, "wave33-shell-mobile")
 mark_page_baseline(_baseline, "wave34-shell-mobile")
+mark_page_baseline(_baseline, "wave35-shell-mobile")
 
 render_page_header("Lorem Ipsum Generator", "Generate deterministic placeholder text by words, sentences, or paragraphs.")
 
@@ -73,6 +74,7 @@ with tool_form_panel("lorem_ipsum_generator"):
         "Output setup",
         description="Choose unit, count, and optional deterministic seed before generating text.",
         eyebrow="Step 1",
+        heading_level="h3",
     )
     with st.form("lorem-ipsum-generator-form"):
         render_control_heading("Output shape")
@@ -84,6 +86,7 @@ with tool_form_panel("lorem_ipsum_generator"):
         seed_text = st.text_input("Deterministic seed (optional)", placeholder="wave-25", key="lorem_seed")
         render_control_heading("Primary action")
         st.caption("Read order: configure output shape and seed, run generate, then review status guidance and output.")
+        st.caption("New here? Leave seed empty for random text, or add one only when you need repeatable output.")
         submitted = st.form_submit_button("Generate lorem ipsum", use_container_width=True)
 
 if submitted:
@@ -95,6 +98,7 @@ with tool_result_panel("lorem_ipsum_result", related_to="lorem_ipsum_generator")
         "Generated lorem output",
         description="Review and copy output. Reuse the same seed to reproduce identical text.",
         eyebrow="Step 2",
+        heading_level="h3",
     )
     if result is None:
         render_empty_state("Ready to generate", "Generated lorem ipsum text appears here after submission.")
@@ -103,12 +107,14 @@ with tool_result_panel("lorem_ipsum_result", related_to="lorem_ipsum_generator")
             "Choose output shape and count, then select Generate lorem ipsum.",
             tone="neutral",
         )
+        st.caption("New here? Leave seed empty for random text, or add one only when you need repeatable output.")
     else:
         render_status_note(
             "Outcome: lorem text generated",
             "Placeholder text is ready to copy from the output block below. Reuse the same seed to reproduce this exact output.",
             tone="success",
         )
+        st.caption("Tip: keep the same seed and settings to regenerate this exact output later.")
         st.code(str(result), language=None)
 
 mark_page_baseline(_baseline, "content-rendered")
