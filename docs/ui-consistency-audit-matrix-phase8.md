@@ -61,3 +61,8 @@ Use this matrix as a quick release gate:
 
 - Wave 3 release docs now extend shell/mobile/visual/a11y gates with text-first cue clarity and weak-cue slug-specific visual mapping checks.
 - This matrix remains the Phase 8 baseline; Wave 3 adds stricter QA evidence requirements without changing the core consistency rules.
+
+## Wave 4 Documentation Sync Note (Phase 11)
+
+- Wave 4 release docs now extend shell/mobile/visual/a11y gates for new wave-4 icon mappings and related tool cues, including shell consistency and accessibility spot checks.
+- This matrix remains the Phase 8 baseline; Wave 4 adds release-playbook QA evidence requirements without changing core consistency rules.

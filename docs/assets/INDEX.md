@@ -1,4 +1,4 @@
-# Assets Index (phase8 + wave2 + wave3)
+# Assets Index (phase8 + wave2 + wave3 + wave4)
 
 Generated assets available under `docs/assets/**/exported`. Runtime mappings are implemented in `utils/ui.py`.
 
@@ -99,6 +99,21 @@ When a roadmap badge asset is unavailable, compact text fallback glyphs are used
 - Confirm slug-specific icon mappings still fall back to text badges when assets are unavailable.
 - Include one `<=720px` viewport pass to confirm wave-3 icon/cue surfaces keep readable labels and no clipped chips.
 - Include one keyboard-only pass to confirm visual updates did not hide actionable meaning behind decorative media.
+
+### Phase 11 Wave 4 icon mapping extensions
+
+- Auth controls icon: `basic_auth_tool`, `keypair_generator`, `password_policy_checker`, `password_entropy`
+- Time operations icon: `business_hours`, `world_clock`, `log_duration`, `date_calculator`
+- Data sanitization icon: `pii_redactor`, `csv_cleaner`, `whitespace_visualizer`
+- API/reference icon: `windows_event_reference`, `windows_error_reference`, `exit_code_reference`, `timezone_abbreviation_reference`, `http_methods_reference`
+
+### Phase 11 Wave 4 add-on QA focus
+
+- Confirm wave-4 slugs resolve to slug-specific assets before category defaults.
+- Confirm slug-specific wave-4 icons still fall back to text badges if SVG rendering is unavailable.
+- Include one shell pass confirming grouped navigation + quick search + command palette still expose readable text cues after wave-4 icon updates.
+- Include one `<=720px` viewport pass to confirm wave-4 labels/badges/chips stay readable with no clipping/overflow.
+- Include one keyboard-only pass to confirm wave-4 visual changes do not hide actionable meaning or break focus visibility.
 
 ## Docs/release media inventory
 

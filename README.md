@@ -168,6 +168,7 @@ Before deployment, use [docs/release-checklist.md](docs/release-checklist.md). F
 For Phase 8 cross-page consistency standards and documented exceptions, use [docs/ui-consistency-audit-matrix-phase8.md](docs/ui-consistency-audit-matrix-phase8.md).
 For Phase 9 wave-2 shell/mobile/visual/a11y QA gates, follow the Wave 2 sections in [docs/design-system.md](docs/design-system.md) and [docs/release-checklist.md](docs/release-checklist.md).
 For Phase 10 wave-3 shell/mobile/visual/a11y QA gates, follow the Wave 3 sections in [docs/design-system.md](docs/design-system.md), [docs/release-checklist.md](docs/release-checklist.md), and [docs/release-notes-template.md](docs/release-notes-template.md).
+For Phase 11 wave-4 shell/mobile/visual/a11y QA gates, follow the Wave 4 sections in [docs/design-system.md](docs/design-system.md), [docs/release-checklist.md](docs/release-checklist.md), [docs/release-notes-template.md](docs/release-notes-template.md), and [docs/assets/INDEX.md](docs/assets/INDEX.md).
 For runtime troubleshooting and diagnostics interpretation, use [docs/ops-runbook.md](docs/ops-runbook.md).
 For adapter timeout/retry/error/cache/privacy reliability standards, see [docs/reliability-contract.md](docs/reliability-contract.md).
 

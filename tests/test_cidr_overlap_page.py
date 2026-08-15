@@ -17,8 +17,10 @@ def test_overlap_found_shows_warning_and_table():
     app.button[0].click().run()
     assert not app.exception
 
-    assert any("overlapping pair" in w.value for w in app.warning)
-    assert len(app.table) == 1
+    markdown = " ".join(block.value for block in app.markdown)
+    assert "Overlaps detected" in markdown
+    assert "overlapping pair(s) were found" in markdown
+    assert len(app.dataframe) == 1
 
 
 def test_no_overlap_shows_success():
@@ -28,7 +30,8 @@ def test_no_overlap_shows_success():
     app.text_area[0].set_value("10.0.0.0/24\n192.168.0.0/24")
     app.button[0].click().run()
     assert not app.exception
-    assert any("No overlaps found" in s.value for s in app.success)
+    markdown = " ".join(block.value for block in app.markdown)
+    assert "No overlaps found" in markdown
 
 
 def test_empty_state_shown_before_submit():
@@ -46,9 +49,11 @@ def test_results_persist_after_sidebar_interaction():
     app.text_area[0].set_value("10.0.0.0/24\n192.168.0.0/24")
     app.button[0].click().run()
     assert not app.exception
-    assert any("No overlaps found" in s.value for s in app.success)
+    before_markdown = " ".join(block.value for block in app.markdown)
+    assert "No overlaps found" in before_markdown
 
     search = next(t for t in app.text_input if t.key == "sidebar_quick_search")
     search.set_value("test").run()
     assert not app.exception
-    assert any("No overlaps found" in s.value for s in app.success)
+    after_markdown = " ".join(block.value for block in app.markdown)
+    assert "No overlaps found" in after_markdown
