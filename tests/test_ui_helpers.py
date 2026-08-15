@@ -376,6 +376,20 @@ def test_tool_card_icon_asset_maps_wave8_weak_cue_tools():
         assert ui._tool_card_icon_asset(tool) == expected
 
 
+def test_tool_card_icon_asset_maps_wave9_weak_cue_tools():
+    expected_assets = {
+        "mac_address_tool": "icons/exported/icon-workflow-mac-address-outline-24x24-v01.svg",
+        "email_header_analyzer": "icons/exported/icon-workflow-email-header-trace-outline-24x24-v01.svg",
+        "text_diff_checker": "icons/exported/icon-workflow-text-diff-outline-24x24-v01.svg",
+        "cidr_aggregator": "icons/exported/icon-workflow-cidr-aggregate-outline-24x24-v01.svg",
+        "ipv6_compressor": "icons/exported/icon-workflow-ipv6-compress-outline-24x24-v01.svg",
+    }
+
+    for slug, expected in expected_assets.items():
+        tool = next(item for item in TOOLS if item.slug == slug)
+        assert ui._tool_card_icon_asset(tool) == expected
+
+
 def test_tool_card_html_wave4_slug_specific_mapping_precedes_category_default_during_render(monkeypatch):
     tool = next(item for item in TOOLS if item.slug == "basic_auth_tool")
 
@@ -445,6 +459,22 @@ def test_tool_card_html_wave8_slug_specific_mapping_precedes_category_default_du
 
     def fake_svg_img_html(path, *args, **kwargs):
         if path == "icons/exported/icon-workflow-http-probe-outline-24x24-v01.svg":
+            return '<img class="tool-card-icon-image" data-icon="category-default" />'
+        return None
+
+    monkeypatch.setattr(ui, "_svg_img_html", fake_svg_img_html)
+
+    html = ui._tool_card_html(tool)
+
+    assert "tool-card-icon-image" not in html
+    assert f">{tool.icon}<" in html
+
+
+def test_tool_card_html_wave9_slug_specific_mapping_precedes_category_default_during_render(monkeypatch):
+    tool = next(item for item in TOOLS if item.slug == "mac_address_tool")
+
+    def fake_svg_img_html(path, *args, **kwargs):
+        if path == "icons/exported/icon-workflow-dns-lookup-outline-24x24-v01.svg":
             return '<img class="tool-card-icon-image" data-icon="category-default" />'
         return None
 

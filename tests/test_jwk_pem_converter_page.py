@@ -21,6 +21,9 @@ def test_jwk_to_pem_tab_shows_result():
 
     code = " ".join(c.value for c in app.code)
     assert "BEGIN PUBLIC KEY" in code
+    md = " ".join(m.value for m in app.markdown)
+    assert "tool-status-note-success" in md
+    assert "Conversion complete" in md
 
 
 def test_empty_state_shown_before_submit():
@@ -30,6 +33,22 @@ def test_empty_state_shown_before_submit():
 
     md = " ".join(m.value for m in app.markdown)
     assert "tool-empty-state" in md
+    assert "tool-status-note-neutral" in md
+    assert "Awaiting JWK input" in md
+
+
+def test_invalid_jwk_shows_warning_status():
+    app = AppTest.from_file(PAGE, default_timeout=30)
+    app.run()
+    assert not app.exception
+
+    app.text_area[0].set_value("not json")
+    app.button[0].click().run()
+    assert not app.exception
+
+    md = " ".join(m.value for m in app.markdown)
+    assert "tool-status-note-warning" in md
+    assert "JWK to PEM conversion needs attention" in md
 
 
 def test_results_persist_after_sidebar_interaction():
