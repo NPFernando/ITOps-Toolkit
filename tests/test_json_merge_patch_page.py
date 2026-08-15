@@ -20,6 +20,24 @@ def test_merge_shows_result():
 
     code = " ".join(c.value for c in app.code)
     assert '"a": "c"' in code
+    md = " ".join(m.value for m in app.markdown)
+    assert "tool-status-note-success" in md
+    assert "Merged successfully" in md
+
+
+def test_invalid_json_shows_warning_status():
+    app = AppTest.from_file(PAGE, default_timeout=30)
+    app.run()
+    assert not app.exception
+
+    app.text_area[0].set_value("{not valid")
+    app.text_area[1].set_value("{}")
+    app.button[0].click().run()
+    assert not app.exception
+
+    md = " ".join(m.value for m in app.markdown)
+    assert "tool-status-note-warning" in md
+    assert "JSON merge patch needs attention" in md
 
 
 def test_empty_state_shown_before_submit():
@@ -29,6 +47,8 @@ def test_empty_state_shown_before_submit():
 
     md = " ".join(m.value for m in app.markdown)
     assert "tool-empty-state" in md
+    assert "tool-status-note-neutral" in md
+    assert "Awaiting JSON input" in md
 
 
 def test_results_persist_after_sidebar_interaction():

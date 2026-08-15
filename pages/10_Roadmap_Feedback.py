@@ -207,20 +207,17 @@ st.markdown(
 )
 
 render_section_heading("Browse roadmap items", "Use search and category filters to focus the board view.", eyebrow="Explore")
-search_col, filter_col = st.columns([1.3, 1], gap="medium")
-with search_col:
-    query = st.text_input("Search roadmap", placeholder="Search features, categories, or ideas...")
-with filter_col:
-    category = st.pills(
-        "Filter category",
-        options=("All", *roadmap.roadmap_categories()),
-        default="All",
-        required=True,  # without this, clicking the already-selected pill deselects it
-        # to None (documented st.pills behavior with required=False). Already safely
-        # coerced by `category or "All"` below, but fixed at the source anyway --
-        # same bug class as PR #63.
-        label_visibility="collapsed",
-    )
+query = st.text_input("Search roadmap", placeholder="Search features, categories, or ideas...")
+category = st.pills(
+    "Filter category",
+    options=("All", *roadmap.roadmap_categories()),
+    default="All",
+    required=True,  # without this, clicking the already-selected pill deselects it
+    # to None (documented st.pills behavior with required=False). Already safely
+    # coerced by `category or "All"` below, but fixed at the source anyway --
+    # same bug class as PR #63.
+    label_visibility="collapsed",
+)
 
 selected_category = category or "All"
 filtered_items = roadmap.filter_roadmap_items(query, selected_category, board.items)

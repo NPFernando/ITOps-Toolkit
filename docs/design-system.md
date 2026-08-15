@@ -290,6 +290,20 @@ This guide documents the UI direction used for the Streamlit dashboard and tool 
 - Record Wave 12 outcomes in `docs/release-notes-template.md` using synthetic/sanitized evidence only.
 - Keep non-tool exceptions explicit and confirm desktop/mobile readability after wave-12 updates.
 
+## Phase 20 Wave 13 Standards (Shell, Mobile, Visual, A11y + QA Gates)
+
+- **Shell consistency:** keep shared shell + baseline markers (`shell-ready`, `content-rendered`) stable on Home, Roadmap & Feedback, Password Policy Checker, ISO 8601 Duration Tool, JSON Merge Patch, and Column Aligner.
+- **Mobile baseline (`<=720px`):** keep wave-13 primary actions full-width and tap-friendly (`use_container_width=True`) with no clipped labels or horizontal overflow.
+- **Visual mapping integrity:** keep wave-13 slug-specific icon mappings first (`password_policy_checker`, `iso8601_duration`, `json_merge_patch`, `column_aligner`), then category defaults, with text badge fallback always readable.
+- **Accessibility guardrail:** keep keyboard flow and visible focus rings intact, with neutral/blocking outcomes aligned to shared status/failure note semantics.
+- **QA gate behavior:** treat Wave 13 shell/mobile/visual/a11y regressions as release blockers unless an intentional exception is documented.
+
+### Wave 13 QA handoff guidance
+
+- Run Wave 13 checks in `docs/release-checklist.md` before release.
+- Record Wave 13 outcomes in `docs/release-notes-template.md` using synthetic/sanitized evidence only.
+- Keep non-tool exceptions explicit and confirm desktop/mobile readability after wave-13 updates.
+
 ## Maintenance Rules
 
 - Do not duplicate tool titles, descriptions, paths, or accent colors outside `utils/ui.py`.
