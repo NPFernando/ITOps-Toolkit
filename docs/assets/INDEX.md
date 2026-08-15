@@ -1,4 +1,4 @@
-# Assets Index (phase8 + wave2 + wave3 + wave4 + wave5 + wave6 + wave7 + wave8 + wave9 + wave10 + wave11 + wave12 + wave13 + wave14 + wave15 + wave16)
+# Assets Index (phase8 + wave2 + wave3 + wave4 + wave5 + wave6 + wave7 + wave8 + wave9 + wave10 + wave11 + wave12 + wave13 + wave14 + wave15 + wave16 + wave17)
 
 Generated assets available under `docs/assets/**/exported`. Runtime mappings are implemented in `utils/ui.py`.
 
@@ -215,6 +215,15 @@ When a roadmap badge asset is unavailable, compact text fallback glyphs are used
 
 - Markdown link extraction icon: `markdown_link_extractor`
 
+### Phase 24 Wave 17 icon mapping coverage
+
+- Markdown TOC icon: `markdown_toc_generator`
+- Number conversion icon: `number_to_words`
+- JSON types icon: `json_to_typescript`
+- CSS gradient icon: `css_gradient_generator`
+- JWT claims icon: `jwt_claims_reference`
+- CSP header icon: `csp_builder`
+
 ### Phase 12 Wave 5 add-on QA focus
 
 - Confirm wave-5 slugs resolve to slug-specific assets before category defaults.
@@ -310,6 +319,14 @@ When a roadmap badge asset is unavailable, compact text fallback glyphs are used
 - Include one shell pass confirming shared shell + baseline markers remain visible/unchanged on Home, Roadmap, Markdown Link Extractor, and Health Diagnostics.
 - Include one `<=720px` viewport pass to confirm Home controls, Roadmap filters/AI triage action, and Markdown extraction submit action stay full-width/tap-friendly with no clipping/overflow.
 - Include one keyboard-only pass to confirm wave-16 notice semantics and focus visibility remain intact.
+
+### Phase 24 Wave 17 add-on QA focus
+
+- Confirm wave-17 touchpoint slugs resolve to slug-specific assets before category defaults (`markdown_toc_generator`, `number_to_words`, `json_to_typescript`, `css_gradient_generator`, `jwt_claims_reference`, `csp_builder`).
+- Confirm wave-17 slug-specific icons still fall back to text badges when SVG rendering is unavailable.
+- Include one shell pass confirming shared shell + baseline markers remain visible/unchanged on Home, Roadmap, and wave-17 touchpoint pages.
+- Include one `<=720px` viewport pass to confirm Home controls, Roadmap filters/AI triage action, and wave-17 submit actions stay full-width/tap-friendly with no clipping/overflow.
+- Include one keyboard-only pass to confirm wave-17 notice semantics and focus visibility remain intact.
 
 ## Docs/release media inventory
 

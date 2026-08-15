@@ -346,6 +346,20 @@ This guide documents the UI direction used for the Streamlit dashboard and tool 
 - Record Wave 16 outcomes in `docs/release-notes-template.md` using synthetic/sanitized evidence only.
 - Keep non-tool exceptions explicit and confirm desktop/mobile readability after wave-16 updates.
 
+## Phase 24 Wave 17 Standards (Shell, Mobile, Visual, A11y + QA Gates)
+
+- **Shell consistency:** keep shared shell + baseline markers (`shell-ready`, `content-rendered`) stable on Home, Roadmap & Feedback, Markdown TOC Generator, Number to Words, JSON to TypeScript, CSS Gradient Generator, JWT Claims Reference, and CSP Header Builder.
+- **Mobile baseline (`<=720px`):** keep wave-17 primary actions full-width and tap-friendly (`use_container_width=True`), keep filter/form panels single-column readable, and avoid forced two-column control layouts on wave-17 pages.
+- **Visual mapping integrity:** keep wave-17 touchpoint slug mappings readable (`markdown_toc_generator`, `number_to_words`, `json_to_typescript`, `css_gradient_generator`, `jwt_claims_reference`, `csp_builder`) before category defaults, with text badge fallback always readable.
+- **Accessibility guardrail:** keep keyboard flow and visible focus rings intact for Home controls, Roadmap filters/AI triage action, and wave-17 form actions, with neutral/blocking outcomes aligned to shared status/failure note semantics.
+- **QA gate behavior:** treat Wave 17 shell/mobile/visual/a11y regressions as release blockers unless an intentional exception is documented.
+
+### Wave 17 QA handoff guidance
+
+- Run Wave 17 checks in `docs/release-checklist.md` before release.
+- Record Wave 17 outcomes in `docs/release-notes-template.md` using synthetic/sanitized evidence only.
+- Keep non-tool exceptions explicit and confirm desktop/mobile readability after wave-17 updates.
+
 ## Maintenance Rules
 
 - Do not duplicate tool titles, descriptions, paths, or accent colors outside `utils/ui.py`.

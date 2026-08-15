@@ -17,7 +17,12 @@ def test_convert_shows_result():
     app.button[0].click().run()
     assert not app.exception
 
-    assert any("one thousand forty-two" in s.value for s in app.success)
+    code = " ".join(c.value for c in app.code)
+    assert "one thousand forty-two" in code
+    md = " ".join(m.value for m in app.markdown)
+    assert "tool-status-note-success" in md
+    assert "Number converted to words" in md
+    assert 'role="status"' in md
 
 
 def test_empty_state_shown_before_submit():
@@ -27,6 +32,8 @@ def test_empty_state_shown_before_submit():
 
     md = " ".join(m.value for m in app.markdown)
     assert "tool-empty-state" in md
+    assert "tool-status-note-neutral" in md
+    assert "Awaiting number input" in md
 
 
 def test_results_persist_after_sidebar_interaction():
@@ -35,10 +42,24 @@ def test_results_persist_after_sidebar_interaction():
     app.text_input[0].set_value("1042")
     app.button[0].click().run()
     assert not app.exception
-    before = len(app.success)
+    before = len(app.code)
     assert before > 0
 
     search = next(t for t in app.text_input if t.key == "sidebar_quick_search")
     search.set_value("test").run()
     assert not app.exception
-    assert len(app.success) == before
+    assert len(app.code) == before
+
+
+def test_empty_submission_shows_warning_status():
+    app = AppTest.from_file(PAGE, default_timeout=30)
+    app.run()
+    assert not app.exception
+
+    app.button[0].click().run()
+    assert not app.exception
+
+    md = " ".join(m.value for m in app.markdown)
+    assert "tool-status-note-warning" in md
+    assert "Number conversion needs input fixes" in md
+    assert 'role="alert"' in md
