@@ -43,6 +43,7 @@ Use this template for deployment notes, GitHub releases, or pull request summari
 - QA baseline add-on: Phase 40 wave-33 shell/mobile/visual/a11y QA gates completed
 - QA baseline add-on: Phase 41 wave-34 shell/mobile/visual/a11y QA gates completed
 - QA baseline add-on: Phase 42 wave-35 shell/mobile/visual/a11y QA gates completed
+- QA baseline add-on: Phase 43 wave-36 shell/mobile/visual/a11y QA gates completed
 
 ## User-Facing Changes
 
@@ -211,6 +212,10 @@ curl http://localhost:8502/_stcore/health
 - Wave 35 mobile readability spot check (`<=720px`, Step 1/Step 2 hierarchy remains concise/readable, grouped controls keep shared headings, and Home controls + Roadmap filters/AI triage action + wave-35 generate/convert actions stay full-width/tap-friendly with no clipping/overflow):
 - Wave 35 visual mapping spot check (placeholder-to-real alias routing + deterministic slug precedence: `163_tool_slug_pending_roadmap` + `163_<tool_slug_pending_roadmap>` -> `lorem_ipsum_generator`; `164_tool_slug_pending_roadmap` + `164_<tool_slug_pending_roadmap>` -> `text_to_binary_hex_octal_converter`; slug-first icon lookup remains deterministic with readable text fallback badges):
 - Wave 35 accessibility + deterministic regression-tests spot check (explicit status semantics with `role="status"`/`role="alert"` + `aria-live`, keyboard/focus, deterministic outcomes, and pass results for `tests/test_ui_helpers.py`, `tests/test_wave35_shell_mobile_markers.py`, and `tests/test_wave35_accessibility_guardrails.py`):
+- Wave 36 shell consistency spot check (shared shell + baseline markers `shell-ready`/`content-rendered`/`wave36-shell-mobile` on Home/Roadmap/Lorem Ipsum Generator/Text to Binary Hex Octal Converter):
+- Wave 36 mobile readability spot check (`<=720px`, Step 1/Step 2 hierarchy remains concise/readable, grouped controls keep shared headings, and Home controls + Roadmap filters/AI triage action + wave-36 generate/convert actions stay full-width/tap-friendly with no clipping/overflow):
+- Wave 36 visual mapping spot check (placeholder-to-real alias routing + deterministic slug precedence: `165_tool_slug_pending_roadmap` + `165_<tool_slug_pending_roadmap>` -> wave-36 lorem touchpoint `141_Lorem_Ipsum_Generator.py`/`lorem_ipsum_generator`; `166_tool_slug_pending_roadmap` + `166_<tool_slug_pending_roadmap>` -> wave-36 converter touchpoint `142_Text_to_Binary_Hex_Octal_Converter.py`/`text_to_binary_hex_octal_converter`; slug-first icon lookup remains deterministic with readable text fallback badges):
+- Wave 36 accessibility + deterministic regression-tests spot check (explicit status semantics with `role="status"`/`role="alert"` + `aria-live`, keyboard/focus, deterministic outcomes, and pass results for `tests/test_ui_helpers.py`, `tests/test_wave36_shell_mobile_markers.py`, and `tests/test_wave36_accessibility_guardrails.py`):
 - Log Troubleshooting AI unavailable state:
 - Optional Azure AI state, if secrets were available:
 
