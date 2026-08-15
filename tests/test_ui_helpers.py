@@ -13,6 +13,7 @@ from utils.ui import (
     favorite_tools,
     favorites_share_link,
     filter_tools,
+    guided_workflows,
     move_favorite,
     record_recent_visit,
     recent_or_popular_tools,
@@ -221,6 +222,15 @@ def test_tool_card_html_falls_back_to_text_icon_when_asset_missing(monkeypatch):
     assert f">{mapped_tool.icon}<" in html
 
 
+def test_tool_card_html_uses_category_default_icon_when_slug_has_no_explicit_mapping():
+    category_default_tool = next(tool for tool in TOOLS if tool.slug == "base64_tool")
+
+    html = ui._tool_card_html(category_default_tool)
+
+    assert "tool-card-icon-image" in html
+    assert "data:image/svg+xml;base64," in html
+
+
 def test_roadmap_badge_icon_html_falls_back_when_asset_missing(monkeypatch):
     monkeypatch.setattr(ui, "_svg_img_html", lambda *args, **kwargs: None)
 
@@ -291,6 +301,19 @@ def test_filter_tools_matches_on_geoip_alias():
 
     assert results
     assert all(tool.slug == "ip_geolocation" for tool in results)
+
+
+def test_guided_workflows_respect_search_and_profession_filters():
+    all_workflows = guided_workflows()
+    assert all_workflows
+
+    jwt_only = guided_workflows(query="jwt")
+    assert jwt_only
+    assert all("jwt" in f"{wf.title} {wf.description}".lower() or "jwt" in " ".join(wf.slugs) for wf in jwt_only)
+
+    network_engineer = guided_workflows(profession="Network Engineer")
+    assert network_engineer
+    assert any(workflow.title == "Domain incident triage" for workflow in network_engineer)
 
 
 # Live-external-lookup pages that should carry a caution warning= on

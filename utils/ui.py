@@ -50,6 +50,14 @@ TOOL_CARD_ICON_ASSETS: dict[str, str] = {
     "port_reference": "icons/exported/icon-workflow-port-scan-outline-24x24-v01.svg",
     "tls_scanner": "icons/exported/icon-workflow-port-scan-outline-24x24-v01.svg",
 }
+CATEGORY_TOOL_CARD_ICON_ASSETS: dict[str, str] = {
+    "Network": "icons/exported/icon-workflow-dns-lookup-outline-24x24-v01.svg",
+    "Security": "icons/exported/icon-workflow-incident-response-outline-24x24-v01.svg",
+    "Web & Dev": "icons/exported/icon-workflow-http-probe-outline-24x24-v01.svg",
+    "Data & Text": "icons/exported/icon-workflow-json-validate-outline-24x24-v01.svg",
+    "Ops & Automation": "icons/exported/icon-workflow-automation-runbook-outline-24x24-v01.svg",
+    "Reference": "icons/exported/icon-workflow-reference-catalog-outline-24x24-v01.svg",
+}
 TOOL_HEADER_ILLUSTRATION_BY_CATEGORY: dict[str, str] = {
     "Network": "illustrations/exported/illustration-tool-network-header-flow-light-1600x900-v01.svg",
     "Security": "illustrations/exported/illustration-tool-security-header-shield-light-1600x900-v01.svg",
@@ -131,6 +139,14 @@ class ToolMeta:
     category: str
     is_new: bool = False
     aliases: tuple[str, ...] = ()
+
+
+@dataclass(frozen=True)
+class GuidedWorkflow:
+    title: str
+    description: str
+    slugs: tuple[str, ...]
+    badge: str
 
 
 def _icon_text_color(accent: str) -> str:
@@ -1649,6 +1665,27 @@ POPULAR_TOOLS = tuple(_tools_by_slug[slug] for slug in _POPULAR_SLUGS)
 del _tools_by_slug
 TITLE_TO_SLUG: dict[str, str] = {tool.title: tool.slug for tool in TOOLS}
 
+GUIDED_WORKFLOWS: tuple[GuidedWorkflow, ...] = (
+    GuidedWorkflow(
+        title="Domain incident triage",
+        description="Check DNS, certificate, and HTTP posture in a guided sequence.",
+        slugs=("domain_health", "dns_records", "ssl_certificate", "http_status"),
+        badge="Network",
+    ),
+    GuidedWorkflow(
+        title="Public endpoint debugging",
+        description="Validate HTTP behavior, headers, and webhook responses quickly.",
+        slugs=("http_status", "security_headers", "webhook_tester", "log_troubleshooting"),
+        badge="Web & Dev",
+    ),
+    GuidedWorkflow(
+        title="Token and auth troubleshooting",
+        description="Inspect JWT payloads, claims, and related encodings safely.",
+        slugs=("jwt_decoder", "jwt_claims_reference", "base64_tool"),
+        badge="Security",
+    ),
+)
+
 # Curated "what would you naturally run next" pairings for a real troubleshooting
 # flow (e.g. DNS -> SSL -> HTTP), not derived from category -- category groups
 # tools by domain, not by which ones chain together in practice. Intentionally
@@ -1789,6 +1826,76 @@ TOOL_BUNDLES: dict[str, tuple[str, ...]] = {
 def related_tools(slug: str) -> tuple[ToolMeta, ...]:
     """Return the curated "next tool" suggestions for a tool slug. Empty if none defined."""
     return tuple(_resolve_slugs(TOOL_BUNDLES.get(slug, ())))
+
+
+def guided_workflows(query: str = "", profession: str = "All") -> tuple[GuidedWorkflow, ...]:
+    """Return guided workflow cards filtered by optional search/profession context."""
+    normalized_query = query.strip().lower()
+    profession_filter = profession if profession in PROFESSIONS else "All"
+    selected: list[GuidedWorkflow] = []
+    for workflow in GUIDED_WORKFLOWS:
+        tools = tuple(_resolve_slugs(workflow.slugs))
+        if not tools:
+            continue
+        if profession_filter != "All" and not any(profession_filter in tool.professions for tool in tools):
+            continue
+        if normalized_query:
+            haystack = " ".join(
+                (
+                    workflow.title,
+                    workflow.description,
+                    *[tool.title for tool in tools],
+                    *[tool.short_title for tool in tools],
+                )
+            ).lower()
+            if normalized_query not in haystack:
+                continue
+        selected.append(workflow)
+    return tuple(selected)
+
+
+def render_guided_workflows(query: str = "", profession: str = "All") -> None:
+    workflows = guided_workflows(query=query, profession=profession)
+    st.markdown(
+        """
+        <div class="section-heading">
+            <div><span class="section-bolt">IT</span><h2>Start Here Workflows</h2></div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+    if not workflows:
+        render_status_note(
+            "No workflow matches",
+            "Try a different search or profession filter to reveal guided troubleshooting paths.",
+            tone="neutral",
+        )
+        return
+
+    cols = st.columns(min(len(workflows), 3), gap="large")
+    for index, workflow in enumerate(workflows):
+        tools = tuple(_resolve_slugs(workflow.slugs))
+        if not tools:
+            continue
+        with cols[index % len(cols)]:
+            with st.container(key=f"guided_workflow_{_key_slug(workflow.title)}"):
+                st.markdown(
+                    f"""
+                    <div class="tool-card-shell workflow-card-shell">
+                        <p class="tool-card-category">{escape(workflow.badge)}</p>
+                        <h3>{escape(workflow.title)}</h3>
+                        <p>{escape(workflow.description)}</p>
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
+                )
+                for step_index, tool in enumerate(tools, start=1):
+                    _safe_page_link(
+                        tool.path,
+                        label=f"{step_index}. {tool.short_title}",
+                        icon=_material_icon_for(tool.slug),
+                        stretch_width=True,
+                    )
 
 
 def render_related_tools(slug: str) -> None:
@@ -1992,6 +2099,9 @@ def render_command_palette() -> None:
 
             var overlay = doc.createElement("div");
             overlay.id = "itops-cmdk-overlay";
+            overlay.setAttribute("role", "dialog");
+            overlay.setAttribute("aria-modal", "true");
+            overlay.setAttribute("aria-label", "ITOps command palette");
             overlay.style.cssText = "position:fixed;inset:0;z-index:99999;display:none;" +
                 "background:rgba(10,12,16,0.6);align-items:flex-start;justify-content:center;padding-top:12vh;";
 
@@ -2003,10 +2113,12 @@ def render_command_palette() -> None:
             var input = doc.createElement("input");
             input.type = "text";
             input.placeholder = "Search tools... (Esc to close)";
+            input.setAttribute("aria-label", "Search tools");
             input.style.cssText = "border:none;outline:none;padding:16px;font-size:16px;background:transparent;" +
                 "color:#e8ecf1;border-bottom:1px solid rgba(255,255,255,0.1);width:100%;box-sizing:border-box;";
 
             var list = doc.createElement("div");
+            list.setAttribute("role", "listbox");
             list.style.cssText = "overflow-y:auto;padding:8px;";
 
             panel.appendChild(input);
@@ -2040,6 +2152,7 @@ def render_command_palette() -> None:
                 }}
                 matches.forEach(function(tool, index) {{
                     var row = doc.createElement("div");
+                    row.setAttribute("role", "option");
                     row.style.cssText = "padding:10px 12px;border-radius:8px;cursor:pointer;" +
                         (index === 0 ? "background:rgba(255,255,255,0.08);" : "");
                     var title = doc.createElement("div");
@@ -2277,7 +2390,7 @@ def render_tool_section(
                     back_col, link_col, fwd_col, fav_col = st.columns([1, 4, 1, 1])
                     with back_col:
                         if st.button(
-                            "",
+                            "Earlier",
                             icon=":material/arrow_back:",
                             key=f"fav_move_back_{key_prefix}_{tool.slug}",
                             help="Move earlier",
@@ -2287,7 +2400,7 @@ def render_tool_section(
                             _request_rerun(prefer_fragment_rerun)
                     with fwd_col:
                         if st.button(
-                            "",
+                            "Later",
                             icon=":material/arrow_forward_ios:",
                             key=f"fav_move_fwd_{key_prefix}_{tool.slug}",
                             help="Move later",
@@ -2303,7 +2416,8 @@ def render_tool_section(
                     is_fav = tool.slug in favorite_slugs
                     fav_icon = ":material/star:" if is_fav else ":material/star_border:"
                     fav_help = "Remove from favorites" if is_fav else "Add to favorites"
-                    if st.button("", icon=fav_icon, key=f"fav_toggle_{key_prefix}_{tool.slug}", help=fav_help):
+                    fav_label = "Favorited" if is_fav else "Favorite"
+                    if st.button(fav_label, icon=fav_icon, key=f"fav_toggle_{key_prefix}_{tool.slug}", help=fav_help):
                         toggle_favorite(tool.slug)
                         _request_rerun(prefer_fragment_rerun)
 
@@ -2779,6 +2893,10 @@ def _fallback_href(path: str) -> str:
     return f"/{page_name}"
 
 
+def _tool_card_icon_asset(tool: ToolMeta) -> str | None:
+    return TOOL_CARD_ICON_ASSETS.get(tool.slug) or CATEGORY_TOOL_CARD_ICON_ASSETS.get(tool.category)
+
+
 def _tool_card_html(tool: ToolMeta, delay_ms: int = 0) -> str:
     # NOTE: new_badge must not sit alone on its own line below. When it's ""
     # (not a new tool), a whitespace-only line there is a blank line per
@@ -2788,7 +2906,7 @@ def _tool_card_html(tool: ToolMeta, delay_ms: int = 0) -> str:
     # line as the opening tag means that line is never blank.
     new_badge = '<span class="tool-card-badge-new">NEW</span>' if tool.is_new else ""
     icon_text = _icon_text_color(tool.accent)
-    icon_asset = TOOL_CARD_ICON_ASSETS.get(tool.slug)
+    icon_asset = _tool_card_icon_asset(tool)
     icon_asset_html = (
         _svg_img_html(icon_asset, f"{tool.short_title} icon", "tool-card-icon-image", decorative=True)
         if icon_asset
@@ -3698,6 +3816,15 @@ def _inject_global_css(mode: str) -> None:
             position: relative;
             min-height: 15.1rem;
             animation: itops-fade-up 0.38s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+        }
+
+        .workflow-card-shell {
+            min-height: 10rem;
+            margin-bottom: 0.75rem;
+            border: 1px solid var(--itops-line);
+            border-radius: var(--card-radius);
+            padding: 0.85rem 0.95rem;
+            background: linear-gradient(160deg, #ffffff, #f6fbff);
         }
 
         /* Deliberately a different visual language from .roadmap-status-badge /

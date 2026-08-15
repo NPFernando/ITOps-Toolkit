@@ -29,6 +29,17 @@ Generated assets available under `docs/assets/**/exported`. Runtime mappings are
 
 When no card icon asset resolves, cards display the text badge from `ToolMeta.icon`.
 
+### Tool card category defaults (`CATEGORY_TOOL_CARD_ICON_ASSETS`)
+
+When a tool has no slug-specific icon mapping, card icons now fall back to category defaults:
+
+- `Network` → `icon-workflow-dns-lookup-outline-24x24-v01.svg`
+- `Security` → `icon-workflow-incident-response-outline-24x24-v01.svg`
+- `Web & Dev` → `icon-workflow-http-probe-outline-24x24-v01.svg`
+- `Data & Text` → `icon-workflow-json-validate-outline-24x24-v01.svg`
+- `Ops & Automation` → `icon-workflow-automation-runbook-outline-24x24-v01.svg`
+- `Reference` → `icon-workflow-reference-catalog-outline-24x24-v01.svg`
+
 ### Tool header category illustrations (`TOOL_HEADER_ILLUSTRATION_BY_CATEGORY`)
 
 - `Network` → `illustration-tool-network-header-flow-light-1600x900-v01.svg`
