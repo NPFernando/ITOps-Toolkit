@@ -37,6 +37,7 @@ mark_page_baseline(_baseline, "wave29-shell-mobile")
 mark_page_baseline(_baseline, "wave30-shell-mobile")
 mark_page_baseline(_baseline, "wave31-shell-mobile")
 mark_page_baseline(_baseline, "wave32-shell-mobile")
+mark_page_baseline(_baseline, "wave33-shell-mobile")
 
 
 def _status_tone(status: str) -> str:
@@ -207,6 +208,7 @@ st.markdown(
 render_section_heading("Browse roadmap items", "Use search and category filters to focus the board view.", eyebrow="Explore")
 with tool_form_panel("roadmap_filters"):
     render_form_intro("Search and filter roadmap", "Use keyword search and category pills to narrow the board.")
+    render_section_heading("Filter setup", eyebrow="Step 1")
     with st.form("roadmap-filters-form"):
         render_control_heading("Keyword search")
         query = st.text_input("Search roadmap", placeholder="Search features, categories, or ideas...")
@@ -221,7 +223,7 @@ with tool_form_panel("roadmap_filters"):
             # same bug class as PR #63.
             label_visibility="collapsed",
         )
-        st.caption("Search first, then narrow with category pills to keep the board readable on smaller screens.")
+        st.caption("Search first, then narrow with category pills to keep the board readable on mobile screens.")
         render_control_heading("Apply filters")
         submitted_filters = st.form_submit_button("Apply filters", use_container_width=True)
 
@@ -293,6 +295,7 @@ else:
             "Generate optional AI triage",
             "Runs only when clicked and uses public roadmap item text already shown on this page.",
         )
+        render_section_heading("Optional triage", eyebrow="Step 2")
         render_control_heading("Triage action")
         st.caption("Use this after filtering so the summary reflects the items you are actively reviewing.")
         summarize_with_ai = st.button(f"Summarize {len(open_items)} open items with AI", icon=":material/auto_awesome:", use_container_width=True)

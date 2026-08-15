@@ -486,6 +486,16 @@ When a roadmap badge asset is unavailable, compact text fallback glyphs are used
 - Include one regression-test pass confirming wave-32 guardrails in `tests/test_ui_helpers.py` and `tests/test_wave32_shell_mobile_markers.py`.
 - Include one keyboard-only pass to confirm wave-32 explicit status semantics (`role="status"`/`role="alert"` + `aria-live`) and focus visibility remain intact.
 
+### Phase 40 Wave 33 add-on QA focus
+
+- Confirm placeholder-to-real wave-33 slug alias notes remain explicit for diagnostics/release evidence (`159_tool_slug_pending_roadmap` + `159_<tool_slug_pending_roadmap>` -> `lorem_ipsum_generator`; `160_tool_slug_pending_roadmap` + `160_<tool_slug_pending_roadmap>` -> `text_to_binary_hex_octal_converter`).
+- Confirm deterministic slug-first icon lookup still checks tool slugs before category defaults and preserves readable text badge fallback when SVG assets are unavailable.
+- Include one shell pass confirming shared shell + baseline markers (`shell-ready`, `content-rendered`, `wave33-shell-mobile`) remain visible/unchanged on Home, Roadmap, and wave-33 touchpoint pages.
+- Include one `<=720px` viewport pass to confirm Home controls, Roadmap filters/AI triage action, and wave-33 generate/convert actions (with shared control headings) stay full-width/tap-friendly with no clipping/overflow.
+- Include one UX standards pass confirming fixed `st.columns(2)` form layouts are absent and Step 1/Step 2 section hierarchy descriptions remain concise/readable.
+- Include one deterministic regression-test pass confirming wave-33 guardrails in `tests/test_ui_helpers.py`, `tests/test_wave33_shell_mobile_markers.py`, and `tests/test_wave33_accessibility_guardrails.py`.
+- Include one keyboard-only pass to confirm wave-33 explicit status semantics (`role="status"`/`role="alert"` + `aria-live`) and focus visibility remain intact.
+
 ## Docs/release media inventory
 
 ### Posters

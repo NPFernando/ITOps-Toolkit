@@ -40,6 +40,7 @@ Use this template for deployment notes, GitHub releases, or pull request summari
 - QA baseline add-on: Phase 37 wave-30 shell/mobile/visual/a11y QA gates completed
 - QA baseline add-on: Phase 38 wave-31 shell/mobile/visual/a11y QA gates completed
 - QA baseline add-on: Phase 39 wave-32 shell/mobile/visual/a11y QA gates completed
+- QA baseline add-on: Phase 40 wave-33 shell/mobile/visual/a11y QA gates completed
 
 ## User-Facing Changes
 
@@ -196,6 +197,10 @@ curl http://localhost:8502/_stcore/health
 - Wave 32 mobile readability spot check (`<=720px`, grouped controls keep shared headings, Home controls + Roadmap filters/AI triage action + wave-32 submit/generate/convert actions stay full-width/tap-friendly, and fixed `st.columns(2)` form layouts are absent on wave-32 touchpoints):
 - Wave 32 visual mapping spot check (placeholder-to-real slug alias priority + fallback: `157_tool_slug_pending_roadmap` + `157_<tool_slug_pending_roadmap>` -> `lorem_ipsum_generator`; `158_tool_slug_pending_roadmap` + `158_<tool_slug_pending_roadmap>` -> `text_to_binary_hex_octal_converter`):
 - Wave 32 accessibility + regression-tests spot check (explicit status semantics with `role="status"`/`role="alert"` + `aria-live`, keyboard/focus, plus pass results for `tests/test_ui_helpers.py` and `tests/test_wave32_shell_mobile_markers.py`):
+- Wave 33 shell consistency spot check (shared shell + baseline markers `shell-ready`/`content-rendered`/`wave33-shell-mobile` on Home/Roadmap/Lorem Ipsum Generator/Text to Binary Hex Octal Converter):
+- Wave 33 mobile readability spot check (`<=720px`, grouped controls keep shared headings, Home controls + Roadmap filters/AI triage action + wave-33 generate/convert actions stay full-width/tap-friendly):
+- Wave 33 visual mapping spot check (placeholder-to-real alias routing notes + deterministic slug precedence: `159_tool_slug_pending_roadmap` + `159_<tool_slug_pending_roadmap>` -> `lorem_ipsum_generator`; `160_tool_slug_pending_roadmap` + `160_<tool_slug_pending_roadmap>` -> `text_to_binary_hex_octal_converter`):
+- Wave 33 accessibility + deterministic regression-tests spot check (explicit status semantics with `role="status"`/`role="alert"` + `aria-live`, keyboard/focus, deterministic lorem/conversion outcomes, and pass results for `tests/test_ui_helpers.py`, `tests/test_wave33_shell_mobile_markers.py`, and `tests/test_wave33_accessibility_guardrails.py`):
 - Log Troubleshooting AI unavailable state:
 - Optional Azure AI state, if secrets were available:
 

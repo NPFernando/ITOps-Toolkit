@@ -2721,3 +2721,21 @@ def test_tool_card_html_wave32_placeholder_slug_mapping_precedes_category_defaul
     assert requested_paths[0] != category_default
     assert "tool-card-icon-image" not in html
     assert f">{tool.icon}<" in html
+
+
+def test_tool_card_icon_asset_slug_mapping_precedence_is_stable_with_falsey_slug_entry(monkeypatch):
+    tool = ui.ToolMeta(
+        title="Wave-33 precedence probe",
+        short_title="Probe",
+        description="planned",
+        path="pages/wave33_probe.py",
+        icon="W33",
+        accent="#2a9d8f",
+        slug="wave33_falsey_slug",
+        professions=("Support Engineer",),
+        category="Data & Text",
+    )
+    monkeypatch.setitem(ui.TOOL_CARD_ICON_ASSETS, "wave33_falsey_slug", "")
+
+    assert tool.slug in ui.TOOL_CARD_ICON_ASSETS
+    assert ui._tool_card_icon_asset(tool) == ""
