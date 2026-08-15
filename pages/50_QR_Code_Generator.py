@@ -6,6 +6,7 @@ from utils.qr_tools import MAX_TEXT_LENGTH, WIFI_SECURITY_TYPES, build_wifi_payl
 from utils.ui import (
     apply_app_shell,
     render_empty_state,
+    render_failure_note,
     render_form_intro,
     render_page_header,
     render_section_heading,
@@ -37,8 +38,9 @@ with text_tab:
         else:
             result = generate_qr_code(text_value)
             if not result["ok"]:
-                st.error(result["error"])
+                render_failure_note("Text input", result["error"], remediation="Provide text or a URL up to the allowed length.")
             else:
+                render_status_note("QR code generated", "QR image generated from the provided text/URL.", tone="success")
                 st.image(result["png_bytes"], width=280)
                 st.download_button("Download PNG", result["png_bytes"], file_name="qr-code.png", mime="image/png")
 
@@ -63,11 +65,12 @@ with wifi_tab:
         else:
             wifi_result = build_wifi_payload(ssid, password, security, hidden)
             if not wifi_result["ok"]:
-                st.error(wifi_result["error"])
+                render_failure_note("Wi-Fi input", wifi_result["error"], remediation="Check SSID/security/password fields and retry.")
             else:
                 qr_result = generate_qr_code(wifi_result["payload"])
                 if not qr_result["ok"]:
-                    st.error(qr_result["error"])
+                    render_failure_note("QR generation", qr_result["error"], remediation="Adjust the input length and try again.")
                 else:
+                    render_status_note("Wi-Fi QR generated", "QR image generated from the provided Wi-Fi credentials.", tone="success")
                     st.image(qr_result["png_bytes"], width=280)
                     st.download_button("Download PNG", qr_result["png_bytes"], file_name="wifi-qr-code.png", mime="image/png", key="qr_wifi_download")

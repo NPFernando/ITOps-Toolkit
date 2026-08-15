@@ -18,6 +18,9 @@ def test_encode_button_shows_encoded_result():
     assert not app.exception
 
     assert app.text_area[1].value == "NBSWY3DPEB3W64TMMQ======"
+    md = " ".join(block.value for block in app.markdown)
+    assert "Encoded" in md
+    assert "tool-status-note-success" in md
 
 
 def test_decode_button_shows_decoded_result():
@@ -29,6 +32,23 @@ def test_decode_button_shows_decoded_result():
     assert not app.exception
 
     assert app.text_area[1].value == "hello world"
+    md = " ".join(block.value for block in app.markdown)
+    assert "Decoded" in md
+    assert "tool-status-note-success" in md
+
+
+def test_decode_invalid_input_shows_warning_note():
+    app = AppTest.from_file(PAGE, default_timeout=30)
+    app.run()
+    assert not app.exception
+
+    app.text_area[0].set_value("%%%")
+    app.button[1].click().run()
+    assert not app.exception
+
+    md = " ".join(block.value for block in app.markdown)
+    assert "Base32 decode needs attention" in md
+    assert "tool-status-note-warning" in md
 
 
 def test_empty_state_shown_before_submit():

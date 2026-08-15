@@ -1,4 +1,4 @@
-# Assets Index (phase8 + wave2 + wave3 + wave4 + wave5)
+# Assets Index (phase8 + wave2 + wave3 + wave4 + wave5 + wave6)
 
 Generated assets available under `docs/assets/**/exported`. Runtime mappings are implemented in `utils/ui.py`.
 
@@ -123,6 +123,14 @@ When a roadmap badge asset is unavailable, compact text fallback glyphs are used
 - URL parse icon: `url_parser`
 - Gitignore matching icon: `gitignore_tester`
 
+### Phase 13 Wave 6 icon mapping extensions
+
+- Password generation icon: `password_generator`
+- URL encoding icon: `url_encoder_decoder`
+- Timestamp conversion icon: `timestamp_converter`
+- User-agent parsing icon: `user_agent_parser`
+- CIDR overlap icon: `cidr_overlap`
+
 ### Phase 12 Wave 5 add-on QA focus
 
 - Confirm wave-5 slugs resolve to slug-specific assets before category defaults.
@@ -130,6 +138,14 @@ When a roadmap badge asset is unavailable, compact text fallback glyphs are used
 - Include one shell pass confirming grouped navigation + quick search + command palette still expose readable text cues after wave-5 icon updates.
 - Include one `<=720px` viewport pass to confirm wave-5 labels/badges/chips/helper text stay readable with no clipping/overflow.
 - Include one keyboard-only pass to confirm wave-5 visual changes do not hide actionable meaning or break focus visibility.
+
+### Phase 13 Wave 6 add-on QA focus
+
+- Confirm wave-6 weak-cue slugs resolve to slug-specific assets before category defaults.
+- Confirm slug-specific wave-6 icons still fall back to text badges when SVG rendering is unavailable.
+- Include one shell pass confirming grouped navigation + quick search + command palette still expose readable text cues after wave-6 icon updates.
+- Include one `<=720px` viewport pass to confirm wave-6 labels/badges/chips/helper text stay readable with no clipping/overflow.
+- Include one keyboard-only pass to confirm wave-6 visual changes do not hide actionable meaning or break focus visibility.
 
 ## Docs/release media inventory
 

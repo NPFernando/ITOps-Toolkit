@@ -330,6 +330,20 @@ def test_tool_card_icon_asset_maps_wave5_weak_cue_tools():
         assert ui._tool_card_icon_asset(tool) == expected
 
 
+def test_tool_card_icon_asset_maps_wave6_weak_cue_tools():
+    expected_assets = {
+        "password_generator": "icons/exported/icon-workflow-password-generator-outline-24x24-v01.svg",
+        "url_encoder_decoder": "icons/exported/icon-workflow-url-encoding-outline-24x24-v01.svg",
+        "timestamp_converter": "icons/exported/icon-workflow-timestamp-convert-outline-24x24-v01.svg",
+        "user_agent_parser": "icons/exported/icon-workflow-user-agent-parse-outline-24x24-v01.svg",
+        "cidr_overlap": "icons/exported/icon-workflow-cidr-overlap-outline-24x24-v01.svg",
+    }
+
+    for slug, expected in expected_assets.items():
+        tool = next(item for item in TOOLS if item.slug == slug)
+        assert ui._tool_card_icon_asset(tool) == expected
+
+
 def test_tool_card_html_wave4_slug_specific_mapping_precedes_category_default_during_render(monkeypatch):
     tool = next(item for item in TOOLS if item.slug == "basic_auth_tool")
 
@@ -351,6 +365,22 @@ def test_tool_card_html_wave5_slug_specific_mapping_precedes_category_default_du
 
     def fake_svg_img_html(path, *args, **kwargs):
         if path == "icons/exported/icon-workflow-json-validate-outline-24x24-v01.svg":
+            return '<img class="tool-card-icon-image" data-icon="category-default" />'
+        return None
+
+    monkeypatch.setattr(ui, "_svg_img_html", fake_svg_img_html)
+
+    html = ui._tool_card_html(tool)
+
+    assert "tool-card-icon-image" not in html
+    assert f">{tool.icon}<" in html
+
+
+def test_tool_card_html_wave6_slug_specific_mapping_precedes_category_default_during_render(monkeypatch):
+    tool = next(item for item in TOOLS if item.slug == "cidr_overlap")
+
+    def fake_svg_img_html(path, *args, **kwargs):
+        if path == "icons/exported/icon-workflow-dns-lookup-outline-24x24-v01.svg":
             return '<img class="tool-card-icon-image" data-icon="category-default" />'
         return None
 

@@ -103,6 +103,11 @@ TOOL_CARD_ICON_ASSETS: dict[str, str] = {
     "encoding_detector": "icons/exported/icon-workflow-encoding-detect-outline-24x24-v01.svg",
     "url_parser": "icons/exported/icon-workflow-url-parse-outline-24x24-v01.svg",
     "gitignore_tester": "icons/exported/icon-workflow-gitignore-match-outline-24x24-v01.svg",
+    "password_generator": "icons/exported/icon-workflow-password-generator-outline-24x24-v01.svg",
+    "url_encoder_decoder": "icons/exported/icon-workflow-url-encoding-outline-24x24-v01.svg",
+    "timestamp_converter": "icons/exported/icon-workflow-timestamp-convert-outline-24x24-v01.svg",
+    "user_agent_parser": "icons/exported/icon-workflow-user-agent-parse-outline-24x24-v01.svg",
+    "cidr_overlap": "icons/exported/icon-workflow-cidr-overlap-outline-24x24-v01.svg",
 }
 CATEGORY_TOOL_CARD_ICON_ASSETS: dict[str, str] = {
     "Network": "icons/exported/icon-workflow-dns-lookup-outline-24x24-v01.svg",
