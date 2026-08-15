@@ -1,4 +1,4 @@
-# Assets Index (phase8 + wave2 + wave3 + wave4 + wave5 + wave6 + wave7 + wave8 + wave9 + wave10 + wave11)
+# Assets Index (phase8 + wave2 + wave3 + wave4 + wave5 + wave6 + wave7 + wave8 + wave9 + wave10 + wave11 + wave12)
 
 Generated assets available under `docs/assets/**/exported`. Runtime mappings are implemented in `utils/ui.py`.
 
@@ -181,6 +181,15 @@ When a roadmap badge asset is unavailable, compact text fallback glyphs are used
 - CSR generation icon: `csr_generator`
 - CAA record builder icon: `caa_record_builder`
 
+### Phase 19 Wave 12 icon mapping extensions
+
+- Base62 encoding icon: `base62_tool`
+- Unified diff icon: `unified_diff_generator`
+- JWK/PEM conversion icon: `jwk_pem_converter`
+- Certificate chain validation icon: `cert_chain_validator`
+- Path conversion icon: `wsl_path_converter`
+- Markdown link extraction icon: `markdown_link_extractor`
+
 ### Phase 12 Wave 5 add-on QA focus
 
 - Confirm wave-5 slugs resolve to slug-specific assets before category defaults.
@@ -236,6 +245,14 @@ When a roadmap badge asset is unavailable, compact text fallback glyphs are used
 - Include one shell pass confirming shared shell + baseline markers remain visible/unchanged on wave-11 pages.
 - Include one `<=720px` viewport pass to confirm wave-11 forms/results stay readable with wrapped labels/chips and no clipping/overflow.
 - Include one keyboard-only pass to confirm wave-11 notice semantics and focus visibility remain intact.
+
+### Phase 19 Wave 12 add-on QA focus
+
+- Confirm wave-12 slugs resolve to slug-specific assets before category defaults (`base62_tool`, `unified_diff_generator`, `jwk_pem_converter`, `cert_chain_validator`, `wsl_path_converter`, `markdown_link_extractor`).
+- Confirm slug-specific wave-12 icons still fall back to text badges when SVG rendering is unavailable.
+- Include one shell pass confirming shared shell + baseline markers remain visible/unchanged on wave-12 pages.
+- Include one `<=720px` viewport pass to confirm wave-12 forms/results stay readable with wrapped labels/chips and no clipping/overflow.
+- Include one keyboard-only pass to confirm wave-12 notice semantics and focus visibility remain intact.
 
 ## Docs/release media inventory
 

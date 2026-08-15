@@ -19,6 +19,7 @@ Use this template for deployment notes, GitHub releases, or pull request summari
 - QA baseline add-on: Phase 16 wave-9 shell/mobile/visual/a11y QA gates completed
 - QA baseline add-on: Phase 17 wave-10 shell/mobile/visual/a11y QA gates completed
 - QA baseline add-on: Phase 18 wave-11 shell/mobile/visual/a11y QA gates completed
+- QA baseline add-on: Phase 19 wave-12 shell/mobile/visual/a11y QA gates completed
 
 ## User-Facing Changes
 
@@ -91,6 +92,10 @@ curl http://localhost:8502/_stcore/health
 - Wave 11 mobile readability spot check (`<=720px`, labels/chips wrap, no clipping/overflow):
 - Wave 11 visual mapping spot check (wave-11 slug-specific icon priority + fallback):
 - Wave 11 accessibility spot check (status/failure note semantics + keyboard/focus):
+- Wave 12 shell consistency spot check (shared shell + baseline markers on wave-12 pages):
+- Wave 12 mobile readability spot check (`<=720px`, labels/chips wrap, no clipping/overflow):
+- Wave 12 visual mapping spot check (wave-12 slug-specific icon priority + fallback):
+- Wave 12 accessibility spot check (status/failure note semantics + keyboard/focus):
 - Log Troubleshooting AI unavailable state:
 - Optional Azure AI state, if secrets were available:
 

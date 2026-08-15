@@ -438,6 +438,21 @@ def test_tool_card_icon_asset_maps_wave11_visual_targets():
         assert ui._tool_card_icon_asset(tool) == expected
 
 
+def test_tool_card_icon_asset_maps_wave12_visual_targets():
+    expected_assets = {
+        "test_data_generator": "icons/exported/icon-workflow-test-data-fixture-outline-24x24-v01.svg",
+        "env_diff": "icons/exported/icon-workflow-env-guard-outline-24x24-v01.svg",
+        "cron_overlap": "icons/exported/icon-workflow-cron-schedule-outline-24x24-v01.svg",
+        "pii_redactor": "icons/exported/icon-workflow-data-sanitization-outline-24x24-v01.svg",
+        "ssh_config_validator": "icons/exported/icon-workflow-ssh-config-check-outline-24x24-v01.svg",
+        "health_diagnostics": "icons/exported/icon-workflow-health-diagnostics-outline-24x24-v01.svg",
+    }
+
+    for slug, expected in expected_assets.items():
+        tool = next(item for item in TOOLS if item.slug == slug)
+        assert ui._tool_card_icon_asset(tool) == expected
+
+
 def test_tool_card_html_wave4_slug_specific_mapping_precedes_category_default_during_render(monkeypatch):
     tool = next(item for item in TOOLS if item.slug == "basic_auth_tool")
 
@@ -539,6 +554,22 @@ def test_tool_card_html_wave11_slug_specific_mapping_precedes_category_default_d
 
     def fake_svg_img_html(path, *args, **kwargs):
         if path == "icons/exported/icon-workflow-dns-lookup-outline-24x24-v01.svg":
+            return '<img class="tool-card-icon-image" data-icon="category-default" />'
+        return None
+
+    monkeypatch.setattr(ui, "_svg_img_html", fake_svg_img_html)
+
+    html = ui._tool_card_html(tool)
+
+    assert "tool-card-icon-image" not in html
+    assert f">{tool.icon}<" in html
+
+
+def test_tool_card_html_wave12_slug_specific_mapping_precedes_category_default_during_render(monkeypatch):
+    tool = next(item for item in TOOLS if item.slug == "test_data_generator")
+
+    def fake_svg_img_html(path, *args, **kwargs):
+        if path == "icons/exported/icon-workflow-json-validate-outline-24x24-v01.svg":
             return '<img class="tool-card-icon-image" data-icon="category-default" />'
         return None
 
