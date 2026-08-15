@@ -1,10 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-  <title>Text to binary hex octal converter workflow icon</title>
-  <path d="M4 8h6" />
-  <path d="M4 12h6" />
-  <path d="M4 16h6" />
-  <path d="M13 7h7" />
-  <path d="M13 12h7" />
-  <path d="M13 17h7" />
-  <path d="m10 9 2 3-2 3" />
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" role="img" aria-labelledby="title desc"><title>Text to binary hex octal converter icon</title><desc>Input text lanes feeding a rightward conversion indicator and numeric output lanes.</desc><g fill="none" stroke="#07142f" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"><path d="M4 8h5.8"/><path d="M4 12h5.8"/><path d="M4 16h5.8"/><path d="M14.2 7h5.8"/><path d="M14.2 12h5.8"/><path d="M14.2 17h5.8"/></g><path fill="none" stroke="#11aab8" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="m10 9 2.3 3L10 15"/></svg>

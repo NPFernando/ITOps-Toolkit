@@ -195,6 +195,7 @@ For Phase 34 wave-27 shell/mobile/visual/a11y QA gates, follow the Wave 27 secti
 For Phase 35 wave-28 shell/mobile/visual/a11y QA gates, follow the Wave 28 sections in [docs/design-system.md](docs/design-system.md), [docs/release-checklist.md](docs/release-checklist.md), [docs/release-notes-template.md](docs/release-notes-template.md), and [docs/assets/INDEX.md](docs/assets/INDEX.md).
 For Phase 36 wave-29 shell/mobile/visual/a11y QA gates, follow the Wave 29 sections in [docs/design-system.md](docs/design-system.md), [docs/release-checklist.md](docs/release-checklist.md), [docs/release-notes-template.md](docs/release-notes-template.md), and [docs/assets/INDEX.md](docs/assets/INDEX.md).
 For Phase 37 wave-30 shell/mobile/visual/a11y QA gates, follow the Wave 30 sections in [docs/design-system.md](docs/design-system.md), [docs/release-checklist.md](docs/release-checklist.md), [docs/release-notes-template.md](docs/release-notes-template.md), and [docs/assets/INDEX.md](docs/assets/INDEX.md).
+For Phase 38 wave-31 shell/mobile/visual/a11y QA gates, follow the Wave 31 sections in [docs/design-system.md](docs/design-system.md), [docs/release-checklist.md](docs/release-checklist.md), [docs/release-notes-template.md](docs/release-notes-template.md), and [docs/assets/INDEX.md](docs/assets/INDEX.md).
 For runtime troubleshooting and diagnostics interpretation, use [docs/ops-runbook.md](docs/ops-runbook.md).
 For adapter timeout/retry/error/cache/privacy reliability standards, see [docs/reliability-contract.md](docs/reliability-contract.md).
 
