@@ -1,7 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-  <title>Lorem ipsum generator workflow icon</title>
-  <rect x="4" y="5" width="16" height="14" rx="2" />
-  <path d="M7.5 9h9" />
-  <path d="M7.5 12h7" />
-  <path d="M7.5 15h9" />
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" role="img" aria-labelledby="title desc"><title>Lorem ipsum generator icon</title><desc>Text block with stacked lines representing generated placeholder text.</desc><g fill="none" stroke="#07142f" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"><rect x="4" y="4.5" width="16" height="15" rx="2.2"/><path d="M7.2 8.4h9.6"/><path d="M7.2 11.8h7.4"/><path d="M7.2 15.2h9.6"/></g><path fill="none" stroke="#11aab8" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15.8 13.2 17 14.4l2-2.4"/></svg>

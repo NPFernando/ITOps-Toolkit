@@ -38,6 +38,7 @@ mark_page_baseline(_baseline, "shell-ready")
 mark_page_baseline(_baseline, "wave27-shell-mobile")
 mark_page_baseline(_baseline, "wave29-shell-mobile")
 mark_page_baseline(_baseline, "wave30-shell-mobile")
+mark_page_baseline(_baseline, "wave31-shell-mobile")
 
 render_page_header("Text to Binary Hex Octal Converter", "Convert plain text into binary, hexadecimal, and octal byte sequences.")
 

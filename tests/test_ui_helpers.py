@@ -1367,6 +1367,76 @@ def test_tool_card_html_wave30_slug_specific_mapping_precedes_category_default_d
     assert all(category_default not in requested_paths for category_default in category_defaults.values())
 
 
+def test_tool_card_icon_asset_maps_wave31_visual_targets_deterministically():
+    expected_assets = {
+        "lorem_ipsum_generator": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
+        "text_to_binary_hex_octal_converter": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
+        "text_radix_converter": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
+    }
+
+    for slug, expected in expected_assets.items():
+        tool = ui.ToolMeta(
+            title=f"Wave-31 {slug}",
+            short_title=slug,
+            description="planned",
+            path=f"pages/{slug}.py",
+            icon="W31",
+            accent="#1d3557",
+            slug=slug,
+            professions=("Support Engineer",),
+            category="Data & Text",
+        )
+        assert ui._tool_card_icon_asset(tool) == expected
+
+
+def test_tool_card_icon_asset_wave31_target_assets_exist_on_disk():
+    expected_assets = (
+        "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
+        "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
+    )
+
+    for relative_path in expected_assets:
+        assert (ui.ASSETS_ROOT / relative_path).is_file()
+
+
+def test_tool_card_html_wave31_slug_specific_mapping_precedes_category_default_deterministically(monkeypatch):
+    expected_assets = {
+        "lorem_ipsum_generator": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
+        "text_to_binary_hex_octal_converter": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
+        "text_radix_converter": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
+    }
+    requested_paths: list[str] = []
+
+    def fake_svg_img_html(path, *args, **kwargs):
+        requested_paths.append(path)
+        if path == "icons/exported/icon-workflow-json-validate-outline-24x24-v01.svg":
+            return '<img class="tool-card-icon-image" data-icon="category-default" />'
+        return None
+
+    monkeypatch.setattr(ui, "_svg_img_html", fake_svg_img_html)
+
+    for slug, expected_asset in expected_assets.items():
+        tool = ui.ToolMeta(
+            title=f"Wave-31 {slug}",
+            short_title=slug,
+            description="planned",
+            path=f"pages/{slug}.py",
+            icon="W31",
+            accent="#1d3557",
+            slug=slug,
+            professions=("Support Engineer",),
+            category="Data & Text",
+        )
+        html = ui._tool_card_html(tool)
+        assert requested_paths[-1] == expected_asset
+        assert requested_paths[-1] != "icons/exported/icon-workflow-json-validate-outline-24x24-v01.svg"
+        assert "tool-card-icon-image" not in html
+        assert f">{tool.icon}<" in html
+
+    assert requested_paths == list(expected_assets.values())
+    assert "icons/exported/icon-workflow-json-validate-outline-24x24-v01.svg" not in requested_paths
+
+
 def test_tool_card_html_wave22_slug_specific_mapping_precedes_category_default_during_render(monkeypatch):
     tool = ui.ToolMeta(
         title="Docker run to compose",

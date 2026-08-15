@@ -85,9 +85,9 @@ def test_roadmap_feedback_page_renders_hybrid_board_and_links(monkeypatch):
 
     assert "Roadmap & Feedback" in text
     assert "Submit idea" in text
-    assert "Public-safe feedback only" in text
-    assert "AI Recommended is curated" in text
-    assert "static, curated tag, not AI output" in text
+    assert "Outcome: public feedback safety reminder" in text
+    assert "Outcome: AI Recommended label clarified" in text
+    assert "static curated tag, not generated AI output" in text
     assert "Streamlit does not store feedback" in text
     assert "Outcome: roadmap cache checked" in text
     assert "Outcome: roadmap sync complete" in text
@@ -101,9 +101,10 @@ def test_roadmap_feedback_page_renders_hybrid_board_and_links(monkeypatch):
     assert "GitHub #42" in text
     assert "https://github.com/NPFernando/ITOps-Toolkit/issues/new" in text
     markdown_html = "\n".join(m.value for m in app.markdown)
-    assert 'class="roadmap-notice' in markdown_html
-    assert 'role="note"' in markdown_html
-    assert 'aria-hidden="true"' in markdown_html
+    assert "tool-status-note-warning" in markdown_html
+    assert "tool-status-note-neutral" in markdown_html
+    assert 'role="alert"' in markdown_html
+    assert 'role="status"' in markdown_html
 
 
 def test_roadmap_feedback_page_ai_triage_unavailable_without_config(monkeypatch):

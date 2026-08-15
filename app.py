@@ -36,6 +36,7 @@ mark_page_baseline(_baseline, "wave27-shell-mobile")
 mark_page_baseline(_baseline, "wave28-shell-mobile")
 mark_page_baseline(_baseline, "wave29-shell-mobile")
 mark_page_baseline(_baseline, "wave30-shell-mobile")
+mark_page_baseline(_baseline, "wave31-shell-mobile")
 
 
 repo_url = github_url()

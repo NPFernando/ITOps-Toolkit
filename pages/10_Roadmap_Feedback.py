@@ -35,6 +35,7 @@ mark_page_baseline(_baseline, "wave27-shell-mobile")
 mark_page_baseline(_baseline, "wave28-shell-mobile")
 mark_page_baseline(_baseline, "wave29-shell-mobile")
 mark_page_baseline(_baseline, "wave30-shell-mobile")
+mark_page_baseline(_baseline, "wave31-shell-mobile")
 
 
 def _status_tone(status: str) -> str:
@@ -60,19 +61,6 @@ def _board_card(label: str, count: int) -> str:
         '<div class="roadmap-board-card">'
         f"<span>{escape(label)}</span>"
         f"<strong>{count}</strong>"
-        "</div>"
-    )
-
-
-def _roadmap_notice(title: str, description: str, tone: str, mark: str) -> str:
-    aria_label = f"{title}: {description}"
-    return (
-        f'<div class="roadmap-notice roadmap-notice-{escape(tone)}" role="note" aria-label="{escape(aria_label)}" tabindex="0">'
-        f'<div class="roadmap-notice-mark" aria-hidden="true">{escape(mark)}</div>'
-        '<div>'
-        f"<strong>{escape(title)}</strong>"
-        f"<p>{escape(description)}</p>"
-        "</div>"
         "</div>"
     )
 
@@ -176,23 +164,15 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-st.markdown(
-    '<div class="roadmap-notice-grid">'
-    + _roadmap_notice(
-        "Public-safe feedback only",
-        "Submit ideas through GitHub Issues. Do not include secrets, internal hostnames, customer logs, tokens, keys, or private data.",
-        "warning",
-        "!",
-    )
-    + _roadmap_notice(
-        "AI Recommended is curated",
-        "The \"AI Recommended\" status label is a static, curated tag, not AI output. An optional, opt-in AI triage "
-        "summary is available further down this page and only runs when explicitly requested.",
-        "ai",
-        "AI",
-    )
-    + "</div>",
-    unsafe_allow_html=True,
+render_status_note(
+    "Outcome: public feedback safety reminder",
+    "Submit ideas through public GitHub Issues only. Do not include secrets, internal hostnames, customer logs, tokens, keys, or private data.",
+    tone="warning",
+)
+render_status_note(
+    "Outcome: AI Recommended label clarified",
+    "The \"AI Recommended\" status is a static curated tag, not generated AI output. Optional AI triage runs only when explicitly requested.",
+    tone="neutral",
 )
 board_freshness_tone, board_freshness = cache_freshness_message(
     "Roadmap board",
