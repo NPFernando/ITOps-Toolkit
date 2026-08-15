@@ -28,7 +28,7 @@ apply_app_shell(active_page="Password Generator")
 
 render_page_header(
     "Password Generator",
-    "Generate a strong random password or a diceware-style passphrase, entirely in your current session.",
+    "Generate a strong random password or a diceware-style passphrase in your current session.",
     warning="Generated values are shown once and never transmitted or stored. Copy them somewhere safe.",
 )
 
@@ -69,7 +69,7 @@ password_result = st.session_state.get("password_generator_password_result")
 passphrase_result = st.session_state.get("password_generator_passphrase_result")
 
 if password_result is None and passphrase_result is None:
-    render_empty_state("Ready to generate", "A password or passphrase appears here after you generate one.")
+    render_empty_state("Ready for input", "A generated password or passphrase appears here after you choose an action.")
 
 if password_result is not None:
     with tool_result_panel("password_result", related_to="password_generator"):

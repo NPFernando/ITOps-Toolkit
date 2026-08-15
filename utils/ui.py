@@ -64,6 +64,18 @@ TOOL_CARD_ICON_ASSETS: dict[str, str] = {
     "bcrypt_tool": "icons/exported/icon-workflow-hash-digest-outline-24x24-v01.svg",
     "port_reference": "icons/exported/icon-workflow-port-scan-outline-24x24-v01.svg",
     "tls_scanner": "icons/exported/icon-workflow-port-scan-outline-24x24-v01.svg",
+    "env_linter": "icons/exported/icon-workflow-env-guard-outline-24x24-v01.svg",
+    "env_diff": "icons/exported/icon-workflow-env-guard-outline-24x24-v01.svg",
+    "markdown_toc_generator": "icons/exported/icon-workflow-markdown-structure-outline-24x24-v01.svg",
+    "markdown_table_formatter": "icons/exported/icon-workflow-markdown-structure-outline-24x24-v01.svg",
+    "markdown_link_extractor": "icons/exported/icon-workflow-markdown-structure-outline-24x24-v01.svg",
+    "id_generator": "icons/exported/icon-workflow-id-sequence-outline-24x24-v01.svg",
+    "ulid_uuid_decoder": "icons/exported/icon-workflow-id-sequence-outline-24x24-v01.svg",
+    "deterministic_uuid": "icons/exported/icon-workflow-id-sequence-outline-24x24-v01.svg",
+    "csp_builder": "icons/exported/icon-workflow-policy-controls-outline-24x24-v01.svg",
+    "robots_meta_builder": "icons/exported/icon-workflow-policy-controls-outline-24x24-v01.svg",
+    "cache_control_tool": "icons/exported/icon-workflow-policy-controls-outline-24x24-v01.svg",
+    "robots_validator": "icons/exported/icon-workflow-policy-controls-outline-24x24-v01.svg",
 }
 CATEGORY_TOOL_CARD_ICON_ASSETS: dict[str, str] = {
     "Network": "icons/exported/icon-workflow-dns-lookup-outline-24x24-v01.svg",

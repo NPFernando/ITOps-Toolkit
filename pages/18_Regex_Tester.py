@@ -27,12 +27,12 @@ render_page_header(
 )
 
 with tool_form_panel("regex_tester"):
-    render_form_intro("Enter a pattern and text", "Matches, positions, and capture groups appear after you run it.")
+    render_form_intro("Enter pattern and test text", "Matches, positions, and capture groups appear here after you test it.")
     with st.form("regex-form"):
         pattern_input = st.text_input("Pattern", placeholder=r"\d+", max_chars=MAX_PATTERN_LENGTH)
         text_input = st.text_area("Test text", height=180, max_chars=MAX_TEXT_LENGTH)
         flag_names = st.multiselect("Flags", FLAG_OPTIONS)
-        submitted = st.form_submit_button("Run pattern")
+        submitted = st.form_submit_button("Test pattern")
 
 if submitted:
     # Stored in session_state (not rendered directly here) because the sidebar's
@@ -45,7 +45,7 @@ if submitted:
 result = st.session_state.get("regex_tester_result")
 
 if result is None:
-    render_empty_state("Ready to test a pattern", "Matches and capture groups appear here after you run a pattern.")
+    render_empty_state("Ready to test", "Matches and capture groups appear here after you test a pattern.")
 
 if result is not None:
     with tool_result_panel("regex_result", related_to="regex_tester"):

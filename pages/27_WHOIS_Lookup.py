@@ -18,6 +18,29 @@ st.set_page_config(page_title="WHOIS Lookup", layout="wide")
 apply_app_shell(active_page="WHOIS Lookup")
 
 
+st.markdown(
+    """
+    <style>
+    @media (max-width: 768px) {
+      div[data-testid="stFormSubmitButton"] > button {
+        min-height: 2.75rem;
+        font-size: 1rem;
+      }
+      div[data-testid="stTextInput"] input {
+        font-size: 1rem;
+      }
+      div[data-testid="stTable"] table th,
+      div[data-testid="stTable"] table td {
+        white-space: normal !important;
+        word-break: break-word;
+      }
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+
 render_page_header(
     "WHOIS Lookup",
     "Look up domain registration details (registrar, key dates, name servers) via RDAP.",
@@ -28,7 +51,7 @@ with tool_form_panel("whois_lookup"):
     render_form_intro("Enter a domain", "Looks up registration data via the RDAP protocol.")
     with st.form("whois-form"):
         domain_input = st.text_input("Domain", max_chars=MAX_DOMAIN_LENGTH, placeholder="example.com")
-        submitted = st.form_submit_button("Look up")
+        submitted = st.form_submit_button("Look up", use_container_width=True)
 
 if submitted:
     # Stored in session_state (not rendered directly here) because the sidebar's
@@ -53,12 +76,12 @@ if result is not None:
             st.metric("Registrar", result["registrar"] or "Unknown")
 
             if result["events"]:
-                st.table([{"Event": e["label"], "Date": e["date"]} for e in result["events"]])
+                st.dataframe([{"Event": e["label"], "Date": e["date"]} for e in result["events"]], width="stretch", hide_index=True)
 
             if result["nameservers"]:
                 render_section_heading("Name servers", eyebrow="DNS")
-                st.table([{"Name server": ns} for ns in result["nameservers"]])
+                st.dataframe([{"Name server": ns} for ns in result["nameservers"]], width="stretch", hide_index=True)
 
             if result["status"]:
                 render_section_heading("Domain status codes", eyebrow="EPP")
-                st.write(", ".join(result["status"]))
+                st.dataframe([{"Status": status} for status in result["status"]], width="stretch", hide_index=True)

@@ -51,3 +51,8 @@ Use this matrix as a quick release gate:
 2. Replace ad-hoc info empty states on reference pages with `render_empty_state`.
 3. Migrate direct error/warning blocks on checker pages to shared status/failure note helpers where appropriate.
 4. Keep `Roadmap & Feedback` and `Health Diagnostics` listed in docs as intentional pattern exceptions.
+
+## Wave 2 Documentation Sync Note (Phase 9)
+
+- Wave 2 release docs now explicitly gate shell integrity, mobile (`<=720px`) behavior, visual fallback readability, and accessibility checks in `docs/design-system.md`, `docs/release-checklist.md`, and `docs/release-notes-template.md`.
+- This matrix remains the cross-page consistency baseline; Wave 2 extends release QA emphasis rather than replacing Phase 8 rules.

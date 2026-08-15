@@ -136,6 +136,20 @@ This guide documents the UI direction used for the Streamlit dashboard and tool 
 - `Roadmap & Feedback` and `Health Diagnostics` are intentional non-tool exceptions; keep them documented when their layout differs.
 - For mobile QA, keep `<=720px` checks explicit: stacked page-header illustrations, full-width wrapped action buttons, and readable tap targets.
 
+## Phase 9 Wave 2 Standards (Shell, Mobile, Visual, A11y)
+
+- **Shell integrity:** keep shared shell behaviors stable (custom sidebar, command palette trigger, grouped navigation, quick search, and safe notice copy).
+- **Mobile baseline (`<=720px`):** no clipped labels, no horizontal scroll in main content, full-width wrapped submit/download actions, and stacked header illustrations.
+- **Visual mapping safety:** home hero, tool-card icon mappings, category fallbacks, and roadmap badges must degrade to readable text/glyph fallbacks when SVG assets are unavailable.
+- **Accessibility baseline:** preserve keyboard reachability for sidebar/filter/actions, keep `:focus-visible` contrast in dark/light surfaces, keep notice semantics (`role="note"`), and keep decorative SVGs non-semantic (`aria-hidden`, empty alt).
+- **Exception handling:** if a non-tool layout intentionally diverges (Roadmap/Health Diagnostics), keep the exception documented and readable on desktop/mobile.
+
+### Wave 2 QA handoff guidance
+
+- Use `docs/release-checklist.md` Wave 2 regression checks as release gates.
+- Capture only synthetic/sanitized evidence in release notes.
+- Treat shell/mobile/visual/a11y regressions as release blockers until resolved or explicitly documented.
+
 ## Maintenance Rules
 
 - Do not duplicate tool titles, descriptions, paths, or accent colors outside `utils/ui.py`.

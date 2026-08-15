@@ -10,6 +10,29 @@ st.set_page_config(page_title="Business Hours Calculator", layout="wide")
 apply_app_shell(active_page="Business Hours Calculator")
 
 
+st.markdown(
+    """
+    <style>
+    @media (max-width: 768px) {
+      div[data-testid="stFormSubmitButton"] > button {
+        min-height: 2.75rem;
+        font-size: 1rem;
+      }
+      div[data-testid="stTextInput"] input,
+      div[data-testid="stTimeInput"] input,
+      div[data-testid="stSelectbox"] [data-baseweb="select"] {
+        font-size: 1rem;
+      }
+      div[data-testid="stMetric"] [data-testid="stMetricLabel"] p {
+        overflow-wrap: anywhere;
+      }
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+
 render_page_header(
     "Business Hours Calculator",
     "Compute elapsed business hours between two timestamps, excluding weekends and holidays -- useful for SLA and ticket-response math.",
@@ -18,19 +41,17 @@ render_page_header(
 with tool_form_panel("business_hours"):
     render_form_intro("Calculate", "Enter a start and end timestamp, timezone, and business-hours window.")
     with st.form("business-hours-form"):
-        col1, col2 = st.columns(2)
-        start_input = col1.text_input("Start (ISO 8601)", placeholder="2026-08-07T16:00:00", max_chars=MAX_INPUT_LENGTH)
-        end_input = col2.text_input("End (ISO 8601)", placeholder="2026-08-10T10:00:00", max_chars=MAX_INPUT_LENGTH)
+        start_input = st.text_input("Start (ISO 8601)", placeholder="2026-08-07T16:00:00", max_chars=MAX_INPUT_LENGTH)
+        end_input = st.text_input("End (ISO 8601)", placeholder="2026-08-10T10:00:00", max_chars=MAX_INPUT_LENGTH)
 
         timezone = st.selectbox("Timezone", COMMON_TIMEZONES, index=0)
 
-        hours_col1, hours_col2 = st.columns(2)
-        business_start = hours_col1.time_input("Business hours start", value=DEFAULT_BUSINESS_START)
-        business_end = hours_col2.time_input("Business hours end", value=DEFAULT_BUSINESS_END)
+        business_start = st.time_input("Business hours start", value=DEFAULT_BUSINESS_START)
+        business_end = st.time_input("Business hours end", value=DEFAULT_BUSINESS_END)
 
         holidays_input = st.text_input("Holidays (comma-separated, optional)", placeholder="2026-12-25, 2026-01-01")
 
-        submitted = st.form_submit_button("Calculate")
+        submitted = st.form_submit_button("Calculate", use_container_width=True)
 
 if submitted:
     # Stored in session_state so results survive the sidebar's own reruns
@@ -48,7 +69,6 @@ if state is not None:
         if not state["ok"]:
             st.error(state["error"])
         else:
-            c1, c2 = st.columns(2)
-            c1.metric("Business hours", state["business_hours_display"])
-            c2.metric("Business days spanned", state["business_days_spanned"])
+            st.metric("Business hours", state["business_hours_display"])
+            st.metric("Business days spanned", state["business_days_spanned"])
             st.caption(f"{state['business_hours']} decimal hours total.")
