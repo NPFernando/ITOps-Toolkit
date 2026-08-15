@@ -3,7 +3,16 @@ from __future__ import annotations
 import streamlit as st
 
 from utils.json_path_query import MAX_INPUT_LENGTH, query_json_path
-from utils.ui import apply_app_shell, render_empty_state, render_form_intro, render_page_header, render_section_heading, tool_form_panel, tool_result_panel
+from utils.ui import (
+    apply_app_shell,
+    render_empty_state,
+    render_form_intro,
+    render_page_header,
+    render_section_heading,
+    render_status_note,
+    tool_form_panel,
+    tool_result_panel,
+)
 
 
 st.set_page_config(page_title="JSON Path Query", layout="wide")
@@ -17,7 +26,7 @@ render_page_header(
 )
 
 with tool_form_panel("json_path_query"):
-    render_form_intro("Paste JSON and a path", "e.g. user.addresses[0].city")
+    render_form_intro("Paste JSON and a path", "Use dotted keys and [index] access, e.g. user.addresses[0].city.")
     with st.form("json-path-query-form"):
         json_input = st.text_area(
             "JSON",
@@ -26,7 +35,7 @@ with tool_form_panel("json_path_query"):
             placeholder='{"user": {"name": "Alice", "addresses": [{"city": "NYC"}]}}',
         )
         path_input = st.text_input("Path", placeholder="user.addresses[0].city")
-        submitted = st.form_submit_button("Query")
+        submitted = st.form_submit_button("Query", use_container_width=True)
 
 if submitted:
     st.session_state["json_path_query_result"] = query_json_path(json_input, path_input)
@@ -35,11 +44,14 @@ result = st.session_state.get("json_path_query_result")
 
 if result is None:
     render_empty_state("Ready to query", "The value at that path appears here.")
+    render_status_note("Awaiting JSON input", "Paste JSON and a path, then submit to evaluate the path.", tone="neutral")
 
 if result is not None:
     with tool_result_panel("json_path_query_result_panel", related_to="json_path_query"):
         render_section_heading("Value", eyebrow="Result")
         if not result["ok"]:
             st.error(result["error"])
+            render_status_note("Query failed", "Check the JSON and path syntax, then run the query again.", tone="warning")
         else:
             st.code(result["output"], language="json")
+            render_status_note("Query complete", "The value at the requested path was resolved successfully.", tone="success")

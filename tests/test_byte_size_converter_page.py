@@ -19,6 +19,9 @@ def test_bytes_to_human_tab_shows_result():
 
     metrics = {m.label: m.value for m in app.metric}
     assert metrics["Size"] == "1.50 KiB"
+    md = " ".join(m.value for m in app.markdown)
+    assert "tool-status-note-success" in md
+    assert "Conversion complete" in md
 
 
 def test_human_to_bytes_tab_shows_result():
@@ -33,6 +36,9 @@ def test_human_to_bytes_tab_shows_result():
 
     metrics = {m.label: m.value for m in app.metric}
     assert metrics["Bytes"] == str(5 * 1024**3)
+    md = " ".join(m.value for m in app.markdown)
+    assert "tool-status-note-success" in md
+    assert "Conversion complete" in md
 
 
 def test_empty_state_shown_before_submit():
@@ -42,6 +48,21 @@ def test_empty_state_shown_before_submit():
 
     md = " ".join(m.value for m in app.markdown)
     assert "tool-empty-state" in md
+    assert "tool-status-note-neutral" in md
+    assert "Awaiting byte count" in md
+
+
+def test_invalid_input_shows_warning_state():
+    app = AppTest.from_file(PAGE, default_timeout=30)
+    app.run()
+    assert not app.exception
+
+    app.text_input[0].set_value("bad")
+    app.button[0].click().run()
+    assert not app.exception
+    md = " ".join(m.value for m in app.markdown)
+    assert "tool-status-note-warning" in md
+    assert "Byte conversion needs attention" in md
 
 
 def test_results_persist_after_sidebar_interaction():

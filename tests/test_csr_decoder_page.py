@@ -31,6 +31,9 @@ def test_decode_shows_key_metrics():
     assert metrics["Public key"] == "RSA"
     assert metrics["Key size"] == "2048"
     assert metrics["Signature"] == "Valid"
+    md = " ".join(m.value for m in app.markdown)
+    assert "tool-status-note-success" in md
+    assert "Decode complete" in md
 
 
 def test_invalid_csr_shows_error():
@@ -43,6 +46,7 @@ def test_invalid_csr_shows_error():
     md = " ".join(m.value for m in app.markdown)
     assert "tool-status-note-warning" in md
     assert "CSR decode needs attention" in md
+    assert 'aria-live="assertive"' in md
 
 
 def test_empty_state_shown_before_submit():
@@ -52,6 +56,8 @@ def test_empty_state_shown_before_submit():
 
     md = " ".join(m.value for m in app.markdown)
     assert "tool-empty-state" in md
+    assert "tool-status-note-neutral" in md
+    assert "Awaiting CSR input" in md
 
 
 def test_results_persist_after_sidebar_interaction():
