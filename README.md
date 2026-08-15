@@ -11,6 +11,12 @@ Free public tools for IT admins, automation engineers, MSP engineers, and DevOps
 
 ITOps Toolkit is a public-safe Streamlit dashboard for common troubleshooting tasks. It does not require login, does not use a database, and does not permanently store user-entered domains, logs, JSON, JWTs, or encoded text.
 
+## Documentation Visual
+
+![ITOps operations flow poster](docs/assets/posters/exported/poster-toolkit-operations-flow-hero-landscape-2400x1350-v01.svg)
+
+Use this lightweight poster in docs headers and release summaries to reinforce diagnostics-to-reporting flow without adding dense UI screenshots. Generated visual assets live in `docs/assets/` (inventory: `docs/assets/INDEX.md`).
+
 ## Features
 
 - Domain Health Checker with DNS, SSL, HTTP, DNSSEC, SPF/DMARC posture, MTA-STS, TLS-RPT, recommendations, CSV, Markdown, and standalone HTML exports.
@@ -147,8 +153,8 @@ The dashboard shell, tool metadata, navigation, and reusable visual components l
 
 - Sidebar navigation is shell-managed (Home, Roadmap & Feedback, grouped tool links) with quick search.
 - Home navigation supports **Quick access** and **All tools** modes, with favorites, recently used/popular, shared favorites, and new tool sections.
-- The home hero visual is currently CSS-rendered in the shell (not loaded from an external asset file at runtime).
-- Generated icon/poster assets for documentation and future UI placement are available under `docs/assets/` (see `docs/assets/INDEX.md`).
+- The phase2 visual system uses generated SVG hooks in `utils/ui.py` (home hero, tool-card icons, category header illustrations, empty-state illustrations, roadmap badges) with graceful fallback rendering if an asset is unavailable.
+- Generated assets and source/export structure are documented under `docs/assets/README.md` and `docs/assets/INDEX.md`.
 
 ## Roadmap Feedback
 

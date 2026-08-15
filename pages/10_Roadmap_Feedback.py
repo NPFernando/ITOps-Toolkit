@@ -6,7 +6,7 @@ import streamlit as st
 
 from utils import roadmap
 from utils.ai_tools import optional_ai_configured, summarize_feature_requests_with_azure
-from utils.ui import apply_app_shell, render_section_heading, render_status_note
+from utils.ui import apply_app_shell, render_section_heading, render_status_note, roadmap_badge_icon_html
 
 
 st.set_page_config(page_title="Roadmap & Feedback", page_icon=":material/route:", layout="wide")
@@ -20,6 +20,15 @@ def _status_tone(status: str) -> str:
         "Complete": "done",
         "AI Recommended": "ai",
     }.get(status, "planned")
+
+
+def _status_icon_key(status: str) -> str:
+    return {
+        "Planned": "status_planned",
+        "In Progress": "status_progress",
+        "Complete": "status_done",
+        "AI Recommended": "status_ai",
+    }.get(status, "status_planned")
 
 
 def _board_card(label: str, count: int) -> str:
@@ -49,8 +58,10 @@ def _roadmap_card(item: roadmap.RoadmapItem) -> str:
     if item.url:
         title_html = f'<a href="{escape(item.url)}" target="_blank" rel="noopener noreferrer">{title_html}</a>'
     source_label = "Seed"
+    source_icon = "source_seed"
     if item.source == "github":
         source_label = f"GitHub #{item.number}" if item.number else "GitHub"
+        source_icon = "source_github"
     return (
         f'<article class="roadmap-item-card roadmap-item-{tone}">'
         f'<div class="roadmap-vote-pill"><span>^</span>{item.votes}</div>'
@@ -58,8 +69,8 @@ def _roadmap_card(item: roadmap.RoadmapItem) -> str:
         f'<div class="roadmap-card-title">{title_html}</div>'
         '<div class="roadmap-card-meta">'
         f'<span class="roadmap-item-category">{escape(item.category)}</span>'
-        f'<span class="roadmap-status-badge">{escape(item.status)}</span>'
-        f'<span class="roadmap-source-badge roadmap-source-{escape(item.source)}">{escape(source_label)}</span>'
+        f'<span class="roadmap-status-badge">{roadmap_badge_icon_html(_status_icon_key(item.status), "•")}{escape(item.status)}</span>'
+        f'<span class="roadmap-source-badge roadmap-source-{escape(item.source)}">{roadmap_badge_icon_html(source_icon, "•")}{escape(source_label)}</span>'
         "</div>"
         f"<p>{escape(item.description)}</p>"
         f"<small>{escape(item.rationale)}</small>"

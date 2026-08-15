@@ -8,6 +8,7 @@ Use this template for deployment notes, GitHub releases, or pull request summari
 - Date:
 - Deployment target: Streamlit Community Cloud
 - Main file: `app.py`
+- Optional visual header: `docs/assets/posters/exported/poster-toolkit-trust-shield-hero-portrait-1080x1350-v01.svg`
 
 ## User-Facing Changes
 

@@ -29,7 +29,7 @@ flowchart TD
 ## Boundaries
 
 - Delivery/UI: `app.py` and `pages/`
-- Shared UI system: `utils/ui.py` provides theme CSS, sidebar navigation, command palette, tool metadata, page headers, and home dashboard sections
+- Shared UI system: `utils/ui.py` provides theme CSS, sidebar navigation, command palette, tool metadata, generated-asset hooks (`HOME_HERO_ILLUSTRATION`, `TOOL_CARD_ICON_ASSETS`, `TOOL_HEADER_ILLUSTRATION_BY_CATEGORY`, `EMPTY_STATE_ILLUSTRATIONS`, `ROADMAP_BADGE_ICONS`), page headers, and home dashboard sections
 - UI navigation state boundary: recents/favorites/shared favorites are URL-query-param driven with browser localStorage mirroring (`utils/ui.py`); no server-side persistence
 - Application/core helpers: `utils/scoring.py`, `utils/text_tools.py`, and rule definitions in `utils/ai_tools.py`
 - Roadmap data: `utils/roadmap.py` loads curated seed items from `data/roadmap_seed.json`, normalizes public GitHub issues, and provides merge/search/filter helpers
@@ -37,6 +37,16 @@ flowchart TD
 - Adapters: `utils/dns_tools.py`, `utils/http_tools.py`, `utils/ssl_tools.py`, and read-only public GitHub issue fetching in `utils/github_issues.py`
 - Optional AI adapter: `utils/ai_tools.py` can call Azure OpenAI for log summaries only when Azure settings are configured and the user opts in for a submission
 - Persistence: none
+
+## Runtime Visual Fallback Boundaries
+
+- Generated visuals are non-blocking presentation assets loaded from `docs/assets/**/exported`.
+- If an SVG is missing/invalid, `_svg_data_uri` resolves `None` and callers degrade safely:
+  - home hero uses built-in CSS fallback markup;
+  - tool cards fall back to text icon badges;
+  - roadmap badges fall back to compact text glyphs;
+  - page-header and empty-state illustration slots are omitted.
+- These fallbacks do not affect tool execution, network checks, exports, or safety behavior.
 
 ## Public-Safe Data Handling
 

@@ -44,7 +44,11 @@ validation_error = st.session_state.get("cve_lookup_validation_error")
 result = st.session_state.get("cve_lookup_result")
 
 if validation_error is None and result is None:
-    render_empty_state("Ready to search CVEs", "Severity, description, and references appear after a search.")
+    render_empty_state(
+        "Ready to search CVEs",
+        "Severity, description, and references appear after a search.",
+        illustration="security",
+    )
 
 if validation_error is not None:
     st.error(validation_error)

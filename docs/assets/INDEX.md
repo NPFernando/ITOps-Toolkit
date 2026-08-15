@@ -1,29 +1,63 @@
-# Assets Starter Pack Index
+# Assets Index (phase2)
 
-This index lists the initial generated SVG asset pack for documentation and future UI usage.
+Generated assets available under `docs/assets/**/exported`. Runtime mappings are implemented in `utils/ui.py`.
 
-## Icons
+## Runtime asset hooks
 
-| Asset | Intent | Recommended placement |
-|---|---|---|
-| `icons/exported/icon-workflow-dns-lookup-outline-24x24-v01.svg` | DNS resolution and lookup workflows | Docs tool badges, DNS utility cards |
-| `icons/exported/icon-workflow-ssl-check-outline-24x24-v01.svg` | TLS/certificate status checks | SSL checker docs sections, trust callouts |
-| `icons/exported/icon-workflow-http-probe-outline-24x24-v01.svg` | Endpoint health and HTTP diagnostics | HTTP checker guidance, status sections |
-| `icons/exported/icon-workflow-jwt-inspect-outline-24x24-v01.svg` | Token decode/inspection workflow | JWT explainer blocks and safe decode notes |
-| `icons/exported/icon-workflow-json-validate-outline-24x24-v01.svg` | JSON parsing/validation flows | JSON formatter docs, API payload tips |
-| `icons/exported/icon-workflow-port-scan-outline-24x24-v01.svg` | Port and service reachability checks | Network diagnostics docs and feature chips |
-| `icons/exported/icon-workflow-uptime-monitor-outline-24x24-v01.svg` | Uptime and trend monitoring | Roadmap reliability items, ops summaries |
-| `icons/exported/icon-workflow-incident-response-outline-24x24-v01.svg` | Alert triage and incident lifecycle | Roadmap incident workflows, playbook headers |
+### Home hero
 
-## Posters / Hero Visuals
+- `illustrations/exported/illustration-home-hero-ops-flow-light-1600x900-v01.svg`
 
-| Asset | Intent | Recommended placement |
-|---|---|---|
-| `posters/exported/poster-roadmap-execution-hero-landscape-2400x1350-v01.svg` | Roadmap-themed visual for planning and execution storytelling | `docs/` roadmap sections, release-note banners, future home hero variant |
-| `posters/exported/poster-security-operations-hero-landscape-2400x1350-v01.svg` | Security and observability visual for trust-centric messaging | Security docs headers, architecture/support pages, future landing hero variant |
+### Tool card icon mappings (`TOOL_CARD_ICON_ASSETS`)
 
-## Notes
+- DNS icon:
+  - `domain_health`, `dns_records`
+- SSL icon:
+  - `ssl_certificate`
+- HTTP probe icon:
+  - `http_status`, `webhook_tester`
+- Uptime icon:
+  - `uptime_trend`
+- Incident/response icon:
+  - `security_headers`, `cve_lookup`
+- JWT inspect icon:
+  - `jwt_decoder`, `jwt_encoder`, `jwt_weak_secret`, `jwt_claims_reference`
+- JSON validate icon:
+  - `json_formatter`, `json_diff`, `json_path_query`, `json_merge_patch`, `json_to_typescript`
+- Port scan icon:
+  - `port_reference`, `tls_scanner`
 
-- Editable masters live under `icons/source/` and `posters/source/`.
-- Exported files follow naming/versioning and are ready for app/docs placement.
-- All SVG files are self-contained (no scripts, no external references).
+When no card icon asset resolves, cards display the text badge from `ToolMeta.icon`.
+
+### Tool header category illustrations (`TOOL_HEADER_ILLUSTRATION_BY_CATEGORY`)
+
+- `Network` → `illustration-tool-network-header-flow-light-1600x900-v01.svg`
+- `Security` → `illustration-tool-security-header-shield-light-1600x900-v01.svg`
+- `Web & Dev` → `illustration-tool-web-dev-header-http-light-1600x900-v01.svg`
+- `Data & Text` → `illustration-tool-data-text-header-parse-light-1600x900-v01.svg`
+- `Ops & Automation` → `illustration-tool-ops-automation-header-pipeline-light-1600x900-v01.svg`
+- `Reference` → `illustration-tool-reference-header-catalog-light-1600x900-v01.svg`
+
+### Empty-state illustrations (`EMPTY_STATE_ILLUSTRATIONS`)
+
+- `ready` → `illustration-empty-state-ready-checklist-light-1200x675-v01.svg`
+- `network` → `illustration-empty-state-ready-network-light-1200x675-v01.svg`
+- `security` → `illustration-empty-state-ready-shield-light-1200x675-v01.svg`
+
+### Roadmap badge icons (`ROADMAP_BADGE_ICONS`)
+
+- Status: planned, in progress, done, AI recommended
+- Source: seed, GitHub
+
+When a roadmap badge asset is unavailable, compact text fallback glyphs are used.
+
+## Docs/release media inventory
+
+### Posters
+
+- `posters/exported/poster-toolkit-operations-flow-hero-landscape-2400x1350-v01.svg`
+- `posters/exported/poster-toolkit-trust-shield-hero-portrait-1080x1350-v01.svg`
+- `posters/exported/poster-roadmap-execution-hero-landscape-2400x1350-v01.svg`
+- `posters/exported/poster-security-operations-hero-landscape-2400x1350-v01.svg`
+
+Use posters in README/docs/release headers (one primary visual per section to avoid clutter).

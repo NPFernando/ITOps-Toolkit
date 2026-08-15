@@ -47,7 +47,11 @@ validation_error = st.session_state.get("security_headers_validation_error")
 result = st.session_state.get("security_headers_result")
 
 if validation_error is None and result is None:
-    render_empty_state("Ready to check security headers", "A letter grade and a per-header breakdown appear after the check.")
+    render_empty_state(
+        "Ready to check security headers",
+        "A letter grade and a per-header breakdown appear after the check.",
+        illustration="security",
+    )
 
 if validation_error is not None:
     st.error(validation_error)

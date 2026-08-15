@@ -59,10 +59,11 @@ This guide documents the UI direction used for the Streamlit dashboard and tool 
 - Page headers:
   - Use `render_page_header` instead of page-local `st.title` and `st.caption` combinations.
   - Keep the small uppercase overline (`<category> Tool`) above the title to reinforce page context.
+  - Header illustrations are optional and category-driven; keep them low-clutter and decorative so titles/descriptions remain primary.
   - Use the warning parameter for sensitive-data reminders.
 - Tool page panels:
   - Wrap the primary input workflow in `tool_form_panel` and introduce it with `render_form_intro`.
-  - Use `render_empty_state` before first submission so blank pages explain what will appear.
+  - Use `render_empty_state` before first submission so blank pages explain what will appear; optional generated illustrations should remain secondary.
   - Use `render_section_heading` for results, headers, recommendations, and downloads; maintain eyebrow + heading + optional description hierarchy.
   - Use `tool_result_panel` and `tool_download_panel` for framed result and export areas.
   - Use `display_rows_frame` for mixed field/value result tables before passing them to `st.dataframe`.
@@ -76,19 +77,47 @@ This guide documents the UI direction used for the Streamlit dashboard and tool 
   - Keep feedback public-safe copy visible near submit links.
   - Show GitHub issue source badges and links for live public requests; show seed badges for curated local items.
 - Generated assets:
-  - Use exported outputs under `docs/assets/icons/exported/`, `docs/assets/posters/exported/`, and `docs/assets/illustrations/exported/` (listed in `docs/assets/INDEX.md`) for docs-facing media placement.
+  - Runtime visual hooks are centralized in `utils/ui.py`:
+    - `HOME_HERO_ILLUSTRATION`
+    - `TOOL_CARD_ICON_ASSETS`
+    - `TOOL_HEADER_ILLUSTRATION_BY_CATEGORY`
+    - `EMPTY_STATE_ILLUSTRATIONS`
+    - `ROADMAP_BADGE_ICONS`
+  - Use exported outputs under `docs/assets/icons/exported/` and `docs/assets/illustrations/exported/` for runtime/documentation visuals.
   - Keep editable originals under `docs/assets/*/source` and regenerate exports instead of editing exported files directly.
-  - Current home hero artwork in-app is CSS-rendered (`_hero_visual_html`) and should not be documented as an external runtime asset dependency.
+
+## Generated Visuals Policy
+
+- Generated SVGs are enhancement-only UI media; they must never be required for tool execution, validation, or results.
+- Keep visual mappings semantic by context (network/security/data/etc.) and source all runtime mappings from `utils/ui.py`, not page-local constants.
+- Prefer lightweight SVG exports for runtime hooks; reserve posters for documentation/release surfaces.
+- Every generated visual used in runtime must have a graceful fallback path.
+
+## Decorative vs Semantic Usage
+
+- Runtime UI-generated images (hero, card icons, page-header illustrations, empty-state illustrations, roadmap badge icons) are decorative and rendered with empty alt plus `aria-hidden`/presentation semantics.
+- Meaningful user-facing text (tool titles, category labels, status words like Planned/In Progress/Complete, source labels like Seed/GitHub) must remain in adjacent text, not only in imagery.
+- Documentation images may be semantic; in docs, provide concise alt text when an image carries meaning.
+
+## Fallback Rules
+
+- Asset load boundary: `_svg_data_uri` returns `None` when an SVG is missing or invalid path/extension; callers must degrade safely.
+- Home hero: falls back to the built-in CSS hero visual when the generated hero SVG is unavailable.
+- Tool cards: fall back to text icon abbreviations from `ToolMeta.icon` when mapped SVGs are unavailable.
+- Page headers and empty states: omit the illustration slot when no mapped SVG resolves; keep title/description primary.
+- Roadmap badges: fall back to compact text glyphs when SVG badges are unavailable.
 
 ## Responsive Rules
 
 - The sidebar remains Streamlit-native so users can collapse it on narrow screens.
 - Home hero content stacks naturally on mobile.
+- Generated hero visual reduces minimum height at smaller breakpoints (`<=1100px`, `<=720px`) to keep above-the-fold content readable.
 - Touch targets for pills/buttons should stay at least ~2.3rem tall so filter/sort controls remain usable on phones.
 - Quick-access and All-tools sections should wrap naturally; avoid fixed card widths that break mixed sections (favorites/recents/shared/new).
 - Feature strips collapse from five columns to two columns and then one column.
 - Tool cards should not rely on fixed text widths; long labels must wrap cleanly.
 - Tool-page action buttons (submit/download) should wrap label text and expand full-width on narrow screens.
+- Tool page headers with illustrations switch from side-by-side to stacked layout on narrow screens; illustration width becomes full-width below mobile breakpoint.
 - Roadmap columns may scroll vertically on desktop, then stack naturally on narrow screens.
 
 ## Accessibility Rules

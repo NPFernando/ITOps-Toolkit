@@ -68,7 +68,11 @@ validation_error = st.session_state.get("dns_records_validation_error")
 stored = st.session_state.get("dns_records_result")
 
 if validation_error is None and stored is None:
-    render_empty_state("Ready to query DNS", "Record results, raw values, and the queried name appear after lookup.")
+    render_empty_state(
+        "Ready to query DNS",
+        "Record results, raw values, and the queried name appear after lookup.",
+        illustration="network",
+    )
 
 if validation_error is not None:
     st.error(validation_error)
