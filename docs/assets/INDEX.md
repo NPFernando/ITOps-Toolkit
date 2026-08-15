@@ -328,6 +328,14 @@ When a roadmap badge asset is unavailable, compact text fallback glyphs are used
 - Include one `<=720px` viewport pass to confirm Home controls, Roadmap filters/AI triage action, and wave-17 submit actions stay full-width/tap-friendly with no clipping/overflow.
 - Include one keyboard-only pass to confirm wave-17 notice semantics and focus visibility remain intact.
 
+### Phase 25 Wave 18 add-on QA focus
+
+- Confirm wave-18 touchpoint slugs resolve to slug-specific assets before category defaults (`robots_meta_builder`, `cache_control_tool`, `markdown_table_formatter`, `csv_column_selector`, `http_methods_reference`, `line_numberer`).
+- Confirm wave-18 slug-specific icons still fall back to text badges when SVG rendering is unavailable.
+- Include one shell pass confirming shared shell + baseline markers remain visible/unchanged on Home, Roadmap, and wave-18 touchpoint pages.
+- Include one `<=720px` viewport pass to confirm Home controls, Roadmap filters/AI triage action, and wave-18 submit actions stay full-width/tap-friendly with no clipping/overflow.
+- Include one keyboard-only pass to confirm wave-18 notice semantics and focus visibility remain intact.
+
 ## Docs/release media inventory
 
 ### Posters

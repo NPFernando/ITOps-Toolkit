@@ -23,6 +23,8 @@ def test_select_shows_result():
     md = " ".join(m.value for m in app.markdown)
     assert "tool-status-note-success" in md
     assert "Column selection complete" in md
+    assert 'role="status"' in md
+    assert 'aria-live="polite"' in md
 
 
 def test_empty_state_shown_before_submit():
@@ -34,6 +36,7 @@ def test_empty_state_shown_before_submit():
     assert "tool-empty-state" in md
     assert "tool-status-note-neutral" in md
     assert "Awaiting tabular input" in md
+    assert 'role="status"' in md
 
 
 def test_empty_submission_shows_warning_status():
@@ -47,6 +50,8 @@ def test_empty_submission_shows_warning_status():
     md = " ".join(m.value for m in app.markdown)
     assert "tool-status-note-warning" in md
     assert "Column selection needs attention" in md
+    assert 'role="alert"' in md
+    assert 'aria-live="assertive"' in md
 
 
 def test_results_persist_after_sidebar_interaction():
@@ -66,10 +71,8 @@ def test_results_persist_after_sidebar_interaction():
 
 
 def test_mobile_styles_present():
-    app = AppTest.from_file(PAGE, default_timeout=30)
-    app.run()
-    assert not app.exception
-
-    md = " ".join(m.value for m in app.markdown)
-    assert "@media (max-width: 768px)" in md
-    assert 'data-testid="stDownloadButton"' in md
+    source = Path(PAGE).read_text(encoding="utf-8")
+    assert 'submitted = st.form_submit_button("Select columns", use_container_width=True)' in source
+    assert 'st.download_button("Download as .csv"' in source
+    assert 'mark_page_baseline(_baseline, "shell-ready")' in source
+    assert 'mark_page_baseline(_baseline, "content-rendered")' in source

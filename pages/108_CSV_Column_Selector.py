@@ -3,6 +3,7 @@ from __future__ import annotations
 import streamlit as st
 
 from utils.csv_column_selector import MAX_INPUT_LENGTH, select_columns
+from utils.dev_baseline import mark_page_baseline, render_page_baseline, start_page_baseline
 from utils.ui import (
     apply_app_shell,
     render_empty_state,
@@ -16,32 +17,10 @@ from utils.ui import (
 )
 
 
+_baseline = start_page_baseline("CSV Column Selector")
 st.set_page_config(page_title="CSV Column Selector", layout="wide")
 apply_app_shell(active_page="CSV Column Selector")
-
-st.markdown(
-    """
-    <style>
-    @media (max-width: 768px) {
-      div[data-testid="stSelectbox"] > div,
-      div[data-testid="stTextInput"] input,
-      div[data-testid="stTextArea"] textarea {
-        font-size: 1rem;
-      }
-      div[data-testid="stFormSubmitButton"] button,
-      div[data-testid="stDownloadButton"] button {
-        width: 100%;
-        min-height: 2.75rem;
-      }
-      div[data-testid="stCodeBlock"] pre {
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-      }
-    }
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
+mark_page_baseline(_baseline, "shell-ready")
 
 
 render_page_header(
@@ -78,6 +57,9 @@ if result is not None:
                 remediation="Confirm the input has a header row and the requested column names, then try again.",
             )
         else:
-            render_status_note("Column selection complete", "The selected columns are ready below and can be downloaded as CSV.", tone="success")
+            render_status_note("Column selection complete", "The selected columns are ready to copy or download as CSV.", tone="success")
             st.code(result["output"], language=None)
             st.download_button("Download as .csv", result["output"], file_name="selected_columns.csv", mime="text/csv", use_container_width=True)
+
+mark_page_baseline(_baseline, "content-rendered")
+render_page_baseline(_baseline)

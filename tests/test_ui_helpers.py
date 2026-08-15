@@ -422,8 +422,8 @@ def test_tool_card_icon_asset_maps_wave10_planned_tool_cohort():
 
 def test_tool_card_icon_asset_maps_wave11_visual_targets():
     expected_assets = {
-        "csv_column_selector": "icons/exported/icon-workflow-list-transform-outline-24x24-v01.svg",
-        "line_numberer": "icons/exported/icon-workflow-id-sequence-outline-24x24-v01.svg",
+        "csv_column_selector": "icons/exported/icon-workflow-csv-column-selector-outline-24x24-v01.svg",
+        "line_numberer": "icons/exported/icon-workflow-line-numberer-outline-24x24-v01.svg",
         "column_aligner": "icons/exported/icon-workflow-column-align-outline-24x24-v01.svg",
         "csr_generator": "icons/exported/icon-workflow-csr-generator-outline-24x24-v01.svg",
         "caa_record_builder": "icons/exported/icon-workflow-caa-record-builder-outline-24x24-v01.svg",
@@ -535,6 +535,33 @@ def test_tool_card_icon_asset_maps_wave17_visual_targets():
         assert ui._tool_card_icon_asset(tool) == expected
 
 
+def test_tool_card_icon_asset_maps_wave18_visual_targets():
+    expected_assets = {
+        "robots_meta_builder": "icons/exported/icon-workflow-robots-meta-tag-builder-outline-24x24-v01.svg",
+        "robots_meta_tag_builder": "icons/exported/icon-workflow-robots-meta-tag-builder-outline-24x24-v01.svg",
+        "cache_control_tool": "icons/exported/icon-workflow-cache-control-tool-outline-24x24-v01.svg",
+        "markdown_table_formatter": "icons/exported/icon-workflow-markdown-table-formatter-outline-24x24-v01.svg",
+        "csv_column_selector": "icons/exported/icon-workflow-csv-column-selector-outline-24x24-v01.svg",
+        "http_methods_reference": "icons/exported/icon-workflow-http-methods-reference-outline-24x24-v01.svg",
+        "line_numberer": "icons/exported/icon-workflow-line-numberer-outline-24x24-v01.svg",
+    }
+    tools_by_slug = {tool.slug: tool for tool in TOOLS}
+
+    for slug, expected in expected_assets.items():
+        tool = tools_by_slug.get(slug) or ui.ToolMeta(
+            title="Robots Meta Tag Builder",
+            short_title="Robots Meta",
+            description="planned",
+            path="pages/105_Robots_Meta_Tag_Builder.py",
+            icon="ROB",
+            accent="#457b39",
+            slug=slug,
+            professions=("SEO Engineer",),
+            category="Security",
+        )
+        assert ui._tool_card_icon_asset(tool) == expected
+
+
 def test_tool_card_html_uses_wave16_generated_icons_when_mapped():
     for slug in ("markdown_link_extractor", "health_diagnostics"):
         tool = next(item for item in TOOLS if item.slug == slug)
@@ -558,6 +585,32 @@ def test_tool_card_html_uses_wave17_generated_icons_when_mapped():
             accent="#457b39",
             slug="csp_header_builder",
             professions=("Security Engineer",),
+            category="Security",
+        ),
+    ]
+
+    for tool in tools:
+        html = ui._tool_card_html(tool)
+        assert "tool-card-icon-image" in html
+        assert "data:image/svg+xml;base64," in html
+
+
+def test_tool_card_html_uses_wave18_generated_icons_when_mapped():
+    tools = [
+        next(item for item in TOOLS if item.slug == "cache_control_tool"),
+        next(item for item in TOOLS if item.slug == "markdown_table_formatter"),
+        next(item for item in TOOLS if item.slug == "csv_column_selector"),
+        next(item for item in TOOLS if item.slug == "http_methods_reference"),
+        next(item for item in TOOLS if item.slug == "line_numberer"),
+        ui.ToolMeta(
+            title="Robots Meta Tag Builder",
+            short_title="Robots Meta",
+            description="planned",
+            path="pages/105_Robots_Meta_Tag_Builder.py",
+            icon="ROB",
+            accent="#457b39",
+            slug="robots_meta_tag_builder",
+            professions=("SEO Engineer",),
             category="Security",
         ),
     ]
@@ -809,6 +862,42 @@ def test_tool_card_html_wave17_slug_specific_mapping_precedes_category_default_d
             accent="#457b39",
             slug=slug,
             professions=("Security Engineer",),
+            category="Security",
+        )
+        html = ui._tool_card_html(tool)
+        assert ui._tool_card_icon_asset(tool) != category_default
+        assert "tool-card-icon-image" not in html
+        assert f">{tool.icon}<" in html
+
+
+def test_tool_card_html_wave18_slug_specific_mapping_precedes_category_default_during_render(monkeypatch):
+    category_defaults = {
+        "robots_meta_tag_builder": "icons/exported/icon-workflow-incident-response-outline-24x24-v01.svg",
+        "cache_control_tool": "icons/exported/icon-workflow-incident-response-outline-24x24-v01.svg",
+        "markdown_table_formatter": "icons/exported/icon-workflow-json-validate-outline-24x24-v01.svg",
+        "csv_column_selector": "icons/exported/icon-workflow-json-validate-outline-24x24-v01.svg",
+        "http_methods_reference": "icons/exported/icon-workflow-reference-catalog-outline-24x24-v01.svg",
+        "line_numberer": "icons/exported/icon-workflow-json-validate-outline-24x24-v01.svg",
+    }
+
+    def fake_svg_img_html(path, *args, **kwargs):
+        if path in set(category_defaults.values()):
+            return '<img class="tool-card-icon-image" data-icon="category-default" />'
+        return None
+
+    monkeypatch.setattr(ui, "_svg_img_html", fake_svg_img_html)
+    tools_by_slug = {tool.slug: tool for tool in TOOLS}
+
+    for slug, category_default in category_defaults.items():
+        tool = tools_by_slug.get(slug) or ui.ToolMeta(
+            title="Robots Meta Tag Builder",
+            short_title="Robots Meta",
+            description="planned",
+            path="pages/105_Robots_Meta_Tag_Builder.py",
+            icon="ROB",
+            accent="#457b39",
+            slug=slug,
+            professions=("SEO Engineer",),
             category="Security",
         )
         html = ui._tool_card_html(tool)
