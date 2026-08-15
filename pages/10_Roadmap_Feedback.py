@@ -205,7 +205,8 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-search_col, filter_col = st.columns([1.4, 1], gap="large")
+render_section_heading("Browse roadmap items", "Use search and category filters to focus the board view.", eyebrow="Explore")
+search_col, filter_col = st.columns([1.3, 1], gap="medium")
 with search_col:
     query = st.text_input("Search roadmap", placeholder="Search features, categories, or ideas...")
 with filter_col:

@@ -32,7 +32,8 @@ mark_page_baseline(_baseline, "shell-ready")
 
 repo_url = github_url()
 if repo_url:
-    _, action_col = st.columns([1, 0.14])
+    st.markdown('<div class="tool-panel-eyebrow">Project</div>', unsafe_allow_html=True)
+    _, action_col = st.columns([1, 0.2], gap="small")
     with action_col:
         st.link_button("GitHub", repo_url, icon=":material/code:", width="stretch")
 

@@ -73,3 +73,34 @@ def test_dns_propagation_checker_blank_domain_shows_accessible_failure_note():
     assert "DNS propagation input needs attention" in text
     assert "Enter a valid public domain and rerun the lookup." in text
     assert 'role="alert"' in text
+
+
+def test_dns_propagation_checker_no_answers_shows_neutral_status(monkeypatch):
+    monkeypatch.setattr(
+        dns_propagation,
+        "check_propagation",
+        lambda *_: {
+            "ok": True,
+            "consistent": None,
+            "resolvers": [],
+        },
+    )
+
+    app = AppTest.from_file(PAGE, default_timeout=30)
+    app.run()
+    app.text_input[0].set_value("example.com")
+    app.button[0].click().run()
+    assert not app.exception
+
+    text = _page_text(app)
+    assert "No resolver returned an answer" in text
+    assert 'role="status"' in text
+
+
+def test_dns_propagation_page_has_no_page_scoped_mobile_css():
+    app = AppTest.from_file(PAGE, default_timeout=30)
+    app.run()
+    assert not app.exception
+
+    markdown = "\n".join(block.value for block in app.markdown)
+    assert "@media (max-width: 768px)" not in markdown

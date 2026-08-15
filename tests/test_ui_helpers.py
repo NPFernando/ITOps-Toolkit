@@ -390,6 +390,40 @@ def test_tool_card_icon_asset_maps_wave9_weak_cue_tools():
         assert ui._tool_card_icon_asset(tool) == expected
 
 
+def test_tool_card_icon_asset_maps_wave10_planned_tool_cohort():
+    expected_assets = {
+        "outlook_safelinks_decoder": "icons/exported/icon-workflow-safe-link-unwrap-outline-24x24-v01.svg",
+        "docker_run_compose_converter": "icons/exported/icon-workflow-container-compose-outline-24x24-v01.svg",
+        "nato_phonetic_converter": "icons/exported/icon-workflow-phonetic-spellout-outline-24x24-v01.svg",
+        "wifi_qr_generator": "icons/exported/icon-workflow-wifi-qr-share-outline-24x24-v01.svg",
+        "hmac_generator": "icons/exported/icon-workflow-hash-digest-outline-24x24-v01.svg",
+        "ipv6_ula_generator": "icons/exported/icon-workflow-ipv6-compress-outline-24x24-v01.svg",
+        "random_mac_generator": "icons/exported/icon-workflow-mac-address-outline-24x24-v01.svg",
+        "list_converter": "icons/exported/icon-workflow-list-transform-outline-24x24-v01.svg",
+        "email_normalizer": "icons/exported/icon-workflow-email-normalize-outline-24x24-v01.svg",
+        "ipv4_format_converter": "icons/exported/icon-workflow-ipv4-format-outline-24x24-v01.svg",
+        "ipv4_range_expander": "icons/exported/icon-workflow-subnet-planning-outline-24x24-v01.svg",
+        "git_command_cheat_sheet": "icons/exported/icon-workflow-reference-catalog-outline-24x24-v01.svg",
+        "bip39_mnemonic": "icons/exported/icon-workflow-mnemonic-seed-outline-24x24-v01.svg",
+        "lorem_ipsum_generator": "icons/exported/icon-workflow-markdown-structure-outline-24x24-v01.svg",
+        "text_radix_converter": "icons/exported/icon-workflow-text-radix-outline-24x24-v01.svg",
+    }
+
+    for slug, expected in expected_assets.items():
+        tool = ui.ToolMeta(
+            title=f"Planned {slug}",
+            short_title=slug,
+            description="planned",
+            path=f"pages/{slug}.py",
+            icon="PLN",
+            accent="#123456",
+            slug=slug,
+            professions=("Support Engineer",),
+            category="Ops & Automation",
+        )
+        assert ui._tool_card_icon_asset(tool) == expected
+
+
 def test_tool_card_html_wave4_slug_specific_mapping_precedes_category_default_during_render(monkeypatch):
     tool = next(item for item in TOOLS if item.slug == "basic_auth_tool")
 
@@ -491,6 +525,25 @@ def test_tool_card_icon_asset_wave3_slug_specific_mapping_precedes_category_defa
 
     assert tool.category == "Web & Dev"
     assert ui._tool_card_icon_asset(tool) == "icons/exported/icon-workflow-diff-patch-outline-24x24-v01.svg"
+
+
+def test_tool_card_html_uses_wave10_generated_icon_when_planned_slug_is_mapped():
+    planned_tool = ui.ToolMeta(
+        title="Outlook/M365 Safe Links decoder",
+        short_title="Safe Links",
+        description="planned",
+        path="pages/129_Outlook_Safe_Links_Decoder.py",
+        icon="URL",
+        accent="#2e8bff",
+        slug="outlook_safelinks_decoder",
+        professions=("Security Analyst",),
+        category="Security",
+    )
+
+    html = ui._tool_card_html(planned_tool)
+
+    assert "tool-card-icon-image" in html
+    assert "data:image/svg+xml;base64," in html
 
 
 def test_tool_card_html_uses_wave2_generated_icon_when_mapped():

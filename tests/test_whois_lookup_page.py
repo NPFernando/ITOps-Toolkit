@@ -10,6 +10,14 @@ from utils import whois_tools
 PAGE = str(Path(__file__).resolve().parent.parent / "pages" / "27_WHOIS_Lookup.py")
 
 
+def _page_text(app: AppTest) -> str:
+    parts: list[str] = []
+    for collection_name in ("markdown", "warning", "error", "success"):
+        for item in getattr(app, collection_name, []):
+            parts.append(str(getattr(item, "value", getattr(item, "body", ""))))
+    return "\n".join(parts)
+
+
 def test_whois_lookup_shows_registrar_and_tables(monkeypatch):
     monkeypatch.setattr(
         whois_tools,
@@ -70,3 +78,39 @@ def test_whois_lookup_results_persist_after_sidebar_interaction(monkeypatch):
     search.set_value("whois").run()
     assert not app.exception
     assert len(app.metric) == before
+
+
+def test_whois_lookup_shows_neutral_note_when_rdap_data_is_sparse(monkeypatch):
+    monkeypatch.setattr(
+        whois_tools,
+        "lookup_whois",
+        lambda _: {
+            "ok": True,
+            "registrar": None,
+            "events": [],
+            "nameservers": [],
+            "status": [],
+        },
+    )
+
+    app = AppTest.from_file(PAGE, default_timeout=30)
+    app.run()
+    app.text_input[0].set_value("example.com")
+    app.button[0].click().run()
+    assert not app.exception
+
+    text = _page_text(app)
+    assert "WHOIS lookup returned limited data" in text
+    assert "Registration events unavailable" in text
+    assert "Name server list unavailable" in text
+    assert "Domain status codes unavailable" in text
+    assert 'role="status"' in text
+
+
+def test_whois_lookup_page_has_no_page_scoped_mobile_css():
+    app = AppTest.from_file(PAGE, default_timeout=30)
+    app.run()
+    assert not app.exception
+
+    markdown = "\n".join(block.value for block in app.markdown)
+    assert "@media (max-width: 768px)" not in markdown

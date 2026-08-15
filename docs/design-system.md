@@ -248,6 +248,20 @@ This guide documents the UI direction used for the Streamlit dashboard and tool 
 - Record Wave 9 outcomes in `docs/release-notes-template.md` using synthetic/sanitized evidence only.
 - Keep non-tool exceptions explicit and confirm desktop/mobile readability after wave-9 updates.
 
+## Phase 17 Wave 10 Standards (Shell, Mobile, Visual, A11y + QA Gates)
+
+- **Shell consistency:** keep shared shell + baseline markers (`shell-ready`, `content-rendered`) stable across Home, Roadmap, Domain Health Checker, WHOIS Lookup, Bulk Domain Health, DNS Propagation Checker, DKIM Selector Lookup, Email Record Builder, and Health Diagnostics.
+- **Mobile baseline (`<=720px`):** keep form/results readability and tap targets aligned to shared shell CSS; avoid page-scoped mobile overrides that drift from the common baseline.
+- **Visual mapping integrity:** keep wave-10 planned slugs mapped to generated assets before category defaults (`outlook_safelinks_decoder`, `docker_run_compose_converter`, `nato_phonetic_converter`, `wifi_qr_generator`, `hmac_generator`, `ipv6_ula_generator`, `random_mac_generator`, `list_converter`, `email_normalizer`, `ipv4_format_converter`, `ipv4_range_expander`, `git_command_cheat_sheet`, `bip39_mnemonic`, `lorem_ipsum_generator`, `text_radix_converter`).
+- **Accessibility guardrail:** keep notice semantics and tone intent clear (`role="status"` for neutral outcomes, shared failure semantics for blocking errors), while preserving keyboard flow and visible focus rings.
+- **QA gate behavior:** treat Wave 10 shell/mobile/visual/a11y regressions as release blockers unless an intentional exception is documented.
+
+### Wave 10 QA handoff guidance
+
+- Run Wave 10 checks in `docs/release-checklist.md` before release.
+- Record Wave 10 outcomes in `docs/release-notes-template.md` using synthetic/sanitized evidence only.
+- Keep non-tool exceptions explicit and confirm desktop/mobile readability after wave-10 updates.
+
 ## Maintenance Rules
 
 - Do not duplicate tool titles, descriptions, paths, or accent colors outside `utils/ui.py`.
