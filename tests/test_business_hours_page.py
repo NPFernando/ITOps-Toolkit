@@ -21,6 +21,7 @@ def test_calculate_across_weekend_shows_metrics():
     metrics = {m.label: m.value for m in app.metric}
     assert metrics["Business hours"] == "2h 0m"
     assert metrics["Business days spanned"] == "2"
+    assert any("Calculation complete" in m.value for m in app.markdown)
 
 
 def test_empty_state_shown_before_submit():
@@ -41,6 +42,7 @@ def test_invalid_timestamp_shows_error():
     app.button[0].click().run()
     assert not app.exception
     assert any("valid ISO 8601" in e.value for e in app.error)
+    assert any("Calculation failed" in m.value for m in app.markdown)
 
 
 def test_results_persist_after_sidebar_interaction():

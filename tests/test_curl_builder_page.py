@@ -25,6 +25,7 @@ def test_curl_builder_produces_a_shell_quoted_command():
     assert command.startswith("curl -X POST")
     assert "-H 'Content-Type: application/json'" in command
     assert "https://example.com/webhook" in command
+    assert any("Command ready for copy" in m.value for m in app.markdown)
 
 
 def test_curl_builder_shows_validation_error_for_blank_url():
@@ -33,6 +34,7 @@ def test_curl_builder_shows_validation_error_for_blank_url():
     next(b for b in app.button if b.label == "Build command").click().run()
     assert not app.exception
     assert any("Enter a URL" in e.value for e in app.error)
+    assert any("Command not generated" in m.value for m in app.markdown)
 
 
 def test_curl_builder_results_persist_after_sidebar_interaction():

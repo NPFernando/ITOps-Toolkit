@@ -76,3 +76,8 @@ Use this matrix as a quick release gate:
 
 - Wave 6 release docs now extend shell/mobile/visual/a11y gates for new wave-6 icon mappings and related tool cues, including shell consistency, mobile helper-text readability, and accessibility spot checks.
 - This matrix remains the Phase 8 baseline; Wave 6 adds release-playbook QA evidence requirements without changing core consistency rules.
+
+## Wave 7 Documentation Sync Note (Phase 14)
+
+- Wave 7 release docs now extend shell/mobile/visual/a11y gates for new wave-7 icon mappings and related tool cues, including shell consistency, mobile helper-text readability, and accessibility spot checks.
+- This matrix remains the Phase 8 baseline; Wave 7 adds release-playbook QA evidence requirements without changing core consistency rules.

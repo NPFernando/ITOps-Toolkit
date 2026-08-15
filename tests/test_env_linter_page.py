@@ -20,6 +20,7 @@ def test_lint_flags_issues_on_submit():
     tables = app.table
     assert len(tables) == 1
     assert "Duplicate key" in str(tables[0].value)
+    assert any("Lint issues detected" in m.value for m in app.markdown)
 
 
 def test_clean_input_shows_success():
@@ -30,6 +31,7 @@ def test_clean_input_shows_success():
     app.button[0].click().run()
     assert not app.exception
     assert any("No issues found" in s.value for s in app.success)
+    assert any("No lint issues detected" in m.value for m in app.markdown)
 
 
 def test_empty_state_shown_before_submit():

@@ -108,6 +108,11 @@ TOOL_CARD_ICON_ASSETS: dict[str, str] = {
     "timestamp_converter": "icons/exported/icon-workflow-timestamp-convert-outline-24x24-v01.svg",
     "user_agent_parser": "icons/exported/icon-workflow-user-agent-parse-outline-24x24-v01.svg",
     "cidr_overlap": "icons/exported/icon-workflow-cidr-overlap-outline-24x24-v01.svg",
+    "m365_sku_decoder": "icons/exported/icon-workflow-m365-sku-lookup-outline-24x24-v01.svg",
+    "chmod_calculator": "icons/exported/icon-workflow-permission-bits-outline-24x24-v01.svg",
+    "semver_tools": "icons/exported/icon-workflow-semver-compare-outline-24x24-v01.svg",
+    "iso8601_duration": "icons/exported/icon-workflow-duration-timeline-outline-24x24-v01.svg",
+    "ssh_config_validator": "icons/exported/icon-workflow-ssh-config-check-outline-24x24-v01.svg",
 }
 CATEGORY_TOOL_CARD_ICON_ASSETS: dict[str, str] = {
     "Network": "icons/exported/icon-workflow-dns-lookup-outline-24x24-v01.svg",

@@ -17,6 +17,7 @@ def test_regex_cheat_sheet_shows_all_patterns_by_default():
 
     assert len(app.table) == 1
     assert len(app.table[0].value) == len(REGEX_PATTERNS)
+    assert any("Showing full reference" in m.value for m in app.markdown)
 
 
 def test_regex_cheat_sheet_search_narrows_results():
@@ -29,6 +30,7 @@ def test_regex_cheat_sheet_search_narrows_results():
     rows = app.table[0].value
     assert len(rows) >= 1
     assert all("email" in str(name).lower() for name in rows["Name"])
+    assert any("Filtered results ready" in m.value for m in app.markdown)
 
 
 def test_regex_cheat_sheet_no_match_shows_info():
@@ -37,4 +39,5 @@ def test_regex_cheat_sheet_no_match_shows_info():
 
     next(t for t in app.text_input if t.label == "Search").set_value("not-a-real-pattern-keyword").run()
     assert not app.exception
-    assert any("No patterns matched" in i.value for i in app.info)
+    assert any("No matching patterns found" in i.value for i in app.info)
+    assert any("No pattern matches" in m.value for m in app.markdown)

@@ -23,6 +23,7 @@ def test_compare_shows_differences_table():
 
     dataframes = app.dataframe
     assert len(dataframes) == 1
+    assert any("Differences found" in m.value for m in app.markdown)
 
 
 def test_identical_csvs_show_success():
@@ -35,6 +36,7 @@ def test_identical_csvs_show_success():
     app.button[0].click().run()
     assert not app.exception
     assert any("identical" in s.value for s in app.success)
+    assert any("No differences found" in m.value for m in app.markdown)
 
 
 def test_empty_state_shown_before_submit():
