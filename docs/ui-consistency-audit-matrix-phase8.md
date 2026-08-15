@@ -156,3 +156,8 @@ Use this matrix as a quick release gate:
 
 - Wave 22 release docs now extend shell/mobile/visual/a11y gates for shared shell baseline-marker coverage on Home/Roadmap plus Docker Run to Compose/NATO Phonetic Converter/WiFi QR Code Generator/HMAC Generator/IPv6 ULA Generator/Random MAC Address Generator, grouped mobile control readability, and wave-22 touchpoint visual mapping checks.
 - This matrix remains the Phase 8 baseline; Wave 22 adds release-playbook QA evidence requirements without changing core consistency rules.
+
+## Wave 23 Documentation Sync Note (Phase 30)
+
+- Wave 23 release docs now extend shell/mobile/visual/a11y gates for shared shell baseline-marker coverage on Home/Roadmap plus List Converter/Email Address Normalizer/IPv4 Address Format Converter/IPv4 Range Expander/Git Command Cheat Sheet/BIP39 Mnemonic Generator/Validator, grouped mobile control readability, and wave-23 touchpoint visual mapping checks.
+- This matrix remains the Phase 8 baseline; Wave 23 adds release-playbook QA evidence requirements without changing core consistency rules.

@@ -430,6 +430,20 @@ This guide documents the UI direction used for the Streamlit dashboard and tool 
 - Record Wave 22 outcomes in `docs/release-notes-template.md` using synthetic/sanitized evidence only.
 - Keep non-tool exceptions explicit and confirm desktop/mobile readability after wave-22 updates.
 
+## Phase 30 Wave 23 Standards (Shell, Mobile, Visual, A11y + QA Gates)
+
+- **Shell consistency:** keep shared shell + baseline markers (`shell-ready`, `content-rendered`) stable on Home, Roadmap & Feedback, List Converter, Email Address Normalizer, IPv4 Address Format Converter, IPv4 Range Expander, Git Command Cheat Sheet, and BIP39 Mnemonic Generator/Validator.
+- **Mobile baseline (`<=720px`):** keep wave-23 form panels and primary actions full-width/tap-friendly (`use_container_width=True`), keep wave-23 grouped controls single-column readable, and avoid forced two-column form layouts on wave-23 touchpoint pages.
+- **Visual mapping integrity:** keep wave-23 touchpoint slug mappings readable (`list_converter`, `email_address_normalizer`, `ipv4_format_converter`, `ipv4_range_expander`, `git_command_cheat_sheet`, `bip39_mnemonic_generator_validator`) before category defaults, with text badge fallback always readable.
+- **Accessibility guardrail:** keep keyboard flow and visible focus rings intact for Home controls, Roadmap filters/AI triage action, and wave-23 form actions, with neutral/blocking outcomes aligned to shared status/failure note semantics.
+- **QA gate behavior:** treat Wave 23 shell/mobile/visual/a11y regressions as release blockers unless an intentional exception is documented.
+
+### Wave 23 QA handoff guidance
+
+- Run Wave 23 checks in `docs/release-checklist.md` before release.
+- Record Wave 23 outcomes in `docs/release-notes-template.md` using synthetic/sanitized evidence only.
+- Keep non-tool exceptions explicit and confirm desktop/mobile readability after wave-23 updates.
+
 ## Maintenance Rules
 
 - Do not duplicate tool titles, descriptions, paths, or accent colors outside `utils/ui.py`.

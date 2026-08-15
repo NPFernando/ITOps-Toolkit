@@ -147,6 +147,7 @@ TOOL_CARD_ICON_ASSETS: dict[str, str] = {
     "email_normalizer": "icons/exported/icon-workflow-email-normalize-outline-24x24-v01.svg",
     "email_address_normalizer": "icons/exported/icon-workflow-email-normalize-outline-24x24-v01.svg",
     "ipv4_format_converter": "icons/exported/icon-workflow-ipv4-format-outline-24x24-v01.svg",
+    "ipv4_address_format_converter": "icons/exported/icon-workflow-ipv4-format-outline-24x24-v01.svg",
     "ipv4_range_expander": "icons/exported/icon-workflow-subnet-planning-outline-24x24-v01.svg",
     "git_command_cheat_sheet": "icons/exported/icon-workflow-reference-catalog-outline-24x24-v01.svg",
     "bip39_mnemonic": "icons/exported/icon-workflow-mnemonic-seed-outline-24x24-v01.svg",

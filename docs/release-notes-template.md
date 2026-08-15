@@ -146,6 +146,10 @@ curl http://localhost:8502/_stcore/health
 - Wave 22 mobile readability spot check (`<=720px`, grouped controls stay single-column readable, Home controls + Roadmap filters/AI triage action + wave-22 submit actions stay full-width/tap-friendly, no clipping/overflow):
 - Wave 22 visual mapping spot check (wave-22 touchpoint slug-specific icon priority + fallback for `docker_run_to_compose`, `nato_phonetic_converter`, `wifi_qr_generator`, `hmac_generator`, `ipv6_ula_generator`, `random_mac_generator`):
 - Wave 22 accessibility spot check (status/failure note semantics + keyboard/focus):
+- Wave 23 shell consistency spot check (shared shell + baseline markers on Home/Roadmap/List Converter/Email Address Normalizer/IPv4 Address Format Converter/IPv4 Range Expander/Git Command Cheat Sheet/BIP39 Mnemonic Generator/Validator):
+- Wave 23 mobile readability spot check (`<=720px`, grouped controls stay single-column readable, Home controls + Roadmap filters/AI triage action + wave-23 submit/generate/validate actions stay full-width/tap-friendly, no clipping/overflow):
+- Wave 23 visual mapping spot check (wave-23 touchpoint slug-specific icon priority + fallback for `list_converter`, `email_address_normalizer`, `ipv4_format_converter`, `ipv4_range_expander`, `git_command_cheat_sheet`, `bip39_mnemonic_generator_validator`):
+- Wave 23 accessibility spot check (status/failure note semantics + keyboard/focus):
 - Log Troubleshooting AI unavailable state:
 - Optional Azure AI state, if secrets were available:
 
