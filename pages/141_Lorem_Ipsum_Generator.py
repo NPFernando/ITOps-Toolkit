@@ -67,19 +67,19 @@ with tool_form_panel("lorem_ipsum_generator"):
         default_count = 24 if unit == "Words" else 3
         count = st.number_input("Count", min_value=1, max_value=100, value=default_count, key="lorem_count")
         st.markdown('<div class="tool-panel-eyebrow">Deterministic seed</div>', unsafe_allow_html=True)
-        seed_text = st.text_input("Deterministic seed (optional)", placeholder="wave-24", key="lorem_seed")
+        seed_text = st.text_input("Deterministic seed (optional)", placeholder="wave-25", key="lorem_seed")
         submitted = st.form_submit_button("Generate lorem ipsum", use_container_width=True)
 
 if submitted:
     st.session_state["lorem_ipsum_result"] = generate_lorem(unit=unit, count=int(count), seed_text=seed_text.strip())
 
 result = st.session_state.get("lorem_ipsum_result")
-if result is None:
-    render_empty_state("Ready to generate", "Generated lorem ipsum text appears here after submission.")
-    render_status_note("Outcome: generator awaiting input", "Choose output shape and count, then generate text.", tone="neutral")
-else:
-    with tool_result_panel("lorem_ipsum_result", related_to="lorem_ipsum_generator"):
-        render_section_heading("Generated text", eyebrow="Result")
+with tool_result_panel("lorem_ipsum_result", related_to="lorem_ipsum_generator"):
+    render_section_heading("Generated text", eyebrow="Result")
+    if result is None:
+        render_empty_state("Ready to generate", "Generated lorem ipsum text appears here after submission.")
+        render_status_note("Outcome: lorem generation awaiting input", "Choose output shape and count, then generate text.", tone="neutral")
+    else:
         render_status_note("Outcome: lorem text generated", "Copy generated placeholder text below.", tone="success")
         st.code(str(result), language=None)
 

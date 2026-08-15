@@ -458,6 +458,20 @@ This guide documents the UI direction used for the Streamlit dashboard and tool 
 - Record Wave 24 outcomes in `docs/release-notes-template.md` using synthetic/sanitized evidence only.
 - Keep non-tool exceptions explicit and confirm desktop/mobile readability after wave-24 updates.
 
+## Phase 32 Wave 25 Standards (Shell, Mobile, Visual, A11y + QA Gates)
+
+- **Shell consistency:** keep shared shell + baseline markers (`shell-ready`, `content-rendered`) stable on Home, Roadmap & Feedback, Git Command Cheat Sheet, BIP39 Mnemonic Generator/Validator, Lorem Ipsum Generator, and Text to Binary/Hex/Octal Converter.
+- **Mobile baseline (`<=720px`):** keep wave-25 form panels and primary actions full-width/tap-friendly (`use_container_width=True`), keep wave-25 grouped controls single-column readable, and avoid fixed two-column form layouts on wave-25 touchpoint pages.
+- **Visual mapping integrity:** keep wave-25 touchpoint slug mappings readable (`git_command_cheat_sheet`, `bip39_mnemonic_generator_validator`, `lorem_ipsum_generator`, `text_to_binary_hex_octal_converter`) before category defaults, with text badge fallback always readable.
+- **Accessibility guardrail:** keep keyboard flow and visible focus rings intact for Home controls, Roadmap filters/AI triage action, and wave-25 form submit/generate/convert actions, with neutral/blocking outcomes aligned to shared status/failure note semantics.
+- **QA gate behavior:** treat Wave 25 shell/mobile/visual/a11y regressions as release blockers unless an intentional exception is documented.
+
+### Wave 25 QA handoff guidance
+
+- Run Wave 25 checks in `docs/release-checklist.md` before release.
+- Record Wave 25 outcomes in `docs/release-notes-template.md` using synthetic/sanitized evidence only.
+- Keep non-tool exceptions explicit and confirm desktop/mobile readability after wave-25 updates.
+
 ## Maintenance Rules
 
 - Do not duplicate tool titles, descriptions, paths, or accent colors outside `utils/ui.py`.

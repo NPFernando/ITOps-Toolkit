@@ -952,6 +952,64 @@ def test_tool_card_html_wave24_slug_specific_mapping_precedes_category_default_d
         assert f">{tool.icon}<" in html
 
 
+def test_tool_card_icon_asset_maps_wave25_visual_targets_with_page143_144_slug_resolution():
+    expected_assets = {
+        "lorem_ipsum_generator": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
+        "text_to_binary_hex_octal_converter": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
+        # Wave-25 provisional pages 143/144 resolved to currently implemented pages.
+        "git_command_cheat_sheet": "icons/exported/icon-workflow-git-command-cheat-sheet-outline-24x24-v01.svg",
+        "bip39_mnemonic_generator_validator": "icons/exported/icon-workflow-bip39-mnemonic-generator-validator-outline-24x24-v01.svg",
+    }
+
+    for slug, expected in expected_assets.items():
+        tool = ui.ToolMeta(
+            title=f"Planned {slug}",
+            short_title=slug,
+            description="planned",
+            path=f"pages/{slug}.py",
+            icon="PLN",
+            accent="#123456",
+            slug=slug,
+            professions=("Support Engineer",),
+            category="Ops & Automation",
+        )
+        assert ui._tool_card_icon_asset(tool) == expected
+
+
+def test_tool_card_html_wave25_slug_specific_mapping_precedes_category_default_during_render(monkeypatch):
+    category_default = "icons/exported/icon-workflow-automation-runbook-outline-24x24-v01.svg"
+    slugs = (
+        "lorem_ipsum_generator",
+        "text_to_binary_hex_octal_converter",
+        "git_command_cheat_sheet",
+        "bip39_mnemonic_generator_validator",
+    )
+
+    def fake_svg_img_html(path, *args, **kwargs):
+        if path == category_default:
+            return '<img class="tool-card-icon-image" data-icon="category-default" />'
+        return None
+
+    monkeypatch.setattr(ui, "_svg_img_html", fake_svg_img_html)
+
+    for slug in slugs:
+        tool = ui.ToolMeta(
+            title=f"Planned {slug}",
+            short_title=slug,
+            description="planned",
+            path=f"pages/{slug}.py",
+            icon="PLN",
+            accent="#123456",
+            slug=slug,
+            professions=("Support Engineer",),
+            category="Ops & Automation",
+        )
+        html = ui._tool_card_html(tool)
+        assert ui._tool_card_icon_asset(tool) != category_default
+        assert "tool-card-icon-image" not in html
+        assert f">{tool.icon}<" in html
+
+
 def test_tool_card_html_wave22_slug_specific_mapping_precedes_category_default_during_render(monkeypatch):
     tool = ui.ToolMeta(
         title="Docker run to compose",
@@ -1396,6 +1454,20 @@ def test_material_icon_for_wave24_targets_and_unknown_fallback():
         assert ui._material_icon_for(slug) == expected
 
     assert ui._material_icon_for("wave24-unknown-slug") == ":material/build:"
+
+
+def test_material_icon_for_wave25_targets_with_page143_144_slug_resolution():
+    expected_icons = {
+        "lorem_ipsum_generator": ":material/text_fields:",
+        "text_to_binary_hex_octal_converter": ":material/pin:",
+        "git_command_cheat_sheet": ":material/menu_book:",
+        "bip39_mnemonic_generator_validator": ":material/vpn_key:",
+    }
+
+    for slug, expected in expected_icons.items():
+        assert ui._material_icon_for(slug) == expected
+
+    assert ui._material_icon_for("wave25-unknown-slug") == ":material/build:"
 
 
 def test_tool_card_html_uses_wave10_generated_icon_when_planned_slug_is_mapped():

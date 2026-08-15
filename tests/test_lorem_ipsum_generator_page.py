@@ -14,8 +14,10 @@ def test_lorem_ipsum_page_shows_neutral_state_before_submit():
     assert not app.exception
 
     markdown = " ".join(block.value for block in app.markdown)
-    assert "Outcome: generator awaiting input" in markdown
+    assert "Outcome: lorem generation awaiting input" in markdown
     assert "tool-status-note-neutral" in markdown
+    assert 'role="status"' in markdown
+    assert 'aria-live="polite"' in markdown
 
 
 def test_lorem_ipsum_page_generates_deterministic_words_with_seed():
@@ -24,14 +26,14 @@ def test_lorem_ipsum_page_generates_deterministic_words_with_seed():
     assert not app.exception
 
     seed = next(widget for widget in app.text_input if widget.key == "lorem_seed")
-    seed.set_value("wave24")
+    seed.set_value("wave25")
     count = next(widget for widget in app.number_input if widget.key == "lorem_count")
     count.set_value(6)
     next(widget for widget in app.button if widget.label == "Generate lorem ipsum").click().run()
     assert not app.exception
 
     assert len(app.code) == 1
-    assert app.code[0].value == "dolore sunt consequat do quis amet"
+    assert app.code[0].value == "enim ullamco sit pariatur occaecat mollit"
     markdown = " ".join(block.value for block in app.markdown)
     assert "tool-status-note-success" in markdown
     assert "Outcome: lorem text generated" in markdown
