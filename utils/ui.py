@@ -174,6 +174,10 @@ TOOL_CARD_ICON_ASSETS: dict[str, str] = {
     "166_tool_slug_pending_roadmap": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
     "165_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
     "166_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
+    "167_tool_slug_pending_roadmap": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
+    "168_tool_slug_pending_roadmap": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
+    "167_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
+    "168_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
     "csv_column_selector": "icons/exported/icon-workflow-csv-column-selector-outline-24x24-v01.svg",
     "line_numberer": "icons/exported/icon-workflow-line-numberer-outline-24x24-v01.svg",
     "column_aligner": "icons/exported/icon-workflow-column-aligner-outline-24x24-v01.svg",
@@ -2868,9 +2872,11 @@ def render_section_heading(
     # instead of rendering as HTML. See _tool_card_html for the same fix.
     description_html = f"<p>{escape(description)}</p>" if description else ""
     heading_tag = "h3" if heading_level == "h3" else "h2"
+    heading_class = f"tool-section-heading-level-{heading_tag}"
+    heading_level_value = "3" if heading_tag == "h3" else "2"
     st.markdown(
         f"""
-        <div class="tool-section-heading">
+        <div class="tool-section-heading {heading_class}" data-heading-level="{heading_level_value}">
             <div class="tool-panel-eyebrow">{escape(eyebrow)}</div>
             <{heading_tag}>{escape(title)}</{heading_tag}>{description_html}
         </div>
@@ -3208,6 +3214,9 @@ def _fallback_href(path: str) -> str:
 def _tool_card_icon_asset(tool: ToolMeta) -> str | None:
     if tool.slug in TOOL_CARD_ICON_ASSETS:
         return TOOL_CARD_ICON_ASSETS[tool.slug]
+    normalized_slug = _key_slug(tool.slug)
+    if normalized_slug and normalized_slug in TOOL_CARD_ICON_ASSETS:
+        return TOOL_CARD_ICON_ASSETS[normalized_slug]
     return CATEGORY_TOOL_CARD_ICON_ASSETS.get(tool.category)
 
 
@@ -3416,6 +3425,12 @@ def _material_icon_for(slug: str) -> str:
         "text_to_binary_hex_octal_converter": ":material/pin:",
         "157_tool_slug_pending_roadmap": ":material/text_fields:",
         "158_tool_slug_pending_roadmap": ":material/pin:",
+        "159_tool_slug_pending_roadmap": ":material/text_fields:",
+        "160_tool_slug_pending_roadmap": ":material/pin:",
+        "165_tool_slug_pending_roadmap": ":material/text_fields:",
+        "166_tool_slug_pending_roadmap": ":material/pin:",
+        "167_tool_slug_pending_roadmap": ":material/text_fields:",
+        "168_tool_slug_pending_roadmap": ":material/pin:",
     }
     return icons.get(slug, ":material/build:")
 
@@ -4457,6 +4472,20 @@ def _inject_global_css(mode: str) -> None:
             font-size: clamp(1.05rem, 1.7vw, 1.35rem);
             font-weight: 800;
             line-height: 1.2;
+        }
+
+        .tool-section-heading h3 {
+            margin: 0.15rem 0 0.22rem;
+            color: var(--itops-ink);
+            font-size: clamp(0.98rem, 1.45vw, 1.18rem);
+            font-weight: 760;
+            line-height: 1.24;
+        }
+
+        .tool-section-heading[data-heading-level="3"] {
+            margin-top: 0.15rem;
+            padding-left: 0.2rem;
+            border-left: 2px solid color-mix(in srgb, var(--itops-blue), transparent 72%);
         }
 
         .tool-form-intro p,
