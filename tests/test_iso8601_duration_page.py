@@ -18,6 +18,9 @@ def test_parse_tab_shows_result():
     assert not app.exception
 
     assert any("1 hour" in s.value for s in app.success)
+    markdown = " ".join(m.value for m in app.markdown)
+    assert "tool-status-note-success" in markdown
+    assert "Parsed successfully" in markdown
 
 
 def test_build_tab_shows_result():
@@ -31,6 +34,23 @@ def test_build_tab_shows_result():
 
     code = " ".join(c.value for c in app.code)
     assert "PT3H" in code
+    markdown = " ".join(m.value for m in app.markdown)
+    assert "tool-status-note-success" in markdown
+    assert "Built successfully" in markdown
+
+
+def test_parse_invalid_duration_shows_warning_status():
+    app = AppTest.from_file(PAGE, default_timeout=30)
+    app.run()
+    assert not app.exception
+
+    app.text_input[0].set_value("bogus")
+    app.button[0].click().run()
+    assert not app.exception
+
+    markdown = " ".join(m.value for m in app.markdown)
+    assert "tool-status-note-warning" in markdown
+    assert "ISO 8601 parse needs attention" in markdown
 
 
 def test_empty_state_shown_before_submit():
@@ -40,6 +60,7 @@ def test_empty_state_shown_before_submit():
 
     md = " ".join(m.value for m in app.markdown)
     assert "tool-empty-state" in md
+    assert md.count("tool-status-note-neutral") >= 2
 
 
 def test_results_persist_after_sidebar_interaction():

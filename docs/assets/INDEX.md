@@ -1,4 +1,4 @@
-# Assets Index (phase8 + wave2 + wave3 + wave4 + wave5 + wave6 + wave7 + wave8 + wave9 + wave10 + wave11 + wave12)
+# Assets Index (phase8 + wave2 + wave3 + wave4 + wave5 + wave6 + wave7 + wave8 + wave9 + wave10 + wave11 + wave12 + wave13)
 
 Generated assets available under `docs/assets/**/exported`. Runtime mappings are implemented in `utils/ui.py`.
 
@@ -190,6 +190,13 @@ When a roadmap badge asset is unavailable, compact text fallback glyphs are used
 - Path conversion icon: `wsl_path_converter`
 - Markdown link extraction icon: `markdown_link_extractor`
 
+### Phase 20 Wave 13 icon mapping extensions
+
+- Password policy icon: `password_policy_checker`
+- ISO 8601 duration icon: `iso8601_duration`
+- JSON merge patch icon: `json_merge_patch`
+- Column align icon: `column_aligner`
+
 ### Phase 12 Wave 5 add-on QA focus
 
 - Confirm wave-5 slugs resolve to slug-specific assets before category defaults.
@@ -253,6 +260,14 @@ When a roadmap badge asset is unavailable, compact text fallback glyphs are used
 - Include one shell pass confirming shared shell + baseline markers remain visible/unchanged on wave-12 pages.
 - Include one `<=720px` viewport pass to confirm wave-12 forms/results stay readable with wrapped labels/chips and no clipping/overflow.
 - Include one keyboard-only pass to confirm wave-12 notice semantics and focus visibility remain intact.
+
+### Phase 20 Wave 13 add-on QA focus
+
+- Confirm wave-13 slugs resolve to slug-specific assets before category defaults (`password_policy_checker`, `iso8601_duration`, `json_merge_patch`, `column_aligner`).
+- Confirm slug-specific wave-13 icons still fall back to text badges when SVG rendering is unavailable.
+- Include one shell pass confirming shared shell + baseline markers remain visible/unchanged on Home, Roadmap, and wave-13 pages.
+- Include one `<=720px` viewport pass to confirm wave-13 primary actions stay full-width/tap-friendly with no clipping/overflow.
+- Include one keyboard-only pass to confirm wave-13 notice semantics and focus visibility remain intact.
 
 ## Docs/release media inventory
 

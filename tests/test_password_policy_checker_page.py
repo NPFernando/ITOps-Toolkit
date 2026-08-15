@@ -17,7 +17,23 @@ def test_check_shows_result():
     app.button[0].click().run()
     assert not app.exception
 
-    assert any("Meets the policy" in s.value for s in app.success)
+    markdown = " ".join(m.value for m in app.markdown)
+    assert "tool-status-note-success" in markdown
+    assert "Compliant" in markdown
+
+
+def test_non_compliant_password_shows_warning_status():
+    app = AppTest.from_file(PAGE, default_timeout=30)
+    app.run()
+    assert not app.exception
+
+    app.text_input[0].set_value("abc")
+    app.button[0].click().run()
+    assert not app.exception
+
+    markdown = " ".join(m.value for m in app.markdown)
+    assert "tool-status-note-warning" in markdown
+    assert "Not compliant" in markdown
 
 
 def test_empty_state_shown_before_submit():
@@ -27,6 +43,8 @@ def test_empty_state_shown_before_submit():
 
     md = " ".join(m.value for m in app.markdown)
     assert "tool-empty-state" in md
+    assert "tool-status-note-neutral" in md
+    assert "Awaiting password input" in md
 
 
 def test_results_persist_after_sidebar_interaction():

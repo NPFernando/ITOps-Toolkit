@@ -309,7 +309,7 @@ def test_tool_card_icon_asset_maps_wave3_weak_cue_tools():
 def test_tool_card_icon_asset_maps_wave4_weak_cue_tools():
     expected_assets = {
         "basic_auth_tool": "icons/exported/icon-workflow-auth-controls-outline-24x24-v01.svg",
-        "password_policy_checker": "icons/exported/icon-workflow-auth-controls-outline-24x24-v01.svg",
+        "password_policy_checker": "icons/exported/icon-workflow-password-policy-outline-24x24-v01.svg",
         "business_hours": "icons/exported/icon-workflow-time-operations-outline-24x24-v01.svg",
         "pii_redactor": "icons/exported/icon-workflow-data-sanitization-outline-24x24-v01.svg",
         "windows_event_reference": "icons/exported/icon-workflow-api-reference-outline-24x24-v01.svg",
@@ -353,7 +353,7 @@ def test_tool_card_icon_asset_maps_wave7_weak_cue_tools():
         "m365_sku_decoder": "icons/exported/icon-workflow-m365-sku-lookup-outline-24x24-v01.svg",
         "chmod_calculator": "icons/exported/icon-workflow-permission-bits-outline-24x24-v01.svg",
         "semver_tools": "icons/exported/icon-workflow-semver-compare-outline-24x24-v01.svg",
-        "iso8601_duration": "icons/exported/icon-workflow-duration-timeline-outline-24x24-v01.svg",
+        "iso8601_duration": "icons/exported/icon-workflow-iso8601-duration-outline-24x24-v01.svg",
         "ssh_config_validator": "icons/exported/icon-workflow-ssh-config-check-outline-24x24-v01.svg",
     }
 
@@ -428,7 +428,7 @@ def test_tool_card_icon_asset_maps_wave11_visual_targets():
     expected_assets = {
         "csv_column_selector": "icons/exported/icon-workflow-list-transform-outline-24x24-v01.svg",
         "line_numberer": "icons/exported/icon-workflow-id-sequence-outline-24x24-v01.svg",
-        "column_aligner": "icons/exported/icon-workflow-list-transform-outline-24x24-v01.svg",
+        "column_aligner": "icons/exported/icon-workflow-column-align-outline-24x24-v01.svg",
         "csr_generator": "icons/exported/icon-workflow-cert-chain-outline-24x24-v01.svg",
         "caa_record_builder": "icons/exported/icon-workflow-policy-controls-outline-24x24-v01.svg",
     }
@@ -446,6 +446,19 @@ def test_tool_card_icon_asset_maps_wave12_visual_targets():
         "pii_redactor": "icons/exported/icon-workflow-data-sanitization-outline-24x24-v01.svg",
         "ssh_config_validator": "icons/exported/icon-workflow-ssh-config-check-outline-24x24-v01.svg",
         "health_diagnostics": "icons/exported/icon-workflow-health-diagnostics-outline-24x24-v01.svg",
+    }
+
+    for slug, expected in expected_assets.items():
+        tool = next(item for item in TOOLS if item.slug == slug)
+        assert ui._tool_card_icon_asset(tool) == expected
+
+
+def test_tool_card_icon_asset_maps_wave13_visual_targets():
+    expected_assets = {
+        "password_policy_checker": "icons/exported/icon-workflow-password-policy-outline-24x24-v01.svg",
+        "iso8601_duration": "icons/exported/icon-workflow-iso8601-duration-outline-24x24-v01.svg",
+        "json_merge_patch": "icons/exported/icon-workflow-json-merge-patch-outline-24x24-v01.svg",
+        "column_aligner": "icons/exported/icon-workflow-column-align-outline-24x24-v01.svg",
     }
 
     for slug, expected in expected_assets.items():
@@ -567,6 +580,22 @@ def test_tool_card_html_wave11_slug_specific_mapping_precedes_category_default_d
 
 def test_tool_card_html_wave12_slug_specific_mapping_precedes_category_default_during_render(monkeypatch):
     tool = next(item for item in TOOLS if item.slug == "test_data_generator")
+
+    def fake_svg_img_html(path, *args, **kwargs):
+        if path == "icons/exported/icon-workflow-json-validate-outline-24x24-v01.svg":
+            return '<img class="tool-card-icon-image" data-icon="category-default" />'
+        return None
+
+    monkeypatch.setattr(ui, "_svg_img_html", fake_svg_img_html)
+
+    html = ui._tool_card_html(tool)
+
+    assert "tool-card-icon-image" not in html
+    assert f">{tool.icon}<" in html
+
+
+def test_tool_card_html_wave13_slug_specific_mapping_precedes_category_default_during_render(monkeypatch):
+    tool = next(item for item in TOOLS if item.slug == "json_merge_patch")
 
     def fake_svg_img_html(path, *args, **kwargs):
         if path == "icons/exported/icon-workflow-json-validate-outline-24x24-v01.svg":
