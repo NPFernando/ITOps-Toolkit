@@ -19,6 +19,7 @@ from utils.ui import (
     render_control_heading,
     render_home_hero,
     render_important_notice,
+    render_section_heading,
     render_status_note,
     render_guided_workflows,
     render_tool_section,
@@ -38,6 +39,7 @@ mark_page_baseline(_baseline, "wave29-shell-mobile")
 mark_page_baseline(_baseline, "wave30-shell-mobile")
 mark_page_baseline(_baseline, "wave31-shell-mobile")
 mark_page_baseline(_baseline, "wave32-shell-mobile")
+mark_page_baseline(_baseline, "wave33-shell-mobile")
 
 
 repo_url = github_url()
@@ -58,6 +60,7 @@ if st.session_state.pop("home_force_quick_access", False):
 
 with tool_form_panel("home_navigation_controls"):
     render_form_intro("Choose how to browse tools", "Filter by profession and switch between quick access or full catalog.")
+    render_section_heading("Browsing setup", eyebrow="Step 1")
     render_control_heading("Filter by profession")
     profession = st.pills(
         "Filter by profession",
@@ -93,6 +96,7 @@ button_label = "Hide all tools" if show_all else "Show all tools"
 button_icon = ":material/expand_less:" if show_all else ":material/apps:"
 with tool_form_panel("home_primary_action"):
     render_form_intro("Toggle catalog visibility", "Use a full-width action to expand or collapse the tool catalog.")
+    render_section_heading("Catalog visibility", eyebrow="Step 2")
     render_control_heading("Catalog action")
     st.caption("Tip: Keep Quick access for focused mobile browsing, or open the full catalog when you need every tool.")
     if st.button(button_label, icon=button_icon, use_container_width=True):
@@ -128,13 +132,13 @@ if show_all:
     if all_tools:
         render_status_note(
             "Outcome: full catalog visible",
-            f"Showing {len(all_tools)} tool(s) in {all_heading}. Use search, profession, and sort controls to refine results.",
+            f"Showing {len(all_tools)} tool(s) in {all_heading}. Refine results with search, profession, or sort.",
             tone="success",
         )
     else:
         render_status_note(
             "Outcome: catalog filters need adjustment",
-            "No tools matched the active search and profession filters. Clear or broaden filters, then try again.",
+            "No tools matched the active filters. Clear or broaden search and profession settings, then try again.",
             tone="warning",
         )
     render_fragment(
@@ -149,7 +153,7 @@ if show_all:
 else:
     render_status_note(
         "Outcome: quick access ready",
-        "Quick access sections are active. Browse favorites, recent tools, and guided workflows, or expand to the full catalog when needed.",
+        "Quick access sections are active. Browse favorites and recent tools, or open the full catalog when needed.",
         tone="neutral",
     )
     searched_tools = filter_tools(search_query, profession) if search_query.strip() else ()

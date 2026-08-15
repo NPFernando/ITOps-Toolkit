@@ -207,3 +207,10 @@ Use this matrix as a quick release gate:
 - Wave 32 release docs now extend shell/mobile/visual/a11y gates for shared shell baseline-marker coverage on Home/Roadmap plus Lorem Ipsum Generator/Text to Binary Hex Octal Converter, placeholder-to-real alias visual mapping checks (`157_*`/`158_*` placeholders mapped to real slugs), grouped mobile control readability with shared control headings, and explicit status semantics (`role="status"`/`role="alert"` + `aria-live`).
 - Wave 32 docs also tighten UX standards by requiring no fixed two-column form layouts on wave-32 touchpoint pages and by recording wave-32 regression test evidence (`tests/test_ui_helpers.py`, `tests/test_wave32_shell_mobile_markers.py`) in release notes/checklists.
 - This matrix remains the Phase 8 baseline; Wave 32 adds release-playbook QA evidence requirements without changing core consistency rules.
+
+## Wave 33 Documentation Sync Note (Phase 40)
+
+- Wave 33 release docs now extend shell/mobile/visual/a11y gates for shared shell baseline-marker coverage on Home/Roadmap plus Lorem Ipsum Generator/Text to Binary Hex Octal Converter, with grouped mobile controls and full-width primary actions on touchpoint pages.
+- Wave 33 docs add explicit placeholder-to-real mapping notes for release governance (`159_*`/`160_*` placeholders mapped to `lorem_ipsum_generator`/`text_to_binary_hex_octal_converter`) while preserving deterministic slug-first icon precedence and readable text fallback badges.
+- Wave 33 docs also record deterministic regression-test evidence (`tests/test_ui_helpers.py`, `tests/test_wave33_shell_mobile_markers.py`, `tests/test_wave33_accessibility_guardrails.py`) including status semantics and deterministic output checks in release notes/checklists.
+- This matrix remains the Phase 8 baseline; Wave 33 adds release-playbook QA evidence requirements without changing core consistency rules.

@@ -3195,7 +3195,9 @@ def _fallback_href(path: str) -> str:
 
 
 def _tool_card_icon_asset(tool: ToolMeta) -> str | None:
-    return TOOL_CARD_ICON_ASSETS.get(tool.slug) or CATEGORY_TOOL_CARD_ICON_ASSETS.get(tool.category)
+    if tool.slug in TOOL_CARD_ICON_ASSETS:
+        return TOOL_CARD_ICON_ASSETS[tool.slug]
+    return CATEGORY_TOOL_CARD_ICON_ASSETS.get(tool.category)
 
 
 def _tool_card_html(tool: ToolMeta, delay_ms: int = 0) -> str:
