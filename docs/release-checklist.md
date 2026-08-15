@@ -66,6 +66,16 @@ Check these pages manually:
 - JSON Formatter or Log Troubleshooting Assistant: text-heavy layout has no clipped controls.
 - Mobile viewport: no overlapping text, clipped labels, cramped buttons, or horizontal scroll.
 
+### 4.1 Accessibility Regression Checklist
+
+Validate these quick checks across Home, one tool page, and Roadmap & Feedback:
+
+- Keyboard-only navigation works for sidebar links, quick search, pills/filters, and command palette trigger (`Ctrl/Cmd+K`).
+- Visible focus ring appears on links, buttons, and form controls (`:focus-visible` remains obvious in dark sidebar and light workspace).
+- Shared notice blocks are announced as notes and keep warning/info text readable.
+- Tool/page text stays body-readable (no tiny labels) and long button labels wrap instead of clipping.
+- In mobile view (`<=720px`), page-header illustrations stack under text, submit/download buttons are full-width, and taps feel comfortable (about 2.3rem minimum target height).
+
 ## 5. Log Troubleshooting AI States
 
 Without Azure secrets:
@@ -119,6 +129,11 @@ git diff --cached --check
 
 ## 9. Release Notes
 
-Use `docs/release-notes-template.md` to summarize the release, QA commands, privacy posture, and known limitations.
+Use `docs/release-notes-template.md` to summarize the release, QA commands, privacy posture, known limitations, and the UX Quality Outcomes release reporting kit.
+
+Minimum UX reporting before publish:
+- Record one outcome each for navigation, readability/layout, task completion confidence, and public-safe behavior.
+- Keep wording concise and public-safe.
+- Use only synthetic/sanitized QA evidence (no customer data or secrets).
 
 For incident triage and diagnostics interpretation during or after rollout, see `docs/ops-runbook.md`.

@@ -242,5 +242,20 @@ with tool_result_panel("health_diagnostics_remediation_hints"):
     else:
         st.caption("No remediation items. All checks are passing.")
 
+with tool_result_panel("health_diagnostics_runbook_linking"):
+    render_section_heading(
+        "Runbook guidance",
+        "Use the operations runbook for deterministic remediation steps after Warn/Fail diagnostics outcomes.",
+        eyebrow="Ops",
+    )
+    st.caption("Primary runbook path: docs/ops-runbook.md")
+    repo_url = github_repository_url()
+    runbook_url = f"{repo_url}/blob/main/docs/ops-runbook.md"
+    runbook_display = _safe_url_for_display(runbook_url)
+    if "Invalid URL format" not in runbook_display and "Not configured" not in runbook_display:
+        st.link_button("Open public ops runbook", runbook_display)
+    else:
+        st.caption("Public runbook link unavailable. Open docs/ops-runbook.md in this repository.")
+
 mark_page_baseline(_baseline, "content-rendered")
 render_page_baseline(_baseline)

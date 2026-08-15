@@ -5,6 +5,7 @@ This runbook is for maintainers operating ITOps Toolkit releases.
 ## 1. Health Diagnostics Interpretation
 
 Use `Health Diagnostics` (`pages/128_Health_Diagnostics.py`) as the first operational checkpoint.
+The page now includes a **Runbook guidance** panel with a public-safe link back to this runbook (`docs/ops-runbook.md`).
 
 - **Pass**: safe to continue release checks.
 - **Warn**: optional integrations or non-critical configuration gaps.

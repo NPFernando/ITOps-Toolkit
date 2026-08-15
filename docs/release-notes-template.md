@@ -43,6 +43,22 @@ curl http://localhost:8502/_stcore/health
 - Log Troubleshooting AI unavailable state:
 - Optional Azure AI state, if secrets were available:
 
+## UX Quality Outcomes (Release Reporting Kit)
+
+Capture a short, public-safe outcome summary for each release.
+
+| Area | Outcome | Evidence |
+| --- | --- | --- |
+| Navigation and wayfinding |  | e.g., Sidebar and tool-card routes open correctly |
+| Readability and layout |  | e.g., No clipped text/controls on desktop + mobile |
+| Task completion confidence |  | e.g., Forms and diagnostics render without errors |
+| Public-safe behavior |  | e.g., No secrets shown; fallback notes stay safe |
+
+Notes:
+- Keep this section concise (4-8 bullets max across outcomes/notes).
+- Reference synthetic or sanitized QA inputs only.
+- Do not include customer domains, logs, tokens, keys, or screenshots with sensitive data.
+
 ## Known Limitations
 
 - Browser screenshot QA is manual/local and not part of CI.

@@ -316,6 +316,74 @@ def test_guided_workflows_respect_search_and_profession_filters():
     assert any(workflow.title == "Domain incident triage" for workflow in network_engineer)
 
 
+def test_render_guided_workflows_renders_heading_and_numbered_safe_step_links(monkeypatch):
+    class _Ctx:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, tb):
+            return False
+
+    rendered_markdown = []
+    step_links = []
+    workflow = ui.GuidedWorkflow(
+        title="Domain <script>alert(1)</script>",
+        description='Trace "DNS" & <HTTP> safely',
+        slugs=("jwt_decoder", "base64_tool"),
+        badge="Ops <Team>",
+    )
+
+    monkeypatch.setattr(ui, "GUIDED_WORKFLOWS", (workflow,))
+    monkeypatch.setattr(ui.st, "columns", lambda n, gap=None: [_Ctx() for _ in range(n)])
+    monkeypatch.setattr(ui.st, "container", lambda key=None: _Ctx())
+    monkeypatch.setattr(
+        ui.st,
+        "markdown",
+        lambda value, unsafe_allow_html=False: rendered_markdown.append((value, unsafe_allow_html)),
+    )
+    monkeypatch.setattr(
+        ui,
+        "_safe_page_link",
+        lambda path, label, icon, stretch_width=False: step_links.append((path, label, icon, stretch_width)),
+    )
+
+    ui.render_guided_workflows()
+
+    assert "Start Here Workflows" in rendered_markdown[0][0]
+    card_html = rendered_markdown[1][0]
+    assert "Domain <script>alert(1)</script>" not in card_html
+    assert "Domain &lt;script&gt;alert(1)&lt;/script&gt;" in card_html
+    assert "Ops &lt;Team&gt;" in card_html
+    assert "Trace &quot;DNS&quot; &amp; &lt;HTTP&gt; safely" in card_html
+    assert step_links == [
+        ("pages/7_JWT_Decoder.py", "1. JWT Decoder", ":material/verified_user:", True),
+        ("pages/6_Base64_Tool.py", "2. Base64 Tool", ":material/looks_6:", True),
+    ]
+
+
+def test_safe_page_link_fallback_escapes_link_label_html(monkeypatch):
+    rendered = []
+
+    def raise_missing_page(*args, **kwargs):
+        raise KeyError("missing page")
+
+    monkeypatch.setattr(ui.st, "page_link", raise_missing_page)
+    monkeypatch.setattr(ui.st, "markdown", lambda value, unsafe_allow_html=False: rendered.append((value, unsafe_allow_html)))
+
+    ui._safe_page_link(
+        "pages/7_JWT_Decoder.py",
+        label='1. JWT <script>alert("x")</script>',
+        icon=":material/verified_user:",
+    )
+
+    html, unsafe = rendered[0]
+    assert unsafe is True
+    assert 'class="fallback-page-link"' in html
+    assert 'href="/JWT_Decoder"' in html
+    assert "<script>" not in html
+    assert '1. JWT &lt;script&gt;alert(&quot;x&quot;)&lt;/script&gt;' in html
+
+
 # Live-external-lookup pages that should carry a caution warning= on
 # render_page_header (fires a request against private/internal input a
 # visitor might paste without thinking, e.g. an internal hostname or IP).
