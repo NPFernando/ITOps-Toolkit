@@ -30,6 +30,8 @@ Use this template for deployment notes, GitHub releases, or pull request summari
 - QA baseline add-on: Phase 27 wave-20 shell/mobile/visual/a11y QA gates completed
 - QA baseline add-on: Phase 28 wave-21 shell/mobile/visual/a11y QA gates completed
 - QA baseline add-on: Phase 29 wave-22 shell/mobile/visual/a11y QA gates completed
+- QA baseline add-on: Phase 30 wave-23 shell/mobile/visual/a11y QA gates completed
+- QA baseline add-on: Phase 31 wave-24 shell/mobile/visual/a11y QA gates completed
 
 ## User-Facing Changes
 
@@ -150,6 +152,10 @@ curl http://localhost:8502/_stcore/health
 - Wave 23 mobile readability spot check (`<=720px`, grouped controls stay single-column readable, Home controls + Roadmap filters/AI triage action + wave-23 submit/generate/validate actions stay full-width/tap-friendly, no clipping/overflow):
 - Wave 23 visual mapping spot check (wave-23 touchpoint slug-specific icon priority + fallback for `list_converter`, `email_address_normalizer`, `ipv4_format_converter`, `ipv4_range_expander`, `git_command_cheat_sheet`, `bip39_mnemonic_generator_validator`):
 - Wave 23 accessibility spot check (status/failure note semantics + keyboard/focus):
+- Wave 24 shell consistency spot check (shared shell + baseline markers on Home/Roadmap/Git Command Cheat Sheet/BIP39 Mnemonic Generator/Validator/Lorem Ipsum Generator/Text to Binary Hex Octal Converter):
+- Wave 24 mobile readability spot check (`<=720px`, grouped controls stay single-column readable, Home controls + Roadmap filters/AI triage action + wave-24 submit/generate/convert actions stay full-width/tap-friendly, no clipping/overflow):
+- Wave 24 visual mapping spot check (wave-24 touchpoint slug-specific icon priority + fallback for `git_command_cheat_sheet`, `bip39_mnemonic_generator_validator`, `lorem_ipsum_generator`, `text_to_binary_hex_octal_converter`):
+- Wave 24 accessibility spot check (status/failure note semantics + keyboard/focus):
 - Log Troubleshooting AI unavailable state:
 - Optional Azure AI state, if secrets were available:
 

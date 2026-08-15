@@ -399,10 +399,10 @@ def test_tool_card_icon_asset_maps_wave10_planned_tool_cohort():
         "email_normalizer": "icons/exported/icon-workflow-email-normalize-outline-24x24-v01.svg",
         "ipv4_format_converter": "icons/exported/icon-workflow-ipv4-format-outline-24x24-v01.svg",
         "ipv4_range_expander": "icons/exported/icon-workflow-subnet-planning-outline-24x24-v01.svg",
-        "git_command_cheat_sheet": "icons/exported/icon-workflow-reference-catalog-outline-24x24-v01.svg",
-        "bip39_mnemonic": "icons/exported/icon-workflow-mnemonic-seed-outline-24x24-v01.svg",
-        "lorem_ipsum_generator": "icons/exported/icon-workflow-markdown-structure-outline-24x24-v01.svg",
-        "text_radix_converter": "icons/exported/icon-workflow-text-radix-outline-24x24-v01.svg",
+        "git_command_cheat_sheet": "icons/exported/icon-workflow-git-command-cheat-sheet-outline-24x24-v01.svg",
+        "bip39_mnemonic": "icons/exported/icon-workflow-bip39-mnemonic-generator-validator-outline-24x24-v01.svg",
+        "lorem_ipsum_generator": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
+        "text_radix_converter": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
     }
 
     for slug, expected in expected_assets.items():
@@ -870,14 +870,12 @@ def test_tool_card_html_uses_wave22_generated_icons_when_mapped():
         assert "data:image/svg+xml;base64," in html
 
 
-def test_tool_card_icon_asset_maps_wave23_visual_targets():
+def test_tool_card_icon_asset_maps_wave24_visual_targets():
     expected_assets = {
-        "list_converter": "icons/exported/icon-workflow-list-transform-outline-24x24-v01.svg",
-        "email_address_normalizer": "icons/exported/icon-workflow-email-normalize-outline-24x24-v01.svg",
-        "ipv4_address_format_converter": "icons/exported/icon-workflow-ipv4-format-outline-24x24-v01.svg",
-        "ipv4_range_expander": "icons/exported/icon-workflow-subnet-planning-outline-24x24-v01.svg",
-        "git_command_cheat_sheet": "icons/exported/icon-workflow-reference-catalog-outline-24x24-v01.svg",
-        "bip39_mnemonic_generator_validator": "icons/exported/icon-workflow-mnemonic-seed-outline-24x24-v01.svg",
+        "git_command_cheat_sheet": "icons/exported/icon-workflow-git-command-cheat-sheet-outline-24x24-v01.svg",
+        "bip39_mnemonic_generator_validator": "icons/exported/icon-workflow-bip39-mnemonic-generator-validator-outline-24x24-v01.svg",
+        "lorem_ipsum_generator": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
+        "text_to_binary_hex_octal_converter": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
     }
 
     for slug, expected in expected_assets.items():
@@ -895,14 +893,12 @@ def test_tool_card_icon_asset_maps_wave23_visual_targets():
         assert ui._tool_card_icon_asset(tool) == expected
 
 
-def test_tool_card_html_uses_wave23_generated_icons_when_mapped():
+def test_tool_card_html_uses_wave24_generated_icons_when_mapped():
     slugs = (
-        "list_converter",
-        "email_address_normalizer",
-        "ipv4_address_format_converter",
-        "ipv4_range_expander",
         "git_command_cheat_sheet",
         "bip39_mnemonic_generator_validator",
+        "lorem_ipsum_generator",
+        "text_to_binary_hex_octal_converter",
     )
 
     for slug in slugs:
@@ -922,15 +918,13 @@ def test_tool_card_html_uses_wave23_generated_icons_when_mapped():
         assert "data:image/svg+xml;base64," in html
 
 
-def test_tool_card_html_wave23_slug_specific_mapping_precedes_category_default_during_render(monkeypatch):
+def test_tool_card_html_wave24_slug_specific_mapping_precedes_category_default_during_render(monkeypatch):
     category_default = "icons/exported/icon-workflow-automation-runbook-outline-24x24-v01.svg"
     slugs = (
-        "list_converter",
-        "email_address_normalizer",
-        "ipv4_address_format_converter",
-        "ipv4_range_expander",
         "git_command_cheat_sheet",
         "bip39_mnemonic_generator_validator",
+        "lorem_ipsum_generator",
+        "text_to_binary_hex_octal_converter",
     )
 
     def fake_svg_img_html(path, *args, **kwargs):
@@ -1388,6 +1382,20 @@ def test_material_icon_for_wave21_targets_and_unknown_fallback():
         assert ui._material_icon_for(slug) == expected
 
     assert ui._material_icon_for("not-a-real-slug") == ":material/build:"
+
+
+def test_material_icon_for_wave24_targets_and_unknown_fallback():
+    expected_icons = {
+        "git_command_cheat_sheet": ":material/menu_book:",
+        "bip39_mnemonic_generator_validator": ":material/vpn_key:",
+        "lorem_ipsum_generator": ":material/text_fields:",
+        "text_to_binary_hex_octal_converter": ":material/pin:",
+    }
+
+    for slug, expected in expected_icons.items():
+        assert ui._material_icon_for(slug) == expected
+
+    assert ui._material_icon_for("wave24-unknown-slug") == ":material/build:"
 
 
 def test_tool_card_html_uses_wave10_generated_icon_when_planned_slug_is_mapped():
@@ -1907,6 +1915,10 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "ip_geolocation",
             "cidr_overlap",
             "caa_record_builder",
+            "ipv6_ula_generator",
+            "random_mac_address_generator",
+            "ipv4_address_format_converter",
+            "ipv4_range_expander",
         ],
         "Security": [
             "ssl_certificate",
@@ -1936,6 +1948,8 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "csr_generator",
             "jwk_pem_converter",
             "cert_chain_validator",
+            "hmac_generator",
+            "bip39_mnemonic_generator_validator",
         ],
         "Web & Dev": [
             "http_status",
@@ -1957,6 +1971,7 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "cache_control_tool",
             "unified_diff_generator",
             "markdown_link_extractor",
+            "git_command_cheat_sheet",
         ],
         "Data & Text": [
             "json_formatter",
@@ -1995,6 +2010,10 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "test_data_generator",
             "json_merge_patch",
             "base62_tool",
+            "list_converter",
+            "email_address_normalizer",
+            "lorem_ipsum_generator",
+            "text_to_binary_hex_octal_converter",
         ],
         "Ops & Automation": [
             "cron_explainer",
@@ -2018,6 +2037,8 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "column_aligner",
             "wsl_path_converter",
             "health_diagnostics",
+            "docker_run_to_compose",
+            "wifi_qr_code_generator",
         ],
         "Reference": [
             "port_reference",
@@ -2030,6 +2051,7 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "timezone_abbreviation_reference",
             "jwt_claims_reference",
             "http_methods_reference",
+            "nato_phonetic_converter",
         ],
     }
 
