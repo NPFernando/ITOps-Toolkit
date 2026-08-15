@@ -9,9 +9,11 @@ from utils.text_tools import validate_length
 from utils.ui import (
     apply_app_shell,
     render_empty_state,
+    render_failure_note,
     render_form_intro,
     render_page_header,
     render_section_heading,
+    render_status_note,
     run_validated_lookup,
     tool_form_panel,
     tool_result_panel,
@@ -20,6 +22,37 @@ from utils.ui import (
 
 st.set_page_config(page_title="DNS Propagation Checker", layout="wide")
 apply_app_shell(active_page="DNS Propagation Checker")
+
+st.markdown(
+    """
+    <style>
+    @media (max-width: 768px) {
+      div[data-testid="stFormSubmitButton"] > button {
+        min-height: 2.75rem;
+        font-size: 1rem;
+      }
+      div[data-testid="stTextInput"] input,
+      div[data-testid="stSelectbox"] div[data-baseweb="select"] {
+        font-size: 1rem;
+      }
+      section.main div[data-testid="stHorizontalBlock"] {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+      section.main div[data-testid="column"] {
+        flex: 1 1 100% !important;
+        width: 100% !important;
+      }
+      div[data-testid="stTable"] table th,
+      div[data-testid="stTable"] table td {
+        white-space: normal !important;
+        word-break: break-word;
+      }
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
 
 
 render_page_header(
@@ -33,7 +66,7 @@ with tool_form_panel("dns_propagation"):
     with st.form("dns-propagation-form"):
         domain = st.text_input("Domain", placeholder="example.com", max_chars=MAX_DOMAIN_LENGTH)
         record_type = st.selectbox("Record type", SUPPORTED_RECORD_TYPES)
-        submitted = st.form_submit_button("Check propagation")
+        submitted = st.form_submit_button("Check propagation", use_container_width=True)
 
 if submitted:
     def _validate() -> str | None:
@@ -58,25 +91,50 @@ if validation_error is None and stored is None:
     render_empty_state("Ready to check propagation", "Per-resolver answers and a consistency check appear after the query.")
 
 if validation_error is not None:
-    st.error(validation_error)
+    render_failure_note(
+        "DNS propagation input",
+        validation_error,
+        remediation="Enter a valid public domain and rerun the lookup.",
+        mode="persistent",
+    )
 
 if stored is not None:
     result = stored["data"]
     with tool_result_panel("dns_propagation_result", related_to="dns_propagation"):
         render_section_heading(f"{stored['record_type']} records across resolvers", "Same query sent directly to each public resolver.")
         if not result["ok"]:
-            st.error(result["error"])
+            render_failure_note(
+                "DNS propagation lookup",
+                result["error"],
+                remediation="Retry the lookup or validate the domain and record type.",
+            )
         else:
             if result["consistent"] is True:
-                st.success("Resolvers agree -- answers are consistent.")
+                render_status_note(
+                    "Resolvers agree",
+                    "Answers are consistent across queried public resolvers.",
+                    tone="success",
+                )
             elif result["consistent"] is False:
-                st.warning("Resolvers disagree -- this may indicate propagation lag or a recent change.")
+                render_status_note(
+                    "Resolvers disagree",
+                    "This may indicate propagation lag or a recent DNS change. Review resolver-by-resolver output.",
+                    tone="warning",
+                )
             else:
-                st.warning("No resolver returned an answer.")
+                render_status_note(
+                    "No resolver returned an answer",
+                    "Try again shortly or verify that the selected record type exists for this domain.",
+                    tone="warning",
+                )
 
             for entry in result["resolvers"]:
-                with st.expander(f"{entry['resolver_name']} ({entry['resolver_ip']}) -- {entry['status']}", expanded=True):
+                with st.expander(f"{entry['resolver_name']} ({entry['resolver_ip']}) -- {entry['status']}", expanded=False):
                     if entry["ok"]:
                         st.dataframe(pd.DataFrame(entry["records"]), width="stretch", hide_index=True)
                     else:
-                        st.error(entry["error"])
+                        render_failure_note(
+                            f"{entry['resolver_name']} resolver",
+                            entry["error"],
+                            remediation="Retry shortly or test with an alternate public resolver.",
+                        )

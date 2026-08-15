@@ -287,6 +287,28 @@ def test_tool_card_icon_asset_maps_wave2_weak_cue_tools():
         assert ui._tool_card_icon_asset(tool) == expected
 
 
+def test_tool_card_icon_asset_maps_wave3_weak_cue_tools():
+    expected_assets = {
+        "unified_diff_generator": "icons/exported/icon-workflow-diff-patch-outline-24x24-v01.svg",
+        "jwk_pem_converter": "icons/exported/icon-workflow-key-format-outline-24x24-v01.svg",
+        "cert_chain_validator": "icons/exported/icon-workflow-cert-chain-outline-24x24-v01.svg",
+        "wsl_path_converter": "icons/exported/icon-workflow-path-bridge-outline-24x24-v01.svg",
+        "markdown_link_extractor": "icons/exported/icon-workflow-link-extract-outline-24x24-v01.svg",
+        "health_diagnostics": "icons/exported/icon-workflow-health-diagnostics-outline-24x24-v01.svg",
+    }
+
+    for slug, expected in expected_assets.items():
+        tool = next(item for item in TOOLS if item.slug == slug)
+        assert ui._tool_card_icon_asset(tool) == expected
+
+
+def test_tool_card_icon_asset_wave3_slug_specific_mapping_precedes_category_default():
+    tool = next(item for item in TOOLS if item.slug == "unified_diff_generator")
+
+    assert tool.category == "Web & Dev"
+    assert ui._tool_card_icon_asset(tool) == "icons/exported/icon-workflow-diff-patch-outline-24x24-v01.svg"
+
+
 def test_tool_card_html_uses_wave2_generated_icon_when_mapped():
     mapped_tool = next(tool for tool in TOOLS if tool.slug == "env_linter")
 

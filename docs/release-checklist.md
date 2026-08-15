@@ -96,6 +96,16 @@ Confirm these release-blocking checks pass:
 - **Accessibility:** keyboard-only navigation still reaches sidebar + primary page actions, focus rings remain visible, and shared notice blocks remain readable/semantic.
 - **Exception pages:** `Roadmap & Feedback` and `Health Diagnostics` remain intentional documented exceptions, not accidental regressions.
 
+### 4.4 Phase 10 Wave 3 Regression Checklist (Shell/Mobile/Visual/A11y QA Gates)
+
+Confirm these release-blocking checks pass:
+
+- **Shell clarity:** primary actions, status cues, and warnings remain clear as text (not icon-only) across Home, one checker tool, and Roadmap.
+- **Mobile (`<=720px`):** action labels, badges, and status chips wrap cleanly with no clipped text or horizontal overflow.
+- **Visual mapping (wave-3 focus):** weak-cue slugs resolve to slug-specific icon assets before category defaults; when assets are missing, text fallback badges remain readable.
+- **Accessibility:** keyboard flow, visible focus rings, and notice semantics remain intact after wave-3 visual updates.
+- **Release evidence:** Wave 3 outcomes are captured in `docs/release-notes-template.md` with synthetic/sanitized QA evidence only.
+
 ## 5. Log Troubleshooting AI States
 
 Without Azure secrets:

@@ -10,6 +10,7 @@ Use this template for deployment notes, GitHub releases, or pull request summari
 - Main file: `app.py`
 - Optional visual header: `docs/assets/posters/exported/poster-toolkit-trust-shield-hero-portrait-1080x1350-v01.svg`
 - QA baseline: Phase 9 wave-2 shell/mobile/visual/a11y checks completed
+- QA baseline add-on: Phase 10 wave-3 shell/mobile/visual/a11y QA gates completed
 
 ## User-Facing Changes
 
@@ -46,6 +47,10 @@ curl http://localhost:8502/_stcore/health
 - Wave 2 shell/navigation spot check (sidebar/search/command palette):
 - Wave 2 mobile spot check (`<=720px`, no clipping/overflow):
 - Wave 2 accessibility spot check (keyboard/focus/notice semantics):
+- Wave 3 shell clarity spot check (text-first cues/actions still clear):
+- Wave 3 mobile cue readability spot check (`<=720px`, no badge/chip clipping):
+- Wave 3 visual mapping spot check (weak-cue slug-specific icon priority + fallback):
+- Wave 3 accessibility spot check (decorative SVG semantics + keyboard/focus):
 - Log Troubleshooting AI unavailable state:
 - Optional Azure AI state, if secrets were available:
 

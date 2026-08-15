@@ -7,9 +7,11 @@ from utils.bulk_domain_health import MAX_DOMAINS_PER_BATCH, parse_domain_list, r
 from utils.ui import (
     apply_app_shell,
     render_empty_state,
+    render_failure_note,
     render_form_intro,
     render_page_header,
     render_section_heading,
+    render_status_note,
     tool_download_panel,
     tool_form_panel,
     tool_result_panel,
@@ -28,14 +30,14 @@ render_page_header(
 
 with tool_form_panel("bulk_domain_health"):
     render_form_intro(
-        "Upload or paste domains",
-        f"One domain per line, or a CSV with the domain as the first column. Checks up to {MAX_DOMAINS_PER_BATCH} domains per run.",
+        "Run a bulk domain check",
+        f"Upload or paste one public domain per line, or provide a CSV with the domain in the first column. Checks up to {MAX_DOMAINS_PER_BATCH} domains per run.",
     )
     with st.form("bulk-domain-health-form"):
         uploaded_file = st.file_uploader("CSV or text file", type=["csv", "txt"])
         pasted_text = st.text_area("Or paste domains here (one per line)", height=140, placeholder="example.com\nexample.org")
         include_dmarc = st.checkbox("Include DMARC check", value=True)
-        submitted = st.form_submit_button("Run bulk check")
+        submitted = st.form_submit_button("Run checks")
 
 if submitted:
     # Stored in session_state (not rendered directly here) because the export
@@ -75,18 +77,41 @@ validation_error = st.session_state.get("bulk_domain_health_validation_error")
 state = st.session_state.get("bulk_domain_health_state")
 
 if validation_error is None and state is None:
-    render_empty_state("Ready for a domain list", "Per-domain risk scores and status appear here after the batch check completes.")
+    render_empty_state(
+        "Ready to run bulk checks",
+        "Per-domain risk status, findings, and an exportable CSV appear here after the run.",
+    )
 
 if validation_error is not None:
-    st.error(validation_error)
+    render_failure_note(
+        "Bulk domain input",
+        validation_error,
+        remediation="Upload or paste at least one valid public domain and rerun the check.",
+    )
 
 if state is not None:
     frame = state["frame"]
     summary = state["summary"]
     with tool_result_panel("bulk_domain_health_result"):
         render_section_heading("Batch results", eyebrow="Result")
+        if summary["critical"] > 0 or summary["errored"] > 0:
+            render_status_note(
+                "Bulk check completed with issues",
+                "One or more domains returned critical or unknown status. Review flagged rows before sharing the report.",
+                tone="warning",
+            )
+        else:
+            render_status_note(
+                "Bulk check completed",
+                "All processed domains returned healthy or warning-level results.",
+                tone="success",
+            )
         if state["truncated"]:
-            st.warning(f"{state['total_domains']} domains were provided; only the first {MAX_DOMAINS_PER_BATCH} were checked.")
+            render_status_note(
+                "Input list truncated",
+                f"{state['total_domains']} domains were provided; only the first {MAX_DOMAINS_PER_BATCH} were checked.",
+                tone="warning",
+            )
 
         st.dataframe(frame, width="stretch", hide_index=True)
 

@@ -1,4 +1,4 @@
-# Assets Index (phase8 + wave2)
+# Assets Index (phase8 + wave2 + wave3)
 
 Generated assets available under `docs/assets/**/exported`. Runtime mappings are implemented in `utils/ui.py`.
 
@@ -34,6 +34,18 @@ Generated assets available under `docs/assets/**/exported`. Runtime mappings are
   - `hash_generator`, `file_integrity`, `bcrypt_tool`
 - Port scan icon:
   - `port_reference`, `tls_scanner`
+- Diff/patch icon:
+  - `unified_diff_generator`
+- Key format conversion icon:
+  - `jwk_pem_converter`
+- Certificate chain icon:
+  - `cert_chain_validator`
+- Path bridge icon:
+  - `wsl_path_converter`
+- Link extraction icon:
+  - `markdown_link_extractor`
+- Health diagnostics icon:
+  - `health_diagnostics`
 
 When no card icon asset resolves, cards display the text badge from `ToolMeta.icon`.
 
@@ -80,6 +92,13 @@ When a roadmap badge asset is unavailable, compact text fallback glyphs are used
 
 - Include one mobile viewport check (`<=720px`) while validating mapped/fallback visuals.
 - Include one keyboard-only pass to ensure visual fallbacks do not remove actionable text labels.
+
+### Phase 10 Wave 3 add-on QA focus
+
+- Confirm wave-3 weak-cue slugs resolve to slug-specific icon assets instead of category defaults.
+- Confirm slug-specific icon mappings still fall back to text badges when assets are unavailable.
+- Include one `<=720px` viewport pass to confirm wave-3 icon/cue surfaces keep readable labels and no clipped chips.
+- Include one keyboard-only pass to confirm visual updates did not hide actionable meaning behind decorative media.
 
 ## Docs/release media inventory
 

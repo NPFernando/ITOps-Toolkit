@@ -150,6 +150,20 @@ This guide documents the UI direction used for the Streamlit dashboard and tool 
 - Capture only synthetic/sanitized evidence in release notes.
 - Treat shell/mobile/visual/a11y regressions as release blockers until resolved or explicitly documented.
 
+## Phase 10 Wave 3 Standards (Shell, Mobile, Visual, A11y + QA Gates)
+
+- **Shell clarity:** keep primary actions and warnings text-first and obvious even when decorative visuals fail to load.
+- **Mobile baseline (`<=720px`):** keep action labels, badges, and status chips fully readable/wrapped with no horizontal overflow.
+- **Visual mapping integrity:** for weak-cue tool slugs, prefer slug-specific icon mappings before category defaults; keep text badge fallback readable.
+- **Accessibility guardrail:** decorative SVGs stay non-semantic (`aria-hidden`, empty alt), while all actionable meaning remains in adjacent text/labels.
+- **QA gate behavior:** treat Wave 3 shell/mobile/visual/a11y regressions as release blockers unless an intentional exception is documented.
+
+### Wave 3 QA handoff guidance
+
+- Run Wave 3 checks in `docs/release-checklist.md` before release.
+- Record Wave 3 outcomes in `docs/release-notes-template.md` using synthetic/sanitized evidence only.
+- Keep exceptions explicit (for example, non-tool layouts) and confirm they remain readable on desktop/mobile.
+
 ## Maintenance Rules
 
 - Do not duplicate tool titles, descriptions, paths, or accent colors outside `utils/ui.py`.

@@ -56,3 +56,8 @@ Use this matrix as a quick release gate:
 
 - Wave 2 release docs now explicitly gate shell integrity, mobile (`<=720px`) behavior, visual fallback readability, and accessibility checks in `docs/design-system.md`, `docs/release-checklist.md`, and `docs/release-notes-template.md`.
 - This matrix remains the cross-page consistency baseline; Wave 2 extends release QA emphasis rather than replacing Phase 8 rules.
+
+## Wave 3 Documentation Sync Note (Phase 10)
+
+- Wave 3 release docs now extend shell/mobile/visual/a11y gates with text-first cue clarity and weak-cue slug-specific visual mapping checks.
+- This matrix remains the Phase 8 baseline; Wave 3 adds stricter QA evidence requirements without changing the core consistency rules.
