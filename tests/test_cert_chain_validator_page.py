@@ -52,7 +52,9 @@ def test_validate_shows_result():
     app.button[0].click().run()
     assert not app.exception
 
-    assert any("check out" in s.value for s in app.success)
+    md = " ".join(m.value for m in app.markdown)
+    assert "tool-status-note-success" in md
+    assert "Validation complete" in md
 
 
 def test_empty_state_shown_before_submit():
@@ -62,6 +64,25 @@ def test_empty_state_shown_before_submit():
 
     md = " ".join(m.value for m in app.markdown)
     assert "tool-empty-state" in md
+    assert "tool-status-note-neutral" in md
+    assert "Awaiting certificate input" in md
+
+
+def test_invalid_chain_order_shows_warning_status():
+    app = AppTest.from_file(PAGE, default_timeout=30)
+    app.run()
+    assert not app.exception
+
+    chain = _build_chain_pem()
+    parts = [part for part in chain.split("-----END CERTIFICATE-----") if part.strip()]
+    reversed_chain = "".join(part + "-----END CERTIFICATE-----\n" for part in reversed(parts))
+    app.text_area[0].set_value(reversed_chain)
+    app.button[0].click().run()
+    assert not app.exception
+
+    md = " ".join(m.value for m in app.markdown)
+    assert "tool-status-note-warning" in md
+    assert "Chain needs attention" in md
 
 
 def test_results_persist_after_sidebar_interaction():

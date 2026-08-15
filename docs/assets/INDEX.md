@@ -1,4 +1,4 @@
-# Assets Index (phase8 + wave2 + wave3 + wave4 + wave5 + wave6 + wave7 + wave8)
+# Assets Index (phase8 + wave2 + wave3 + wave4 + wave5 + wave6 + wave7 + wave8 + wave9)
 
 Generated assets available under `docs/assets/**/exported`. Runtime mappings are implemented in `utils/ui.py`.
 
@@ -147,6 +147,14 @@ When a roadmap badge asset is unavailable, compact text fallback glyphs are used
 - HTTP header parsing icon: `http_header_parser`
 - Byte-size conversion icon: `byte_size_converter`
 
+### Phase 16 Wave 9 icon mapping extensions
+
+- MAC address formatting icon: `mac_address_tool`
+- Email header trace icon: `email_header_analyzer`
+- Text diff comparison icon: `text_diff_checker`
+- CIDR aggregation icon: `cidr_aggregator`
+- IPv6 compression icon: `ipv6_compressor`
+
 ### Phase 12 Wave 5 add-on QA focus
 
 - Confirm wave-5 slugs resolve to slug-specific assets before category defaults.
@@ -178,6 +186,14 @@ When a roadmap badge asset is unavailable, compact text fallback glyphs are used
 - Include one shell pass confirming grouped navigation + quick search + command palette still expose readable text cues after wave-8 icon updates.
 - Include one `<=720px` viewport pass to confirm wave-8 labels/badges/chips/helper text stay readable with no clipping/overflow.
 - Include one keyboard-only pass to confirm wave-8 visual changes do not hide actionable meaning or break focus visibility.
+
+### Phase 16 Wave 9 add-on QA focus
+
+- Confirm wave-9 weak-cue slugs resolve to slug-specific assets before category defaults.
+- Confirm slug-specific wave-9 icons still fall back to text badges when SVG rendering is unavailable.
+- Include one shell pass confirming grouped navigation + quick search + command palette still expose readable text cues after wave-9 icon updates.
+- Include one `<=720px` viewport pass to confirm wave-9 labels/badges/chips/helper text stay readable with no clipping/overflow.
+- Include one keyboard-only pass to confirm wave-9 visual changes do not hide actionable meaning or break focus visibility.
 
 ## Docs/release media inventory
 

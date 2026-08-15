@@ -118,6 +118,11 @@ TOOL_CARD_ICON_ASSETS: dict[str, str] = {
     "totp_generator": "icons/exported/icon-workflow-totp-token-outline-24x24-v01.svg",
     "http_header_parser": "icons/exported/icon-workflow-http-header-parse-outline-24x24-v01.svg",
     "byte_size_converter": "icons/exported/icon-workflow-byte-size-convert-outline-24x24-v01.svg",
+    "mac_address_tool": "icons/exported/icon-workflow-mac-address-outline-24x24-v01.svg",
+    "email_header_analyzer": "icons/exported/icon-workflow-email-header-trace-outline-24x24-v01.svg",
+    "text_diff_checker": "icons/exported/icon-workflow-text-diff-outline-24x24-v01.svg",
+    "cidr_aggregator": "icons/exported/icon-workflow-cidr-aggregate-outline-24x24-v01.svg",
+    "ipv6_compressor": "icons/exported/icon-workflow-ipv6-compress-outline-24x24-v01.svg",
 }
 CATEGORY_TOOL_CARD_ICON_ASSETS: dict[str, str] = {
     "Network": "icons/exported/icon-workflow-dns-lookup-outline-24x24-v01.svg",
