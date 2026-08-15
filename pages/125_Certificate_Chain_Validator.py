@@ -3,6 +3,7 @@ from __future__ import annotations
 import streamlit as st
 
 from utils.cert_chain_validator import MAX_INPUT_LENGTH, validate_chain_order
+from utils.dev_baseline import mark_page_baseline, render_page_baseline, start_page_baseline
 from utils.ui import (
     apply_app_shell,
     render_empty_state,
@@ -16,8 +17,10 @@ from utils.ui import (
 )
 
 
+_baseline = start_page_baseline("Certificate Chain Validator")
 st.set_page_config(page_title="Certificate Chain Validator", layout="wide")
 apply_app_shell(active_page="Certificate Chain Validator")
+mark_page_baseline(_baseline, "shell-ready")
 
 
 render_page_header(
@@ -66,3 +69,6 @@ if result is not None:
                     for link in result["links"]
                 ]
             )
+
+mark_page_baseline(_baseline, "content-rendered")
+render_page_baseline(_baseline)

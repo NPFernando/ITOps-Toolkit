@@ -146,6 +146,11 @@ TOOL_CARD_ICON_ASSETS: dict[str, str] = {
     "bip39_mnemonic_generator_validator": "icons/exported/icon-workflow-mnemonic-seed-outline-24x24-v01.svg",
     "lorem_ipsum_generator": "icons/exported/icon-workflow-markdown-structure-outline-24x24-v01.svg",
     "text_radix_converter": "icons/exported/icon-workflow-text-radix-outline-24x24-v01.svg",
+    "csv_column_selector": "icons/exported/icon-workflow-list-transform-outline-24x24-v01.svg",
+    "line_numberer": "icons/exported/icon-workflow-id-sequence-outline-24x24-v01.svg",
+    "column_aligner": "icons/exported/icon-workflow-list-transform-outline-24x24-v01.svg",
+    "csr_generator": "icons/exported/icon-workflow-cert-chain-outline-24x24-v01.svg",
+    "caa_record_builder": "icons/exported/icon-workflow-policy-controls-outline-24x24-v01.svg",
 }
 CATEGORY_TOOL_CARD_ICON_ASSETS: dict[str, str] = {
     "Network": "icons/exported/icon-workflow-dns-lookup-outline-24x24-v01.svg",

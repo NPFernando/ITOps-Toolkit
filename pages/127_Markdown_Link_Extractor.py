@@ -3,10 +3,12 @@ from __future__ import annotations
 import pandas as pd
 import streamlit as st
 
+from utils.dev_baseline import mark_page_baseline, render_page_baseline, start_page_baseline
 from utils.markdown_link_extractor import MAX_INPUT_LENGTH, extract_links
 from utils.ui import (
     apply_app_shell,
     render_empty_state,
+    render_failure_note,
     render_form_intro,
     render_page_header,
     render_section_heading,
@@ -16,8 +18,10 @@ from utils.ui import (
 )
 
 
+_baseline = start_page_baseline("Markdown Link Extractor")
 st.set_page_config(page_title="Markdown Link Extractor", layout="wide")
 apply_app_shell(active_page="Markdown Link Extractor")
+mark_page_baseline(_baseline, "shell-ready")
 
 
 render_page_header(
@@ -44,8 +48,11 @@ if result is not None:
     with tool_result_panel("markdown_link_extractor_result_panel", related_to="markdown_link_extractor"):
         render_section_heading("Links found", eyebrow="Result")
         if not result["ok"]:
-            st.error(result["error"])
-            render_status_note("Extraction failed", "Update the Markdown input and run extraction again.", tone="warning")
+            render_failure_note(
+                "Link extraction",
+                result["error"],
+                remediation="Provide Markdown content that includes at least one valid link, then run extraction again.",
+            )
         else:
             st.dataframe(
                 pd.DataFrame([{"Text": link["text"], "URL": link["url"], "Type": link["type"]} for link in result["links"]]),
@@ -53,3 +60,6 @@ if result is not None:
                 hide_index=True,
             )
             render_status_note("Extraction complete", f"Found {len(result['links'])} link(s) in the provided Markdown.", tone="success")
+
+mark_page_baseline(_baseline, "content-rendered")
+render_page_baseline(_baseline)

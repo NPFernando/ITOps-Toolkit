@@ -20,6 +20,9 @@ def test_generate_shows_result():
     code = " ".join(c.value for c in app.code)
     assert "BEGIN CERTIFICATE REQUEST" in code
     assert "BEGIN PRIVATE KEY" in code
+    md = " ".join(m.value for m in app.markdown)
+    assert "tool-status-note-success" in md
+    assert "CSR generation complete" in md
 
 
 def test_empty_state_shown_before_submit():
@@ -29,6 +32,21 @@ def test_empty_state_shown_before_submit():
 
     md = " ".join(m.value for m in app.markdown)
     assert "tool-empty-state" in md
+    assert "tool-status-note-neutral" in md
+    assert "Awaiting CSR input" in md
+
+
+def test_empty_submission_shows_warning_status():
+    app = AppTest.from_file(PAGE, default_timeout=30)
+    app.run()
+    assert not app.exception
+
+    app.button[0].click().run()
+    assert not app.exception
+
+    md = " ".join(m.value for m in app.markdown)
+    assert "tool-status-note-warning" in md
+    assert "CSR generation needs attention" in md
 
 
 def test_results_persist_after_sidebar_interaction():

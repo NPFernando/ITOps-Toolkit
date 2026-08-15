@@ -3,6 +3,7 @@ from __future__ import annotations
 import streamlit as st
 
 from utils.unified_diff_generator import MAX_INPUT_LENGTH, generate_unified_diff
+from utils.dev_baseline import mark_page_baseline, render_page_baseline, start_page_baseline
 from utils.ui import (
     apply_app_shell,
     render_empty_state,
@@ -16,8 +17,10 @@ from utils.ui import (
 )
 
 
+_baseline = start_page_baseline("Unified Diff Generator")
 st.set_page_config(page_title="Unified Diff Generator", layout="wide")
 apply_app_shell(active_page="Unified Diff Generator")
+mark_page_baseline(_baseline, "shell-ready")
 
 
 render_page_header(
@@ -61,3 +64,6 @@ if result is not None:
             render_status_note("Diff generation complete", "The patch output is ready below and can be downloaded as a .patch file.", tone="success")
             st.code(result["output"], language="diff")
             st.download_button("Download as .patch", result["output"], file_name="change.patch", mime="text/x-diff")
+
+mark_page_baseline(_baseline, "content-rendered")
+render_page_baseline(_baseline)

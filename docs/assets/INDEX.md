@@ -1,4 +1,4 @@
-# Assets Index (phase8 + wave2 + wave3 + wave4 + wave5 + wave6 + wave7 + wave8 + wave9 + wave10)
+# Assets Index (phase8 + wave2 + wave3 + wave4 + wave5 + wave6 + wave7 + wave8 + wave9 + wave10 + wave11)
 
 Generated assets available under `docs/assets/**/exported`. Runtime mappings are implemented in `utils/ui.py`.
 
@@ -173,6 +173,14 @@ When a roadmap badge asset is unavailable, compact text fallback glyphs are used
 - Lorem ipsum generation icon: `lorem_ipsum_generator`
 - Text radix conversion icon: `text_radix_converter`
 
+### Phase 18 Wave 11 icon mapping extensions
+
+- CSV column selector icon: `csv_column_selector`
+- Line numbering icon: `line_numberer`
+- Column alignment icon: `column_aligner`
+- CSR generation icon: `csr_generator`
+- CAA record builder icon: `caa_record_builder`
+
 ### Phase 12 Wave 5 add-on QA focus
 
 - Confirm wave-5 slugs resolve to slug-specific assets before category defaults.
@@ -220,6 +228,14 @@ When a roadmap badge asset is unavailable, compact text fallback glyphs are used
 - Include one shell pass confirming shared shell + baseline markers remain visible/unchanged on wave-10 pages.
 - Include one `<=720px` viewport pass to confirm wave-10 forms/results stay readable without page-scoped mobile CSS overrides.
 - Include one keyboard-only pass to confirm wave-10 notice semantics and focus visibility remain intact.
+
+### Phase 18 Wave 11 add-on QA focus
+
+- Confirm wave-11 slugs resolve to slug-specific assets before category defaults (`csv_column_selector`, `line_numberer`, `column_aligner`, `csr_generator`, `caa_record_builder`).
+- Confirm slug-specific wave-11 icons still fall back to text badges when SVG rendering is unavailable.
+- Include one shell pass confirming shared shell + baseline markers remain visible/unchanged on wave-11 pages.
+- Include one `<=720px` viewport pass to confirm wave-11 forms/results stay readable with wrapped labels/chips and no clipping/overflow.
+- Include one keyboard-only pass to confirm wave-11 notice semantics and focus visibility remain intact.
 
 ## Docs/release media inventory
 
