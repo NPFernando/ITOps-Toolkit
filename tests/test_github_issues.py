@@ -63,6 +63,49 @@ def test_fetch_public_issues_handles_request_errors(monkeypatch):
     assert result.error == "GitHub issues timed out or could not connect after 3 attempts. Showing seed roadmap data."
 
 
+def test_fetch_public_issues_retries_timeout_then_returns_fallback(monkeypatch):
+    calls = {"count": 0}
+
+    def fake_get(*args, **kwargs):
+        calls["count"] += 1
+        raise requests.exceptions.Timeout()
+
+    monkeypatch.setattr(github_issues.requests, "get", fake_get)
+    monkeypatch.setattr(github_issues.time, "sleep", lambda *_: None)
+
+    result = github_issues.fetch_public_issues("https://github.com/NPFernando/ITOps-Toolkit")
+
+    assert calls["count"] == 3
+    assert result.issues == ()
+    assert result.error == "GitHub issues timed out or could not connect after 3 attempts. Showing seed roadmap data."
+
+
+def test_fetch_public_issues_handles_invalid_json_payload(monkeypatch):
+    monkeypatch.setattr(
+        github_issues.requests,
+        "get",
+        lambda *args, **kwargs: FakeResponse(payload=ValueError("invalid json")),
+    )
+
+    result = github_issues.fetch_public_issues("https://github.com/NPFernando/ITOps-Toolkit")
+
+    assert result.issues == ()
+    assert result.error == "GitHub issue response was invalid. Showing seed roadmap data."
+
+
+def test_fetch_public_issues_handles_non_list_payload(monkeypatch):
+    monkeypatch.setattr(
+        github_issues.requests,
+        "get",
+        lambda *args, **kwargs: FakeResponse(payload={"items": []}),
+    )
+
+    result = github_issues.fetch_public_issues("https://github.com/NPFernando/ITOps-Toolkit")
+
+    assert result.issues == ()
+    assert result.error == "GitHub issue response was invalid. Showing seed roadmap data."
+
+
 def test_fetch_public_issues_retries_retryable_status_then_succeeds(monkeypatch):
     calls = {"count": 0}
 

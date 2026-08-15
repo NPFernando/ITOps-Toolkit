@@ -52,6 +52,7 @@ Useful local commands:
 
 ```bash
 make help       # list available commands
+make release-gates # fast pre-merge reliability/release checks
 make qa         # compile Python files and run tests
 make test       # run pytest only
 make clean      # remove local Python caches
@@ -163,6 +164,7 @@ No database or background worker is required. Roadmap feedback reads public GitH
 ## Release Readiness
 
 Before deployment, use [docs/release-checklist.md](docs/release-checklist.md). For release summaries, use [docs/release-notes-template.md](docs/release-notes-template.md).
+For runtime troubleshooting and diagnostics interpretation, use [docs/ops-runbook.md](docs/ops-runbook.md).
 For adapter timeout/retry/error/cache/privacy reliability standards, see [docs/reliability-contract.md](docs/reliability-contract.md).
 
 ## UI Design Notes
