@@ -39,6 +39,7 @@ Use this template for deployment notes, GitHub releases, or pull request summari
 - QA baseline add-on: Phase 36 wave-29 shell/mobile/visual/a11y QA gates completed
 - QA baseline add-on: Phase 37 wave-30 shell/mobile/visual/a11y QA gates completed
 - QA baseline add-on: Phase 38 wave-31 shell/mobile/visual/a11y QA gates completed
+- QA baseline add-on: Phase 39 wave-32 shell/mobile/visual/a11y QA gates completed
 
 ## User-Facing Changes
 
@@ -191,6 +192,10 @@ curl http://localhost:8502/_stcore/health
 - Wave 31 mobile readability spot check (`<=720px`, grouped controls stay single-column readable with shared control headings, Home controls + Roadmap filters/AI triage action + wave-31 submit/generate/convert actions stay full-width/tap-friendly, no clipping/overflow):
 - Wave 31 visual mapping spot check (wave-31 touchpoint slug-specific icon priority + fallback for `git_command_cheat_sheet`, `bip39_mnemonic_generator_validator`, `lorem_ipsum_generator`, `text_to_binary_hex_octal_converter`):
 - Wave 31 accessibility spot check (explicit neutral/warning/success status semantics with `role="status"`/`role="alert"` + `aria-live`, plus keyboard/focus):
+- Wave 32 shell consistency spot check (shared shell + baseline markers `shell-ready`/`content-rendered`/`wave32-shell-mobile` on Home/Roadmap/Lorem Ipsum Generator/Text to Binary Hex Octal Converter):
+- Wave 32 mobile readability spot check (`<=720px`, grouped controls keep shared headings, Home controls + Roadmap filters/AI triage action + wave-32 submit/generate/convert actions stay full-width/tap-friendly, and fixed `st.columns(2)` form layouts are absent on wave-32 touchpoints):
+- Wave 32 visual mapping spot check (placeholder-to-real slug alias priority + fallback: `157_tool_slug_pending_roadmap` + `157_<tool_slug_pending_roadmap>` -> `lorem_ipsum_generator`; `158_tool_slug_pending_roadmap` + `158_<tool_slug_pending_roadmap>` -> `text_to_binary_hex_octal_converter`):
+- Wave 32 accessibility + regression-tests spot check (explicit status semantics with `role="status"`/`role="alert"` + `aria-live`, keyboard/focus, plus pass results for `tests/test_ui_helpers.py` and `tests/test_wave32_shell_mobile_markers.py`):
 - Log Troubleshooting AI unavailable state:
 - Optional Azure AI state, if secrets were available:
 

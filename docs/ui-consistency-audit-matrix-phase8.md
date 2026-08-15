@@ -201,3 +201,9 @@ Use this matrix as a quick release gate:
 
 - Wave 31 release docs now extend shell/mobile/visual/a11y gates for shared shell baseline-marker coverage on Home/Roadmap plus Git Command Cheat Sheet/BIP39 Mnemonic Generator/Validator/Lorem Ipsum Generator/Text to Binary Hex Octal Converter, grouped mobile control readability with shared control headings, explicit status semantics (`role="status"`/`role="alert"` + `aria-live`), and wave-31 touchpoint visual mapping checks.
 - This matrix remains the Phase 8 baseline; Wave 31 adds release-playbook QA evidence requirements without changing core consistency rules.
+
+## Wave 32 Documentation Sync Note (Phase 39)
+
+- Wave 32 release docs now extend shell/mobile/visual/a11y gates for shared shell baseline-marker coverage on Home/Roadmap plus Lorem Ipsum Generator/Text to Binary Hex Octal Converter, placeholder-to-real alias visual mapping checks (`157_*`/`158_*` placeholders mapped to real slugs), grouped mobile control readability with shared control headings, and explicit status semantics (`role="status"`/`role="alert"` + `aria-live`).
+- Wave 32 docs also tighten UX standards by requiring no fixed two-column form layouts on wave-32 touchpoint pages and by recording wave-32 regression test evidence (`tests/test_ui_helpers.py`, `tests/test_wave32_shell_mobile_markers.py`) in release notes/checklists.
+- This matrix remains the Phase 8 baseline; Wave 32 adds release-playbook QA evidence requirements without changing core consistency rules.

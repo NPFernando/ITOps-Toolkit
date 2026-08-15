@@ -37,6 +37,7 @@ mark_page_baseline(_baseline, "wave28-shell-mobile")
 mark_page_baseline(_baseline, "wave29-shell-mobile")
 mark_page_baseline(_baseline, "wave30-shell-mobile")
 mark_page_baseline(_baseline, "wave31-shell-mobile")
+mark_page_baseline(_baseline, "wave32-shell-mobile")
 
 
 repo_url = github_url()
@@ -93,6 +94,7 @@ button_icon = ":material/expand_less:" if show_all else ":material/apps:"
 with tool_form_panel("home_primary_action"):
     render_form_intro("Toggle catalog visibility", "Use a full-width action to expand or collapse the tool catalog.")
     render_control_heading("Catalog action")
+    st.caption("Tip: Keep Quick access for focused mobile browsing, or open the full catalog when you need every tool.")
     if st.button(button_label, icon=button_icon, use_container_width=True):
         if show_all and navigation_mode == "All tools" and not search_query.strip() and profession == "All":
             st.session_state["home_force_quick_access"] = True
