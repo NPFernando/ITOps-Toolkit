@@ -121,7 +121,7 @@ def test_git_cheat_sheet_renders_reference_results():
 
     md = _markdown(app)
     assert "tool-status-note-neutral" in md
-    assert "Outcome: command reference loaded" in md
+    assert "Outcome: command reference ready" in md
     code = " ".join(item.value for item in app.code)
     assert "git status -sb" in code
 
@@ -130,7 +130,7 @@ def test_git_cheat_sheet_renders_reference_results():
     assert not app.exception
     md = _markdown(app)
     assert "tool-status-note-success" in md
-    assert "Outcome: command list updated" in md
+    assert "Outcome: command list filtered" in md
     code = " ".join(item.value for item in app.code)
     assert "git reflog" in code
 
@@ -139,7 +139,7 @@ def test_git_cheat_sheet_renders_reference_results():
     assert not app.exception
     md = _markdown(app)
     assert "tool-status-note-warning" in md
-    assert "Outcome: search refinement required" in md
+    assert "Outcome: command filtering blocked" in md
     assert 'role="alert"' in md
 
 
@@ -149,7 +149,7 @@ def test_bip39_generator_and_validator_states():
     app.button[0].click().run()
     assert not app.exception
     md = _markdown(app)
-    assert "Outcome: mnemonic generated" in md
+    assert "Outcome: mnemonic generation complete" in md
     generated = " ".join(item.value for item in app.code)
     assert len(generated.split()) == 12
 
@@ -157,12 +157,12 @@ def test_bip39_generator_and_validator_states():
     app.button[1].click().run()
     assert not app.exception
     md = _markdown(app)
-    assert "Outcome: mnemonic validation passed" in md
+    assert "Outcome: mnemonic validation complete" in md
 
     app.text_area[0].set_value("invalid words here")
     app.button[1].click().run()
     assert not app.exception
     md = _markdown(app)
-    assert "Outcome: mnemonic input validation required" in md
+    assert "Outcome: mnemonic validation blocked" in md
     assert "tool-status-note-warning" in md
     assert 'role="alert"' in md

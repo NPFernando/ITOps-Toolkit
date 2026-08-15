@@ -101,7 +101,11 @@ with tool_result_panel("bip39_generated_phrase", related_to="bip39_mnemonic_gene
         render_empty_state("No mnemonic generated yet", "Choose a word count, optionally add a seed, then generate a phrase.")
         render_status_note("Outcome: generation awaiting input", "Set options and choose Generate mnemonic.", tone="neutral")
     else:
-        render_status_note("Outcome: mnemonic generated", "Generated with deterministic seed when provided.", tone="success")
+        render_status_note(
+            "Outcome: mnemonic generation complete",
+            "A phrase was generated with deterministic seed behavior when provided.",
+            tone="success",
+        )
         st.code(str(phrase), language=None)
 
 with tool_result_panel("bip39_validation_result", related_to="bip39_mnemonic_validator"):
@@ -113,9 +117,9 @@ with tool_result_panel("bip39_validation_result", related_to="bip39_mnemonic_val
         detail = str(validation["error"])
         if validation.get("unknown"):
             detail += " Unknown words: " + ", ".join(str(item) for item in validation["unknown"])
-        render_status_note("Outcome: mnemonic input validation required", detail, tone="warning")
+        render_status_note("Outcome: mnemonic validation blocked", detail, tone="warning")
     else:
-        render_status_note("Outcome: mnemonic validation passed", "Word count and embedded subset checks passed.", tone="success")
+        render_status_note("Outcome: mnemonic validation complete", "Word count and embedded subset checks passed.", tone="success")
 
 mark_page_baseline(_baseline, "content-rendered")
 render_page_baseline(_baseline)

@@ -14,8 +14,10 @@ def test_text_radix_page_shows_neutral_state_before_submit():
     assert not app.exception
 
     markdown = " ".join(block.value for block in app.markdown)
-    assert "Outcome: converter awaiting input" in markdown
+    assert "Outcome: conversion awaiting input" in markdown
     assert "tool-status-note-neutral" in markdown
+    assert 'role="status"' in markdown
+    assert 'aria-live="polite"' in markdown
 
 
 def test_text_radix_page_converts_ascii_text_to_binary_hex_and_octal():
@@ -48,5 +50,5 @@ def test_text_radix_page_requires_non_empty_input():
 
     markdown = " ".join(block.value for block in app.markdown)
     assert "tool-status-note-warning" in markdown
-    assert "Outcome: text input validation required" in markdown
+    assert "Outcome: text conversion blocked" in markdown
     assert 'role="alert"' in markdown
