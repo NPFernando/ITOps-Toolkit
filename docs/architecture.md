@@ -6,6 +6,8 @@ ITOps Toolkit is a public-safe Streamlit app with no login, no database, and no 
 flowchart TD
     U[User Browser] --> S[Streamlit Pages]
     S --> UI[Shared UI Shell]
+    UI --> NAV[Home Navigation State<br/>recents/favorites/shared_fav]
+    UI --> CP[Command Palette Overlay]
     S --> T[Text and Validation Helpers]
     S --> D[DNS Tools]
     S --> H[HTTP Tools]
@@ -27,7 +29,8 @@ flowchart TD
 ## Boundaries
 
 - Delivery/UI: `app.py` and `pages/`
-- Shared UI system: `utils/ui.py` provides theme CSS, sidebar navigation, tool metadata, page headers, and home dashboard sections
+- Shared UI system: `utils/ui.py` provides theme CSS, sidebar navigation, command palette, tool metadata, page headers, and home dashboard sections
+- UI navigation state boundary: recents/favorites/shared favorites are URL-query-param driven with browser localStorage mirroring (`utils/ui.py`); no server-side persistence
 - Application/core helpers: `utils/scoring.py`, `utils/text_tools.py`, and rule definitions in `utils/ai_tools.py`
 - Roadmap data: `utils/roadmap.py` loads curated seed items from `data/roadmap_seed.json`, normalizes public GitHub issues, and provides merge/search/filter helpers
 - Project links: `utils/project_links.py` contains the default GitHub repository URL and optional `ITOPS_GITHUB_URL` override used by feedback links

@@ -110,6 +110,7 @@ if result is not None:
                 }
                 for item in result["findings"]
             ]
+            render_section_heading("Findings summary", "Matched patterns with likely issue and possible cause.")
             st.dataframe(pd.DataFrame(summary_rows), width="stretch", hide_index=True)
 
             for finding_index, item in enumerate(result["findings"]):
@@ -128,7 +129,7 @@ if result is not None:
                         st.checkbox(step, key=step_key)
 
             psa_note = build_log_analysis_psa_note(result["findings"])
-            with tool_download_panel("log_troubleshooting_export"):
+            with tool_download_panel("log_troubleshooting_export", related_to="log_troubleshooting"):
                 render_section_heading(
                     "PSA / ticket note",
                     "Plain text, no markdown symbols -- ready to paste into a ConnectWise, Autotask, or Halo ticket note.",

@@ -145,6 +145,11 @@ Before deployment, use [docs/release-checklist.md](docs/release-checklist.md). F
 
 The dashboard shell, tool metadata, navigation, and reusable visual components live in `utils/ui.py`. Future UI changes should follow `docs/design-system.md`.
 
+- Sidebar navigation is shell-managed (Home, Roadmap & Feedback, grouped tool links) with quick search.
+- Home navigation supports **Quick access** and **All tools** modes, with favorites, recently used/popular, shared favorites, and new tool sections.
+- The home hero visual is currently CSS-rendered in the shell (not loaded from an external asset file at runtime).
+- Generated icon/poster assets for documentation and future UI placement are available under `docs/assets/` (see `docs/assets/INDEX.md`).
+
 ## Roadmap Feedback
 
 The Roadmap & Feedback page merges curated seed data from `data/roadmap_seed.json` with public GitHub Issues from the configured repository. User ideas are submitted through GitHub Issues; Streamlit does not store or write feedback.

@@ -100,6 +100,10 @@ def test_roadmap_feedback_page_renders_hybrid_board_and_links(monkeypatch):
     assert "AI Recommended" in text
     assert "GitHub #42" in text
     assert "https://github.com/NPFernando/ITOps-Toolkit/issues/new" in text
+    markdown_html = "\n".join(m.value for m in app.markdown)
+    assert 'class="roadmap-notice' in markdown_html
+    assert 'role="note"' in markdown_html
+    assert 'aria-hidden="true"' in markdown_html
 
 
 def test_roadmap_feedback_page_ai_triage_unavailable_without_config(monkeypatch):

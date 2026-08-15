@@ -33,8 +33,8 @@ def _board_card(label: str, count: int) -> str:
 
 def _roadmap_notice(title: str, description: str, tone: str, mark: str) -> str:
     return (
-        f'<div class="roadmap-notice roadmap-notice-{escape(tone)}">'
-        f'<div class="roadmap-notice-mark">{escape(mark)}</div>'
+        f'<div class="roadmap-notice roadmap-notice-{escape(tone)}" role="note">'
+        f'<div class="roadmap-notice-mark" aria-hidden="true">{escape(mark)}</div>'
         '<div>'
         f"<strong>{escape(title)}</strong>"
         f"<p>{escape(description)}</p>"

@@ -72,6 +72,43 @@ def test_render_status_note_escapes_description_and_normalizes_tone(monkeypatch)
     assert "<script>" not in html
 
 
+def test_render_page_header_includes_tool_category_overline(monkeypatch):
+    rendered = []
+
+    def fake_markdown(value, unsafe_allow_html=False):
+        rendered.append((value, unsafe_allow_html))
+
+    monkeypatch.setattr(ui.st, "markdown", fake_markdown)
+
+    tool = TOOLS[0]
+    ui.render_page_header(tool.title, "desc")
+
+    html, unsafe = rendered[0]
+    assert unsafe is True
+    assert 'class="tool-page-overline"' in html
+    assert f">{tool.category} Tool<" in html
+
+
+def test_tool_card_html_includes_category_badge_and_escapes_fields():
+    tool = ui.ToolMeta(
+        title="Title <x>",
+        short_title="Title",
+        description="Desc <y>",
+        path="pages/1_test.py",
+        icon="IT",
+        accent="#123456",
+        slug="test_tool",
+        professions=("Support Engineer",),
+        category="Ops & Automation",
+    )
+
+    html = ui._tool_card_html(tool)
+    assert 'class="tool-card-category"' in html
+    assert ">Ops &amp; Automation<" in html
+    assert "Title &lt;x&gt;" in html
+    assert "Desc &lt;y&gt;" in html
+
+
 def test_title_to_slug_covers_every_tool():
     assert len(TITLE_TO_SLUG) == len(TOOLS)
     for tool in TOOLS:

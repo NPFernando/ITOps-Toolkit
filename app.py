@@ -33,26 +33,14 @@ if repo_url:
 search_query = render_home_hero()
 
 shared_favorites = shared_favorite_tools()
-if shared_favorites:
-    render_tool_section(shared_favorites, heading="Shared Favorites", section_id=None, key_prefix="shared")
-    st.caption("Someone shared this list with you. It's separate from your own favorites below.")
-
 favorites = favorite_tools()
-if favorites:
-    render_tool_section(favorites, heading="Favorites", section_id=None, key_prefix="fav", show_reorder=True)
-    with st.popover("Share favorites", icon=":material/share:"):
-        st.caption("Anyone with this link can view your current favorites list. It won't affect their own favorites.")
-        st.code(favorites_share_link(favorites), language=None)
-
 recent_param = st.query_params.get("recent", "")
 recent_slugs = [slug for slug in recent_param.split(",") if slug]
 recent_tools = recent_or_popular_tools(recent_slugs)
-recents_heading = "Recently Used" if recent_slugs else "Popular Tools"
-render_tool_section(recent_tools, heading=recents_heading, section_id=None, key_prefix="recent")
-
 newest_tools = tuple(tool for tool in TOOLS if tool.is_new)
-if newest_tools:
-    render_tool_section(newest_tools, heading="Newest Tools", section_id=None, key_prefix="new")
+
+if st.session_state.pop("home_force_quick_access", False):
+    st.session_state["home_navigation_mode"] = "Quick access"
 
 st.markdown('<div class="tool-panel-eyebrow">Filter by profession</div>', unsafe_allow_html=True)
 profession = st.pills(
@@ -67,6 +55,14 @@ profession = st.pills(
     key="home_profession_filter",
 )
 
+navigation_mode = st.pills(
+    "Home navigation",
+    options=("Quick access", "All tools"),
+    required=True,
+    label_visibility="collapsed",
+    key="home_navigation_mode",
+)
+
 show_all_flag = st.session_state.get("home_show_all", False)
 # `show_all` also factors in an active search/profession filter, which can
 # already be expanding the section independently of the flag -- label and
@@ -75,11 +71,15 @@ show_all_flag = st.session_state.get("home_show_all", False)
 # clicking it while a filter is doing the showing doesn't set a flag that
 # then outlives the filter (previously left the section stuck open after
 # clearing the filter).
-show_all = show_all_flag or bool(search_query.strip()) or profession != "All"
+show_all = show_all_flag or bool(search_query.strip()) or profession != "All" or navigation_mode == "All tools"
 button_label = "Hide all tools" if show_all else "Show all tools"
 button_icon = ":material/expand_less:" if show_all else ":material/apps:"
 if st.button(button_label, icon=button_icon):
-    st.session_state["home_show_all"] = not show_all
+    if show_all and navigation_mode == "All tools" and not search_query.strip() and profession == "All":
+        st.session_state["home_force_quick_access"] = True
+        st.session_state["home_show_all"] = False
+    else:
+        st.session_state["home_show_all"] = not show_all
     st.rerun()
 
 if show_all:
@@ -103,6 +103,41 @@ if show_all:
     sort_mode = {"Default": "default", "A-Z": "az", "Z-A": "za"}[sort_mode_label]
     all_tools = sort_tools(filter_tools(search_query, profession), sort_mode)
     render_tool_section(all_tools, heading=all_heading, key_prefix="all")
+else:
+    quick_access_tools = sort_tools(filter_tools("", profession), "default")
+    quick_access_slugs = {tool.slug for tool in quick_access_tools}
+
+    def _scoped(items: tuple) -> tuple:
+        matches = tuple(tool for tool in items if tool.slug in quick_access_slugs)
+        if not search_query.strip():
+            return matches
+        searched = {tool.slug for tool in filter_tools(search_query, profession)}
+        return tuple(tool for tool in matches if tool.slug in searched)
+
+    st.markdown('<div class="tool-panel-eyebrow">Quick access</div>', unsafe_allow_html=True)
+    if favorites:
+        scoped_favorites = _scoped(favorites)
+        if scoped_favorites:
+            render_tool_section(scoped_favorites, heading="Your Favorites", section_id=None, key_prefix="fav", show_reorder=True)
+            with st.popover("Share favorites", icon=":material/share:"):
+                st.caption("Anyone with this link can view your current favorites list. It won't affect their own favorites.")
+                st.code(favorites_share_link(favorites), language=None)
+
+    scoped_recent_tools = _scoped(recent_tools)
+    if scoped_recent_tools:
+        recents_heading = "Recently Used" if recent_slugs else "Popular to Start"
+        render_tool_section(scoped_recent_tools, heading=recents_heading, section_id=None, key_prefix="recent")
+
+    if shared_favorites:
+        scoped_shared = _scoped(shared_favorites)
+        if scoped_shared:
+            render_tool_section(scoped_shared, heading="Shared Favorites", section_id=None, key_prefix="shared")
+            st.caption("Someone shared this list with you. It's separate from your own favorites.")
+
+    if newest_tools:
+        scoped_new = _scoped(newest_tools)
+        if scoped_new:
+            render_tool_section(scoped_new, heading="New & Noteworthy", section_id=None, key_prefix="new")
 
 render_feature_strip()
 render_important_notice()

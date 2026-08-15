@@ -13,7 +13,9 @@ This guide documents the UI direction used for the Streamlit dashboard and tool 
 - Use the shared shell from `utils/ui.py` for global CSS, sidebar navigation, tool metadata, page headers, cards, and notices.
 - Home page structure:
   - Hero section with product title, short value statement, search input, trust chips, and the IT/security visual.
-  - Popular tool cards for primary workflows.
+  - Home navigation mode switch: Quick access (personalized sections) and All tools (full catalog).
+  - Quick access sections may include Your Favorites, Recently Used (or Popular to Start), Shared Favorites, and New & Noteworthy.
+  - All tools mode supports search + profession filtering + sort controls.
   - Feature strip for reliability, privacy, public-safe use, open source status, and mobile support.
   - Important notice band for sensitive-data handling.
 - Roadmap & Feedback page structure:
@@ -44,19 +46,24 @@ This guide documents the UI direction used for the Streamlit dashboard and tool 
 
 - Sidebar:
   - Brand block, navigation, safety card, and about card are required.
+  - Primary top-level links are Home and Roadmap & Feedback, followed by grouped tool links.
+  - Quick-search input and grouped navigation should keep strong contrast and clear spacing so scanning still works in long tool lists.
   - Active navigation state uses the blue gradient treatment.
   - Keep Streamlit's collapse and expand controls visible; hide native page navigation and deploy/tool chrome without hiding `stExpandSidebarButton`.
   - Add new tools by extending the `TOOLS` metadata in `utils/ui.py`.
+  - Keep the command palette (`Ctrl/Cmd+K`) aligned with the same `TOOLS` metadata and page-link navigation behavior.
 - Tool cards:
   - Use the central tool title, description, icon text, accent color, and Streamlit page link.
+  - Show category metadata inside each card for faster visual scanning on the home grid.
   - Buttons should navigate through Streamlit page links.
 - Page headers:
   - Use `render_page_header` instead of page-local `st.title` and `st.caption` combinations.
+  - Keep the small uppercase overline (`<category> Tool`) above the title to reinforce page context.
   - Use the warning parameter for sensitive-data reminders.
 - Tool page panels:
   - Wrap the primary input workflow in `tool_form_panel` and introduce it with `render_form_intro`.
   - Use `render_empty_state` before first submission so blank pages explain what will appear.
-  - Use `render_section_heading` for results, headers, recommendations, and downloads.
+  - Use `render_section_heading` for results, headers, recommendations, and downloads; maintain eyebrow + heading + optional description hierarchy.
   - Use `tool_result_panel` and `tool_download_panel` for framed result and export areas.
   - Use `display_rows_frame` for mixed field/value result tables before passing them to `st.dataframe`.
   - Use `render_status_note` for compact success, info, warning, neutral, or optional AI state messages.
@@ -68,14 +75,28 @@ This guide documents the UI direction used for the Streamlit dashboard and tool 
   - Label curated AI suggestions as static recommendations based on the toolkit direction. Do not call Azure/OpenAI from the roadmap page.
   - Keep feedback public-safe copy visible near submit links.
   - Show GitHub issue source badges and links for live public requests; show seed badges for curated local items.
+- Generated assets:
+  - Use exported outputs under `docs/assets/icons/exported/`, `docs/assets/posters/exported/`, and `docs/assets/illustrations/exported/` (listed in `docs/assets/INDEX.md`) for docs-facing media placement.
+  - Keep editable originals under `docs/assets/*/source` and regenerate exports instead of editing exported files directly.
+  - Current home hero artwork in-app is CSS-rendered (`_hero_visual_html`) and should not be documented as an external runtime asset dependency.
 
 ## Responsive Rules
 
 - The sidebar remains Streamlit-native so users can collapse it on narrow screens.
 - Home hero content stacks naturally on mobile.
+- Touch targets for pills/buttons should stay at least ~2.3rem tall so filter/sort controls remain usable on phones.
+- Quick-access and All-tools sections should wrap naturally; avoid fixed card widths that break mixed sections (favorites/recents/shared/new).
 - Feature strips collapse from five columns to two columns and then one column.
 - Tool cards should not rely on fixed text widths; long labels must wrap cleanly.
+- Tool-page action buttons (submit/download) should wrap label text and expand full-width on narrow screens.
 - Roadmap columns may scroll vertically on desktop, then stack naturally on narrow screens.
+
+## Accessibility Rules
+
+- Keep visible `:focus-visible` styles across links, buttons, and form controls in the shared shell CSS.
+- Prefer semantic notice containers (`role="note"`) for shared warning/info blocks (home notice, roadmap notices).
+- Preserve keyboard accessibility for sidebar quick search, pills (mode/filter/sort), and command palette triggers.
+- Keep roadmap card/body text sizes readable after styling changes; avoid shrinking below body-readable sizes.
 
 ## Maintenance Rules
 
