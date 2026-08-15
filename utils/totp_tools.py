@@ -30,12 +30,13 @@ def current_code(secret: str) -> dict[str, Any]:
 
     try:
         totp = pyotp.TOTP(cleaned, interval=TOTP_PERIOD_SECONDS)
-        code = totp.now()
+        now = int(time.time())
+        code = totp.at(now)
     except Exception:
         result["error"] = "Invalid base32 secret."
         return result
 
-    seconds_remaining = TOTP_PERIOD_SECONDS - int(time.time()) % TOTP_PERIOD_SECONDS
+    seconds_remaining = TOTP_PERIOD_SECONDS - now % TOTP_PERIOD_SECONDS
     result.update({"ok": True, "code": code, "seconds_remaining": seconds_remaining})
     return result
 

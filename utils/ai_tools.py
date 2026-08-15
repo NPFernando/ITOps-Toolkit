@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import os
 import re
+import time
 from typing import Any
 
 from utils.text_tools import MAX_LOG_LENGTH, validate_length
@@ -24,6 +25,9 @@ AZURE_OPENAI_REQUIRED_KEYS = (
     "AZURE_OPENAI_DEPLOYMENT",
 )
 AZURE_OPENAI_OPTIONAL_KEYS = ("AZURE_OPENAI_API_VERSION",)
+DEFAULT_AZURE_TIMEOUT_SECONDS = 20.0
+DEFAULT_AZURE_RETRY_ATTEMPTS = 3
+AZURE_RETRY_BACKOFF_SECONDS = 0.5
 
 AZURE_AI_SYSTEM_INSTRUCTIONS = """You are helping an IT operations engineer troubleshoot sanitized logs.
 Use only the supplied sanitized log text and rule-based findings.
@@ -93,7 +97,18 @@ def _azure_openai_base_url(endpoint: str) -> str:
 def _default_azure_openai_client(api_key: str, base_url: str) -> Any:
     from openai import OpenAI
 
-    return OpenAI(api_key=api_key, base_url=base_url, timeout=20.0)
+    return OpenAI(api_key=api_key, base_url=base_url, timeout=DEFAULT_AZURE_TIMEOUT_SECONDS)
+
+
+def _is_retryable_ai_exception(exc: Exception) -> bool:
+    retryable_names = {
+        "APITimeoutError",
+        "APIConnectionError",
+        "RateLimitError",
+        "InternalServerError",
+        "ServiceUnavailableError",
+    }
+    return isinstance(exc, (TimeoutError, ConnectionError)) or type(exc).__name__ in retryable_names
 
 
 def _safe_findings_summary(findings: list[dict[str, Any]] | None) -> list[dict[str, str]]:
@@ -172,13 +187,28 @@ def summarize_logs_with_azure(
             api_key=config["AZURE_OPENAI_API_KEY"],
             base_url=_azure_openai_base_url(config["AZURE_OPENAI_ENDPOINT"]),
         )
-        response = client.responses.create(
-            model=config["AZURE_OPENAI_DEPLOYMENT"],
-            instructions=AZURE_AI_SYSTEM_INSTRUCTIONS,
-            input=input_text,
-            max_output_tokens=500,
-        )
-        summary = _response_output_text(response)
+        summary = ""
+        for attempt in range(1, DEFAULT_AZURE_RETRY_ATTEMPTS + 1):
+            try:
+                response = client.responses.create(
+                    model=config["AZURE_OPENAI_DEPLOYMENT"],
+                    instructions=AZURE_AI_SYSTEM_INSTRUCTIONS,
+                    input=input_text,
+                    max_output_tokens=500,
+                )
+                summary = _response_output_text(response)
+                break
+            except Exception as exc:
+                if attempt < DEFAULT_AZURE_RETRY_ATTEMPTS and _is_retryable_ai_exception(exc):
+                    time.sleep(AZURE_RETRY_BACKOFF_SECONDS * attempt)
+                    continue
+                return {
+                    "enabled": False,
+                    "provider": "azure_openai",
+                    "status": "error",
+                    "message": "Azure AI summary could not be generated. Rule-based results are still available.",
+                    "error_type": type(exc).__name__,
+                }
     except Exception as exc:
         return {
             "enabled": False,
@@ -266,13 +296,28 @@ def summarize_feature_requests_with_azure(
             api_key=config["AZURE_OPENAI_API_KEY"],
             base_url=_azure_openai_base_url(config["AZURE_OPENAI_ENDPOINT"]),
         )
-        response = client.responses.create(
-            model=config["AZURE_OPENAI_DEPLOYMENT"],
-            instructions=FEATURE_TRIAGE_SYSTEM_INSTRUCTIONS,
-            input=input_text,
-            max_output_tokens=500,
-        )
-        summary = _response_output_text(response)
+        summary = ""
+        for attempt in range(1, DEFAULT_AZURE_RETRY_ATTEMPTS + 1):
+            try:
+                response = client.responses.create(
+                    model=config["AZURE_OPENAI_DEPLOYMENT"],
+                    instructions=FEATURE_TRIAGE_SYSTEM_INSTRUCTIONS,
+                    input=input_text,
+                    max_output_tokens=500,
+                )
+                summary = _response_output_text(response)
+                break
+            except Exception as exc:
+                if attempt < DEFAULT_AZURE_RETRY_ATTEMPTS and _is_retryable_ai_exception(exc):
+                    time.sleep(AZURE_RETRY_BACKOFF_SECONDS * attempt)
+                    continue
+                return {
+                    "enabled": False,
+                    "provider": "azure_openai",
+                    "status": "error",
+                    "message": "AI triage summary could not be generated.",
+                    "error_type": type(exc).__name__,
+                }
     except Exception as exc:
         return {
             "enabled": False,

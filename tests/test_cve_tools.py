@@ -1,21 +1,18 @@
-import time
+import requests
 
 from utils import cve_tools
 
 
-def _lookup_cve_tolerating_rate_limit(query: str, attempts: int = 3, delay_seconds: float = 8.0) -> dict:
-    """NVD's public API (no key) allows ~5 requests per rolling 30s window. CI runs the
-    3.11/3.12 test matrix concurrently, which can trip that shared limit even though
-    nothing is wrong with the code -- lookup_cve() already handles 429 gracefully in
-    production (see check_security_headers-style error envelopes), so retry here rather
-    than let CI flake on a rate limit that isn't a real bug."""
-    result = cve_tools.lookup_cve(query)
-    for _ in range(attempts - 1):
-        if result.get("ok") or "rate limit" not in (result.get("error") or "").lower():
-            break
-        time.sleep(delay_seconds)
-        result = cve_tools.lookup_cve(query)
-    return result
+class _FakeResponse:
+    def __init__(self, status_code=200, payload=None, raises_json=False):
+        self.status_code = status_code
+        self._payload = payload or {}
+        self._raises_json = raises_json
+
+    def json(self):
+        if self._raises_json:
+            raise ValueError("bad json")
+        return self._payload
 
 
 def test_lookup_cve_rejects_empty_query():
@@ -81,20 +78,153 @@ def test_english_description_empty_list():
     assert cve_tools._english_description([]) == ""
 
 
-def test_lookup_cve_live_exact_id():
-    result = _lookup_cve_tolerating_rate_limit("CVE-2021-44228")
+def test_lookup_cve_uses_exact_id_params_and_uppercases(monkeypatch):
+    captured = {}
+
+    def fake_get(url, params, headers, timeout):
+        captured["url"] = url
+        captured["params"] = params
+        captured["headers"] = headers
+        captured["timeout"] = timeout
+        return _FakeResponse(payload={"vulnerabilities": [{"cve": {"id": "CVE-2021-44228"}}]})
+
+    monkeypatch.setattr(cve_tools.requests, "get", fake_get)
+
+    result = cve_tools.lookup_cve("cve-2021-44228")
 
     assert result["ok"] is True
-    assert len(result["results"]) == 1
-    entry = result["results"][0]
-    assert entry["id"] == "CVE-2021-44228"
-    assert entry["cvss"]["base_severity"] == "CRITICAL"
-    assert "log4j" in entry["description"].lower() or "jndi" in entry["description"].lower()
+    assert captured["url"] == cve_tools.NVD_URL
+    assert captured["params"] == {"cveId": "CVE-2021-44228"}
+    assert captured["timeout"] == cve_tools.NVD_TIMEOUT
+    assert "User-Agent" in captured["headers"]
 
 
-def test_lookup_cve_live_keyword_search():
-    result = _lookup_cve_tolerating_rate_limit("log4j remote code execution")
+def test_lookup_cve_uses_keyword_params_with_limit(monkeypatch):
+    captured = {}
+
+    def fake_get(url, params, headers, timeout):
+        captured["params"] = params
+        return _FakeResponse(payload={"vulnerabilities": [{"cve": {"id": "CVE-2021-0001"}}]})
+
+    monkeypatch.setattr(cve_tools.requests, "get", fake_get)
+
+    result = cve_tools.lookup_cve("log4j remote code execution")
 
     assert result["ok"] is True
-    assert len(result["results"]) > 0
-    assert result["total_results"] > 0
+    assert captured["params"] == {"keywordSearch": "log4j remote code execution", "resultsPerPage": cve_tools.MAX_KEYWORD_RESULTS}
+
+
+def test_lookup_cve_handles_request_exception(monkeypatch):
+    def fake_get(url, params, headers, timeout):
+        raise requests.RequestException("timeout")
+
+    monkeypatch.setattr(cve_tools.requests, "get", fake_get)
+
+    result = cve_tools.lookup_cve("CVE-2021-44228")
+
+    assert result["ok"] is False
+    assert "failed" in result["error"].lower()
+
+
+def test_lookup_cve_handles_404(monkeypatch):
+    monkeypatch.setattr(
+        cve_tools.requests,
+        "get",
+        lambda url, params, headers, timeout: _FakeResponse(status_code=404),
+    )
+
+    result = cve_tools.lookup_cve("CVE-2021-44228")
+
+    assert result["ok"] is False
+    assert result["error"] == "No matching CVE found."
+
+
+def test_lookup_cve_handles_rate_limit(monkeypatch):
+    monkeypatch.setattr(
+        cve_tools.requests,
+        "get",
+        lambda url, params, headers, timeout: _FakeResponse(status_code=429),
+    )
+
+    result = cve_tools.lookup_cve("CVE-2021-44228")
+
+    assert result["ok"] is False
+    assert "rate limit" in result["error"].lower()
+
+
+def test_lookup_cve_handles_non_200_status(monkeypatch):
+    monkeypatch.setattr(
+        cve_tools.requests,
+        "get",
+        lambda url, params, headers, timeout: _FakeResponse(status_code=503),
+    )
+
+    result = cve_tools.lookup_cve("CVE-2021-44228")
+
+    assert result["ok"] is False
+    assert "status 503" in result["error"]
+
+
+def test_lookup_cve_handles_bad_json(monkeypatch):
+    monkeypatch.setattr(
+        cve_tools.requests,
+        "get",
+        lambda url, params, headers, timeout: _FakeResponse(status_code=200, raises_json=True),
+    )
+
+    result = cve_tools.lookup_cve("CVE-2021-44228")
+
+    assert result["ok"] is False
+    assert "unexpected response" in result["error"].lower()
+
+
+def test_lookup_cve_handles_empty_vulnerabilities(monkeypatch):
+    monkeypatch.setattr(
+        cve_tools.requests,
+        "get",
+        lambda url, params, headers, timeout: _FakeResponse(status_code=200, payload={"vulnerabilities": []}),
+    )
+
+    result = cve_tools.lookup_cve("CVE-2021-44228")
+
+    assert result["ok"] is False
+    assert result["error"] == "No matching CVE found."
+
+
+def test_lookup_cve_summarizes_success_payload(monkeypatch):
+    payload = {
+        "totalResults": 1,
+        "vulnerabilities": [
+            {
+                "cve": {
+                    "id": "CVE-2021-44228",
+                    "vulnStatus": "Analyzed",
+                    "published": "2021-12-10T00:00:00.000",
+                    "lastModified": "2021-12-11T00:00:00.000",
+                    "descriptions": [{"lang": "en", "value": "Example description"}],
+                    "metrics": {
+                        "cvssMetricV31": [
+                            {
+                                "cvssData": {"version": "3.1", "baseScore": 10.0, "baseSeverity": "CRITICAL"},
+                                "baseSeverity": "CRITICAL",
+                            }
+                        ]
+                    },
+                    "references": [{"url": "https://example.com/a"}, {"url": "https://example.com/b"}],
+                }
+            }
+        ],
+    }
+    monkeypatch.setattr(
+        cve_tools.requests,
+        "get",
+        lambda url, params, headers, timeout: _FakeResponse(status_code=200, payload=payload),
+    )
+
+    result = cve_tools.lookup_cve("CVE-2021-44228")
+
+    assert result["ok"] is True
+    assert result["total_results"] == 1
+    assert result["results"][0]["id"] == "CVE-2021-44228"
+    assert result["results"][0]["cvss"]["base_severity"] == "CRITICAL"
+    assert result["results"][0]["references"] == ["https://example.com/a", "https://example.com/b"]

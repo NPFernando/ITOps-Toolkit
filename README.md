@@ -29,6 +29,7 @@ Use this lightweight poster in docs headers and release summaries to reinforce d
 - Cron Explainer for common 5-field cron expressions.
 - Log Troubleshooting Assistant with rule-based, public-safe analysis and optional Azure AI summaries.
 - Roadmap & Feedback board with curated seed items, live public GitHub Issues, planned work, completed work, and static AI recommendations.
+- Health Diagnostics page with public-safe runtime checks for app basics, optional integrations, feature flags, and safe smoke probes.
 
 ## Local Setup
 
@@ -162,18 +163,20 @@ No database or background worker is required. Roadmap feedback reads public GitH
 ## Release Readiness
 
 Before deployment, use [docs/release-checklist.md](docs/release-checklist.md). For release summaries, use [docs/release-notes-template.md](docs/release-notes-template.md).
+For adapter timeout/retry/error/cache/privacy reliability standards, see [docs/reliability-contract.md](docs/reliability-contract.md).
 
 ## UI Design Notes
 
 The dashboard shell, tool metadata, navigation, and reusable visual components live in `utils/ui.py`. Future UI changes should follow `docs/design-system.md`.
-For Phase 3 recommendations on caching/reruns/session-state/navigation/performance, see `docs/streamlit-performance-audit.md`.
+For Phase 4 reliability/performance alignment notes, see `docs/streamlit-performance-audit.md`.
 
-### Phase 3 performance playbook
+### Phase 4 contributor reliability playbook
 
 - **Fragments (`st.fragment`)**: keep these in shell/home rerun hot paths (`app.py` + `utils/ui.py`) so favorite/reorder interactions can rerun locally.
-- **Caching (`st.cache_data`)**: keep short-TTL read caching near page-level data loaders and merge helpers (for example, Roadmap board loaders in `pages/10_Roadmap_Feedback.py`).
+- **Caching (`st.cache_data`)**: use shared controls from `utils/cache_policy.py` (TTL tiers, stable cache keys, runtime test scope, freshness messaging) for user-facing cached reads.
 - **Session state (`st.session_state`)**: keep per-session UI/result state in page modules; do not persist user-entered domains, URLs, logs, JWTs, JSON, or encoded text.
 - **Dev baseline instrumentation**: local/dev-only via `ITOPS_DEV_BASELINE=1`, currently wired for Home, Roadmap & Feedback, Domain Health Checker, DNS Record Checker, SSL Certificate Checker, and HTTP Status Checker.
+- **Health diagnostics**: keep `pages/128_Health_Diagnostics.py` focused on non-sensitive runtime checks only; never display secrets or user payloads.
 
 - Sidebar navigation is shell-managed (Home, Roadmap & Feedback, grouped tool links) with quick search.
 - Home navigation supports **Quick access** and **All tools** modes, with favorites, recently used/popular, shared favorites, and new tool sections.
@@ -200,6 +203,7 @@ Maintainer labels:
 - `.streamlit/secrets.toml`, `.env`, and `.env.*` are ignored by git.
 - JWTs are decoded locally without signature verification and are not sent externally.
 - The log assistant uses rule-based analysis by default and sends sanitized logs to Azure OpenAI only when Azure settings are configured and the user opts in for that submission.
+- Reliability failure handling standards (timeouts, retry classes, cache/stale rules, and public-safe error conventions) are defined in [docs/reliability-contract.md](docs/reliability-contract.md).
 
 ## Screenshots
 

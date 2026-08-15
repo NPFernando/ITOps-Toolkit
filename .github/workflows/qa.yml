@@ -31,5 +31,15 @@ jobs:
       - name: Compile Python files
         run: python -m compileall app.py pages utils
 
-      - name: Run tests
+      - name: Run reliability guardrail tests
+        if: matrix.python-version == '3.11'
+        run: >-
+          python -m pytest
+          tests/test_cve_tools.py
+          tests/test_totp_tools.py
+          tests/test_log_ai_page.py
+          tests/test_streamlit_pages.py
+
+      - name: Run full tests
+        if: matrix.python-version == '3.12'
         run: python -m pytest

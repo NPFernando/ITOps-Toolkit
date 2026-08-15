@@ -9,9 +9,11 @@ from utils.text_tools import validate_length
 from utils.ui import (
     apply_app_shell,
     render_empty_state,
+    render_failure_note,
     render_form_intro,
     render_page_header,
     render_section_heading,
+    render_status_note,
     run_validated_lookup,
     tool_download_panel,
     tool_form_panel,
@@ -78,7 +80,7 @@ if validation_error is None and stored is None:
     )
 
 if validation_error is not None:
-    st.error(validation_error)
+    render_failure_note("DNS input", validation_error, remediation="Provide a valid public domain and retry the lookup.")
 
 if stored is not None:
     result = stored["data"]
@@ -86,11 +88,15 @@ if stored is not None:
         render_section_heading(f"{stored['record_type']} records", EXPLANATIONS[stored["record_type"]])
 
         if result["ok"]:
-            st.success(result["status"])
+            render_status_note("DNS lookup completed", "Public DNS records were returned.", tone="success")
             st.dataframe(pd.DataFrame(result["records"]), width="stretch", hide_index=True)
         else:
-            st.warning(result["status"])
-            st.error(result["error"])
+            render_status_note(f"DNS status: {result['status']}", "DNS records were not returned for this query.", tone="warning")
+            render_failure_note(
+                "DNS lookup",
+                result.get("error"),
+                remediation="Confirm the record type and domain delegation, then retry after DNS propagation.",
+            )
 
         with st.expander("Raw values"):
             if result["raw_values"]:

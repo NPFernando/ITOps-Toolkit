@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import time
 from typing import Any
 from urllib.parse import urlparse
 
@@ -10,6 +11,10 @@ import dns.resolver
 
 
 MAX_DOMAIN_LENGTH = 253
+DEFAULT_DNS_TIMEOUT_SECONDS = 3.0
+DEFAULT_DNS_LIFETIME_SECONDS = 5.0
+DEFAULT_DNS_RETRY_ATTEMPTS = 3
+DNS_RETRY_BACKOFF_SECONDS = 0.2
 
 
 def normalize_domain(domain: str) -> str:
@@ -42,7 +47,10 @@ def _base_result(domain: str, record_type: str, query_name: str | None = None) -
     }
 
 
-def get_resolver(timeout: float = 3.0, lifetime: float = 5.0) -> dns.resolver.Resolver:
+def get_resolver(
+    timeout: float = DEFAULT_DNS_TIMEOUT_SECONDS,
+    lifetime: float = DEFAULT_DNS_LIFETIME_SECONDS,
+) -> dns.resolver.Resolver:
     resolver = dns.resolver.Resolver()
     resolver.timeout = timeout
     resolver.lifetime = lifetime
@@ -126,21 +134,39 @@ def resolve_records(domain: str, record_type: str) -> dict[str, Any]:
     result = _base_result(normalized, requested_type, query_name)
 
     try:
-        answers = get_resolver().resolve(query_name, query_type)
+        answers = None
+        for attempt in range(1, DEFAULT_DNS_RETRY_ATTEMPTS + 1):
+            try:
+                answers = get_resolver().resolve(query_name, query_type)
+                break
+            except dns.exception.Timeout:
+                if attempt < DEFAULT_DNS_RETRY_ATTEMPTS:
+                    time.sleep(DNS_RETRY_BACKOFF_SECONDS * attempt)
+                    continue
+                return _error_result(
+                    normalized,
+                    requested_type,
+                    query_name,
+                    "Timeout",
+                    f"DNS lookup timed out after {DEFAULT_DNS_RETRY_ATTEMPTS} attempts.",
+                )
+            except dns.resolver.NoNameservers:
+                if attempt < DEFAULT_DNS_RETRY_ATTEMPTS:
+                    time.sleep(DNS_RETRY_BACKOFF_SECONDS * attempt)
+                    continue
+                return _error_result(
+                    normalized,
+                    requested_type,
+                    query_name,
+                    "Nameserver Error",
+                    f"Nameservers could not answer this query after {DEFAULT_DNS_RETRY_ATTEMPTS} attempts.",
+                )
+        if answers is None:
+            return _error_result(normalized, requested_type, query_name, "DNS Error", "DNS lookup failed unexpectedly.")
     except dns.resolver.NXDOMAIN:
         return _error_result(normalized, requested_type, query_name, "NXDOMAIN", "Domain does not exist.")
     except dns.resolver.NoAnswer:
         return _error_result(normalized, requested_type, query_name, "No Answer", "No matching DNS records were found.")
-    except dns.exception.Timeout:
-        return _error_result(normalized, requested_type, query_name, "Timeout", "DNS lookup timed out.")
-    except dns.resolver.NoNameservers:
-        return _error_result(
-            normalized,
-            requested_type,
-            query_name,
-            "Nameserver Error",
-            "Nameservers could not answer this query.",
-        )
     except dns.exception.DNSException as exc:
         return _error_result(normalized, requested_type, query_name, "DNS Error", str(exc))
 

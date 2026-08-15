@@ -71,6 +71,32 @@ ROADMAP_BADGE_ICONS: dict[str, str] = {
     "source_seed": "icons/exported/icon-roadmap-seed-badge-24x24-v01.svg",
     "source_github": "icons/exported/icon-roadmap-github-badge-24x24-v01.svg",
 }
+TRANSIENT_FAILURE_HINTS: tuple[str, ...] = (
+    "timeout",
+    "timed out",
+    "temporar",
+    "unavailable",
+    "rate limit",
+    "429",
+    "503",
+    "502",
+    "connection",
+    "refused",
+    "reset",
+    "dns lookup timed out",
+    "nameserver",
+    "eai_again",
+)
+PERSISTENT_FAILURE_HINTS: tuple[str, ...] = (
+    "invalid",
+    "does not exist",
+    "nxdomain",
+    "no answer",
+    "expired",
+    "hostname mismatch",
+    "port must be",
+    "certificate verification failed",
+)
 
 
 @lru_cache(maxsize=256)
@@ -1598,6 +1624,18 @@ TOOLS: tuple[ToolMeta, ...] = (
         category="Web & Dev",
         is_new=True,
     ),
+    ToolMeta(
+        title="Health Diagnostics",
+        short_title="Health Diagnostics",
+        description="Public-safe runtime health snapshot for shell, optional integrations, feature flags, and smoke checks.",
+        path="pages/128_Health_Diagnostics.py",
+        icon="HLTH",
+        accent="#2a9d8f",
+        slug="health_diagnostics",
+        professions=("Sysadmin / DevOps", "Support Engineer", "Automation Engineer"),
+        category="Ops & Automation",
+        is_new=False,
+    ),
 )
 
 # Curated, not usage-derived -- this app deliberately has no usage tracking
@@ -2221,7 +2259,11 @@ def render_tool_section(
         unsafe_allow_html=True,
     )
     if not tools:
-        st.info("No tools match your search.")
+        render_status_note(
+            "No matching tools",
+            "Try different keywords, clear filters, or switch to Quick access to browse curated tools.",
+            tone="neutral",
+        )
         return
 
     favorite_slugs = set(_get_persisted_slugs("fav"))
@@ -2507,6 +2549,64 @@ def render_status_note(title: str, description: str, tone: str = "info") -> None
         </div>
         """,
         unsafe_allow_html=True,
+    )
+
+
+def classify_failure_mode(message: str | None) -> str:
+    text = (message or "").strip().lower()
+    if not text:
+        return "persistent"
+    if any(hint in text for hint in PERSISTENT_FAILURE_HINTS):
+        return "persistent"
+    if any(hint in text for hint in TRANSIENT_FAILURE_HINTS):
+        return "transient"
+    return "persistent"
+
+
+def summarize_failure_reason(message: str | None) -> str:
+    text = (message or "").strip().lower()
+    if not text:
+        return "The check did not return a stable response."
+    if "timeout" in text:
+        return "The request timed out before a response was received."
+    if "rate limit" in text or "429" in text:
+        return "The upstream service is rate-limiting requests."
+    if "connection" in text or "refused" in text or "reset" in text:
+        return "The endpoint could not be reached from this environment."
+    if "certificate" in text or "tls" in text or "ssl" in text:
+        return "TLS/certificate validation did not pass."
+    if "nxdomain" in text or "does not exist" in text:
+        return "The domain name could not be resolved."
+    if "no answer" in text:
+        return "No matching records were returned for this query."
+    if "invalid" in text:
+        return "The current input format is invalid."
+    return "The check failed and did not produce a reliable result."
+
+
+def render_failure_note(
+    context: str,
+    message: str | None,
+    *,
+    remediation: str,
+    mode: str | None = None,
+) -> None:
+    normalized_mode = mode if mode in {"transient", "persistent"} else classify_failure_mode(message)
+    title = (
+        f"{context} temporarily unavailable"
+        if normalized_mode == "transient"
+        else f"{context} needs attention"
+    )
+    reason = summarize_failure_reason(message)
+    intro = (
+        "This looks temporary."
+        if normalized_mode == "transient"
+        else "This appears persistent."
+    )
+    render_status_note(
+        title,
+        f"{intro} {reason} Next step: {remediation}",
+        tone="warning",
     )
 
 
