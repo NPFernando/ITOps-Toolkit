@@ -49,6 +49,7 @@ if st.session_state.pop("home_force_quick_access", False):
     st.session_state["home_navigation_mode"] = "Quick access"
 
 with tool_form_panel("home_navigation_controls"):
+    render_form_intro("Choose how to browse tools", "Filter by profession and switch between quick access or full catalog.")
     st.markdown('<div class="tool-panel-eyebrow">Filter by profession</div>', unsafe_allow_html=True)
     profession = st.pills(
         "Filter by profession",

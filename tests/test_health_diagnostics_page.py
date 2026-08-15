@@ -40,6 +40,8 @@ def test_health_diagnostics_page_renders_key_sections():
     assert "Reliability score" in page_markdown
     assert "Remediation hints" in page_markdown
     assert "Runbook guidance" in page_markdown
+    assert "tool-status-note-neutral" in page_markdown
+    assert "Diagnostics snapshot ready" in page_markdown
     assert "docs/ops-runbook.md" in captions
     assert len(app.dataframe) >= 7
 
@@ -66,3 +68,14 @@ def test_health_diagnostics_redacts_github_url_userinfo(monkeypatch):
     github_row = _row_by_check(rows, "Configured GitHub repo")
     assert "token-value" not in github_row["Details"]
     assert github_row["Details"] == "https://github.com/NPFernando/ITOps-Toolkit"
+
+
+def test_health_diagnostics_overall_warning_note_when_warnings_present(monkeypatch):
+    monkeypatch.delenv("AZURE_OPENAI_API_KEY", raising=False)
+    monkeypatch.delenv("AZURE_OPENAI_ENDPOINT", raising=False)
+    monkeypatch.delenv("AZURE_OPENAI_DEPLOYMENT", raising=False)
+    app = _run_page()
+    page_markdown = " ".join(m.value for m in app.markdown)
+
+    assert "tool-status-note-warning" in page_markdown
+    assert "Diagnostics have follow-up items" in page_markdown

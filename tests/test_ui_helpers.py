@@ -293,7 +293,7 @@ def test_tool_card_icon_asset_maps_wave2_weak_cue_tools():
 
 def test_tool_card_icon_asset_maps_wave3_weak_cue_tools():
     expected_assets = {
-        "markdown_link_extractor": "icons/exported/icon-workflow-link-extract-outline-24x24-v01.svg",
+        "markdown_link_extractor": "icons/exported/icon-workflow-markdown-link-extractor-outline-24x24-v01.svg",
         "health_diagnostics": "icons/exported/icon-workflow-health-diagnostics-outline-24x24-v01.svg",
     }
 
@@ -499,6 +499,25 @@ def test_tool_card_icon_asset_maps_wave15_visual_targets():
         assert ui._tool_card_icon_asset(tool) == expected
 
 
+def test_tool_card_icon_asset_maps_wave16_visual_targets():
+    expected_assets = {
+        "markdown_link_extractor": "icons/exported/icon-workflow-markdown-link-extractor-outline-24x24-v01.svg",
+        "health_diagnostics": "icons/exported/icon-workflow-health-diagnostics-outline-24x24-v01.svg",
+    }
+
+    for slug, expected in expected_assets.items():
+        tool = next(item for item in TOOLS if item.slug == slug)
+        assert ui._tool_card_icon_asset(tool) == expected
+
+
+def test_tool_card_html_uses_wave16_generated_icons_when_mapped():
+    for slug in ("markdown_link_extractor", "health_diagnostics"):
+        tool = next(item for item in TOOLS if item.slug == slug)
+        html = ui._tool_card_html(tool)
+        assert "tool-card-icon-image" in html
+        assert "data:image/svg+xml;base64," in html
+
+
 def test_tool_card_html_wave4_slug_specific_mapping_precedes_category_default_during_render(monkeypatch):
     tool = next(item for item in TOOLS if item.slug == "basic_auth_tool")
 
@@ -675,6 +694,27 @@ def test_tool_card_html_wave15_slug_specific_mapping_precedes_category_default_d
         "jwk_pem_converter": "icons/exported/icon-workflow-incident-response-outline-24x24-v01.svg",
         "cert_chain_validator": "icons/exported/icon-workflow-incident-response-outline-24x24-v01.svg",
         "wsl_path_converter": "icons/exported/icon-workflow-automation-runbook-outline-24x24-v01.svg",
+    }
+
+    def fake_svg_img_html(path, *args, **kwargs):
+        if path in set(category_defaults.values()):
+            return '<img class="tool-card-icon-image" data-icon="category-default" />'
+        return None
+
+    monkeypatch.setattr(ui, "_svg_img_html", fake_svg_img_html)
+
+    for slug, category_default in category_defaults.items():
+        tool = next(item for item in TOOLS if item.slug == slug)
+        html = ui._tool_card_html(tool)
+        assert ui._tool_card_icon_asset(tool) != category_default
+        assert "tool-card-icon-image" not in html
+        assert f">{tool.icon}<" in html
+
+
+def test_tool_card_html_wave16_slug_specific_mapping_precedes_category_default_during_render(monkeypatch):
+    category_defaults = {
+        "markdown_link_extractor": "icons/exported/icon-workflow-http-probe-outline-24x24-v01.svg",
+        "health_diagnostics": "icons/exported/icon-workflow-automation-runbook-outline-24x24-v01.svg",
     }
 
     def fake_svg_img_html(path, *args, **kwargs):

@@ -332,6 +332,20 @@ This guide documents the UI direction used for the Streamlit dashboard and tool 
 - Record Wave 15 outcomes in `docs/release-notes-template.md` using synthetic/sanitized evidence only.
 - Keep non-tool exceptions explicit and confirm desktop/mobile readability after wave-15 updates.
 
+## Phase 23 Wave 16 Standards (Shell, Mobile, Visual, A11y + QA Gates)
+
+- **Shell consistency:** keep shared shell + baseline markers (`shell-ready`, `content-rendered`) stable on Home, Roadmap & Feedback, Markdown Link Extractor, and Health Diagnostics.
+- **Mobile baseline (`<=720px`):** keep wave-16 primary actions full-width and tap-friendly (`use_container_width=True`), ensure form-panel groupings stay single-column readable, and keep runbook/action links easy to tap.
+- **Visual mapping integrity:** keep wave-16 touchpoint slug mapping readable for `markdown_link_extractor` before category defaults, with text badge fallback always readable.
+- **Accessibility guardrail:** keep keyboard flow and visible focus rings intact for Home mode toggles, Roadmap filters/AI triage actions, and Markdown extraction actions, with neutral/blocking outcomes aligned to shared status/failure note semantics.
+- **QA gate behavior:** treat Wave 16 shell/mobile/visual/a11y regressions as release blockers unless an intentional exception is documented.
+
+### Wave 16 QA handoff guidance
+
+- Run Wave 16 checks in `docs/release-checklist.md` before release.
+- Record Wave 16 outcomes in `docs/release-notes-template.md` using synthetic/sanitized evidence only.
+- Keep non-tool exceptions explicit and confirm desktop/mobile readability after wave-16 updates.
+
 ## Maintenance Rules
 
 - Do not duplicate tool titles, descriptions, paths, or accent colors outside `utils/ui.py`.
