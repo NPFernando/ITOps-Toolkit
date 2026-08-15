@@ -24,6 +24,20 @@ def test_redact_shows_result():
     assert "Redaction complete" in md
 
 
+def test_redact_no_matches_shows_neutral_status():
+    app = AppTest.from_file(PAGE, default_timeout=30)
+    app.run()
+    assert not app.exception
+
+    app.text_area[0].set_value("plain text without sensitive markers")
+    app.button[0].click().run()
+    assert not app.exception
+
+    md = " ".join(m.value for m in app.markdown)
+    assert "tool-status-note-neutral" in md
+    assert "No matches detected" in md
+
+
 def test_empty_state_shown_before_submit():
     app = AppTest.from_file(PAGE, default_timeout=30)
     app.run()

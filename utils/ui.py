@@ -72,6 +72,7 @@ TOOL_CARD_ICON_ASSETS: dict[str, str] = {
     "tls_scanner": "icons/exported/icon-workflow-port-scan-outline-24x24-v01.svg",
     "env_linter": "icons/exported/icon-workflow-env-guard-outline-24x24-v01.svg",
     "env_diff": "icons/exported/icon-workflow-env-guard-outline-24x24-v01.svg",
+    "test_data_generator": "icons/exported/icon-workflow-test-data-fixture-outline-24x24-v01.svg",
     "markdown_toc_generator": "icons/exported/icon-workflow-markdown-structure-outline-24x24-v01.svg",
     "markdown_table_formatter": "icons/exported/icon-workflow-markdown-structure-outline-24x24-v01.svg",
     "markdown_link_extractor": "icons/exported/icon-workflow-link-extract-outline-24x24-v01.svg",

@@ -2,10 +2,12 @@ from __future__ import annotations
 
 import streamlit as st
 
+from utils.dev_baseline import mark_page_baseline, render_page_baseline, start_page_baseline
 from utils.pii_redactor import LABELS, MAX_INPUT_LENGTH, redact
 from utils.ui import (
     apply_app_shell,
     render_empty_state,
+    render_failure_note,
     render_form_intro,
     render_page_header,
     render_section_heading,
@@ -15,8 +17,10 @@ from utils.ui import (
 )
 
 
+_baseline = start_page_baseline("PII Redactor")
 st.set_page_config(page_title="PII Redactor", layout="wide")
 apply_app_shell(active_page="PII Redactor")
+mark_page_baseline(_baseline, "shell-ready")
 
 
 render_page_header(
@@ -45,11 +49,24 @@ if result is not None:
     with tool_result_panel("pii_redactor_result_panel", related_to="pii_redactor"):
         render_section_heading("Redacted text", eyebrow="Result")
         if not result["ok"]:
-            st.error(result["error"])
-            render_status_note("Redaction failed", "Fix the input or redaction selections, then run again.", tone="warning")
+            render_failure_note("PII redaction", result["error"], remediation="Fix the input or redaction selections, then redact again.")
         else:
             st.code(result["output"], language=None)
+            total_replacements = sum(result["counts"].values())
             counts = {LABELS[k]: v for k, v in result["counts"].items() if v > 0}
             if counts:
                 st.caption("Redacted: " + ", ".join(f"{label} ({count})" for label, count in counts.items()))
-            render_status_note("Redaction complete", f"Applied {sum(result['counts'].values())} replacement(s).", tone="success")
+                render_status_note(
+                    "Redaction complete",
+                    f"Applied {total_replacements} replacement(s) across selected pattern types.",
+                    tone="success",
+                )
+            else:
+                render_status_note(
+                    "No matches detected",
+                    "No selected sensitive-looking patterns were found in the submitted text.",
+                    tone="neutral",
+                )
+
+mark_page_baseline(_baseline, "content-rendered")
+render_page_baseline(_baseline)

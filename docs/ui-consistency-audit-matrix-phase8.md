@@ -101,3 +101,8 @@ Use this matrix as a quick release gate:
 
 - Wave 11 release docs now extend shell/mobile/visual/a11y gates for wave-11 icon mappings and shared shell baseline-marker coverage with status/failure-note semantics checks.
 - This matrix remains the Phase 8 baseline; Wave 11 adds release-playbook QA evidence requirements without changing core consistency rules.
+
+## Wave 12 Documentation Sync Note (Phase 19)
+
+- Wave 12 release docs now extend shell/mobile/visual/a11y gates for wave-12 icon mappings and shared shell baseline-marker coverage with status/failure-note semantics checks.
+- This matrix remains the Phase 8 baseline; Wave 12 adds release-playbook QA evidence requirements without changing core consistency rules.
