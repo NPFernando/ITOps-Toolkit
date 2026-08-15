@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import streamlit as st
 
+from utils.dev_baseline import mark_page_baseline, render_page_baseline, start_page_baseline
 from utils.wsl_path_converter import TARGETS, convert_path
 from utils.ui import (
     apply_app_shell,
@@ -16,34 +17,10 @@ from utils.ui import (
 )
 
 
+_baseline = start_page_baseline("WSL Path Converter")
 st.set_page_config(page_title="WSL Path Converter", layout="wide")
 apply_app_shell(active_page="WSL Path Converter")
-
-st.markdown(
-    """
-    <style>
-    @media (max-width: 768px) {
-      div[data-testid="stTextInput"] input {
-        font-size: 1rem;
-        min-height: 2.75rem;
-      }
-      div[data-testid="stRadio"] label {
-        padding-top: 0.35rem;
-        padding-bottom: 0.35rem;
-      }
-      div[data-testid="stFormSubmitButton"] button {
-        width: 100%;
-        min-height: 2.75rem;
-      }
-      div[data-testid="stCodeBlock"] pre {
-        white-space: pre-wrap !important;
-        word-break: break-word;
-      }
-    }
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
+mark_page_baseline(_baseline, "shell-ready")
 
 
 render_page_header(
@@ -79,3 +56,6 @@ if result is not None:
         else:
             render_status_note("Conversion complete", "The path has been converted to the selected format.", tone="success")
             st.code(result["output"], language=None)
+
+mark_page_baseline(_baseline, "content-rendered")
+render_page_baseline(_baseline)

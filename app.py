@@ -80,7 +80,7 @@ show_all_flag = st.session_state.get("home_show_all", False)
 show_all = show_all_flag or bool(search_query.strip()) or profession != "All" or navigation_mode == "All tools"
 button_label = "Hide all tools" if show_all else "Show all tools"
 button_icon = ":material/expand_less:" if show_all else ":material/apps:"
-if st.button(button_label, icon=button_icon):
+if st.button(button_label, icon=button_icon, use_container_width=True):
     if show_all and navigation_mode == "All tools" and not search_query.strip() and profession == "All":
         st.session_state["home_force_quick_access"] = True
         st.session_state["home_show_all"] = False

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import streamlit as st
 
+from utils.dev_baseline import mark_page_baseline, render_page_baseline, start_page_baseline
 from utils.jwk_pem_converter import MAX_INPUT_LENGTH, jwk_to_pem, pem_to_jwk
 from utils.ui import (
     apply_app_shell,
@@ -16,8 +17,10 @@ from utils.ui import (
 )
 
 
+_baseline = start_page_baseline("JWK / PEM Converter")
 st.set_page_config(page_title="JWK / PEM Converter", layout="wide")
 apply_app_shell(active_page="JWK / PEM Converter")
+mark_page_baseline(_baseline, "shell-ready")
 
 
 render_page_header(
@@ -86,3 +89,6 @@ with pem_to_jwk_tab:
             else:
                 render_status_note("Conversion complete", "JWK output is ready below.", tone="success")
                 st.code(pem_result["output"], language="json")
+
+mark_page_baseline(_baseline, "content-rendered")
+render_page_baseline(_baseline)

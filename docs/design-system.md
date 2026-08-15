@@ -262,6 +262,20 @@ This guide documents the UI direction used for the Streamlit dashboard and tool 
 - Record Wave 10 outcomes in `docs/release-notes-template.md` using synthetic/sanitized evidence only.
 - Keep non-tool exceptions explicit and confirm desktop/mobile readability after wave-10 updates.
 
+## Phase 18 Wave 11 Standards (Shell, Mobile, Visual, A11y + QA Gates)
+
+- **Shell consistency:** keep shared shell + baseline markers (`shell-ready`, `content-rendered`) stable across wave-11 pages and prior-wave shell surfaces.
+- **Mobile baseline (`<=720px`):** keep wave-11 forms/results readable and tap-friendly with wrapped labels/chips, no clipped text, and no horizontal overflow.
+- **Visual mapping integrity:** keep wave-11 slug-specific icon mappings first (`csv_column_selector`, `line_numberer`, `column_aligner`, `csr_generator`, `caa_record_builder`), then category defaults, with text badge fallback always readable.
+- **Accessibility guardrail:** keep neutral/blocking outcome semantics aligned to shared status/failure note patterns, preserve keyboard flow, and keep visible focus rings.
+- **QA gate behavior:** treat Wave 11 shell/mobile/visual/a11y regressions as release blockers unless an intentional exception is documented.
+
+### Wave 11 QA handoff guidance
+
+- Run Wave 11 checks in `docs/release-checklist.md` before release.
+- Record Wave 11 outcomes in `docs/release-notes-template.md` using synthetic/sanitized evidence only.
+- Keep non-tool exceptions explicit and confirm desktop/mobile readability after wave-11 updates.
+
 ## Maintenance Rules
 
 - Do not duplicate tool titles, descriptions, paths, or accent colors outside `utils/ui.py`.

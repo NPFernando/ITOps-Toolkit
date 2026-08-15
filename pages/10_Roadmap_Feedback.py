@@ -161,8 +161,6 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
-mark_page_baseline(_baseline, "content-rendered")
-render_page_baseline(_baseline)
 
 st.markdown(
     '<div class="roadmap-notice-grid">'
@@ -182,6 +180,9 @@ st.markdown(
     + "</div>",
     unsafe_allow_html=True,
 )
+
+mark_page_baseline(_baseline, "content-rendered")
+render_page_baseline(_baseline)
 board_freshness_tone, board_freshness = cache_freshness_message(
     "Roadmap board",
     board_payload["cached_at"],
@@ -258,7 +259,7 @@ if not ai_available:
 elif not open_items:
     render_status_note("Nothing to triage", "All roadmap items are currently marked Complete.", tone="neutral")
 else:
-    if st.button(f"Summarize {len(open_items)} open items with AI", icon=":material/auto_awesome:"):
+    if st.button(f"Summarize {len(open_items)} open items with AI", icon=":material/auto_awesome:", use_container_width=True):
         triage_cache_key = compose_cache_key(
             "roadmap-ai-triage",
             open_items=open_items,

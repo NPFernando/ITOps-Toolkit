@@ -63,11 +63,11 @@ def test_results_persist_after_sidebar_interaction():
     assert len(app.code) == before
 
 
-def test_mobile_styles_present():
+def test_wsl_path_converter_page_has_no_page_scoped_mobile_css():
     app = AppTest.from_file(PAGE, default_timeout=30)
     app.run()
     assert not app.exception
 
     md = " ".join(m.value for m in app.markdown)
-    assert "@media (max-width: 768px)" in md
-    assert 'data-testid="stCodeBlock"' in md
+    assert "@media (max-width: 768px)" not in md
+    assert 'data-testid="stCodeBlock"' not in md
