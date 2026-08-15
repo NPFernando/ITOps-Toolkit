@@ -61,16 +61,19 @@ mark_page_baseline(_baseline, "wave27-shell-mobile")
 mark_page_baseline(_baseline, "wave29-shell-mobile")
 mark_page_baseline(_baseline, "wave30-shell-mobile")
 mark_page_baseline(_baseline, "wave31-shell-mobile")
+mark_page_baseline(_baseline, "wave32-shell-mobile")
 
 render_page_header("Lorem Ipsum Generator", "Generate deterministic placeholder text by words, sentences, or paragraphs.")
 
 with tool_form_panel("lorem_ipsum_generator"):
-    render_form_intro("Set lorem output", "Grouped controls plus one full-width action keep mobile drafting fast and predictable.")
+    render_form_intro("Configure lorem output", "Use grouped controls and one full-width action for deterministic mobile drafting.")
+    render_section_heading("Output setup", eyebrow="Step 1")
     with st.form("lorem-ipsum-generator-form"):
         render_control_heading("Output shape")
         unit = st.selectbox("Generate by", options=("Words", "Sentences", "Paragraphs"), key="lorem_unit")
         default_count = 24 if unit == "Words" else 3
         count = st.number_input("Count", min_value=1, max_value=100, value=default_count, key="lorem_count")
+        st.caption("Words uses exact count; sentences and paragraphs create readable grouped text.")
         render_control_heading("Deterministic seed")
         seed_text = st.text_input("Deterministic seed (optional)", placeholder="wave-25", key="lorem_seed")
         render_control_heading("Primary action")
@@ -81,7 +84,7 @@ if submitted:
 
 result = st.session_state.get("lorem_ipsum_result")
 with tool_result_panel("lorem_ipsum_result", related_to="lorem_ipsum_generator"):
-    render_section_heading("Generated text", eyebrow="Result")
+    render_section_heading("Generated lorem output", eyebrow="Step 2")
     if result is None:
         render_empty_state("Ready to generate", "Generated lorem ipsum text appears here after submission.")
         render_status_note(

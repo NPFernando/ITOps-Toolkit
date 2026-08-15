@@ -36,6 +36,7 @@ mark_page_baseline(_baseline, "wave28-shell-mobile")
 mark_page_baseline(_baseline, "wave29-shell-mobile")
 mark_page_baseline(_baseline, "wave30-shell-mobile")
 mark_page_baseline(_baseline, "wave31-shell-mobile")
+mark_page_baseline(_baseline, "wave32-shell-mobile")
 
 
 def _status_tone(status: str) -> str:
@@ -220,6 +221,7 @@ with tool_form_panel("roadmap_filters"):
             # same bug class as PR #63.
             label_visibility="collapsed",
         )
+        st.caption("Search first, then narrow with category pills to keep the board readable on smaller screens.")
         render_control_heading("Apply filters")
         submitted_filters = st.form_submit_button("Apply filters", use_container_width=True)
 
@@ -292,6 +294,7 @@ else:
             "Runs only when clicked and uses public roadmap item text already shown on this page.",
         )
         render_control_heading("Triage action")
+        st.caption("Use this after filtering so the summary reflects the items you are actively reviewing.")
         summarize_with_ai = st.button(f"Summarize {len(open_items)} open items with AI", icon=":material/auto_awesome:", use_container_width=True)
     if summarize_with_ai:
         triage_cache_key = compose_cache_key(

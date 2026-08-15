@@ -476,6 +476,16 @@ When a roadmap badge asset is unavailable, compact text fallback glyphs are used
 - Include one `<=720px` viewport pass to confirm Home controls, Roadmap filters/AI triage action, and wave-31 submit/generate/convert actions (with shared control headings) stay full-width/tap-friendly with no clipping/overflow.
 - Include one keyboard-only pass to confirm wave-31 explicit status semantics (`role="status"`/`role="alert"` + `aria-live`) and focus visibility remain intact.
 
+### Phase 39 Wave 32 add-on QA focus
+
+- Confirm placeholder-to-real wave-32 slug aliases resolve to slug-specific assets before category defaults (`157_tool_slug_pending_roadmap` + `157_<tool_slug_pending_roadmap>` -> `lorem_ipsum_generator`; `158_tool_slug_pending_roadmap` + `158_<tool_slug_pending_roadmap>` -> `text_to_binary_hex_octal_converter`).
+- Confirm wave-32 alias and real slugs still fall back to text badges when SVG rendering is unavailable.
+- Include one shell pass confirming shared shell + baseline markers (`shell-ready`, `content-rendered`, `wave32-shell-mobile`) remain visible/unchanged on Home, Roadmap, and wave-32 touchpoint pages.
+- Include one `<=720px` viewport pass to confirm Home controls, Roadmap filters/AI triage action, and wave-32 submit/generate/convert actions (with shared control headings) stay full-width/tap-friendly with no clipping/overflow.
+- Include one UX standards pass confirming fixed `st.columns(2)` form layouts are absent on wave-32 touchpoint pages and Step 1/Step 2 section hierarchy remains readable.
+- Include one regression-test pass confirming wave-32 guardrails in `tests/test_ui_helpers.py` and `tests/test_wave32_shell_mobile_markers.py`.
+- Include one keyboard-only pass to confirm wave-32 explicit status semantics (`role="status"`/`role="alert"` + `aria-live`) and focus visibility remain intact.
+
 ## Docs/release media inventory
 
 ### Posters

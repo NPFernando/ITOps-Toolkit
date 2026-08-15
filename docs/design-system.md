@@ -556,6 +556,20 @@ This guide documents the UI direction used for the Streamlit dashboard and tool 
 - Record Wave 31 outcomes in `docs/release-notes-template.md` using synthetic/sanitized evidence only.
 - Keep non-tool exceptions explicit and confirm desktop/mobile readability after wave-31 updates.
 
+## Phase 39 Wave 32 Standards (Shell, Mobile, Visual, A11y + QA Gates)
+
+- **Shell consistency:** keep shared shell + baseline markers (`shell-ready`, `content-rendered`, `wave32-shell-mobile`) stable on Home, Roadmap & Feedback, Lorem Ipsum Generator, and Text to Binary/Hex/Octal Converter.
+- **Mobile baseline (`<=720px`):** keep wave-32 form panels and primary actions full-width/tap-friendly (`use_container_width=True`), keep grouped controls single-column readable with shared control headings, and avoid fixed two-column form layouts on wave-32 touchpoint pages.
+- **Visual mapping integrity:** keep placeholder-to-real slug alias mappings deterministic and readable (`157_tool_slug_pending_roadmap` + `157_<tool_slug_pending_roadmap>` → `lorem_ipsum_generator`; `158_tool_slug_pending_roadmap` + `158_<tool_slug_pending_roadmap>` → `text_to_binary_hex_octal_converter`) before category defaults, with text badge fallback always readable.
+- **Accessibility guardrail:** keep keyboard flow and visible focus rings intact, and preserve explicit neutral/warning/success status semantics (`role="status"`/`role="alert"` + `aria-live`) for Home and Roadmap states plus wave-32 tool outcomes.
+- **QA/test guardrail:** keep `tests/test_ui_helpers.py` wave-32 icon-alias precedence checks and `tests/test_wave32_shell_mobile_markers.py` shell/mobile hierarchy markers as release blockers.
+
+### Wave 32 QA handoff guidance
+
+- Run Wave 32 checks in `docs/release-checklist.md` before release.
+- Record Wave 32 outcomes in `docs/release-notes-template.md` using synthetic/sanitized evidence only.
+- Keep placeholder-to-real alias evidence explicit and confirm desktop/mobile readability after wave-32 updates.
+
 ## Maintenance Rules
 
 - Do not duplicate tool titles, descriptions, paths, or accent colors outside `utils/ui.py`.
