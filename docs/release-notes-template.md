@@ -23,6 +23,7 @@ Use this template for deployment notes, GitHub releases, or pull request summari
 - QA baseline add-on: Phase 20 wave-13 shell/mobile/visual/a11y QA gates completed
 - QA baseline add-on: Phase 21 wave-14 shell/mobile/visual/a11y QA gates completed
 - QA baseline add-on: Phase 22 wave-15 shell/mobile/visual/a11y QA gates completed
+- QA baseline add-on: Phase 23 wave-16 shell/mobile/visual/a11y QA gates completed
 
 ## User-Facing Changes
 
@@ -111,6 +112,10 @@ curl http://localhost:8502/_stcore/health
 - Wave 15 mobile readability spot check (`<=720px`, full-width primary actions, single-column-friendly inputs, readable controls, no clipping/overflow):
 - Wave 15 visual mapping spot check (wave-15 touchpoint slug-specific icon priority + fallback):
 - Wave 15 accessibility spot check (status/failure note semantics + keyboard/focus):
+- Wave 16 shell consistency spot check (shared shell + baseline markers on Home/Roadmap/Markdown Link Extractor/Health Diagnostics):
+- Wave 16 mobile readability spot check (`<=720px`, full-width/tap-friendly Home controls, Roadmap filters/AI triage action, and Markdown extraction submit action):
+- Wave 16 visual mapping spot check (wave-16 touchpoint slug-specific icon priority + fallback for `markdown_link_extractor`):
+- Wave 16 accessibility spot check (status/failure note semantics + keyboard/focus):
 - Log Troubleshooting AI unavailable state:
 - Optional Azure AI state, if secrets were available:
 

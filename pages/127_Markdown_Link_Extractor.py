@@ -41,19 +41,27 @@ result = st.session_state.get("markdown_link_extractor_result")
 
 if result is None:
     render_empty_state("Ready to extract", "Every link found appears here.")
-    render_status_note("Awaiting Markdown input", "Paste Markdown text and run extraction to list all detected links.", tone="neutral")
+    render_status_note(
+        "Awaiting Markdown input",
+        "No extraction has run yet. Paste Markdown text and select Extract links to list detected links.",
+        tone="neutral",
+    )
 
 if result is not None:
     with tool_result_panel("markdown_link_extractor_result_panel", related_to="markdown_link_extractor"):
         render_section_heading("Links found", eyebrow="Result")
         if not result["ok"]:
             render_status_note(
-                "Cannot extract links yet",
-                f"{result['error']} Provide Markdown content that includes at least one valid link, then run extraction again.",
+                "Extraction needs attention",
+                f"{result['error']} Add Markdown content with at least one valid link, then run extraction again.",
                 tone="warning",
             )
         else:
-            render_status_note("Extraction complete", f"Found {len(result['links'])} link(s) in the provided Markdown.", tone="success")
+            render_status_note(
+                "Link extraction complete",
+                f"Extracted {len(result['links'])} link(s) from the provided Markdown.",
+                tone="success",
+            )
             st.dataframe(
                 pd.DataFrame([{"Text": link["text"], "URL": link["url"], "Type": link["type"]} for link in result["links"]]),
                 width="stretch",

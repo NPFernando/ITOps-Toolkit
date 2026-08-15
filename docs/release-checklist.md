@@ -226,6 +226,16 @@ Confirm these release-blocking checks pass:
 - **Accessibility:** keyboard-only navigation remains intact, focus rings stay visible, and neutral/blocking outcomes continue to use shared status/failure note semantics.
 - **Release evidence:** Wave 15 outcomes are captured in `docs/release-notes-template.md` with synthetic/sanitized QA evidence only.
 
+### 4.17 Phase 23 Wave 16 Regression Checklist (Shell/Mobile/Visual/A11y QA Gates)
+
+Confirm these release-blocking checks pass:
+
+- **Shell consistency:** shared shell + baseline markers (`shell-ready`, `content-rendered`) remain present on Home, Roadmap & Feedback, Markdown Link Extractor, and Health Diagnostics.
+- **Mobile (`<=720px`):** wave-16 form panels and primary actions stay single-column readable and full-width/tap-friendly, including Home navigation controls, Roadmap filters/AI triage action, and Markdown link extraction submit actions.
+- **Visual mapping (wave-16 focus):** wave-16 touchpoint slug (`markdown_link_extractor`) resolves to slug-specific icon assets before category defaults; when assets are missing, text fallback badges remain readable.
+- **Accessibility:** keyboard-only navigation remains intact, focus rings stay visible, and neutral/blocking outcomes continue to use shared status/failure note semantics.
+- **Release evidence:** Wave 16 outcomes are captured in `docs/release-notes-template.md` with synthetic/sanitized QA evidence only.
+
 ## 5. Log Troubleshooting AI States
 
 Without Azure secrets:
@@ -279,7 +289,7 @@ git diff --cached --check
 
 ## 9. Release Notes
 
-Use `docs/release-notes-template.md` to summarize the release, QA commands, privacy posture, known limitations, Wave 2/Wave 3/Wave 4/Wave 5/Wave 6/Wave 7/Wave 8/Wave 9/Wave 10/Wave 11/Wave 12/Wave 13/Wave 14/Wave 15 shell-mobile-visual-a11y outcomes, and the UX Quality Outcomes release reporting kit.
+Use `docs/release-notes-template.md` to summarize the release, QA commands, privacy posture, known limitations, Wave 2/Wave 3/Wave 4/Wave 5/Wave 6/Wave 7/Wave 8/Wave 9/Wave 10/Wave 11/Wave 12/Wave 13/Wave 14/Wave 15/Wave 16 shell-mobile-visual-a11y outcomes, and the UX Quality Outcomes release reporting kit.
 
 Minimum UX reporting before publish:
 - Record one outcome each for navigation, readability/layout, task completion confidence, and public-safe behavior.
