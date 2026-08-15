@@ -1010,7 +1010,7 @@ def test_tool_card_html_wave25_slug_specific_mapping_precedes_category_default_d
         assert f">{tool.icon}<" in html
 
 
-def test_tool_card_icon_asset_maps_wave26_visual_targets_and_legacy_aliases():
+def test_tool_card_icon_asset_maps_wave27_visual_targets_and_legacy_aliases():
     expected_assets = {
         "git_command_cheat_sheet": "icons/exported/icon-workflow-git-command-cheat-sheet-outline-24x24-v01.svg",
         "bip39_mnemonic_generator_validator": "icons/exported/icon-workflow-bip39-mnemonic-generator-validator-outline-24x24-v01.svg",
@@ -1035,7 +1035,19 @@ def test_tool_card_icon_asset_maps_wave26_visual_targets_and_legacy_aliases():
         assert ui._tool_card_icon_asset(tool) == expected
 
 
-def test_tool_card_html_wave26_slug_specific_mapping_precedes_category_default_deterministically(monkeypatch):
+def test_tool_card_icon_asset_wave27_mapped_assets_exist_on_disk():
+    expected_assets = (
+        "icons/exported/icon-workflow-git-command-cheat-sheet-outline-24x24-v01.svg",
+        "icons/exported/icon-workflow-bip39-mnemonic-generator-validator-outline-24x24-v01.svg",
+        "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
+        "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
+    )
+
+    for relative_path in expected_assets:
+        assert (ui.ASSETS_ROOT / relative_path).is_file()
+
+
+def test_tool_card_html_wave27_slug_specific_mapping_precedes_category_default_deterministically(monkeypatch):
     category_default = "icons/exported/icon-workflow-automation-runbook-outline-24x24-v01.svg"
     expected_assets = {
         "git_command_cheat_sheet": "icons/exported/icon-workflow-git-command-cheat-sheet-outline-24x24-v01.svg",
@@ -1070,6 +1082,9 @@ def test_tool_card_html_wave26_slug_specific_mapping_precedes_category_default_d
         assert requested_paths[-1] != category_default
         assert "tool-card-icon-image" not in html
         assert f">{tool.icon}<" in html
+
+    assert requested_paths == list(expected_assets.values())
+    assert category_default not in requested_paths
 
 
 def test_tool_card_html_wave22_slug_specific_mapping_precedes_category_default_during_render(monkeypatch):

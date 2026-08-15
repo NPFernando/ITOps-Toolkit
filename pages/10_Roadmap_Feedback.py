@@ -31,6 +31,7 @@ _baseline = start_page_baseline("Roadmap & Feedback")
 st.set_page_config(page_title="Roadmap & Feedback", page_icon=":material/route:", layout="wide")
 apply_app_shell(active_page="Roadmap & Feedback")
 mark_page_baseline(_baseline, "shell-ready")
+mark_page_baseline(_baseline, "wave27-shell-mobile")
 
 
 def _status_tone(status: str) -> str:
@@ -221,23 +222,52 @@ st.markdown(
 render_section_heading("Browse roadmap items", "Use search and category filters to focus the board view.", eyebrow="Explore")
 with tool_form_panel("roadmap_filters"):
     render_form_intro("Search and filter roadmap", "Use keyword search and category pills to narrow the board.")
-    render_control_heading("Keyword search")
-    query = st.text_input("Search roadmap", placeholder="Search features, categories, or ideas...")
-    render_control_heading("Category filter")
-    category = st.pills(
-        "Filter category",
-        options=("All", *roadmap.roadmap_categories()),
-        default="All",
-        required=True,  # without this, clicking the already-selected pill deselects it
-        # to None (documented st.pills behavior with required=False). Already safely
-        # coerced by `category or "All"` below, but fixed at the source anyway --
-        # same bug class as PR #63.
-        label_visibility="collapsed",
-    )
+    with st.form("roadmap-filters-form"):
+        render_control_heading("Keyword search")
+        query = st.text_input("Search roadmap", placeholder="Search features, categories, or ideas...")
+        render_control_heading("Category filter")
+        category = st.pills(
+            "Filter category",
+            options=("All", *roadmap.roadmap_categories()),
+            default="All",
+            required=True,  # without this, clicking the already-selected pill deselects it
+            # to None (documented st.pills behavior with required=False). Already safely
+            # coerced by `category or "All"` below, but fixed at the source anyway --
+            # same bug class as PR #63.
+            label_visibility="collapsed",
+        )
+        render_control_heading("Apply filters")
+        submitted_filters = st.form_submit_button("Apply filters", use_container_width=True)
 
-selected_category = category or "All"
-filtered_items = roadmap.filter_roadmap_items(query, selected_category, board.items)
+if submitted_filters or "roadmap_filter_state" not in st.session_state:
+    st.session_state["roadmap_filter_state"] = {
+        "query": query,
+        "category": category or "All",
+    }
+
+query_state = st.session_state.get("roadmap_filter_state", {}).get("query", "")
+selected_category = st.session_state.get("roadmap_filter_state", {}).get("category", "All")
+filtered_items = roadmap.filter_roadmap_items(query_state, selected_category, board.items)
 items_by_status = roadmap.roadmap_items_by_status(filtered_items)
+
+if not filtered_items:
+    render_status_note(
+        "Outcome: roadmap filters need adjustment",
+        "No roadmap items matched the active search and category filters. Adjust filters to continue.",
+        tone="warning",
+    )
+elif query_state.strip() or selected_category != "All":
+    render_status_note(
+        "Outcome: roadmap filters applied",
+        f"Showing {len(filtered_items)} roadmap item(s) for the active filters.",
+        tone="success",
+    )
+else:
+    render_status_note(
+        "Outcome: roadmap board ready",
+        f"Showing all {len(filtered_items)} roadmap item(s). Apply filters to narrow the board.",
+        tone="neutral",
+    )
 
 st.markdown(
     f"""

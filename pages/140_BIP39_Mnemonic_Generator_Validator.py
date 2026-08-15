@@ -57,6 +57,7 @@ _baseline = start_page_baseline("BIP39 Mnemonic Generator Validator")
 st.set_page_config(page_title="BIP39 Mnemonic Generator Validator", layout="wide")
 apply_app_shell(active_page="BIP39 Mnemonic Generator Validator")
 mark_page_baseline(_baseline, "shell-ready")
+mark_page_baseline(_baseline, "wave27-shell-mobile")
 
 render_page_header(
     "BIP39 Mnemonic Generator Validator",
@@ -69,6 +70,7 @@ with tool_form_panel("bip39_mnemonic_generator_validator"):
         render_control_heading("Generation settings")
         word_count = st.selectbox("Word count", options=_ALLOWED_COUNTS, index=0)
         seed_text = st.text_input("Deterministic seed (optional)", placeholder="release-wave-23")
+        render_control_heading("Primary action")
         submitted_generate = st.form_submit_button("Generate mnemonic", use_container_width=True)
 
 with tool_form_panel("bip39_mnemonic_validator"):
@@ -76,6 +78,7 @@ with tool_form_panel("bip39_mnemonic_validator"):
     with st.form("bip39-mnemonic-validator-form"):
         render_control_heading("Mnemonic phrase")
         phrase_input = st.text_area("Mnemonic phrase", height=140, placeholder="abandon ability about ...")
+        render_control_heading("Primary action")
         submitted_validate = st.form_submit_button("Validate mnemonic", use_container_width=True)
 
 if submitted_generate:

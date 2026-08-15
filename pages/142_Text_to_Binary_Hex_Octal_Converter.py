@@ -35,6 +35,7 @@ _baseline = start_page_baseline("Text to Binary Hex Octal Converter")
 st.set_page_config(page_title="Text to Binary Hex Octal Converter", layout="wide")
 apply_app_shell(active_page="Text to Binary Hex Octal Converter")
 mark_page_baseline(_baseline, "shell-ready")
+mark_page_baseline(_baseline, "wave27-shell-mobile")
 
 render_page_header("Text to Binary Hex Octal Converter", "Convert plain text into binary, hexadecimal, and octal byte sequences.")
 
@@ -43,6 +44,7 @@ with tool_form_panel("text_to_binary_hex_octal_converter"):
     with st.form("text-to-binary-hex-octal-converter-form"):
         render_control_heading("Source text")
         input_text = st.text_area("Text input", height=180, placeholder="Hello", key="text_radix_input")
+        render_control_heading("Primary action")
         submitted = st.form_submit_button("Convert text", use_container_width=True)
 
 if submitted:

@@ -32,6 +32,7 @@ _baseline = start_page_baseline("Home")
 st.set_page_config(page_title="ITOps Toolkit", page_icon=":material/build:", layout="wide")
 apply_app_shell(active_page="Home")
 mark_page_baseline(_baseline, "shell-ready")
+mark_page_baseline(_baseline, "wave27-shell-mobile")
 
 
 repo_url = github_url()

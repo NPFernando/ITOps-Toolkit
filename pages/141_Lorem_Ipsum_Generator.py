@@ -57,6 +57,7 @@ _baseline = start_page_baseline("Lorem Ipsum Generator")
 st.set_page_config(page_title="Lorem Ipsum Generator", layout="wide")
 apply_app_shell(active_page="Lorem Ipsum Generator")
 mark_page_baseline(_baseline, "shell-ready")
+mark_page_baseline(_baseline, "wave27-shell-mobile")
 
 render_page_header("Lorem Ipsum Generator", "Generate deterministic placeholder text by words, sentences, or paragraphs.")
 
@@ -69,6 +70,7 @@ with tool_form_panel("lorem_ipsum_generator"):
         count = st.number_input("Count", min_value=1, max_value=100, value=default_count, key="lorem_count")
         render_control_heading("Deterministic seed")
         seed_text = st.text_input("Deterministic seed (optional)", placeholder="wave-25", key="lorem_seed")
+        render_control_heading("Primary action")
         submitted = st.form_submit_button("Generate lorem ipsum", use_container_width=True)
 
 if submitted:
