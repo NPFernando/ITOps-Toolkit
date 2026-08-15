@@ -7,6 +7,14 @@ from streamlit.testing.v1 import AppTest
 BULK_PAGE = str(Path(__file__).resolve().parent.parent / "pages" / "28_Bulk_Domain_Health.py")
 
 
+def _page_text(app: AppTest) -> str:
+    parts: list[str] = []
+    for collection_name in ("markdown", "error", "warning"):
+        for item in getattr(app, collection_name, []):
+            parts.append(str(getattr(item, "value", getattr(item, "body", ""))))
+    return "\n".join(parts)
+
+
 def test_bulk_domain_health_page_clicking_download_does_not_hide_results():
     """Regression: st.download_button triggers a rerun just like any widget outside
     st.form. Results must be keyed off session_state, not the transient `submitted`
@@ -44,9 +52,11 @@ def test_bulk_domain_health_validation_error_survives_a_rerun():
     app.button[0].click()
     app.run(timeout=60)
     assert not app.exception
-    assert any("Upload a file or paste at least one domain." in e.value for e in app.error)
+    assert "Bulk domain input needs attention" in _page_text(app)
+    assert "Upload or paste at least one valid public domain" in _page_text(app)
 
     search = next(t for t in app.text_input if t.key == "sidebar_quick_search")
     search.set_value("test").run(timeout=60)
     assert not app.exception
-    assert any("Upload a file or paste at least one domain." in e.value for e in app.error)
+    assert "Bulk domain input needs attention" in _page_text(app)
+    assert "Upload or paste at least one valid public domain" in _page_text(app)

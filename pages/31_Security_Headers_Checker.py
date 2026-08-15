@@ -9,9 +9,11 @@ from utils.text_tools import validate_length
 from utils.ui import (
     apply_app_shell,
     render_empty_state,
+    render_failure_note,
     render_form_intro,
     render_page_header,
     render_section_heading,
+    render_status_note,
     run_validated_lookup,
     tool_form_panel,
     tool_result_panel,
@@ -20,6 +22,36 @@ from utils.ui import (
 
 st.set_page_config(page_title="Security Headers Checker", layout="wide")
 apply_app_shell(active_page="Security Headers Checker")
+
+st.markdown(
+    """
+    <style>
+    @media (max-width: 768px) {
+      div[data-testid="stFormSubmitButton"] > button {
+        min-height: 2.75rem;
+        font-size: 1rem;
+      }
+      div[data-testid="stTextInput"] input {
+        font-size: 1rem;
+      }
+      section.main div[data-testid="stHorizontalBlock"] {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+      section.main div[data-testid="column"] {
+        flex: 1 1 100% !important;
+        width: 100% !important;
+      }
+      div[data-testid="stTable"] table th,
+      div[data-testid="stTable"] table td {
+        white-space: normal !important;
+        word-break: break-word;
+      }
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
 
 
 render_page_header(
@@ -32,7 +64,7 @@ with tool_form_panel("security_headers"):
     render_form_intro("Check URL", "Enter a public URL to fetch and grade its response security headers.")
     with st.form("security-headers-form"):
         url = st.text_input("URL", placeholder="https://example.com", max_chars=MAX_URL_LENGTH)
-        submitted = st.form_submit_button("Check headers")
+        submitted = st.form_submit_button("Check headers", use_container_width=True)
 
 if submitted:
     def _validate() -> str | None:
@@ -54,14 +86,35 @@ if validation_error is None and result is None:
     )
 
 if validation_error is not None:
-    st.error(validation_error)
+    render_failure_note(
+        "Security headers input",
+        validation_error,
+        remediation="Enter a valid public HTTP(S) URL and rerun the check.",
+        mode="persistent",
+    )
 
 if result is not None:
     with tool_result_panel("security_headers_result", related_to="security_headers"):
         render_section_heading("Security headers", "Grade and per-header breakdown for the final response.")
         if not result["ok"]:
-            st.error(result["error"])
+            render_failure_note(
+                "Security headers check",
+                result["error"],
+                remediation="Retry the check or verify the target URL is reachable from this network.",
+            )
         else:
+            if result["grade"] in {"A+", "A", "A-", "B"}:
+                render_status_note(
+                    "Headers check completed",
+                    f"Security header posture is currently graded {result['grade']}.",
+                    tone="success",
+                )
+            else:
+                render_status_note(
+                    "Headers check completed with action items",
+                    f"Security header posture is currently graded {result['grade']}. Review the recommendations below.",
+                    tone="warning",
+                )
             c1, c2, c3 = st.columns(3)
             c1.metric("Grade", result["grade"])
             c2.metric("Status code", result["status_code"])
