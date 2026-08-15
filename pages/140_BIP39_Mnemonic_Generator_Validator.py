@@ -60,6 +60,7 @@ mark_page_baseline(_baseline, "shell-ready")
 mark_page_baseline(_baseline, "wave27-shell-mobile")
 mark_page_baseline(_baseline, "wave28-shell-mobile")
 mark_page_baseline(_baseline, "wave29-shell-mobile")
+mark_page_baseline(_baseline, "wave30-shell-mobile")
 
 render_page_header(
     "BIP39 Mnemonic Generator Validator",
@@ -97,7 +98,7 @@ if phrase is None and validation is None:
     render_empty_state("Ready for mnemonic operations", "Generated phrases and validation outcomes appear here after submission.")
     render_status_note(
         "Outcome: mnemonic tools ready",
-        "Generate a phrase or validate a phrase to view outcomes.",
+        "Generate a phrase or validate a phrase to view outcomes. Phrases are shown in-session and are not persisted by this page.",
         tone="neutral",
     )
 
@@ -105,7 +106,11 @@ with tool_result_panel("bip39_generated_phrase", related_to="bip39_mnemonic_gene
     render_section_heading("Generated mnemonic", eyebrow="Result")
     if phrase is None:
         render_empty_state("No mnemonic generated yet", "Choose a word count, optionally add a seed, then generate a phrase.")
-        render_status_note("Outcome: generation awaiting input", "Set options, then choose Generate mnemonic.", tone="neutral")
+        render_status_note(
+            "Outcome: generation awaiting input",
+            "Set word count and optional seed, then choose Generate mnemonic.",
+            tone="neutral",
+        )
     else:
         render_status_note(
             "Outcome: mnemonic generation complete",
@@ -118,7 +123,11 @@ with tool_result_panel("bip39_validation_result", related_to="bip39_mnemonic_val
     render_section_heading("Validation result", eyebrow="Result")
     if validation is None:
         render_empty_state("No validation run yet", "Paste a phrase and choose Validate mnemonic.")
-        render_status_note("Outcome: validation awaiting input", "Validation results appear here after you submit a phrase.", tone="neutral")
+        render_status_note(
+            "Outcome: validation awaiting input",
+            "Validation results appear here after you submit a phrase.",
+            tone="neutral",
+        )
     elif not validation["ok"]:
         detail = str(validation["error"])
         if validation.get("unknown"):

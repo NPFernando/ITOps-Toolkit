@@ -35,6 +35,7 @@ mark_page_baseline(_baseline, "shell-ready")
 mark_page_baseline(_baseline, "wave27-shell-mobile")
 mark_page_baseline(_baseline, "wave28-shell-mobile")
 mark_page_baseline(_baseline, "wave29-shell-mobile")
+mark_page_baseline(_baseline, "wave30-shell-mobile")
 
 
 repo_url = github_url()
@@ -145,7 +146,7 @@ if show_all:
 else:
     render_status_note(
         "Outcome: quick access ready",
-        "Browse favorites, recent tools, and guided workflows, or expand to the full catalog when needed.",
+        "Quick access sections are active. Browse favorites, recent tools, and guided workflows, or expand to the full catalog when needed.",
         tone="neutral",
     )
     searched_tools = filter_tools(search_query, profession) if search_query.strip() else ()

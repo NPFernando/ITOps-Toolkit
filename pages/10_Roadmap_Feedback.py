@@ -34,6 +34,7 @@ mark_page_baseline(_baseline, "shell-ready")
 mark_page_baseline(_baseline, "wave27-shell-mobile")
 mark_page_baseline(_baseline, "wave28-shell-mobile")
 mark_page_baseline(_baseline, "wave29-shell-mobile")
+mark_page_baseline(_baseline, "wave30-shell-mobile")
 
 
 def _status_tone(status: str) -> str:
@@ -268,7 +269,7 @@ elif query_state.strip() or selected_category != "All":
 else:
     render_status_note(
         "Outcome: roadmap board ready",
-        f"Showing all {len(filtered_items)} roadmap item(s). Apply filters to narrow the board.",
+        f"Showing all {len(filtered_items)} roadmap item(s). Apply search and category filters to narrow the board.",
         tone="neutral",
     )
 

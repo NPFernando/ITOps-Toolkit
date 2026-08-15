@@ -59,6 +59,7 @@ apply_app_shell(active_page="Lorem Ipsum Generator")
 mark_page_baseline(_baseline, "shell-ready")
 mark_page_baseline(_baseline, "wave27-shell-mobile")
 mark_page_baseline(_baseline, "wave29-shell-mobile")
+mark_page_baseline(_baseline, "wave30-shell-mobile")
 
 render_page_header("Lorem Ipsum Generator", "Generate deterministic placeholder text by words, sentences, or paragraphs.")
 
@@ -90,7 +91,7 @@ with tool_result_panel("lorem_ipsum_result", related_to="lorem_ipsum_generator")
     else:
         render_status_note(
             "Outcome: lorem text generated",
-            "Placeholder text is ready to copy from the output block below.",
+            "Placeholder text is ready to copy from the output block below. Reuse the same seed to reproduce this exact output.",
             tone="success",
         )
         st.code(str(result), language=None)
