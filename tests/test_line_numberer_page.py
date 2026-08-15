@@ -19,6 +19,11 @@ def test_number_shows_result():
 
     code = " ".join(c.value for c in app.code)
     assert code == "1: a\n2: b"
+    md = " ".join(m.value for m in app.markdown)
+    assert "tool-status-note-success" in md
+    assert "Numbering complete" in md
+    assert 'role="status"' in md
+    assert 'aria-live="polite"' in md
 
 
 def test_empty_state_shown_before_submit():
@@ -28,6 +33,24 @@ def test_empty_state_shown_before_submit():
 
     md = " ".join(m.value for m in app.markdown)
     assert "tool-empty-state" in md
+    assert "tool-status-note-neutral" in md
+    assert "Awaiting text input" in md
+    assert 'role="status"' in md
+
+
+def test_empty_submission_shows_warning_status():
+    app = AppTest.from_file(PAGE, default_timeout=30)
+    app.run()
+    assert not app.exception
+
+    app.button[0].click().run()
+    assert not app.exception
+
+    md = " ".join(m.value for m in app.markdown)
+    assert "tool-status-note-warning" in md
+    assert "Line numbering needs attention" in md
+    assert 'role="alert"' in md
+    assert 'aria-live="assertive"' in md
 
 
 def test_results_persist_after_sidebar_interaction():

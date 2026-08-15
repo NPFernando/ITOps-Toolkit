@@ -25,6 +25,7 @@ Use this template for deployment notes, GitHub releases, or pull request summari
 - QA baseline add-on: Phase 22 wave-15 shell/mobile/visual/a11y QA gates completed
 - QA baseline add-on: Phase 23 wave-16 shell/mobile/visual/a11y QA gates completed
 - QA baseline add-on: Phase 24 wave-17 shell/mobile/visual/a11y QA gates completed
+- QA baseline add-on: Phase 25 wave-18 shell/mobile/visual/a11y QA gates completed
 
 ## User-Facing Changes
 
@@ -121,6 +122,10 @@ curl http://localhost:8502/_stcore/health
 - Wave 17 mobile readability spot check (`<=720px`, full-width/tap-friendly Home controls, Roadmap filters/AI triage action, and wave-17 submit actions):
 - Wave 17 visual mapping spot check (wave-17 touchpoint slug-specific icon priority + fallback for `markdown_toc_generator`, `number_to_words`, `json_to_typescript`, `css_gradient_generator`, `jwt_claims_reference`, `csp_builder`):
 - Wave 17 accessibility spot check (status/failure note semantics + keyboard/focus):
+- Wave 18 shell consistency spot check (shared shell + baseline markers on Home/Roadmap/Robots Meta/Cache Control/Markdown Table Formatter/CSV Column Selector/HTTP Methods/Line Numberer):
+- Wave 18 mobile readability spot check (`<=720px`, full-width/tap-friendly Home controls, Roadmap filters/AI triage action, and wave-18 submit actions):
+- Wave 18 visual mapping spot check (wave-18 touchpoint slug-specific icon priority + fallback for `robots_meta_builder`, `cache_control_tool`, `markdown_table_formatter`, `csv_column_selector`, `http_methods_reference`, `line_numberer`):
+- Wave 18 accessibility spot check (status/failure note semantics + keyboard/focus):
 - Log Troubleshooting AI unavailable state:
 - Optional Azure AI state, if secrets were available:
 

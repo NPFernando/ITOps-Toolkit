@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import streamlit as st
 
+from utils.dev_baseline import mark_page_baseline, render_page_baseline, start_page_baseline
 from utils.markdown_table_formatter import MAX_INPUT_LENGTH, format_markdown_table
 from utils.ui import (
     apply_app_shell,
@@ -16,29 +17,10 @@ from utils.ui import (
 )
 
 
+_baseline = start_page_baseline("Markdown Table Formatter")
 st.set_page_config(page_title="Markdown Table Formatter", layout="wide")
 apply_app_shell(active_page="Markdown Table Formatter")
-
-st.markdown(
-    """
-    <style>
-    @media (max-width: 768px) {
-      div[data-testid="stTextArea"] textarea {
-        font-size: 1rem;
-      }
-      div[data-testid="stFormSubmitButton"] button {
-        width: 100%;
-        min-height: 2.75rem;
-      }
-      div[data-testid="stCodeBlock"] pre {
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-      }
-    }
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
+mark_page_baseline(_baseline, "shell-ready")
 
 
 render_page_header(
@@ -76,5 +58,8 @@ if result is not None:
                 remediation="Provide a Markdown table with a header and separator row, then try again.",
             )
         else:
-            render_status_note("Formatting complete", "The table has been realigned and is ready to copy.", tone="success")
+            render_status_note("Formatting complete", "The formatted Markdown table is ready to copy.", tone="success")
             st.code(result["output"], language="markdown")
+
+mark_page_baseline(_baseline, "content-rendered")
+render_page_baseline(_baseline)

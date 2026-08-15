@@ -360,6 +360,20 @@ This guide documents the UI direction used for the Streamlit dashboard and tool 
 - Record Wave 17 outcomes in `docs/release-notes-template.md` using synthetic/sanitized evidence only.
 - Keep non-tool exceptions explicit and confirm desktop/mobile readability after wave-17 updates.
 
+## Phase 25 Wave 18 Standards (Shell, Mobile, Visual, A11y + QA Gates)
+
+- **Shell consistency:** keep shared shell + baseline markers (`shell-ready`, `content-rendered`) stable on Home, Roadmap & Feedback, Robots Meta Tag Builder, Cache Control Tool, Markdown Table Formatter, CSV Column Selector, HTTP Methods Reference, and Line Numberer.
+- **Mobile baseline (`<=720px`):** keep wave-18 form panels and primary actions full-width/tap-friendly (`use_container_width=True`), keep wave-18 controls single-column readable, and avoid forced two-column control layouts on wave-18 touchpoint pages.
+- **Visual mapping integrity:** keep wave-18 touchpoint slug mappings readable (`robots_meta_builder`, `cache_control_tool`, `markdown_table_formatter`, `csv_column_selector`, `http_methods_reference`, `line_numberer`) before category defaults, with text badge fallback always readable.
+- **Accessibility guardrail:** keep keyboard flow and visible focus rings intact for Home controls, Roadmap filters/AI triage action, and wave-18 form actions, with neutral/blocking outcomes aligned to shared status/failure note semantics.
+- **QA gate behavior:** treat Wave 18 shell/mobile/visual/a11y regressions as release blockers unless an intentional exception is documented.
+
+### Wave 18 QA handoff guidance
+
+- Run Wave 18 checks in `docs/release-checklist.md` before release.
+- Record Wave 18 outcomes in `docs/release-notes-template.md` using synthetic/sanitized evidence only.
+- Keep non-tool exceptions explicit and confirm desktop/mobile readability after wave-18 updates.
+
 ## Maintenance Rules
 
 - Do not duplicate tool titles, descriptions, paths, or accent colors outside `utils/ui.py`.
