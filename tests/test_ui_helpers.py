@@ -2739,3 +2739,64 @@ def test_tool_card_icon_asset_slug_mapping_precedence_is_stable_with_falsey_slug
 
     assert tool.slug in ui.TOOL_CARD_ICON_ASSETS
     assert ui._tool_card_icon_asset(tool) == ""
+
+
+def test_tool_card_icon_asset_maps_wave34_placeholder_aliases_deterministically():
+    expected_assets = {
+        "159_tool_slug_pending_roadmap": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
+        "160_tool_slug_pending_roadmap": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
+        "159_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
+        "160_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
+    }
+
+    for slug, expected in expected_assets.items():
+        tool = ui.ToolMeta(
+            title=f"Wave-34 {slug}",
+            short_title=slug,
+            description="planned",
+            path=f"pages/{slug}.py",
+            icon="W34",
+            accent="#335c67",
+            slug=slug,
+            professions=("Support Engineer",),
+            category="Data & Text",
+        )
+        assert ui._tool_card_icon_asset(tool) == expected
+
+
+def test_tool_card_html_wave34_placeholder_alias_mapping_precedes_category_default(monkeypatch):
+    expected_assets = {
+        "159_tool_slug_pending_roadmap": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
+        "160_tool_slug_pending_roadmap": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
+    }
+    category_default = "icons/exported/icon-workflow-json-validate-outline-24x24-v01.svg"
+    requested_paths: list[str] = []
+
+    def fake_svg_img_html(path, *args, **kwargs):
+        requested_paths.append(path)
+        if path == category_default:
+            return '<img class="tool-card-icon-image" data-icon="category-default" />'
+        return None
+
+    monkeypatch.setattr(ui, "_svg_img_html", fake_svg_img_html)
+
+    for slug, expected_asset in expected_assets.items():
+        tool = ui.ToolMeta(
+            title=f"Wave-34 {slug}",
+            short_title=slug,
+            description="planned",
+            path=f"pages/{slug}.py",
+            icon="W34",
+            accent="#335c67",
+            slug=slug,
+            professions=("Support Engineer",),
+            category="Data & Text",
+        )
+        html = ui._tool_card_html(tool)
+        assert requested_paths[-1] == expected_asset
+        assert requested_paths[-1] != category_default
+        assert "tool-card-icon-image" not in html
+        assert f">{tool.icon}<" in html
+
+    assert requested_paths == list(expected_assets.values())
+    assert category_default not in requested_paths

@@ -585,6 +585,21 @@ This guide documents the UI direction used for the Streamlit dashboard and tool 
 - Record Wave 33 outcomes in `docs/release-notes-template.md` using synthetic/sanitized evidence only.
 - Confirm deterministic lorem/conversion outcomes and deterministic icon alias precedence remain unchanged after visual refinements.
 
+## Phase 41 Wave 34 Standards (Shell, Mobile, Visual, A11y + QA Gates)
+
+- **Shell consistency:** keep shared shell + baseline markers (`shell-ready`, `content-rendered`, `wave34-shell-mobile`) stable on Home, Roadmap & Feedback, Lorem Ipsum Generator, and Text to Binary/Hex/Octal Converter.
+- **Mobile baseline (`<=720px`):** keep grouped controls single-column readable with shared headings, and keep Home controls, Roadmap filters/AI triage action, plus wave-34 generate/convert actions full-width/tap-friendly with no clipping/overflow.
+- **Visual hierarchy + scanability:** preserve the two-step heading structure and concise step descriptions so setup/actions/results remain scannable in order on mapped pages.
+- **Visual mapping integrity:** keep deterministic slug-first icon lookup (`TOOL_CARD_ICON_ASSETS` before `CATEGORY_TOOL_CARD_ICON_ASSETS`) and document wave-34 placeholder mappings (`161_tool_slug_pending_roadmap` + `161_<tool_slug_pending_roadmap>` → `lorem_ipsum_generator`; `162_tool_slug_pending_roadmap` + `162_<tool_slug_pending_roadmap>` → `text_to_binary_hex_octal_converter`) while retaining wave-33 alias coverage (`159*`/`160*`) for release evidence continuity.
+- **Accessibility guardrail:** keep keyboard flow/focus visibility intact and preserve explicit status semantics (`role="status"`/`role="alert"` + `aria-live`) for Home, Roadmap, and wave-34 tool outcomes.
+- **QA/test guardrail:** treat deterministic guardrails in `tests/test_ui_helpers.py`, `tests/test_wave34_shell_mobile_markers.py`, and `tests/test_wave34_accessibility_guardrails.py` as release blockers.
+
+### Wave 34 QA handoff guidance
+
+- Run Wave 34 checks in `docs/release-checklist.md` before release.
+- Record Wave 34 outcomes in `docs/release-notes-template.md` using synthetic/sanitized evidence only.
+- Confirm 161/162 placeholder mapping notes, 159/160 alias handling, and deterministic shell/mobile/visual/a11y outcomes remain unchanged after UI refinements.
+
 ## Maintenance Rules
 
 - Do not duplicate tool titles, descriptions, paths, or accent colors outside `utils/ui.py`.

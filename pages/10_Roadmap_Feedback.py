@@ -38,6 +38,7 @@ mark_page_baseline(_baseline, "wave30-shell-mobile")
 mark_page_baseline(_baseline, "wave31-shell-mobile")
 mark_page_baseline(_baseline, "wave32-shell-mobile")
 mark_page_baseline(_baseline, "wave33-shell-mobile")
+mark_page_baseline(_baseline, "wave34-shell-mobile")
 
 
 def _status_tone(status: str) -> str:
@@ -208,7 +209,11 @@ st.markdown(
 render_section_heading("Browse roadmap items", "Use search and category filters to focus the board view.", eyebrow="Explore")
 with tool_form_panel("roadmap_filters"):
     render_form_intro("Search and filter roadmap", "Use keyword search and category pills to narrow the board.")
-    render_section_heading("Filter setup", eyebrow="Step 1")
+    render_section_heading(
+        "Filter setup",
+        description="Set search terms and category scope first so roadmap results are easier to scan.",
+        eyebrow="Step 1",
+    )
     with st.form("roadmap-filters-form"):
         render_control_heading("Keyword search")
         query = st.text_input("Search roadmap", placeholder="Search features, categories, or ideas...")
@@ -225,6 +230,7 @@ with tool_form_panel("roadmap_filters"):
         )
         st.caption("Search first, then narrow with category pills to keep the board readable on mobile screens.")
         render_control_heading("Apply filters")
+        st.caption("Read order: set search + category, apply filters, then review status outcomes before scanning cards.")
         submitted_filters = st.form_submit_button("Apply filters", use_container_width=True)
 
 if submitted_filters or "roadmap_filter_state" not in st.session_state:
@@ -237,6 +243,12 @@ query_state = st.session_state.get("roadmap_filter_state", {}).get("query", "")
 selected_category = st.session_state.get("roadmap_filter_state", {}).get("category", "All")
 filtered_items = roadmap.filter_roadmap_items(query_state, selected_category, board.items)
 items_by_status = roadmap.roadmap_items_by_status(filtered_items)
+
+render_section_heading(
+    "Roadmap results",
+    description="Review status outcomes first, then scan grouped columns for matching roadmap cards.",
+    eyebrow="Step 2",
+)
 
 if not filtered_items:
     render_status_note(

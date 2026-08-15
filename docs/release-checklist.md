@@ -408,6 +408,17 @@ Confirm these release-blocking checks pass:
 - **Deterministic regression tests:** run and pass `tests/test_ui_helpers.py` (slug precedence), `tests/test_wave33_shell_mobile_markers.py` (shell/mobile marker + grouped control guardrails), and `tests/test_wave33_accessibility_guardrails.py` (status semantics + deterministic outcomes).
 - **Release evidence:** Wave 33 outcomes are captured in `docs/release-notes-template.md` with synthetic/sanitized QA evidence only.
 
+### 4.35 Phase 41 Wave 34 Regression Checklist (Shell/Mobile/Visual/A11y QA Gates)
+
+Confirm these release-blocking checks pass:
+
+- **Shell consistency:** shared shell + baseline markers (`shell-ready`, `content-rendered`, `wave34-shell-mobile`) remain present on Home, Roadmap & Feedback, Lorem Ipsum Generator, and Text to Binary/Hex/Octal Converter.
+- **Mobile (`<=720px`):** grouped controls stay single-column readable with shared control headings, and Home controls, Roadmap filters/AI triage action, plus wave-34 generate/convert actions remain full-width/tap-friendly with no clipping/overflow.
+- **Visual mapping (wave-34 focus):** placeholder-to-real slug aliases are documented and validated for wave-34 routing (`161_tool_slug_pending_roadmap` + `161_<tool_slug_pending_roadmap>` → `lorem_ipsum_generator`; `162_tool_slug_pending_roadmap` + `162_<tool_slug_pending_roadmap>` → `text_to_binary_hex_octal_converter`), while prior wave-33 aliases (`159*`/`160*`) remain accepted for release evidence continuity and deterministic slug-first icon lookup still precedes category defaults with readable text fallback badges.
+- **Accessibility:** keyboard-only navigation remains intact, focus rings stay visible, and explicit status semantics (`role="status"`/`role="alert"` with `aria-live`) remain present for Home/Roadmap and wave-34 tool outcomes.
+- **Deterministic regression tests:** run and pass `tests/test_ui_helpers.py` (slug precedence + alias mapping), `tests/test_wave34_shell_mobile_markers.py` (shell/mobile marker + read-order guardrails), and `tests/test_wave34_accessibility_guardrails.py` (status semantics + deterministic outcomes).
+- **Release evidence:** Wave 34 outcomes are captured in `docs/release-notes-template.md` with synthetic/sanitized QA evidence only.
+
 ## 5. Log Troubleshooting AI States
 
 Without Azure secrets:
