@@ -14,6 +14,7 @@ This guide documents the UI direction used for the Streamlit dashboard and tool 
 - Home page structure:
   - Hero section with product title, short value statement, search input, trust chips, and the IT/security visual.
   - Home navigation mode switch: Quick access (personalized sections) and All tools (full catalog).
+  - Guided **Start Here Workflows** section to route first-time users through common triage flows.
   - Quick access sections may include Your Favorites, Recently Used (or Popular to Start), Shared Favorites, and New & Noteworthy.
   - All tools mode supports search + profession filtering + sort controls.
   - Feature strip for reliability, privacy, public-safe use, open source status, and mobile support.
@@ -80,6 +81,7 @@ This guide documents the UI direction used for the Streamlit dashboard and tool 
   - Runtime visual hooks are centralized in `utils/ui.py`:
     - `HOME_HERO_ILLUSTRATION`
     - `TOOL_CARD_ICON_ASSETS`
+    - `CATEGORY_TOOL_CARD_ICON_ASSETS`
     - `TOOL_HEADER_ILLUSTRATION_BY_CATEGORY`
     - `EMPTY_STATE_ILLUSTRATIONS`
     - `ROADMAP_BADGE_ICONS`

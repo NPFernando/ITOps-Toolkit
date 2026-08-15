@@ -30,6 +30,7 @@ Use this lightweight poster in docs headers and release summaries to reinforce d
 - Log Troubleshooting Assistant with rule-based, public-safe analysis and optional Azure AI summaries.
 - Roadmap & Feedback board with curated seed items, live public GitHub Issues, planned work, completed work, and static AI recommendations.
 - Health Diagnostics page with public-safe runtime checks for app basics, optional integrations, feature flags, and safe smoke probes.
+- Home "Start Here Workflows" guidance for common triage journeys (domain incident, endpoint debugging, token/auth troubleshooting).
 
 ## Local Setup
 

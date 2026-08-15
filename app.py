@@ -17,6 +17,7 @@ from utils.ui import (
     render_fragment,
     render_home_hero,
     render_important_notice,
+    render_guided_workflows,
     render_tool_section,
     shared_favorite_tools,
     sort_tools,
@@ -129,6 +130,10 @@ else:
         return tuple(tool for tool in matches if tool.slug in searched)
 
     st.markdown('<div class="tool-panel-eyebrow">Quick access</div>', unsafe_allow_html=True)
+    render_fragment(
+        "home_guided_workflows",
+        lambda: render_guided_workflows(query=search_query, profession=profession),
+    )
     if favorites:
         scoped_favorites = _scoped(favorites)
         if scoped_favorites:
