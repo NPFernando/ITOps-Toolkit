@@ -12,6 +12,7 @@ from utils.ui import (
     render_page_header,
     render_section_heading,
     run_validated_lookup,
+    tool_download_panel,
     tool_form_panel,
     tool_result_panel,
 )
@@ -91,3 +92,21 @@ if stored is not None:
                 st.caption("No raw values returned.")
 
         st.caption(f"Queried name: {result['query_name']}")
+
+    records_csv = pd.DataFrame(result["records"]).to_csv(index=False).encode("utf-8")
+    raw_values = "\n".join(result["raw_values"]) if result["raw_values"] else "No raw values returned."
+    with tool_download_panel("dns_downloads", related_to="dns_records"):
+        render_section_heading("Export", "Download current in-memory lookup output.", eyebrow="Downloads")
+        col_a, col_b = st.columns(2)
+        col_a.download_button(
+            "Download records as CSV",
+            records_csv,
+            file_name=f"dns-{stored['record_type'].lower()}-records.csv",
+            mime="text/csv",
+        )
+        col_b.download_button(
+            "Download raw values (.txt)",
+            raw_values,
+            file_name=f"dns-{stored['record_type'].lower()}-raw-values.txt",
+            mime="text/plain",
+        )

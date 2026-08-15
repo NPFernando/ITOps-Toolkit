@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from datetime import datetime
 from typing import Any
 
@@ -17,6 +18,7 @@ from utils.ui import (
     render_page_header,
     render_section_heading,
     run_validated_lookup,
+    tool_download_panel,
     tool_form_panel,
     tool_result_panel,
 )
@@ -116,3 +118,32 @@ if result is not None:
                 st.dataframe(pd.DataFrame({"SAN": result["san_names"]}), width="stretch", hide_index=True)
             else:
                 st.caption("No SAN names available.")
+
+    summary_csv = display_rows_frame(rows).to_csv(index=False).encode("utf-8")
+    san_text = "\n".join(result["san_names"]) if result["san_names"] else "No SAN names available."
+    export_payload = {
+        **result,
+        "valid_from": _format_dt(result["valid_from"]),
+        "valid_until": _format_dt(result["valid_until"]),
+    }
+    with tool_download_panel("ssl_downloads", related_to="ssl_certificate"):
+        render_section_heading("Export", "Download the current in-memory certificate check output.", eyebrow="Downloads")
+        col_a, col_b, col_c = st.columns(3)
+        col_a.download_button(
+            "Download summary as CSV",
+            summary_csv,
+            file_name="ssl-certificate-summary.csv",
+            mime="text/csv",
+        )
+        col_b.download_button(
+            "Download SAN names (.txt)",
+            san_text,
+            file_name="ssl-certificate-san-names.txt",
+            mime="text/plain",
+        )
+        col_c.download_button(
+            "Download full result as JSON",
+            json.dumps(export_payload, indent=2),
+            file_name="ssl-certificate-result.json",
+            mime="application/json",
+        )

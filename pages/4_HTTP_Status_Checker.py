@@ -13,6 +13,7 @@ from utils.ui import (
     render_page_header,
     render_section_heading,
     run_validated_lookup,
+    tool_download_panel,
     tool_form_panel,
     tool_result_panel,
 )
@@ -94,3 +95,30 @@ if result is not None:
                 st.warning(item)
         else:
             st.success("No header or HTTPS recommendations from this check.")
+
+    summary_csv = display_rows_frame(rows).to_csv(index=False).encode("utf-8")
+    headers_csv = pd.DataFrame(
+        [{"header": key, "value": value} for key, value in result["headers"].items()]
+    ).to_csv(index=False).encode("utf-8")
+    redirect_csv = pd.DataFrame(result["redirect_chain"]).to_csv(index=False).encode("utf-8")
+    with tool_download_panel("http_downloads", related_to="http_status"):
+        render_section_heading("Export", "Download current in-memory HTTP check output.", eyebrow="Downloads")
+        col_a, col_b, col_c = st.columns(3)
+        col_a.download_button(
+            "Download summary as CSV",
+            summary_csv,
+            file_name="http-status-summary.csv",
+            mime="text/csv",
+        )
+        col_b.download_button(
+            "Download headers as CSV",
+            headers_csv,
+            file_name="http-status-headers.csv",
+            mime="text/csv",
+        )
+        col_c.download_button(
+            "Download redirects as CSV",
+            redirect_csv,
+            file_name="http-status-redirects.csv",
+            mime="text/csv",
+        )

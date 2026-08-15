@@ -2164,8 +2164,8 @@ def render_feature_strip() -> None:
 def render_important_notice() -> None:
     st.markdown(
         """
-        <div class="important-notice">
-            <div class="notice-icon">i</div>
+        <div class="important-notice" role="note" aria-label="Public-safe usage notice">
+            <div class="notice-icon" aria-hidden="true">i</div>
             <div><strong>Important Notice</strong><p>Do not paste passwords, private keys, tokens, or any sensitive customer data. This toolkit is for educational and troubleshooting purposes only.</p></div>
         </div>
         """,
@@ -2178,12 +2178,14 @@ def render_page_header(title: str, description: str, warning: str | None = None)
     tool = tool_by_title(title)
     icon = tool.icon if tool else "IT"
     accent = tool.accent if tool else "#1668f4"
+    overline = f"{tool.category} Tool" if tool else "Tool"
     icon_text = _icon_text_color(accent)
     st.markdown(
         f"""
         <section class="tool-page-header" style="--tool-accent: {accent}; --tool-icon-text: {icon_text};">
             <div class="tool-page-icon">{escape(icon)}</div>
             <div>
+                <p class="tool-page-overline">{escape(overline)}</p>
                 <h1>{escape(title)}</h1>
                 <p>{escape(description)}</p>
             </div>
@@ -2515,6 +2517,7 @@ def _tool_card_html(tool: ToolMeta, delay_ms: int = 0) -> str:
     return f"""
     <div class="tool-card-shell" style="--tool-accent: {tool.accent}; --tool-icon-text: {icon_text}; animation-delay: {delay_ms}ms;">{new_badge}
         <div class="tool-card-icon">{escape(tool.icon)}</div>
+        <p class="tool-card-category">{escape(tool.category)}</p>
         <h3>{escape(tool.title)}</h3>
         <p>{escape(tool.description)}</p>
     </div>
@@ -2745,6 +2748,10 @@ def _inject_global_css(mode: str) -> None:
         :root {
             __ITOPS_ROOT_VARS__
             --card-radius: 8px;
+            --shell-gap-xs: 0.45rem;
+            --shell-gap-sm: 0.7rem;
+            --shell-gap-md: 1rem;
+            --shell-gap-lg: 1.4rem;
         }
 
         @media (prefers-reduced-motion: reduce) {
@@ -2756,13 +2763,13 @@ def _inject_global_css(mode: str) -> None:
             }
         }
 
-        /* Nothing in this stylesheet suppresses the browser's default focus
-           ring, but several links (fallback-page-link, roadmap-submit-link,
-           roadmap-secondary-link) sit on colored/gradient backgrounds where a
-           default outline can be low-contrast. This gives every link and
-           button in the app a consistent, visible keyboard-focus outline. */
+        /* Keep keyboard focus highly visible across links/buttons/inputs,
+           including custom role=button elements used by Streamlit widgets. */
         .stApp a:focus-visible,
-        .stApp button:focus-visible {
+        .stApp button:focus-visible,
+        .stApp input:focus-visible,
+        .stApp textarea:focus-visible,
+        .stApp [role="button"]:focus-visible {
             outline: 2px solid var(--itops-blue);
             outline-offset: 2px;
         }
@@ -2936,17 +2943,45 @@ def _inject_global_css(mode: str) -> None:
             text-transform: uppercase;
             font-size: 0.72rem;
             font-weight: 800;
-            margin: 0.55rem 0 0.45rem;
+            margin: 0.9rem 0 0.45rem;
+            letter-spacing: 0.04em;
+        }
+
+        [data-testid="stSidebar"] [data-testid="stTextInputRootElement"] {
+            border-radius: var(--card-radius);
+            border: 1px solid rgba(152, 190, 245, 0.24);
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        [data-testid="stSidebar"] [data-testid="stTextInputRootElement"]:focus-within {
+            border-color: rgba(173, 205, 255, 0.58);
+            box-shadow: 0 0 0 3px rgba(18, 107, 255, 0.18);
+        }
+
+        [data-testid="stSidebar"] [data-testid="stTextInputRootElement"] input {
+            color: #edf5ff !important;
+        }
+
+        [data-testid="stSidebar"] .stExpander {
+            border: 1px solid rgba(152, 190, 245, 0.16);
+            border-radius: var(--card-radius);
+            background: rgba(255, 255, 255, 0.03);
+            margin: 0 0 0.55rem;
+        }
+
+        [data-testid="stSidebar"] .stExpander [data-testid="stExpanderToggleIcon"] svg {
+            opacity: 0.88;
         }
 
         [data-testid="stSidebar"] [data-testid="stPageLink"] a {
             border-radius: var(--card-radius);
             color: #dceaff !important;
-            min-height: 2.85rem;
-            padding: 0.65rem 0.7rem;
+            min-height: 2.65rem;
+            padding: 0.58rem 0.68rem;
             font-weight: 650;
             background: transparent;
             border: 1px solid transparent;
+            line-height: 1.28;
         }
 
         [data-testid="stSidebar"] [data-testid="stPageLink"] a * {
@@ -3052,6 +3087,16 @@ def _inject_global_css(mode: str) -> None:
         [data-testid="stNumberInput"] input:focus {
             border-color: var(--itops-blue);
             box-shadow: 0 0 0 3px rgba(18, 107, 255, 0.16);
+        }
+
+        [data-testid="stPills"] [role="radiogroup"] {
+            gap: 0.45rem;
+        }
+
+        [data-testid="stPills"] [role="radio"] {
+            min-height: 2.35rem;
+            border-radius: var(--card-radius);
+            font-weight: 750;
         }
 
         .trust-chip-row {
@@ -3277,8 +3322,8 @@ def _inject_global_css(mode: str) -> None:
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin: 1.7rem 0 1rem;
-            padding-top: 1rem;
+            margin: 1.95rem 0 1.05rem;
+            padding-top: 1.1rem;
             border-top: 1px solid var(--itops-line);
         }
 
@@ -3290,8 +3335,9 @@ def _inject_global_css(mode: str) -> None:
 
         .section-heading h2 {
             margin: 0;
-            font-size: 1.45rem;
+            font-size: clamp(1.28rem, 2.2vw, 1.55rem);
             font-weight: 800;
+            line-height: 1.14;
         }
 
         .section-bolt {
@@ -3306,6 +3352,17 @@ def _inject_global_css(mode: str) -> None:
             background: var(--itops-surface);
             border: 1px solid var(--itops-surface-border);
             box-shadow: 0 12px 32px rgba(36, 79, 135, 0.06);
+            position: relative;
+        }
+
+        [class*="st-key-tool_card_"]::before {
+            content: "";
+            position: absolute;
+            inset: 0 0 auto;
+            height: 3px;
+            border-radius: var(--card-radius) var(--card-radius) 0 0;
+            background: linear-gradient(90deg, var(--itops-blue), color-mix(in srgb, var(--itops-blue), #ffffff 14%));
+            opacity: 0.72;
         }
 
         [class*="st-key-tool_card_"] > div {
@@ -3387,7 +3444,7 @@ def _inject_global_css(mode: str) -> None:
         }
 
         .tool-card-shell h3 {
-            margin: 0 0 0.65rem;
+            margin: 0.18rem 0 0.58rem;
             font-size: 1.02rem;
             line-height: 1.25;
             font-weight: 800;
@@ -3398,6 +3455,16 @@ def _inject_global_css(mode: str) -> None:
             color: var(--itops-text-secondary);
             font-size: 0.92rem;
             line-height: 1.55;
+        }
+
+        .tool-card-category {
+            margin: 0;
+            color: var(--itops-blue);
+            font-size: 0.7rem;
+            font-weight: 900;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+            line-height: 1.2;
         }
 
         [class*="st-key-tool_card_"] [data-testid="stPageLink"] a {
@@ -3513,9 +3580,9 @@ def _inject_global_css(mode: str) -> None:
         .tool-page-header {
             display: flex;
             align-items: center;
-            gap: 1rem;
-            padding: 1rem 1.1rem;
-            margin-bottom: 1rem;
+            gap: var(--shell-gap-md);
+            padding: 1.05rem 1.1rem;
+            margin-bottom: 1.1rem;
             border-radius: var(--card-radius);
             border: 1px solid var(--itops-surface-border);
             background: var(--itops-surface);
@@ -3543,6 +3610,16 @@ def _inject_global_css(mode: str) -> None:
             font-weight: 800;
         }
 
+        .tool-page-overline {
+            margin: 0 0 var(--shell-gap-xs);
+            color: var(--itops-blue);
+            font-size: 0.72rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            line-height: 1;
+        }
+
         .tool-page-header p {
             margin: 0.35rem 0 0;
             color: var(--itops-text-secondary);
@@ -3555,8 +3632,8 @@ def _inject_global_css(mode: str) -> None:
             border-radius: var(--card-radius);
             background: var(--itops-surface);
             box-shadow: 0 12px 32px rgba(36, 79, 135, 0.045);
-            padding: 1rem 1rem 1.1rem;
-            margin: 1rem 0;
+            padding: 1.05rem 1.05rem 1.15rem;
+            margin: 1.1rem 0;
         }
 
         [class*="st-key-tool_form_panel_"] {
@@ -3566,7 +3643,9 @@ def _inject_global_css(mode: str) -> None:
 
         .tool-form-intro,
         .tool-section-heading {
-            margin-bottom: 0.85rem;
+            margin-bottom: 0.95rem;
+            padding-bottom: 0.72rem;
+            border-bottom: 1px solid color-mix(in srgb, var(--itops-line), transparent 48%);
         }
 
         .tool-form-intro h2,
@@ -3591,7 +3670,7 @@ def _inject_global_css(mode: str) -> None:
             color: var(--itops-blue);
             font-size: 0.72rem;
             font-weight: 900;
-            letter-spacing: 0;
+            letter-spacing: 0.04em;
             text-transform: uppercase;
         }
 
@@ -4141,7 +4220,7 @@ def _inject_global_css(mode: str) -> None:
             margin: 0;
             padding: 0 !important;
             color: var(--itops-ink);
-            font-size: 0.92rem;
+            font-size: 0.95rem;
             line-height: 1.32;
             font-weight: 900;
             overflow-wrap: anywhere;
@@ -4209,7 +4288,7 @@ def _inject_global_css(mode: str) -> None:
             margin: 0.42rem 0 0;
             padding: 0 !important;
             color: var(--itops-text-secondary);
-            font-size: 0.8rem;
+            font-size: 0.84rem;
             line-height: 1.45;
             display: -webkit-box;
             -webkit-line-clamp: 3;
@@ -4222,7 +4301,7 @@ def _inject_global_css(mode: str) -> None:
             /* #64758e measured 2.98:1 against the dark bg -- below WCAG AA's
                4.5:1 minimum for normal text. --itops-muted (4.59:1) clears it. */
             color: var(--itops-muted);
-            font-size: 0.72rem;
+            font-size: 0.75rem;
             line-height: 1.4;
             display: -webkit-box;
             -webkit-line-clamp: 2;
@@ -4287,6 +4366,12 @@ def _inject_global_css(mode: str) -> None:
         .stFormSubmitButton button {
             border-radius: var(--card-radius) !important;
             font-weight: 800 !important;
+        }
+
+        .stDownloadButton button {
+            white-space: normal !important;
+            line-height: 1.3 !important;
+            text-wrap: balance;
         }
 
         @media (max-width: 1100px) {
@@ -4386,12 +4471,17 @@ def _inject_global_css(mode: str) -> None:
             }
 
             .roadmap-column-title {
-                padding-left: 3.75rem;
+                padding-left: 0.9rem;
             }
 
             .roadmap-footer-note span {
                 display: block;
                 margin: 0.35rem 0 0.8rem;
+            }
+
+            .stDownloadButton button,
+            .stFormSubmitButton button {
+                width: 100%;
             }
 
             /* Multi-metric rows (4-6 st.metric columns) rely entirely on
