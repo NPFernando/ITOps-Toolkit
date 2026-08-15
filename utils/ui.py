@@ -133,6 +133,7 @@ TOOL_CARD_ICON_ASSETS: dict[str, str] = {
     "safelinks_decoder": "icons/exported/icon-workflow-safe-link-unwrap-outline-24x24-v01.svg",
     "m365_safelinks_decoder": "icons/exported/icon-workflow-safe-link-unwrap-outline-24x24-v01.svg",
     "docker_run_compose_converter": "icons/exported/icon-workflow-container-compose-outline-24x24-v01.svg",
+    "docker_run_to_compose": "icons/exported/icon-workflow-container-compose-outline-24x24-v01.svg",
     "docker_compose_converter": "icons/exported/icon-workflow-container-compose-outline-24x24-v01.svg",
     "nato_phonetic_converter": "icons/exported/icon-workflow-phonetic-spellout-outline-24x24-v01.svg",
     "nato_alphabet_converter": "icons/exported/icon-workflow-phonetic-spellout-outline-24x24-v01.svg",

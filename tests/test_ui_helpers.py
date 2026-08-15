@@ -769,6 +769,133 @@ def test_tool_card_html_uses_wave21_generated_icons_when_mapped():
         assert "data:image/svg+xml;base64," in html
 
 
+def test_tool_card_icon_asset_maps_wave22_visual_targets():
+    expected_assets = {
+        "docker_run_to_compose": "icons/exported/icon-workflow-container-compose-outline-24x24-v01.svg",
+        "nato_phonetic_converter": "icons/exported/icon-workflow-phonetic-spellout-outline-24x24-v01.svg",
+        "wifi_qr_code_generator": "icons/exported/icon-workflow-wifi-qr-share-outline-24x24-v01.svg",
+        "hmac_generator": "icons/exported/icon-workflow-hash-digest-outline-24x24-v01.svg",
+        "ipv6_ula_generator": "icons/exported/icon-workflow-ipv6-compress-outline-24x24-v01.svg",
+        "random_mac_address_generator": "icons/exported/icon-workflow-mac-address-outline-24x24-v01.svg",
+    }
+
+    for slug, expected in expected_assets.items():
+        tool = ui.ToolMeta(
+            title=f"Planned {slug}",
+            short_title=slug,
+            description="planned",
+            path=f"pages/{slug}.py",
+            icon="PLN",
+            accent="#123456",
+            slug=slug,
+            professions=("Support Engineer",),
+            category="Ops & Automation",
+        )
+        assert ui._tool_card_icon_asset(tool) == expected
+
+
+def test_tool_card_html_uses_wave22_generated_icons_when_mapped():
+    tools = [
+        ui.ToolMeta(
+            title="Docker run to compose",
+            short_title="Docker compose",
+            description="planned",
+            path="pages/docker_run_to_compose.py",
+            icon="DOC",
+            accent="#123456",
+            slug="docker_run_to_compose",
+            professions=("Support Engineer",),
+            category="Ops & Automation",
+        ),
+        ui.ToolMeta(
+            title="NATO phonetic converter",
+            short_title="NATO",
+            description="planned",
+            path="pages/nato_phonetic_converter.py",
+            icon="ATO",
+            accent="#123456",
+            slug="nato_phonetic_converter",
+            professions=("Support Engineer",),
+            category="Data & Text",
+        ),
+        ui.ToolMeta(
+            title="Wi-Fi QR code generator",
+            short_title="Wi-Fi QR",
+            description="planned",
+            path="pages/wifi_qr_code_generator.py",
+            icon="WFI",
+            accent="#123456",
+            slug="wifi_qr_code_generator",
+            professions=("Support Engineer",),
+            category="Ops & Automation",
+        ),
+        ui.ToolMeta(
+            title="HMAC generator",
+            short_title="HMAC",
+            description="planned",
+            path="pages/hmac_generator.py",
+            icon="HMC",
+            accent="#123456",
+            slug="hmac_generator",
+            professions=("Support Engineer",),
+            category="Security",
+        ),
+        ui.ToolMeta(
+            title="IPv6 ULA generator",
+            short_title="IPv6 ULA",
+            description="planned",
+            path="pages/ipv6_ula_generator.py",
+            icon="ULA",
+            accent="#123456",
+            slug="ipv6_ula_generator",
+            professions=("Support Engineer",),
+            category="Network",
+        ),
+        ui.ToolMeta(
+            title="Random MAC address generator",
+            short_title="Random MAC",
+            description="planned",
+            path="pages/random_mac_address_generator.py",
+            icon="MAC",
+            accent="#123456",
+            slug="random_mac_address_generator",
+            professions=("Support Engineer",),
+            category="Network",
+        ),
+    ]
+
+    for tool in tools:
+        html = ui._tool_card_html(tool)
+        assert "tool-card-icon-image" in html
+        assert "data:image/svg+xml;base64," in html
+
+
+def test_tool_card_html_wave22_slug_specific_mapping_precedes_category_default_during_render(monkeypatch):
+    tool = ui.ToolMeta(
+        title="Docker run to compose",
+        short_title="Docker compose",
+        description="planned",
+        path="pages/docker_run_to_compose.py",
+        icon="DOC",
+        accent="#123456",
+        slug="docker_run_to_compose",
+        professions=("Support Engineer",),
+        category="Ops & Automation",
+    )
+
+    def fake_svg_img_html(path, *args, **kwargs):
+        if path == "icons/exported/icon-workflow-automation-runbook-outline-24x24-v01.svg":
+            return '<img class="tool-card-icon-image" data-icon="category-default" />'
+        return None
+
+    monkeypatch.setattr(ui, "_svg_img_html", fake_svg_img_html)
+
+    html = ui._tool_card_html(tool)
+
+    assert "tool-card-icon-image" not in html
+    assert f">{tool.icon}<" in html
+
+
 def test_tool_card_html_wave4_slug_specific_mapping_precedes_category_default_during_render(monkeypatch):
     tool = next(item for item in TOOLS if item.slug == "basic_auth_tool")
 

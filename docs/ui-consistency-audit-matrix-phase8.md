@@ -151,3 +151,8 @@ Use this matrix as a quick release gate:
 
 - Wave 21 release docs now extend shell/mobile/visual/a11y gates for shared shell baseline-marker coverage on Home/Roadmap plus Unified Diff Generator/JWK PEM Converter/Certificate Chain Validator/WSL Path Converter/Markdown Link Extractor/Health Diagnostics, grouped mobile control readability, and wave-21 touchpoint visual mapping checks.
 - This matrix remains the Phase 8 baseline; Wave 21 adds release-playbook QA evidence requirements without changing core consistency rules.
+
+## Wave 22 Documentation Sync Note (Phase 29)
+
+- Wave 22 release docs now extend shell/mobile/visual/a11y gates for shared shell baseline-marker coverage on Home/Roadmap plus Docker Run to Compose/NATO Phonetic Converter/WiFi QR Code Generator/HMAC Generator/IPv6 ULA Generator/Random MAC Address Generator, grouped mobile control readability, and wave-22 touchpoint visual mapping checks.
+- This matrix remains the Phase 8 baseline; Wave 22 adds release-playbook QA evidence requirements without changing core consistency rules.
