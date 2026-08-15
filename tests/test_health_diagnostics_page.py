@@ -29,6 +29,7 @@ def _row_by_check(rows: list[dict[str, str]], check: str) -> dict[str, str]:
 def test_health_diagnostics_page_renders_key_sections():
     app = _run_page()
     page_markdown = " ".join(m.value for m in app.markdown)
+    captions = " ".join(c.value for c in app.caption)
 
     assert "Health Diagnostics" in page_markdown
     assert "Runtime basics" in page_markdown
@@ -38,6 +39,8 @@ def test_health_diagnostics_page_renders_key_sections():
     assert "Adapter capabilities" in page_markdown
     assert "Reliability score" in page_markdown
     assert "Remediation hints" in page_markdown
+    assert "Runbook guidance" in page_markdown
+    assert "docs/ops-runbook.md" in captions
     assert len(app.dataframe) >= 7
 
 
