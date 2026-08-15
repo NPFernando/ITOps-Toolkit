@@ -10,6 +10,7 @@ from utils.ui import (
     render_form_intro,
     render_page_header,
     render_section_heading,
+    render_status_note,
     tool_form_panel,
     tool_result_panel,
 )
@@ -23,6 +24,27 @@ render_page_header(
     "CSR Decoder",
     "Decode a PEM-encoded Certificate Signing Request -- subject, SAN entries, public key info, and signature validity.",
     warning="Do not paste private keys -- a CSR contains only the public key and requested subject.",
+)
+
+st.markdown(
+    """
+    <style>
+    @media (max-width: 768px) {
+      div[data-testid="stFormSubmitButton"] > button {
+        width: 100%;
+        min-height: 2.75rem;
+      }
+      div[data-testid="stMetricValue"] {
+        font-size: 1.25rem;
+        overflow-wrap: anywhere;
+      }
+      div[data-testid="stTable"] {
+        overflow-x: auto;
+      }
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
 )
 
 with tool_form_panel("csr_decoder"):
@@ -44,6 +66,7 @@ result = st.session_state.get("csr_decoder_result")
 
 if result is None:
     render_empty_state("Ready to decode", "Subject, SAN entries, key info, and signature validity appear here.")
+    render_status_note("Awaiting CSR input", "Paste a PEM CSR and decode to inspect subject, SAN, key size, and signature state.", tone="neutral")
 
 if result is not None:
     with tool_result_panel("csr_decoder_result_panel", related_to="csr_decoder"):
@@ -56,13 +79,18 @@ if result is not None:
             )
         else:
             st.caption(f"Subject: {result['subject']}")
-            c1, c2, c3 = st.columns(3)
+            c1, c2 = st.columns(2)
             c1.metric("Public key", result["public_key_algorithm"])
             c2.metric("Key size", result["public_key_size"] if result["public_key_size"] is not None else "N/A")
-            c3.metric("Signature", "Valid" if result["signature_valid"] else "Invalid")
+            st.metric("Signature", "Valid" if result["signature_valid"] else "Invalid")
             st.caption(f"Signature algorithm: {result['signature_algorithm']}")
             if result["san_names"]:
                 st.caption("Subject Alternative Name entries")
                 st.table([{"SAN": name} for name in result["san_names"]])
             else:
                 st.caption("No Subject Alternative Names.")
+            render_status_note(
+                "Decode complete",
+                f"CSR parsed successfully with signature marked as {'valid' if result['signature_valid'] else 'invalid'}.",
+                tone="success",
+            )

@@ -146,6 +146,16 @@ Confirm these release-blocking checks pass:
 - **Accessibility:** keyboard-only navigation, visible focus rings, and notice semantics remain intact on Home, one wave-7 tool page, and Roadmap.
 - **Release evidence:** Wave 7 outcomes are captured in `docs/release-notes-template.md` with synthetic/sanitized QA evidence only.
 
+### 4.9 Phase 15 Wave 8 Regression Checklist (Shell/Mobile/Visual/A11y QA Gates)
+
+Confirm these release-blocking checks pass:
+
+- **Shell consistency:** shared sidebar shell, grouped navigation, quick search, and command palette trigger (`Ctrl/Cmd+K`) stay stable with wave-8 tool additions.
+- **Mobile (`<=720px`):** wave-8 labels, chips, and helper text stay readable/wrapped with no clipped text or horizontal overflow.
+- **Visual mapping (wave-8 focus):** wave-8 slugs resolve to slug-specific assets before category defaults; when assets are missing, text fallback badges remain readable.
+- **Accessibility:** keyboard-only navigation, visible focus rings, and notice semantics remain intact on Home, one wave-8 tool page, and Roadmap.
+- **Release evidence:** Wave 8 outcomes are captured in `docs/release-notes-template.md` with synthetic/sanitized QA evidence only.
+
 ## 5. Log Troubleshooting AI States
 
 Without Azure secrets:
@@ -199,7 +209,7 @@ git diff --cached --check
 
 ## 9. Release Notes
 
-Use `docs/release-notes-template.md` to summarize the release, QA commands, privacy posture, known limitations, Wave 2/Wave 3/Wave 4/Wave 5/Wave 6/Wave 7 shell-mobile-visual-a11y outcomes, and the UX Quality Outcomes release reporting kit.
+Use `docs/release-notes-template.md` to summarize the release, QA commands, privacy posture, known limitations, Wave 2/Wave 3/Wave 4/Wave 5/Wave 6/Wave 7/Wave 8 shell-mobile-visual-a11y outcomes, and the UX Quality Outcomes release reporting kit.
 
 Minimum UX reporting before publish:
 - Record one outcome each for navigation, readability/layout, task completion confidence, and public-safe behavior.

@@ -220,6 +220,20 @@ This guide documents the UI direction used for the Streamlit dashboard and tool 
 - Record Wave 7 outcomes in `docs/release-notes-template.md` using synthetic/sanitized evidence only.
 - Keep non-tool exceptions explicit and confirm desktop/mobile readability after wave-7 updates.
 
+## Phase 15 Wave 8 Standards (Shell, Mobile, Visual, A11y + QA Gates)
+
+- **Shell consistency:** keep grouped navigation, quick search, command palette trigger, and wave-8 labels/status cues text-first and readable.
+- **Mobile baseline (`<=720px`):** keep wave-8 action labels, chips, and helper text wrapped/readable with no clipped text or horizontal overflow.
+- **Visual mapping integrity:** keep wave-8 slug-specific icon mappings first (`subnet_calculator`, `ip_geolocation`, `totp_generator`, `http_header_parser`, `byte_size_converter`), then category defaults, with text badge fallback always readable.
+- **Accessibility guardrail:** keep decorative SVGs non-semantic (`aria-hidden`, empty alt), preserve keyboard flow for shell/tool actions, and keep visible focus states and note semantics.
+- **QA gate behavior:** treat Wave 8 shell/mobile/visual/a11y regressions as release blockers unless an intentional exception is documented.
+
+### Wave 8 QA handoff guidance
+
+- Run Wave 8 checks in `docs/release-checklist.md` before release.
+- Record Wave 8 outcomes in `docs/release-notes-template.md` using synthetic/sanitized evidence only.
+- Keep non-tool exceptions explicit and confirm desktop/mobile readability after wave-8 updates.
+
 ## Maintenance Rules
 
 - Do not duplicate tool titles, descriptions, paths, or accent colors outside `utils/ui.py`.

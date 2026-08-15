@@ -113,6 +113,11 @@ TOOL_CARD_ICON_ASSETS: dict[str, str] = {
     "semver_tools": "icons/exported/icon-workflow-semver-compare-outline-24x24-v01.svg",
     "iso8601_duration": "icons/exported/icon-workflow-duration-timeline-outline-24x24-v01.svg",
     "ssh_config_validator": "icons/exported/icon-workflow-ssh-config-check-outline-24x24-v01.svg",
+    "subnet_calculator": "icons/exported/icon-workflow-subnet-planning-outline-24x24-v01.svg",
+    "ip_geolocation": "icons/exported/icon-workflow-ip-geolocation-outline-24x24-v01.svg",
+    "totp_generator": "icons/exported/icon-workflow-totp-token-outline-24x24-v01.svg",
+    "http_header_parser": "icons/exported/icon-workflow-http-header-parse-outline-24x24-v01.svg",
+    "byte_size_converter": "icons/exported/icon-workflow-byte-size-convert-outline-24x24-v01.svg",
 }
 CATEGORY_TOOL_CARD_ICON_ASSETS: dict[str, str] = {
     "Network": "icons/exported/icon-workflow-dns-lookup-outline-24x24-v01.svg",
@@ -2720,9 +2725,10 @@ def render_status_note(title: str, description: str, tone: str = "info") -> None
     description_html = escape(description).replace("\n", "<br>")
     role = "alert" if normalized_tone == "warning" else "status"
     aria_live = "assertive" if normalized_tone == "warning" else "polite"
+    aria_label = f"{normalized_tone.capitalize()} status: {title}"
     st.markdown(
         f"""
-        <div class="tool-status-note tool-status-note-{normalized_tone}" role="{role}" aria-live="{aria_live}">
+        <div class="tool-status-note tool-status-note-{normalized_tone}" role="{role}" aria-live="{aria_live}" aria-atomic="true" aria-label="{escape(aria_label)}" tabindex="0">
             <div class="tool-status-mark">{escape(marks[normalized_tone])}</div>
             <div>
                 <strong>{escape(title)}</strong>
