@@ -38,6 +38,11 @@ def test_css_injects_before_sidebar_and_has_no_blocking_import():
     assert ".stApp input:focus-visible" in css_block
     assert '[data-testid="stPills"] [role="radio"]' in css_block
     assert ".stDownloadButton button" in css_block
+    assert "@media (prefers-reduced-motion: reduce)" in css_block
+    assert "@media (max-width: 720px)" in css_block
+    assert ".tool-page-header-with-illustration" in css_block
+    assert '[data-testid="stHorizontalBlock"]:has([data-testid="stMetric"])' in css_block
+    assert ".stFormSubmitButton button" in css_block
 
 
 def test_home_pills_are_required_and_cannot_deselect_to_none():

@@ -86,6 +86,16 @@ Use `docs/ui-consistency-audit-matrix-phase8.md` as the baseline and confirm:
 - Intentional exceptions (`Roadmap & Feedback`, `Health Diagnostics`) remain documented and readable on desktop/mobile.
 - Home/tool/roadmap visual mappings degrade safely when an SVG mapping is unavailable (text fallback still legible).
 
+### 4.3 Phase 9 Wave 2 Regression Checklist (Shell/Mobile/Visual/A11y)
+
+Confirm these release-blocking checks pass:
+
+- **Shell/navigation:** shared sidebar shell renders correctly, quick search is usable, grouped links route correctly, and command palette trigger (`Ctrl/Cmd+K`) remains reachable.
+- **Mobile (`<=720px`):** no horizontal scroll in primary pages, header illustrations stack cleanly, and submit/download controls remain full-width and tap-friendly.
+- **Visual fallbacks:** one forced missing-asset spot check confirms home hero/tool card/roadmap badge fallbacks stay readable (no broken-image-only affordance).
+- **Accessibility:** keyboard-only navigation still reaches sidebar + primary page actions, focus rings remain visible, and shared notice blocks remain readable/semantic.
+- **Exception pages:** `Roadmap & Feedback` and `Health Diagnostics` remain intentional documented exceptions, not accidental regressions.
+
 ## 5. Log Troubleshooting AI States
 
 Without Azure secrets:
@@ -139,7 +149,7 @@ git diff --cached --check
 
 ## 9. Release Notes
 
-Use `docs/release-notes-template.md` to summarize the release, QA commands, privacy posture, known limitations, and the UX Quality Outcomes release reporting kit.
+Use `docs/release-notes-template.md` to summarize the release, QA commands, privacy posture, known limitations, Wave 2 shell/mobile/visual/a11y outcomes, and the UX Quality Outcomes release reporting kit.
 
 Minimum UX reporting before publish:
 - Record one outcome each for navigation, readability/layout, task completion confidence, and public-safe behavior.

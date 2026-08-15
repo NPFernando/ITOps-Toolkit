@@ -1,4 +1,4 @@
-# Assets Index (phase8)
+# Assets Index (phase8 + wave2)
 
 Generated assets available under `docs/assets/**/exported`. Runtime mappings are implemented in `utils/ui.py`.
 
@@ -75,6 +75,11 @@ When a roadmap badge asset is unavailable, compact text fallback glyphs are used
 - Verify mapped SVGs render on Home, at least one page per category, and Roadmap badges.
 - Verify fallback text badges/glyphs remain readable when any mapped SVG is missing.
 - Keep mappings centralized in `utils/ui.py`; do not duplicate page-local icon maps.
+
+### Phase 9 Wave 2 add-on QA focus
+
+- Include one mobile viewport check (`<=720px`) while validating mapped/fallback visuals.
+- Include one keyboard-only pass to ensure visual fallbacks do not remove actionable text labels.
 
 ## Docs/release media inventory
 

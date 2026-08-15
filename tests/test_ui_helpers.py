@@ -274,6 +274,28 @@ def test_tool_card_icon_asset_prefers_slug_specific_mapping_over_category_defaul
     assert icon_asset == "icons/exported/icon-workflow-encoding-tools-outline-24x24-v01.svg"
 
 
+def test_tool_card_icon_asset_maps_wave2_weak_cue_tools():
+    expected_assets = {
+        "env_linter": "icons/exported/icon-workflow-env-guard-outline-24x24-v01.svg",
+        "markdown_toc_generator": "icons/exported/icon-workflow-markdown-structure-outline-24x24-v01.svg",
+        "id_generator": "icons/exported/icon-workflow-id-sequence-outline-24x24-v01.svg",
+        "csp_builder": "icons/exported/icon-workflow-policy-controls-outline-24x24-v01.svg",
+    }
+
+    for slug, expected in expected_assets.items():
+        tool = next(item for item in TOOLS if item.slug == slug)
+        assert ui._tool_card_icon_asset(tool) == expected
+
+
+def test_tool_card_html_uses_wave2_generated_icon_when_mapped():
+    mapped_tool = next(tool for tool in TOOLS if tool.slug == "env_linter")
+
+    html = ui._tool_card_html(mapped_tool)
+
+    assert "tool-card-icon-image" in html
+    assert "data:image/svg+xml;base64," in html
+
+
 def test_tool_card_icon_asset_returns_none_for_unknown_slug_and_category():
     tool = ui.ToolMeta(
         title="Unknown Tool",
@@ -296,6 +318,16 @@ def test_roadmap_badge_icon_html_falls_back_when_asset_missing(monkeypatch):
     html = ui.roadmap_badge_icon_html("status_planned", "•")
 
     assert "roadmap-badge-icon-fallback" in html
+
+
+def test_roadmap_badge_icon_html_uses_mapped_svg_when_available(monkeypatch):
+    monkeypatch.setattr(ui, "_svg_img_html", lambda *args, **kwargs: '<img class="roadmap-badge-icon-image" />')
+
+    html = ui.roadmap_badge_icon_html("source_github", "GH")
+
+    assert "roadmap-badge-icon-fallback" not in html
+    assert 'class="roadmap-badge-icon"' in html
+    assert "roadmap-badge-icon-image" in html
 
 
 def test_home_hero_html_falls_back_to_css_visual_when_generated_asset_missing(monkeypatch):
@@ -441,6 +473,31 @@ def test_safe_page_link_fallback_escapes_link_label_html(monkeypatch):
     assert 'href="/JWT_Decoder"' in html
     assert "<script>" not in html
     assert '1. JWT &lt;script&gt;alert(&quot;x&quot;)&lt;/script&gt;' in html
+
+
+def test_safe_page_link_fallback_maps_home_path_to_root(monkeypatch):
+    rendered = []
+
+    monkeypatch.setattr(ui.st, "page_link", lambda *args, **kwargs: (_ for _ in ()).throw(KeyError("missing page")))
+    monkeypatch.setattr(ui.st, "markdown", lambda value, unsafe_allow_html=False: rendered.append((value, unsafe_allow_html)))
+
+    ui._safe_page_link(
+        "app.py",
+        label="Home",
+        icon=":material/home:",
+    )
+
+    html, unsafe = rendered[0]
+    assert unsafe is True
+    assert 'class="fallback-page-link"' in html
+    assert 'href="/"' in html
+    assert ">Home<" in html
+
+
+def test_fallback_href_handles_numbered_and_plain_page_paths():
+    assert ui._fallback_href("pages/7_JWT_Decoder.py") == "/JWT_Decoder"
+    assert ui._fallback_href("pages/custom_page.py") == "/custom_page"
+    assert ui._fallback_href("app.py") == "/"
 
 
 # Live-external-lookup pages that should carry a caution warning= on

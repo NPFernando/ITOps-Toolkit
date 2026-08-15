@@ -37,6 +37,8 @@ with tool_result_panel("timestamp_now"):
         c1, c2 = st.columns(2)
         c1.metric("Epoch seconds", now["epoch_seconds"])
         c2.metric("ISO 8601", now["display"])
+    else:
+        st.error(now["error"] or "Could not read the current UTC timestamp.")
 
 with tool_form_panel("epoch_to_date"):
     render_form_intro("Epoch to date", "Convert a Unix epoch value to a readable date and time.")
@@ -48,7 +50,7 @@ with tool_form_panel("epoch_to_date"):
             unit = st.selectbox("Unit", EPOCH_UNITS)
         with c3:
             tz_a = st.selectbox("Timezone", COMMON_TIMEZONES, key="tz_a")
-        epoch_submitted = st.form_submit_button("Convert to date")
+        epoch_submitted = st.form_submit_button("Convert epoch")
 
 if epoch_submitted:
     # Stored in session_state (not rendered directly here) because the sidebar's
@@ -60,7 +62,7 @@ if epoch_submitted:
 
 epoch_result = st.session_state.get("timestamp_converter_epoch_result")
 if epoch_result is None:
-    render_empty_state("Ready to convert", "The readable date and time appear here after you convert an epoch value.")
+    render_empty_state("Ready to convert epoch", "The readable date and time appear here after you convert an epoch value.")
 if epoch_result is not None:
     result = epoch_result
     with tool_result_panel("epoch_result", related_to="timestamp_converter"):
@@ -80,14 +82,14 @@ with tool_form_panel("date_to_epoch"):
             date_input = st.text_input("Date/time (ISO 8601)", placeholder="2026-08-05T14:30:00")
         with c2:
             tz_b = st.selectbox("Timezone", COMMON_TIMEZONES, key="tz_b")
-        date_submitted = st.form_submit_button("Convert to epoch")
+        date_submitted = st.form_submit_button("Convert date/time")
 
 if date_submitted:
     st.session_state["timestamp_converter_date_result"] = datetime_to_epoch(date_input, tz_b)
 
 date_result = st.session_state.get("timestamp_converter_date_result")
 if date_result is None:
-    render_empty_state("Ready to convert", "The Unix epoch appears here after you convert a date/time value.")
+    render_empty_state("Ready to convert date/time", "The Unix epoch appears here after you convert a date/time value.")
 if date_result is not None:
     result = date_result
     with tool_result_panel("date_result", related_to="timestamp_converter"):
@@ -109,14 +111,14 @@ with tool_form_panel("timezone_convert"):
             tz_from = st.selectbox("From timezone", COMMON_TIMEZONES, key="tz_from")
         with c3:
             tz_to = st.selectbox("To timezone", COMMON_TIMEZONES, key="tz_to")
-        tz_submitted = st.form_submit_button("Convert timezone")
+        tz_submitted = st.form_submit_button("Convert timezones")
 
 if tz_submitted:
     st.session_state["timestamp_converter_timezone_result"] = convert_timezone(tz_date_input, tz_from, tz_to)
 
 timezone_result = st.session_state.get("timestamp_converter_timezone_result")
 if timezone_result is None:
-    render_empty_state("Ready to convert", "The reinterpreted date/time appears here after you convert between timezones.")
+    render_empty_state("Ready to convert timezones", "The reinterpreted date/time appears here after you convert between timezones.")
 if timezone_result is not None:
     result = timezone_result
     with tool_result_panel("timezone_result", related_to="timestamp_converter"):
