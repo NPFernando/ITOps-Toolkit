@@ -68,9 +68,24 @@ def test_render_status_note_escapes_description_and_normalizes_tone(monkeypatch)
     html, unsafe = rendered[0]
     assert unsafe is True
     assert "tool-status-note-info" in html
+    assert 'role="status"' in html
+    assert 'aria-live="polite"' in html
     assert "AI &lt;summary&gt;" in html
     assert "&lt;script&gt;alert(1)&lt;/script&gt;<br>line" in html
     assert "<script>" not in html
+
+
+def test_render_status_note_warning_uses_alert_semantics(monkeypatch):
+    rendered = []
+
+    monkeypatch.setattr(ui.st, "markdown", lambda value, unsafe_allow_html=False: rendered.append((value, unsafe_allow_html)))
+
+    ui.render_status_note("Warning", "Needs attention", tone="warning")
+
+    html, unsafe = rendered[0]
+    assert unsafe is True
+    assert 'role="alert"' in html
+    assert 'aria-live="assertive"' in html
 
 
 def test_classify_failure_mode_distinguishes_transient_and_persistent():
@@ -133,6 +148,8 @@ def test_render_page_header_includes_tool_category_overline(monkeypatch):
     html, unsafe = rendered[0]
     assert unsafe is True
     assert 'class="tool-page-overline"' in html
+    assert 'aria-labelledby="tool-page-title-' in html
+    assert '<h1 id="tool-page-title-' in html
     assert f">{tool.category} Tool<" in html
 
 
@@ -169,6 +186,9 @@ def test_render_empty_state_supports_optional_illustration(monkeypatch):
 
     assert "tool-empty-illustration" in rendered[0]
     assert "tool-empty-illustration-image" in rendered[0]
+    assert 'role="status"' in rendered[0]
+    assert 'aria-live="polite"' in rendered[0]
+    assert 'aria-label="Ready"' in rendered[0]
 
 
 def test_render_empty_state_skips_unknown_illustration_key(monkeypatch):
@@ -179,6 +199,21 @@ def test_render_empty_state_skips_unknown_illustration_key(monkeypatch):
     ui.render_empty_state("Ready", "Description", illustration="does-not-exist")
 
     assert "tool-empty-illustration" not in rendered[0]
+
+
+def test_render_form_intro_sets_group_semantics(monkeypatch):
+    rendered = []
+
+    monkeypatch.setattr(ui.st, "markdown", lambda value, unsafe_allow_html=False: rendered.append((value, unsafe_allow_html)))
+
+    ui.render_form_intro("Enter input", "Description")
+
+    html, unsafe = rendered[0]
+    assert unsafe is True
+    assert 'class="tool-form-intro"' in html
+    assert 'role="group"' in html
+    assert 'aria-labelledby="tool-form-intro-enter_input"' in html
+    assert '<h2 id="tool-form-intro-enter_input">Enter input</h2>' in html
 
 
 def test_tool_card_html_includes_category_badge_and_escapes_fields():
@@ -223,12 +258,36 @@ def test_tool_card_html_falls_back_to_text_icon_when_asset_missing(monkeypatch):
 
 
 def test_tool_card_html_uses_category_default_icon_when_slug_has_no_explicit_mapping():
-    category_default_tool = next(tool for tool in TOOLS if tool.slug == "base64_tool")
+    category_default_tool = next(tool for tool in TOOLS if tool.slug == "markdown_converter")
 
     html = ui._tool_card_html(category_default_tool)
 
     assert "tool-card-icon-image" in html
     assert "data:image/svg+xml;base64," in html
+
+
+def test_tool_card_icon_asset_prefers_slug_specific_mapping_over_category_default():
+    mapped_tool = next(tool for tool in TOOLS if tool.slug == "base64_tool")
+
+    icon_asset = ui._tool_card_icon_asset(mapped_tool)
+
+    assert icon_asset == "icons/exported/icon-workflow-encoding-tools-outline-24x24-v01.svg"
+
+
+def test_tool_card_icon_asset_returns_none_for_unknown_slug_and_category():
+    tool = ui.ToolMeta(
+        title="Unknown Tool",
+        short_title="Unknown",
+        description="desc",
+        path="pages/999_unknown.py",
+        icon="??",
+        accent="#123456",
+        slug="unknown_tool",
+        professions=("Support Engineer",),
+        category="Unknown",
+    )
+
+    assert ui._tool_card_icon_asset(tool) is None
 
 
 def test_roadmap_badge_icon_html_falls_back_when_asset_missing(monkeypatch):

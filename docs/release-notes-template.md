@@ -40,6 +40,8 @@ curl http://localhost:8502/_stcore/health
 - Domain Health Checker empty form:
 - DNS Record Checker:
 - JSON Formatter or Log Troubleshooting Assistant:
+- Phase 8 consistency baseline (`docs/ui-consistency-audit-matrix-phase8.md`) spot check:
+- Visual mapping fallback spot check (home/tool/roadmap):
 - Log Troubleshooting AI unavailable state:
 - Optional Azure AI state, if secrets were available:
 

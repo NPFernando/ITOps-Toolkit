@@ -129,6 +129,13 @@ This guide documents the UI direction used for the Streamlit dashboard and tool 
 - Preserve keyboard accessibility for sidebar quick search, pills (mode/filter/sort), and command palette triggers.
 - Keep roadmap card/body text sizes readable after styling changes; avoid shrinking below body-readable sizes.
 
+## Phase 8 Cross-page Consistency Baseline
+
+- Treat `docs/ui-consistency-audit-matrix-phase8.md` as the release baseline for header/form/empty-state/action-label/notice patterns.
+- Tool pages should converge on shared primitives (`render_page_header`, `render_form_intro`, `render_empty_state`, `render_section_heading`, shared status/failure notes).
+- `Roadmap & Feedback` and `Health Diagnostics` are intentional non-tool exceptions; keep them documented when their layout differs.
+- For mobile QA, keep `<=720px` checks explicit: stacked page-header illustrations, full-width wrapped action buttons, and readable tap targets.
+
 ## Maintenance Rules
 
 - Do not duplicate tool titles, descriptions, paths, or accent colors outside `utils/ui.py`.
@@ -139,6 +146,7 @@ This guide documents the UI direction used for the Streamlit dashboard and tool 
 - Health Diagnostics page content should remain runtime-safe only: no secrets, no user payload echoing, and no external sensitive probes.
 - Any new preloader, spinner, skeleton, or transition styling must use the light blue/white work area and dark sidebar tokens. Avoid default gray loading surfaces.
 - Any material change to the shell, home layout, or tool navigation should update this file and `docs/architecture.md` when boundaries change.
+- For cross-page implementation follow-ups, use `docs/ui-consistency-audit-matrix-phase8.md` as the actionable baseline matrix for header/form/empty-state/action-label/notice consistency.
 
 ## Phase 4 Contributor Reliability Playbook
 

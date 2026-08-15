@@ -18,6 +18,28 @@ st.set_page_config(page_title="IPv6 Compressor", layout="wide")
 apply_app_shell(active_page="IPv6 Compressor")
 
 
+st.markdown(
+    """
+    <style>
+    @media (max-width: 768px) {
+      div[data-testid="stFormSubmitButton"] > button {
+        min-height: 2.75rem;
+        font-size: 1rem;
+      }
+      div[data-testid="stTextInput"] input {
+        font-size: 1rem;
+      }
+      div[data-testid="stCodeBlock"] pre {
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+
 render_page_header(
     "IPv6 Compressor",
     "Convert an IPv6 address between its compressed (::) and fully expanded form.",
@@ -26,8 +48,13 @@ render_page_header(
 with tool_form_panel("ipv6_compressor"):
     render_form_intro("Enter an IPv6 address", "Either form works -- compressed or fully expanded.")
     with st.form("ipv6-form"):
-        address_input = st.text_input("IPv6 address", max_chars=MAX_INPUT_LENGTH, placeholder="2001:db8::1")
-        submitted = st.form_submit_button("Convert")
+        address_input = st.text_input(
+            "IPv6 address",
+            max_chars=MAX_INPUT_LENGTH,
+            placeholder="2001:db8::1",
+            help="Paste a valid IPv6 address in compressed or expanded form.",
+        )
+        submitted = st.form_submit_button("Convert", use_container_width=True)
 
 if submitted:
     # Stored in session_state (not rendered directly here) because the sidebar's
@@ -48,6 +75,7 @@ if result is not None:
         if not result["ok"]:
             st.error(result["error"])
         else:
-            c1, c2 = st.columns(2)
-            c1.text_input("Compressed", value=result["compressed"], disabled=True)
-            c2.text_input("Expanded", value=result["expanded"], disabled=True)
+            st.write("Compressed address")
+            st.code(result["compressed"], language="text")
+            st.write("Expanded address")
+            st.code(result["expanded"], language="text")

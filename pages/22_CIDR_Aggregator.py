@@ -19,6 +19,24 @@ st.set_page_config(page_title="CIDR Aggregator", layout="wide")
 apply_app_shell(active_page="CIDR Aggregator")
 
 
+st.markdown(
+    """
+    <style>
+    @media (max-width: 768px) {
+      div[data-testid="stFormSubmitButton"] > button {
+        min-height: 2.75rem;
+        font-size: 1rem;
+      }
+      div[data-testid="stTextArea"] textarea {
+        font-size: 1rem;
+      }
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+
 render_page_header(
     "CIDR Aggregator",
     "Summarize a list of IPs or CIDR blocks into the minimal set of covering supernets.",
@@ -32,8 +50,9 @@ with tool_form_panel("cidr_aggregator"):
             height=220,
             max_chars=MAX_INPUT_LENGTH,
             placeholder="192.168.0.0/24\n192.168.1.0/24\n10.0.0.0/8",
+            help="Enter one IP address or CIDR block per line.",
         )
-        submitted = st.form_submit_button("Aggregate")
+        submitted = st.form_submit_button("Aggregate", use_container_width=True)
 
 if submitted:
     # Stored in session_state (not rendered directly here) because the sidebar's
@@ -54,11 +73,11 @@ if result is not None:
         if not result["ok"]:
             st.error(result["error"])
         else:
-            c1, c2 = st.columns(2)
-            c1.metric("Input entries", result["input_count"])
-            c2.metric("Output networks", result["output_count"])
+            st.metric("Input entries", result["input_count"])
+            st.metric("Output networks", result["output_count"])
             rows = [
                 {"CIDR": n["cidr"], "Version": f"IPv{n['version']}", "Total addresses": n["total_addresses"]}
                 for n in result["networks"]
             ]
+            st.caption("Aggregated output networks")
             st.dataframe(display_rows_frame(rows), width="stretch", hide_index=True)

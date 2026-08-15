@@ -3,7 +3,16 @@ from __future__ import annotations
 import streamlit as st
 
 from utils.csr_decoder import MAX_INPUT_LENGTH, decode_csr
-from utils.ui import apply_app_shell, render_empty_state, render_form_intro, render_page_header, render_section_heading, tool_form_panel, tool_result_panel
+from utils.ui import (
+    apply_app_shell,
+    render_empty_state,
+    render_failure_note,
+    render_form_intro,
+    render_page_header,
+    render_section_heading,
+    tool_form_panel,
+    tool_result_panel,
+)
 
 
 st.set_page_config(page_title="CSR Decoder", layout="wide")
@@ -19,8 +28,14 @@ render_page_header(
 with tool_form_panel("csr_decoder"):
     render_form_intro("Paste a CSR", "PEM-encoded, beginning with -----BEGIN CERTIFICATE REQUEST-----.")
     with st.form("csr-decoder-form"):
-        pem_input = st.text_area("CSR (PEM)", height=280, max_chars=MAX_INPUT_LENGTH, placeholder="-----BEGIN CERTIFICATE REQUEST-----\n...\n-----END CERTIFICATE REQUEST-----")
-        submitted = st.form_submit_button("Decode")
+        pem_input = st.text_area(
+            "CSR (PEM)",
+            height=280,
+            max_chars=MAX_INPUT_LENGTH,
+            placeholder="-----BEGIN CERTIFICATE REQUEST-----\n...\n-----END CERTIFICATE REQUEST-----",
+            help="Paste a PEM CSR block only; do not paste private keys.",
+        )
+        submitted = st.form_submit_button("Decode CSR")
 
 if submitted:
     st.session_state["csr_decoder_result"] = decode_csr(pem_input)
@@ -32,9 +47,13 @@ if result is None:
 
 if result is not None:
     with tool_result_panel("csr_decoder_result_panel", related_to="csr_decoder"):
-        render_section_heading("Decoded CSR", eyebrow="Result")
+        render_section_heading("Decoded CSR", "Subject, SAN entries, key details, and signature status.", eyebrow="Results")
         if not result["ok"]:
-            st.error(result["error"])
+            render_failure_note(
+                "CSR decode",
+                result["error"],
+                remediation="Paste a valid PEM-encoded CSR block and decode again.",
+            )
         else:
             st.caption(f"Subject: {result['subject']}")
             c1, c2, c3 = st.columns(3)
@@ -43,6 +62,7 @@ if result is not None:
             c3.metric("Signature", "Valid" if result["signature_valid"] else "Invalid")
             st.caption(f"Signature algorithm: {result['signature_algorithm']}")
             if result["san_names"]:
+                st.caption("Subject Alternative Name entries")
                 st.table([{"SAN": name} for name in result["san_names"]])
             else:
                 st.caption("No Subject Alternative Names.")

@@ -76,6 +76,16 @@ Validate these quick checks across Home, one tool page, and Roadmap & Feedback:
 - Tool/page text stays body-readable (no tiny labels) and long button labels wrap instead of clipping.
 - In mobile view (`<=720px`), page-header illustrations stack under text, submit/download buttons are full-width, and taps feel comfortable (about 2.3rem minimum target height).
 
+### 4.2 Phase 8 Consistency Regression Checklist
+
+Use `docs/ui-consistency-audit-matrix-phase8.md` as the baseline and confirm:
+
+- Tool pages touched in the release still use shared header/form/empty-state/section-heading patterns.
+- Primary action labels remain verb-first and predictable by intent (`Run check`, `Look up`, `Generate`, `Format`, `Validate`, `Scan`).
+- Equivalent warnings/failures use shared note components instead of ad-hoc alert rendering where helper parity exists.
+- Intentional exceptions (`Roadmap & Feedback`, `Health Diagnostics`) remain documented and readable on desktop/mobile.
+- Home/tool/roadmap visual mappings degrade safely when an SVG mapping is unavailable (text fallback still legible).
+
 ## 5. Log Troubleshooting AI States
 
 Without Azure secrets:
@@ -95,7 +105,7 @@ Use synthetic sanitized logs only. Do not paste customer data, passwords, privat
 
 ## 6. Screenshot QA
 
-Use `docs/screenshot-guide.md` for required captures. Save temporary QA screenshots outside the repo, such as `/tmp/itops-screenshots`.
+Use `docs/screenshot-guide.md` for required captures. Save temporary QA screenshots in a local untracked workspace folder such as `.artifacts/qa-screenshots/`.
 
 Do not commit screenshots unless a future release explicitly adds tracked documentation images.
 
