@@ -31,7 +31,9 @@ render_page_header(
 with tool_form_panel("column_aligner"):
     render_form_intro("Paste columnar text", "Leave the delimiter blank to split on any run of whitespace.")
     with st.form("column-aligner-form"):
+        st.markdown('<div class="tool-panel-eyebrow">Input text</div>', unsafe_allow_html=True)
         text_input = st.text_area("Input", height=280, max_chars=MAX_INPUT_LENGTH, placeholder="USER PID CPU\nroot 1 0.0\nwww-data 1234 12.5")
+        st.markdown('<div class="tool-panel-eyebrow">Delimiter settings</div>', unsafe_allow_html=True)
         delimiter_input = st.text_input("Delimiter (optional)", placeholder="e.g. , or |")
         submitted = st.form_submit_button("Align", use_container_width=True)
 
@@ -42,7 +44,11 @@ result = st.session_state.get("column_aligner_result")
 
 if result is None:
     render_empty_state("Ready to align", "The aligned columns appear here.")
-    render_status_note("Awaiting text input", "Paste text and optionally provide a delimiter, then align.", tone="neutral")
+    render_status_note(
+        "Ready for text input",
+        "No alignment has run yet. Paste text, optionally set a delimiter, then select Align.",
+        tone="neutral",
+    )
 
 if result is not None:
     with tool_result_panel("column_aligner_result_panel", related_to="column_aligner"):
@@ -55,7 +61,11 @@ if result is not None:
             )
         else:
             st.code(result["output"], language=None)
-            render_status_note("Aligned successfully", "Columns were aligned into fixed-width spacing.", tone="success")
+            render_status_note(
+                "Column alignment complete",
+                "Columns were aligned into fixed-width spacing.",
+                tone="success",
+            )
 
 mark_page_baseline(_baseline, "content-rendered")
 render_page_baseline(_baseline)

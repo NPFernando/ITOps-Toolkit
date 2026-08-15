@@ -19,7 +19,7 @@ def test_lint_shows_clean_result():
 
     md = " ".join(m.value for m in app.markdown)
     assert "tool-status-note-success" in md
-    assert "Lint complete" in md
+    assert "SSH config structure looks valid" in md
 
 
 def test_lint_shows_issues():
@@ -34,7 +34,7 @@ def test_lint_shows_issues():
     assert len(app.table) > 0
     md = " ".join(m.value for m in app.markdown)
     assert "tool-status-note-warning" in md
-    assert "Lint issues detected" in md
+    assert "SSH config has structural issues" in md
 
 
 def test_empty_submission_shows_warning_status():
@@ -47,7 +47,7 @@ def test_empty_submission_shows_warning_status():
 
     md = " ".join(m.value for m in app.markdown)
     assert "tool-status-note-warning" in md
-    assert "Cannot lint SSH config yet" in md
+    assert "SSH config lint needs attention" in md
 
 
 def test_empty_state_shown_before_submit():
@@ -58,7 +58,7 @@ def test_empty_state_shown_before_submit():
     md = " ".join(m.value for m in app.markdown)
     assert "tool-empty-state" in md
     assert "tool-status-note-neutral" in md
-    assert "Awaiting SSH config" in md
+    assert "Ready for SSH config input" in md
 
 
 def test_results_persist_after_sidebar_interaction():

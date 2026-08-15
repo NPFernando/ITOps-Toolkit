@@ -233,6 +233,15 @@ When a roadmap badge asset is unavailable, compact text fallback glyphs are used
 - Password policy icon: `password_policy_checker`
 - ISO 8601 duration icon: `iso8601_duration`
 
+### Phase 27 Wave 20 icon mapping coverage
+
+- JSON merge patch icon: `json_merge_patch`
+- Column aligner icon: `column_aligner`
+- SSH config validator icon: `ssh_config_validator`
+- CSR generation icon: `csr_generator`
+- CAA record builder icon: `caa_record_builder`
+- Base62 encoding icon: `base62_tool`
+
 ### Phase 12 Wave 5 add-on QA focus
 
 - Confirm wave-5 slugs resolve to slug-specific assets before category defaults.
@@ -352,6 +361,14 @@ When a roadmap badge asset is unavailable, compact text fallback glyphs are used
 - Include one shell pass confirming shared shell + baseline markers remain visible/unchanged on Home, Roadmap, and wave-19 touchpoint pages.
 - Include one `<=720px` viewport pass to confirm Home controls, Roadmap filters/AI triage action, and wave-19 submit actions stay full-width/tap-friendly with no clipping/overflow.
 - Include one keyboard-only pass to confirm wave-19 notice semantics and focus visibility remain intact.
+
+### Phase 27 Wave 20 add-on QA focus
+
+- Confirm wave-20 touchpoint slugs resolve to slug-specific assets before category defaults (`json_merge_patch`, `column_aligner`, `ssh_config_validator`, `csr_generator`, `caa_record_builder`, `base62_tool`).
+- Confirm wave-20 slug-specific icons still fall back to text badges when SVG rendering is unavailable.
+- Include one shell pass confirming shared shell + baseline markers remain visible/unchanged on Home, Roadmap, and wave-20 touchpoint pages.
+- Include one `<=720px` viewport pass to confirm Home controls, Roadmap filters/AI triage action, and wave-20 submit actions stay full-width/tap-friendly with no clipping/overflow.
+- Include one keyboard-only pass to confirm wave-20 notice semantics and focus visibility remain intact.
 
 ## Docs/release media inventory
 

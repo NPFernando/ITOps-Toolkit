@@ -27,6 +27,7 @@ Use this template for deployment notes, GitHub releases, or pull request summari
 - QA baseline add-on: Phase 24 wave-17 shell/mobile/visual/a11y QA gates completed
 - QA baseline add-on: Phase 25 wave-18 shell/mobile/visual/a11y QA gates completed
 - QA baseline add-on: Phase 26 wave-19 shell/mobile/visual/a11y QA gates completed
+- QA baseline add-on: Phase 27 wave-20 shell/mobile/visual/a11y QA gates completed
 
 ## User-Facing Changes
 
@@ -131,6 +132,10 @@ curl http://localhost:8502/_stcore/health
 - Wave 19 mobile readability spot check (`<=720px`, full-width/tap-friendly Home controls, Roadmap filters/AI triage action, and wave-19 submit actions):
 - Wave 19 visual mapping spot check (wave-19 touchpoint slug-specific icon priority + fallback for `pii_redactor`, `env_file_diff`, `cron_overlap_checker`, `test_data_generator`, `password_policy_checker`, `iso8601_duration`):
 - Wave 19 accessibility spot check (status/failure note semantics + keyboard/focus):
+- Wave 20 shell consistency spot check (shared shell + baseline markers on Home/Roadmap/JSON Merge Patch/Column Aligner/SSH Config Validator/CSR Generator/CAA Record Builder/Base62 Encoder Decoder):
+- Wave 20 mobile readability spot check (`<=720px`, full-width/tap-friendly Home controls, Roadmap filters/AI triage action, and wave-20 submit actions):
+- Wave 20 visual mapping spot check (wave-20 touchpoint slug-specific icon priority + fallback for `json_merge_patch`, `column_aligner`, `ssh_config_validator`, `csr_generator`, `caa_record_builder`, `base62_tool`):
+- Wave 20 accessibility spot check (status/failure note semantics + keyboard/focus):
 - Log Troubleshooting AI unavailable state:
 - Optional Azure AI state, if secrets were available:
 

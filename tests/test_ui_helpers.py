@@ -350,7 +350,7 @@ def test_tool_card_icon_asset_maps_wave7_weak_cue_tools():
         "chmod_calculator": "icons/exported/icon-workflow-permission-bits-outline-24x24-v01.svg",
         "semver_tools": "icons/exported/icon-workflow-semver-compare-outline-24x24-v01.svg",
         "iso8601_duration": "icons/exported/icon-workflow-iso8601-duration-outline-24x24-v01.svg",
-        "ssh_config_validator": "icons/exported/icon-workflow-ssh-config-check-outline-24x24-v01.svg",
+        "ssh_config_validator": "icons/exported/icon-workflow-ssh-config-validator-outline-24x24-v01.svg",
     }
 
     for slug, expected in expected_assets.items():
@@ -424,7 +424,7 @@ def test_tool_card_icon_asset_maps_wave11_visual_targets():
     expected_assets = {
         "csv_column_selector": "icons/exported/icon-workflow-csv-column-selector-outline-24x24-v01.svg",
         "line_numberer": "icons/exported/icon-workflow-line-numberer-outline-24x24-v01.svg",
-        "column_aligner": "icons/exported/icon-workflow-column-align-outline-24x24-v01.svg",
+        "column_aligner": "icons/exported/icon-workflow-column-aligner-outline-24x24-v01.svg",
         "csr_generator": "icons/exported/icon-workflow-csr-generator-outline-24x24-v01.svg",
         "caa_record_builder": "icons/exported/icon-workflow-caa-record-builder-outline-24x24-v01.svg",
     }
@@ -440,7 +440,7 @@ def test_tool_card_icon_asset_maps_wave12_visual_targets():
         "env_diff": "icons/exported/icon-workflow-env-guard-outline-24x24-v01.svg",
         "cron_overlap": "icons/exported/icon-workflow-cron-schedule-outline-24x24-v01.svg",
         "pii_redactor": "icons/exported/icon-workflow-data-sanitization-outline-24x24-v01.svg",
-        "ssh_config_validator": "icons/exported/icon-workflow-ssh-config-check-outline-24x24-v01.svg",
+        "ssh_config_validator": "icons/exported/icon-workflow-ssh-config-validator-outline-24x24-v01.svg",
         "health_diagnostics": "icons/exported/icon-workflow-health-diagnostics-outline-24x24-v01.svg",
     }
 
@@ -454,7 +454,7 @@ def test_tool_card_icon_asset_maps_wave13_visual_targets():
         "password_policy_checker": "icons/exported/icon-workflow-password-policy-outline-24x24-v01.svg",
         "iso8601_duration": "icons/exported/icon-workflow-iso8601-duration-outline-24x24-v01.svg",
         "json_merge_patch": "icons/exported/icon-workflow-json-merge-patch-outline-24x24-v01.svg",
-        "column_aligner": "icons/exported/icon-workflow-column-align-outline-24x24-v01.svg",
+        "column_aligner": "icons/exported/icon-workflow-column-aligner-outline-24x24-v01.svg",
     }
 
     for slug, expected in expected_assets.items():
@@ -464,7 +464,7 @@ def test_tool_card_icon_asset_maps_wave13_visual_targets():
 
 def test_tool_card_icon_asset_maps_wave14_visual_targets():
     expected_assets = {
-        "ssh_config_validator": "icons/exported/icon-workflow-ssh-config-check-outline-24x24-v01.svg",
+        "ssh_config_validator": "icons/exported/icon-workflow-ssh-config-validator-outline-24x24-v01.svg",
         "csr_generator": "icons/exported/icon-workflow-csr-generator-outline-24x24-v01.svg",
         "caa_record_builder": "icons/exported/icon-workflow-caa-record-builder-outline-24x24-v01.svg",
         "base62_encoder_decoder": "icons/exported/icon-workflow-base62-encoder-decoder-outline-24x24-v01.svg",
@@ -674,6 +674,59 @@ def test_tool_card_html_uses_wave19_generated_icons_when_mapped():
             slug="cron_overlap_checker",
             professions=("Sysadmin / DevOps",),
             category="Ops & Automation",
+        ),
+    ]
+
+    for tool in tools:
+        html = ui._tool_card_html(tool)
+        assert "tool-card-icon-image" in html
+        assert "data:image/svg+xml;base64," in html
+
+
+def test_tool_card_icon_asset_maps_wave20_visual_targets():
+    expected_assets = {
+        "json_merge_patch": "icons/exported/icon-workflow-json-merge-patch-outline-24x24-v01.svg",
+        "column_aligner": "icons/exported/icon-workflow-column-aligner-outline-24x24-v01.svg",
+        "ssh_config_validator": "icons/exported/icon-workflow-ssh-config-validator-outline-24x24-v01.svg",
+        "csr_generator": "icons/exported/icon-workflow-csr-generator-outline-24x24-v01.svg",
+        "caa_record_builder": "icons/exported/icon-workflow-caa-record-builder-outline-24x24-v01.svg",
+        "base62_encoder_decoder": "icons/exported/icon-workflow-base62-encoder-decoder-outline-24x24-v01.svg",
+    }
+    tools_by_slug = {tool.slug: tool for tool in TOOLS}
+
+    for slug, expected in expected_assets.items():
+        tool = tools_by_slug.get(slug) or ui.ToolMeta(
+            title="Base62 encoder/decoder",
+            short_title="Base62",
+            description="planned",
+            path="pages/122_Base62_Encoder_Decoder.py",
+            icon="62",
+            accent="#2e8bff",
+            slug=slug,
+            professions=("Support Engineer",),
+            category="Data & Text",
+        )
+        assert ui._tool_card_icon_asset(tool) == expected
+
+
+def test_tool_card_html_uses_wave20_generated_icons_when_mapped():
+    tools_by_slug = {tool.slug: tool for tool in TOOLS}
+    tools = [
+        tools_by_slug["json_merge_patch"],
+        tools_by_slug["column_aligner"],
+        tools_by_slug["ssh_config_validator"],
+        tools_by_slug["csr_generator"],
+        tools_by_slug["caa_record_builder"],
+        ui.ToolMeta(
+            title="Base62 encoder/decoder",
+            short_title="Base62",
+            description="planned",
+            path="pages/122_Base62_Encoder_Decoder.py",
+            icon="62",
+            accent="#2e8bff",
+            slug="base62_encoder_decoder",
+            professions=("Support Engineer",),
+            category="Data & Text",
         ),
     ]
 
@@ -997,6 +1050,42 @@ def test_tool_card_html_wave19_slug_specific_mapping_precedes_category_default_d
             slug=slug,
             professions=("Sysadmin / DevOps",),
             category="Ops & Automation",
+        )
+        html = ui._tool_card_html(tool)
+        assert ui._tool_card_icon_asset(tool) != category_default
+        assert "tool-card-icon-image" not in html
+        assert f">{tool.icon}<" in html
+
+
+def test_tool_card_html_wave20_slug_specific_mapping_precedes_category_default_during_render(monkeypatch):
+    category_defaults = {
+        "json_merge_patch": "icons/exported/icon-workflow-json-validate-outline-24x24-v01.svg",
+        "column_aligner": "icons/exported/icon-workflow-automation-runbook-outline-24x24-v01.svg",
+        "ssh_config_validator": "icons/exported/icon-workflow-incident-response-outline-24x24-v01.svg",
+        "csr_generator": "icons/exported/icon-workflow-incident-response-outline-24x24-v01.svg",
+        "caa_record_builder": "icons/exported/icon-workflow-dns-lookup-outline-24x24-v01.svg",
+        "base62_encoder_decoder": "icons/exported/icon-workflow-json-validate-outline-24x24-v01.svg",
+    }
+
+    def fake_svg_img_html(path, *args, **kwargs):
+        if path in set(category_defaults.values()):
+            return '<img class="tool-card-icon-image" data-icon="category-default" />'
+        return None
+
+    monkeypatch.setattr(ui, "_svg_img_html", fake_svg_img_html)
+    tools_by_slug = {tool.slug: tool for tool in TOOLS}
+
+    for slug, category_default in category_defaults.items():
+        tool = tools_by_slug.get(slug) or ui.ToolMeta(
+            title="Base62 encoder/decoder",
+            short_title="Base62",
+            description="planned",
+            path="pages/122_Base62_Encoder_Decoder.py",
+            icon="62",
+            accent="#2e8bff",
+            slug=slug,
+            professions=("Support Engineer",),
+            category="Data & Text",
         )
         html = ui._tool_card_html(tool)
         assert ui._tool_card_icon_asset(tool) != category_default
