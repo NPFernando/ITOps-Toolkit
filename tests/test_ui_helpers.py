@@ -870,6 +870,94 @@ def test_tool_card_html_uses_wave22_generated_icons_when_mapped():
         assert "data:image/svg+xml;base64," in html
 
 
+def test_tool_card_icon_asset_maps_wave23_visual_targets():
+    expected_assets = {
+        "list_converter": "icons/exported/icon-workflow-list-transform-outline-24x24-v01.svg",
+        "email_address_normalizer": "icons/exported/icon-workflow-email-normalize-outline-24x24-v01.svg",
+        "ipv4_address_format_converter": "icons/exported/icon-workflow-ipv4-format-outline-24x24-v01.svg",
+        "ipv4_range_expander": "icons/exported/icon-workflow-subnet-planning-outline-24x24-v01.svg",
+        "git_command_cheat_sheet": "icons/exported/icon-workflow-reference-catalog-outline-24x24-v01.svg",
+        "bip39_mnemonic_generator_validator": "icons/exported/icon-workflow-mnemonic-seed-outline-24x24-v01.svg",
+    }
+
+    for slug, expected in expected_assets.items():
+        tool = ui.ToolMeta(
+            title=f"Planned {slug}",
+            short_title=slug,
+            description="planned",
+            path=f"pages/{slug}.py",
+            icon="PLN",
+            accent="#123456",
+            slug=slug,
+            professions=("Support Engineer",),
+            category="Ops & Automation",
+        )
+        assert ui._tool_card_icon_asset(tool) == expected
+
+
+def test_tool_card_html_uses_wave23_generated_icons_when_mapped():
+    slugs = (
+        "list_converter",
+        "email_address_normalizer",
+        "ipv4_address_format_converter",
+        "ipv4_range_expander",
+        "git_command_cheat_sheet",
+        "bip39_mnemonic_generator_validator",
+    )
+
+    for slug in slugs:
+        tool = ui.ToolMeta(
+            title=f"Planned {slug}",
+            short_title=slug,
+            description="planned",
+            path=f"pages/{slug}.py",
+            icon="PLN",
+            accent="#123456",
+            slug=slug,
+            professions=("Support Engineer",),
+            category="Ops & Automation",
+        )
+        html = ui._tool_card_html(tool)
+        assert "tool-card-icon-image" in html
+        assert "data:image/svg+xml;base64," in html
+
+
+def test_tool_card_html_wave23_slug_specific_mapping_precedes_category_default_during_render(monkeypatch):
+    category_default = "icons/exported/icon-workflow-automation-runbook-outline-24x24-v01.svg"
+    slugs = (
+        "list_converter",
+        "email_address_normalizer",
+        "ipv4_address_format_converter",
+        "ipv4_range_expander",
+        "git_command_cheat_sheet",
+        "bip39_mnemonic_generator_validator",
+    )
+
+    def fake_svg_img_html(path, *args, **kwargs):
+        if path == category_default:
+            return '<img class="tool-card-icon-image" data-icon="category-default" />'
+        return None
+
+    monkeypatch.setattr(ui, "_svg_img_html", fake_svg_img_html)
+
+    for slug in slugs:
+        tool = ui.ToolMeta(
+            title=f"Planned {slug}",
+            short_title=slug,
+            description="planned",
+            path=f"pages/{slug}.py",
+            icon="PLN",
+            accent="#123456",
+            slug=slug,
+            professions=("Support Engineer",),
+            category="Ops & Automation",
+        )
+        html = ui._tool_card_html(tool)
+        assert ui._tool_card_icon_asset(tool) != category_default
+        assert "tool-card-icon-image" not in html
+        assert f">{tool.icon}<" in html
+
+
 def test_tool_card_html_wave22_slug_specific_mapping_precedes_category_default_during_render(monkeypatch):
     tool = ui.ToolMeta(
         title="Docker run to compose",
