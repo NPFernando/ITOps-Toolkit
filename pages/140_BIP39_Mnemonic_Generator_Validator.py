@@ -90,27 +90,32 @@ validation = st.session_state.get("bip39_mnemonic_validation")
 if phrase is None and validation is None:
     render_empty_state("Ready for mnemonic operations", "Generated phrases and validation outcomes appear here after submission.")
     render_status_note(
-        "Outcome: awaiting mnemonic action",
-        "Generate a phrase or paste an existing phrase and run validation.",
+        "Outcome: mnemonic tools ready",
+        "Generate a phrase or run validation to view results.",
         tone="neutral",
     )
 
-if phrase is not None:
-    with tool_result_panel("bip39_generated_phrase", related_to="bip39_mnemonic_generator_validator"):
-        render_section_heading("Generated mnemonic", eyebrow="Result")
-        render_status_note("Outcome: mnemonic generation complete", "Generated with deterministic seed when provided.", tone="success")
+with tool_result_panel("bip39_generated_phrase", related_to="bip39_mnemonic_generator_validator"):
+    render_section_heading("Generated mnemonic", eyebrow="Result")
+    if phrase is None:
+        render_empty_state("No mnemonic generated yet", "Choose a word count, optionally add a seed, then generate a phrase.")
+        render_status_note("Outcome: generation awaiting input", "Set options and choose Generate mnemonic.", tone="neutral")
+    else:
+        render_status_note("Outcome: mnemonic generated", "Generated with deterministic seed when provided.", tone="success")
         st.code(str(phrase), language=None)
 
-if validation is not None:
-    with tool_result_panel("bip39_validation_result", related_to="bip39_mnemonic_validator"):
-        render_section_heading("Validation result", eyebrow="Result")
-        if not validation["ok"]:
-            detail = str(validation["error"])
-            if validation.get("unknown"):
-                detail += " Unknown words: " + ", ".join(str(item) for item in validation["unknown"])
-            render_status_note("Outcome: mnemonic validation blocked", detail, tone="warning")
-        else:
-            render_status_note("Outcome: mnemonic validation complete", "Word count and embedded subset checks passed.", tone="success")
+with tool_result_panel("bip39_validation_result", related_to="bip39_mnemonic_validator"):
+    render_section_heading("Validation result", eyebrow="Result")
+    if validation is None:
+        render_empty_state("No validation run yet", "Paste a phrase and choose Validate mnemonic.")
+        render_status_note("Outcome: validation awaiting input", "Validation results appear here after submission.", tone="neutral")
+    elif not validation["ok"]:
+        detail = str(validation["error"])
+        if validation.get("unknown"):
+            detail += " Unknown words: " + ", ".join(str(item) for item in validation["unknown"])
+        render_status_note("Outcome: mnemonic input validation required", detail, tone="warning")
+    else:
+        render_status_note("Outcome: mnemonic validation passed", "Word count and embedded subset checks passed.", tone="success")
 
 mark_page_baseline(_baseline, "content-rendered")
 render_page_baseline(_baseline)

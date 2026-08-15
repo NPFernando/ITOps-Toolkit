@@ -67,14 +67,14 @@ with tool_result_panel("git_command_cheat_sheet_results", related_to="git_comman
     render_section_heading("Command list", eyebrow="Reference")
     if not rows:
         render_empty_state("No commands matched", "Try another search phrase or reset category to All.")
-        render_status_note("Outcome: command filter needs adjustment", "No Git commands matched the current filters.", tone="warning")
+        render_status_note("Outcome: search refinement required", "No Git commands matched the current filters.", tone="warning")
     else:
         if was_submitted:
-            render_status_note("Outcome: command filter results ready", f"Showing {len(rows)} command(s).", tone="success")
+            render_status_note("Outcome: command list updated", f"Showing {len(rows)} matching command(s).", tone="success")
         else:
             render_status_note(
-                "Outcome: command reference ready",
-                f"Showing {len(rows)} command(s). Submit filters to narrow the list.",
+                "Outcome: command reference loaded",
+                f"Showing {len(rows)} commands. Submit filters to narrow the list.",
                 tone="neutral",
             )
         for row in rows:
