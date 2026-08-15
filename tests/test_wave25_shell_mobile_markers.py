@@ -40,19 +40,19 @@ def test_wave25_pages_keep_grouped_controls_and_full_width_actions():
         ],
         "pages/141_Lorem_Ipsum_Generator.py": [
             'with tool_form_panel("lorem_ipsum_generator"):',
-            'st.markdown(\'<div class="tool-panel-eyebrow">Output shape</div>\', unsafe_allow_html=True)',
-            'st.markdown(\'<div class="tool-panel-eyebrow">Deterministic seed</div>\', unsafe_allow_html=True)',
+            'render_control_heading("Output shape")',
+            'render_control_heading("Deterministic seed")',
             'submitted = st.form_submit_button("Generate lorem ipsum", use_container_width=True)',
         ],
         "pages/142_Text_to_Binary_Hex_Octal_Converter.py": [
             'with tool_form_panel("text_to_binary_hex_octal_converter"):',
-            'st.markdown(\'<div class="tool-panel-eyebrow">Source text</div>\', unsafe_allow_html=True)',
+            'render_control_heading("Source text")',
             'submitted = st.form_submit_button("Convert text", use_container_width=True)',
         ],
         "pages/139_Git_Command_Cheat_Sheet.py": [
             'with tool_form_panel("git_command_cheat_sheet"):',
-            'st.markdown(\'<div class="tool-panel-eyebrow">Search</div>\', unsafe_allow_html=True)',
-            'st.markdown(\'<div class="tool-panel-eyebrow">Category</div>\', unsafe_allow_html=True)',
+            'render_control_heading("Search")',
+            'render_control_heading("Category")',
             'submitted = st.form_submit_button("Show matching commands", use_container_width=True)',
         ],
         "pages/140_BIP39_Mnemonic_Generator_Validator.py": [

@@ -5,6 +5,7 @@ import streamlit as st
 from utils.dev_baseline import mark_page_baseline, render_page_baseline, start_page_baseline
 from utils.ui import (
     apply_app_shell,
+    render_control_heading,
     render_empty_state,
     render_form_intro,
     render_page_header,
@@ -48,9 +49,9 @@ categories = ("All", "Setup", "Daily", "Branching", "Recovery")
 with tool_form_panel("git_command_cheat_sheet"):
     render_form_intro("Filter command catalog", "Grouped filters and a full-width apply action keep the reference easy to use on small screens.")
     with st.form("git-command-cheat-sheet-form"):
-        st.markdown('<div class="tool-panel-eyebrow">Search</div>', unsafe_allow_html=True)
+        render_control_heading("Search")
         query = st.text_input("Search command or description", placeholder="status, rebase, reflog")
-        st.markdown('<div class="tool-panel-eyebrow">Category</div>', unsafe_allow_html=True)
+        render_control_heading("Category")
         category = st.selectbox("Command category", options=categories)
         submitted = st.form_submit_button("Show matching commands", use_container_width=True)
 
@@ -69,7 +70,7 @@ with tool_result_panel("git_command_cheat_sheet_results", related_to="git_comman
         render_empty_state("No commands matched", "Try another search phrase or reset category to All.")
         render_status_note(
             "Outcome: command filtering blocked",
-            "No Git commands matched the current filters. Update keywords or switch category to All.",
+            "No commands matched the current search and category. Update keywords or switch category to All.",
             tone="warning",
         )
     else:

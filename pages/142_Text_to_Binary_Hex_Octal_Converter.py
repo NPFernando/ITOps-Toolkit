@@ -5,6 +5,7 @@ import streamlit as st
 from utils.dev_baseline import mark_page_baseline, render_page_baseline, start_page_baseline
 from utils.ui import (
     apply_app_shell,
+    render_control_heading,
     render_empty_state,
     render_form_intro,
     render_page_header,
@@ -40,7 +41,7 @@ render_page_header("Text to Binary Hex Octal Converter", "Convert plain text int
 with tool_form_panel("text_to_binary_hex_octal_converter"):
     render_form_intro("Provide text input", "Use one full-width action to generate all encoded outputs for quick mobile copy/paste.")
     with st.form("text-to-binary-hex-octal-converter-form"):
-        st.markdown('<div class="tool-panel-eyebrow">Source text</div>', unsafe_allow_html=True)
+        render_control_heading("Source text")
         input_text = st.text_area("Text input", height=180, placeholder="Hello", key="text_radix_input")
         submitted = st.form_submit_button("Convert text", use_container_width=True)
 
@@ -54,7 +55,7 @@ with tool_result_panel("text_radix_result", related_to="text_to_binary_hex_octal
         render_empty_state("Ready to encode", "Binary, hex, and octal output appears here after submission.")
         render_status_note("Outcome: conversion awaiting input", "Paste text, then choose Convert text.", tone="neutral")
     elif not bool(result["ok"]):
-        render_status_note("Outcome: text conversion blocked", str(result["error"]), tone="warning")
+        render_status_note("Outcome: text conversion blocked", f"{result['error']} Provide plain text to continue.", tone="warning")
     else:
         render_status_note("Outcome: text conversion complete", "Binary, hex, and octal byte values are ready.", tone="success")
         st.code(f"Binary: {result['binary']}\nHex: {result['hex']}\nOctal: {result['octal']}", language=None)

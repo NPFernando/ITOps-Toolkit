@@ -89,7 +89,8 @@ def test_roadmap_feedback_page_renders_hybrid_board_and_links(monkeypatch):
     assert "AI Recommended is curated" in text
     assert "static, curated tag, not AI output" in text
     assert "Streamlit does not store feedback" in text
-    assert "Roadmap cache freshness" in text
+    assert "Outcome: roadmap cache checked" in text
+    assert "Outcome: roadmap sync complete" in text
     assert "Cached for up to 5 minutes." in text
     assert "Tools" in text
     assert "Reports" in text
@@ -117,7 +118,8 @@ def test_roadmap_feedback_page_ai_triage_unavailable_without_config(monkeypatch)
     text = _page_text(app)
     assert "AI-assisted triage" in text
     assert "AI triage unavailable" in text
-    assert "Roadmap cache freshness" in text
+    assert "Outcome: roadmap cache checked" in text
+    assert "Outcome: AI triage unavailable" in text
     assert not any(b.label.startswith("Summarize") for b in app.button)
 
 
@@ -160,7 +162,8 @@ def test_roadmap_feedback_page_ai_triage_runs_when_configured_and_clicked(monkey
     assert not app.exception
 
     text = _page_text(app)
-    assert "AI triage cache freshness" in text
+    assert "Outcome: AI triage cache checked" in text
+    assert "Outcome: AI triage generated" in text
     assert "Cached for up to 1 hour." in text
     assert "AI triage summary" in text
     assert "Prioritize the command palette." in text
@@ -209,7 +212,7 @@ def test_roadmap_feedback_page_ai_triage_click_reuses_cache(monkeypatch):
 
     assert not app.exception
     assert calls["count"] == 1
-    assert "AI triage cache freshness" in _page_text(app)
+    assert "Outcome: AI triage cache checked" in _page_text(app)
     assert "Cached summary." in _page_text(app)
 
 
