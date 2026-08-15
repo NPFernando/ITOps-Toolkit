@@ -2,12 +2,22 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from cryptography.hazmat.primitives import serialization
+from cryptography.hazmat.primitives.asymmetric import rsa
 from streamlit.testing.v1 import AppTest
 
 
 PAGE = str(Path(__file__).resolve().parent.parent / "pages" / "124_JWK_PEM_Converter.py")
 
 _JWK_JSON = '{"kty": "RSA", "n": "0vx7agoebGcQSuuPiLJXZptN9nndrQmbXEps2aiAFbWhM78LhWx4cbbfAAtVT86zwu1RK7aPFFxuhDR1L6tSoc_BJECPebWKRXjBZCiFV4n3oknjhMstn64tZ_2W-5JsGY4Hc5n9yBXArwl93lqt7_RN5w6Cf0h4QyQ5v-65YGjQR0_FDW2QvzqY368QQMicAtaSqzs8KJZgnYb9c7d0zgdAZHzu6qMQvRL5hajrn1n91CbOpbISD08qNLyrdkt-bFTWhAI4vMQFh6WeZu0fM4lFd2NcRwr3XPksINHaQ-G_xBniIqbw0Ls1jF44-csFCur-kEgU8awapJzKnqDKgw", "e": "AQAB"}'
+
+
+def _build_public_pem() -> str:
+    private_key = rsa.generate_private_key(public_exponent=65537, key_size=2048)
+    return private_key.public_key().public_bytes(
+        encoding=serialization.Encoding.PEM,
+        format=serialization.PublicFormat.SubjectPublicKeyInfo,
+    ).decode()
 
 
 def test_jwk_to_pem_tab_shows_result():
@@ -23,7 +33,7 @@ def test_jwk_to_pem_tab_shows_result():
     assert "BEGIN PUBLIC KEY" in code
     md = " ".join(m.value for m in app.markdown)
     assert "tool-status-note-success" in md
-    assert "PEM public key ready" in md
+    assert "Outcome: PEM output generated" in md
     assert 'role="status"' in md
 
 
@@ -50,8 +60,25 @@ def test_invalid_jwk_shows_warning_status():
 
     md = " ".join(m.value for m in app.markdown)
     assert "tool-status-note-warning" in md
-    assert "JWK to PEM conversion needs input fixes" in md
+    assert "Outcome: JWK input validation required" in md
     assert 'role="alert"' in md
+
+
+def test_pem_to_jwk_tab_shows_result():
+    app = AppTest.from_file(PAGE, default_timeout=30)
+    app.run()
+    assert not app.exception
+
+    app.text_area[1].set_value(_build_public_pem())
+    app.button[1].click().run()
+    assert not app.exception
+
+    code = " ".join(c.value for c in app.code)
+    assert '"kty": "RSA"' in code
+    md = " ".join(m.value for m in app.markdown)
+    assert "tool-status-note-success" in md
+    assert "Outcome: JWK output generated" in md
+    assert 'role="status"' in md
 
 
 def test_results_persist_after_sidebar_interaction():

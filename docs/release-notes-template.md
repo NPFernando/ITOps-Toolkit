@@ -28,6 +28,7 @@ Use this template for deployment notes, GitHub releases, or pull request summari
 - QA baseline add-on: Phase 25 wave-18 shell/mobile/visual/a11y QA gates completed
 - QA baseline add-on: Phase 26 wave-19 shell/mobile/visual/a11y QA gates completed
 - QA baseline add-on: Phase 27 wave-20 shell/mobile/visual/a11y QA gates completed
+- QA baseline add-on: Phase 28 wave-21 shell/mobile/visual/a11y QA gates completed
 
 ## User-Facing Changes
 
@@ -136,6 +137,10 @@ curl http://localhost:8502/_stcore/health
 - Wave 20 mobile readability spot check (`<=720px`, full-width/tap-friendly Home controls, Roadmap filters/AI triage action, and wave-20 submit actions):
 - Wave 20 visual mapping spot check (wave-20 touchpoint slug-specific icon priority + fallback for `json_merge_patch`, `column_aligner`, `ssh_config_validator`, `csr_generator`, `caa_record_builder`, `base62_tool`):
 - Wave 20 accessibility spot check (status/failure note semantics + keyboard/focus):
+- Wave 21 shell consistency spot check (shared shell + baseline markers on Home/Roadmap/Unified Diff Generator/JWK PEM Converter/Certificate Chain Validator/WSL Path Converter/Markdown Link Extractor/Health Diagnostics):
+- Wave 21 mobile readability spot check (`<=720px`, grouped controls stay single-column readable, Home controls + Roadmap filters/AI triage action + wave-21 submit/runbook actions stay full-width/tap-friendly, no clipping/overflow):
+- Wave 21 visual mapping spot check (wave-21 touchpoint slug-specific icon priority + fallback for `unified_diff_generator`, `jwk_pem_converter`, `cert_chain_validator`, `wsl_path_converter`, `markdown_link_extractor`, `health_diagnostics`):
+- Wave 21 accessibility spot check (status/failure note semantics + keyboard/focus):
 - Log Troubleshooting AI unavailable state:
 - Optional Azure AI state, if secrets were available:
 

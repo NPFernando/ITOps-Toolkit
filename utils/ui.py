@@ -3206,6 +3206,7 @@ def _material_icon_for(slug: str) -> str:
         "cert_chain_validator": ":material/link:",
         "wsl_path_converter": ":material/drive_file_move:",
         "markdown_link_extractor": ":material/insert_link:",
+        "health_diagnostics": ":material/health_and_safety:",
     }
     return icons.get(slug, ":material/build:")
 

@@ -41,7 +41,8 @@ def test_health_diagnostics_page_renders_key_sections():
     assert "Remediation hints" in page_markdown
     assert "Runbook guidance" in page_markdown
     assert "tool-status-note-neutral" in page_markdown
-    assert "Diagnostics snapshot ready" in page_markdown
+    assert "Outcome: diagnostics snapshot available" in page_markdown
+    assert 'role="status"' in page_markdown
     assert "docs/ops-runbook.md" in captions
     assert len(app.dataframe) >= 7
 
@@ -78,4 +79,5 @@ def test_health_diagnostics_overall_warning_note_when_warnings_present(monkeypat
     page_markdown = " ".join(m.value for m in app.markdown)
 
     assert "tool-status-note-warning" in page_markdown
-    assert "Diagnostics have follow-up items" in page_markdown
+    assert "Outcome: diagnostics follow-up recommended" in page_markdown
+    assert 'role="alert"' in page_markdown

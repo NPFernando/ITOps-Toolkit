@@ -20,7 +20,8 @@ def test_extract_shows_result():
     assert len(app.dataframe) > 0
     md = " ".join(m.value for m in app.markdown)
     assert "tool-status-note-success" in md
-    assert "Link extraction complete" in md
+    assert "Outcome: links extracted" in md
+    assert 'role="status"' in md
 
 
 def test_empty_state_shown_before_submit():
@@ -33,6 +34,7 @@ def test_empty_state_shown_before_submit():
     assert "tool-status-note-neutral" in md
     assert "Awaiting Markdown input" in md
     assert "No extraction has run yet." in md
+    assert 'role="status"' in md
 
 
 def test_input_without_links_shows_warning_status():
@@ -46,7 +48,8 @@ def test_input_without_links_shows_warning_status():
 
     md = " ".join(m.value for m in app.markdown)
     assert "tool-status-note-warning" in md
-    assert "Extraction needs attention" in md
+    assert "Outcome: Markdown input validation required" in md
+    assert 'role="alert"' in md
 
 
 def test_results_persist_after_sidebar_interaction():

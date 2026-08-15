@@ -30,8 +30,11 @@ render_page_header(
 with tool_form_panel("unified_diff_generator"):
     render_form_intro("Paste the original and changed text", "Use the left box for the baseline and the right box for the updated version.")
     with st.form("unified-diff-form"):
+        st.markdown('<div class="tool-panel-eyebrow">Original text</div>', unsafe_allow_html=True)
         original_input = st.text_area("Original", height=240, max_chars=MAX_INPUT_LENGTH, placeholder="line1\nline2\nline3")
+        st.markdown('<div class="tool-panel-eyebrow">Changed text</div>', unsafe_allow_html=True)
         changed_input = st.text_area("Changed", height=240, max_chars=MAX_INPUT_LENGTH, placeholder="line1\nCHANGED\nline3")
+        st.markdown('<div class="tool-panel-eyebrow">Patch metadata</div>', unsafe_allow_html=True)
         original_name = st.text_input("Original file name", value="a")
         changed_name = st.text_input("Changed file name", value="b")
         context_lines = st.slider("Context lines", 0, 10, 3)
@@ -55,19 +58,19 @@ if result is not None:
         render_section_heading("Unified diff", eyebrow="Result")
         if not result["ok"]:
             render_status_note(
-                "Diff generation needs input fixes",
+                "Outcome: input validation required",
                 f"{result['error']} Review the text inputs and file names, then generate the diff again.",
                 tone="warning",
             )
         elif result["identical"]:
             render_status_note(
-                "No differences found",
+                "Outcome: no differences detected",
                 "Both inputs are identical, so no patch output was generated.",
                 tone="neutral",
             )
         else:
             render_status_note(
-                "Patch output ready",
+                "Outcome: patch generated",
                 "Unified diff generation succeeded. Review the patch below or download it as a .patch file.",
                 tone="success",
             )

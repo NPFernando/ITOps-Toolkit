@@ -34,6 +34,7 @@ with jwk_to_pem_tab:
     with tool_form_panel("jwk_to_pem"):
         render_form_intro("Paste a JWK", "Provide an RSA public JWK with kty, n, and e fields.")
         with st.form("jwk-to-pem-form"):
+            st.markdown('<div class="tool-panel-eyebrow">JWK input</div>', unsafe_allow_html=True)
             jwk_input = st.text_area("JWK", height=200, max_chars=MAX_INPUT_LENGTH, placeholder='{"kty": "RSA", "n": "...", "e": "AQAB"}')
             jwk_submitted = st.form_submit_button("Convert to PEM", use_container_width=True)
 
@@ -55,19 +56,25 @@ with jwk_to_pem_tab:
             render_section_heading("PEM public key", eyebrow="Result")
             if not jwk_result["ok"]:
                 render_status_note(
-                    "JWK to PEM conversion needs input fixes",
+                    "Outcome: JWK input validation required",
                     f"{jwk_result['error']} Confirm the JWK is valid JSON with RSA key fields, then retry conversion.",
                     tone="warning",
                 )
             else:
-                render_status_note("PEM public key ready", "JWK to PEM conversion succeeded. The PEM output is ready below.", tone="success")
+                render_status_note(
+                    "Outcome: PEM output generated",
+                    "JWK to PEM conversion succeeded. The PEM output is ready below.",
+                    tone="success",
+                )
                 st.code(jwk_result["output"], language=None)
 
 with pem_to_jwk_tab:
     with tool_form_panel("pem_to_jwk"):
         render_form_intro("Paste a PEM public key", "Only RSA public keys are supported for conversion to JWK.")
         with st.form("pem-to-jwk-form"):
+            st.markdown('<div class="tool-panel-eyebrow">PEM input</div>', unsafe_allow_html=True)
             pem_input = st.text_area("PEM public key", height=200, max_chars=MAX_INPUT_LENGTH, placeholder="-----BEGIN PUBLIC KEY-----\n...\n-----END PUBLIC KEY-----")
+            st.markdown('<div class="tool-panel-eyebrow">Optional metadata</div>', unsafe_allow_html=True)
             key_id_input = st.text_input("Key ID (kid, optional)")
             pem_submitted = st.form_submit_button("Convert to JWK", use_container_width=True)
 
@@ -89,12 +96,16 @@ with pem_to_jwk_tab:
             render_section_heading("JWK", eyebrow="Result")
             if not pem_result["ok"]:
                 render_status_note(
-                    "PEM to JWK conversion needs input fixes",
+                    "Outcome: PEM input validation required",
                     f"{pem_result['error']} Use a valid RSA PEM public key and retry conversion.",
                     tone="warning",
                 )
             else:
-                render_status_note("JWK output ready", "PEM to JWK conversion succeeded. The JWK output is ready below.", tone="success")
+                render_status_note(
+                    "Outcome: JWK output generated",
+                    "PEM to JWK conversion succeeded. The JWK output is ready below.",
+                    tone="success",
+                )
                 st.code(pem_result["output"], language="json")
 
 mark_page_baseline(_baseline, "content-rendered")

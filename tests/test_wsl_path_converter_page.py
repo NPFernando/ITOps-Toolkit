@@ -21,7 +21,7 @@ def test_convert_shows_result():
     assert "/mnt/c/Users/naveen/file.txt" in code
     md = " ".join(m.value for m in app.markdown)
     assert "tool-status-note-success" in md
-    assert "Path conversion complete" in md
+    assert "Outcome: path converted" in md
     assert "WSL (/mnt/c/...)" in md
     assert 'role="status"' in md
 
@@ -48,7 +48,7 @@ def test_empty_submission_shows_warning_status():
 
     md = " ".join(m.value for m in app.markdown)
     assert "tool-status-note-warning" in md
-    assert "Path conversion needs input fixes" in md
+    assert "Outcome: path input validation required" in md
     assert 'role="alert"' in md
 
 

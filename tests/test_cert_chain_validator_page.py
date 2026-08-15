@@ -54,7 +54,7 @@ def test_validate_shows_result():
 
     md = " ".join(m.value for m in app.markdown)
     assert "tool-status-note-success" in md
-    assert "Certificate chain is consistent" in md
+    assert "Outcome: chain validation passed" in md
     assert 'role="status"' in md
 
 
@@ -84,7 +84,7 @@ def test_invalid_chain_order_shows_warning_status():
 
     md = " ".join(m.value for m in app.markdown)
     assert "tool-status-note-warning" in md
-    assert "Certificate chain needs attention" in md
+    assert "Outcome: chain issues detected" in md
     assert 'role="alert"' in md
 
 
@@ -98,7 +98,7 @@ def test_empty_submission_shows_warning_status():
 
     md = " ".join(m.value for m in app.markdown)
     assert "tool-status-note-warning" in md
-    assert "Certificate chain validation needs input fixes" in md
+    assert "Outcome: certificate input validation required" in md
     assert 'role="alert"' in md
 
 

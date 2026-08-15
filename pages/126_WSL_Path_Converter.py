@@ -30,7 +30,9 @@ render_page_header(
 with tool_form_panel("wsl_path_converter"):
     render_form_intro("Enter a path and target format", "Paste a Windows, WSL, or Git Bash path, then choose the output style.")
     with st.form("wsl-path-converter-form"):
+        st.markdown('<div class="tool-panel-eyebrow">Source path</div>', unsafe_allow_html=True)
         path_input = st.text_input("Path", placeholder=r"C:\Users\naveen\file.txt")
+        st.markdown('<div class="tool-panel-eyebrow">Target format</div>', unsafe_allow_html=True)
         target = st.radio("Convert to", TARGETS, horizontal=False)
         submitted = st.form_submit_button("Convert", use_container_width=True)
 
@@ -54,13 +56,13 @@ if result is not None:
         render_section_heading("Converted path", eyebrow="Result")
         if not result["ok"]:
             render_status_note(
-                "Path conversion needs input fixes",
+                "Outcome: path input validation required",
                 f"{result['error']} Provide a valid Windows, WSL, or Git Bash path and try conversion again.",
                 tone="warning",
             )
         else:
             render_status_note(
-                "Path conversion complete",
+                "Outcome: path converted",
                 f"The path was converted successfully to {result['target']}.",
                 tone="success",
             )

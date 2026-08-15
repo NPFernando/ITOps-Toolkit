@@ -16,7 +16,7 @@ from utils.github_issues import fetch_public_issues
 from utils.http_tools import check_http_status
 from utils.project_links import github_repository_slug, github_repository_url
 from utils.ssl_tools import get_certificate_info
-from utils.ui import TOOLS, apply_app_shell, render_page_header, render_section_heading, render_status_note, tool_result_panel
+from utils.ui import TOOLS, apply_app_shell, render_page_header, render_section_heading, render_status_note, tool_form_panel, tool_result_panel
 
 
 @st.cache_data(show_spinner=False, ttl=120)
@@ -104,7 +104,7 @@ render_page_header(
 with tool_result_panel("health_diagnostics_runtime"):
     render_section_heading("Runtime basics", "Version and app-context signals that are safe to display.", eyebrow="Runtime")
     render_status_note(
-        "Diagnostics snapshot ready",
+        "Outcome: diagnostics snapshot available",
         "This report shows non-sensitive runtime checks with pass, warning, and remediation guidance.",
         tone="neutral",
     )
@@ -224,19 +224,19 @@ with tool_result_panel("health_diagnostics_reliability_score"):
     )
     if fail_count:
         render_status_note(
-            "Diagnostics require action",
+            "Outcome: diagnostics remediation required",
             f"{fail_count} fail check(s) and {warn_count} warning check(s) need remediation before release confidence.",
             tone="warning",
         )
     elif warn_count:
         render_status_note(
-            "Diagnostics have follow-up items",
+            "Outcome: diagnostics follow-up recommended",
             f"{warn_count} warning check(s) are optional but should be reviewed.",
             tone="warning",
         )
     else:
         render_status_note(
-            "Diagnostics passed",
+            "Outcome: diagnostics checks passed",
             f"All {pass_count} checks passed with no warnings or failures.",
             tone="success",
         )
@@ -264,7 +264,7 @@ with tool_result_panel("health_diagnostics_remediation_hints"):
         )
     else:
         render_status_note(
-            "No remediation items",
+            "Outcome: no remediation items",
             "Every diagnostics check is passing, so no follow-up actions are needed.",
             tone="success",
         )
@@ -280,7 +280,9 @@ with tool_result_panel("health_diagnostics_runbook_linking"):
     runbook_url = f"{repo_url}/blob/main/docs/ops-runbook.md"
     runbook_display = _safe_url_for_display(runbook_url)
     if "Invalid URL format" not in runbook_display and "Not configured" not in runbook_display:
-        st.link_button("Open public ops runbook", runbook_display, width="stretch")
+        with tool_form_panel("health_diagnostics_runbook_action"):
+            st.markdown('<div class="tool-panel-eyebrow">Runbook action</div>', unsafe_allow_html=True)
+            st.link_button("Open public ops runbook", runbook_display, width="stretch")
     else:
         st.caption("Public runbook link unavailable. Open docs/ops-runbook.md in this repository.")
 

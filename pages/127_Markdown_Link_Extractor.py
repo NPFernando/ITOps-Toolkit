@@ -31,6 +31,7 @@ render_page_header(
 with tool_form_panel("markdown_link_extractor"):
     render_form_intro("Paste Markdown text", "Include inline links, reference links, or autolinks to extract into a table.")
     with st.form("markdown-link-extractor-form"):
+        st.markdown('<div class="tool-panel-eyebrow">Markdown source</div>', unsafe_allow_html=True)
         markdown_input = st.text_area("Markdown", height=280, max_chars=MAX_INPUT_LENGTH, placeholder="Check out [Google](https://google.com).")
         submitted = st.form_submit_button("Extract links", use_container_width=True)
 
@@ -52,13 +53,13 @@ if result is not None:
         render_section_heading("Links found", eyebrow="Result")
         if not result["ok"]:
             render_status_note(
-                "Extraction needs attention",
+                "Outcome: Markdown input validation required",
                 f"{result['error']} Add Markdown content with at least one valid link, then run extraction again.",
                 tone="warning",
             )
         else:
             render_status_note(
-                "Link extraction complete",
+                "Outcome: links extracted",
                 f"Extracted {len(result['links'])} link(s) from the provided Markdown.",
                 tone="success",
             )
