@@ -31,9 +31,10 @@ render_page_header(
 with tool_form_panel("env_diff"):
     render_form_intro("Paste two .env files", "")
     with st.form("env-diff-form"):
-        col_a, col_b = st.columns(2)
-        text_a = col_a.text_area("First .env", height=280, max_chars=MAX_INPUT_LENGTH, placeholder="A=1\nB=2")
-        text_b = col_b.text_area("Second .env", height=280, max_chars=MAX_INPUT_LENGTH, placeholder="A=1\nB=changed\nC=3")
+        st.markdown('<div class="tool-panel-eyebrow">First file</div>', unsafe_allow_html=True)
+        text_a = st.text_area("First .env", height=280, max_chars=MAX_INPUT_LENGTH, placeholder="A=1\nB=2")
+        st.markdown('<div class="tool-panel-eyebrow">Second file</div>', unsafe_allow_html=True)
+        text_b = st.text_area("Second .env", height=280, max_chars=MAX_INPUT_LENGTH, placeholder="A=1\nB=changed\nC=3")
         submitted = st.form_submit_button("Compare", use_container_width=True)
 
 if submitted:
@@ -56,7 +57,7 @@ if result is not None:
             if has_differences:
                 render_status_note(
                     "Differences detected",
-                    "Review the Added, Removed, and Changed sections to confirm intended environment drift.",
+                    "Added, removed, or changed keys were found. Review each section to confirm intended environment drift.",
                     tone="warning",
                 )
             else:

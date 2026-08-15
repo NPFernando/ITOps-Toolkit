@@ -33,9 +33,9 @@ render_page_header(
 with tool_form_panel("test_data_generator"):
     render_form_intro("Choose how many records", "")
     with st.form("test-data-generator-form"):
-        c1, c2 = st.columns(2)
-        count = c1.number_input("Count", min_value=1, max_value=MAX_COUNT, value=10, step=1)
-        seed = c2.number_input("Seed (blank = random each time)", value=None, step=1)
+        st.markdown('<div class="tool-panel-eyebrow">Record settings</div>', unsafe_allow_html=True)
+        count = st.number_input("Count", min_value=1, max_value=MAX_COUNT, value=10, step=1)
+        seed = st.number_input("Seed (blank = random each time)", value=None, step=1)
         submitted = st.form_submit_button("Generate", use_container_width=True)
 
 if submitted:
@@ -57,11 +57,18 @@ if result is not None:
                 remediation="Adjust the count or seed and generate again.",
             )
         else:
-            render_status_note(
-                "Generation complete",
-                f"Created {len(result['records'])} synthetic record(s) suitable for safe form and fixture testing.",
-                tone="success",
-            )
+            if result["seed"] is None:
+                render_status_note(
+                    "Generated with random seed",
+                    f"Created {len(result['records'])} synthetic record(s). Output is intentionally non-deterministic and will differ on rerun.",
+                    tone="warning",
+                )
+            else:
+                render_status_note(
+                    "Generation complete",
+                    f"Created {len(result['records'])} synthetic record(s) with seed {result['seed']} for reproducible test fixtures.",
+                    tone="success",
+                )
             st.dataframe(pd.DataFrame(result["records"]), width="stretch", hide_index=True)
 
 mark_page_baseline(_baseline, "content-rendered")

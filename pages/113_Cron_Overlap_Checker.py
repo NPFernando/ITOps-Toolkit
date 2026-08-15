@@ -31,9 +31,10 @@ render_page_header(
 with tool_form_panel("cron_overlap"):
     render_form_intro("Enter two cron expressions", "")
     with st.form("cron-overlap-form"):
-        c1, c2 = st.columns(2)
-        expr_a = c1.text_input("Schedule A", placeholder="*/5 * * * *")
-        expr_b = c2.text_input("Schedule B", placeholder="*/7 * * * *")
+        st.markdown('<div class="tool-panel-eyebrow">Schedule A</div>', unsafe_allow_html=True)
+        expr_a = st.text_input("Schedule A", placeholder="*/5 * * * *")
+        st.markdown('<div class="tool-panel-eyebrow">Schedule B</div>', unsafe_allow_html=True)
+        expr_b = st.text_input("Schedule B", placeholder="*/7 * * * *")
         lookahead_days = st.slider("Lookahead window (days)", 1, MAX_LOOKAHEAD_DAYS, 7)
         submitted = st.form_submit_button("Check for overlaps", use_container_width=True)
 
@@ -57,18 +58,17 @@ if result is not None:
             c2.metric("Schedule B runs", result["count_b"])
             c3.metric("Overlaps", len(result["overlaps"]))
             if result["overlaps"]:
-                st.warning("Both schedules fire at these times:")
+                st.caption("Shared run times (same minute):")
                 st.code("\n".join(result["overlaps"]), language=None)
                 render_status_note(
                     "Overlaps detected",
-                    f"Found {len(result['overlaps'])} shared minute(s) in the selected lookahead window. Review collisions before scheduling both jobs together.",
+                    f"Found {len(result['overlaps'])} shared minute(s) in this lookahead window. Resolve collisions before running both jobs together.",
                     tone="warning",
                 )
             else:
-                st.success("No overlapping run times found in this window.")
                 render_status_note(
                     "No overlaps detected",
-                    "The selected lookahead window has no shared run minutes between these schedules.",
+                    "No shared run minutes were found between these schedules in the selected lookahead window.",
                     tone="success",
                 )
 

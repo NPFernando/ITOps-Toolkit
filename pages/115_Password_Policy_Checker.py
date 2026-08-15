@@ -34,13 +34,12 @@ with tool_form_panel("password_policy_checker"):
     with st.form("password-policy-form"):
         password_input = st.text_input("Password", type="password", max_chars=MAX_INPUT_LENGTH)
         min_length = st.slider("Minimum length", 1, 64, 12)
-        c1, c2, c3 = st.columns(3)
-        require_upper = c1.checkbox("Uppercase", value=True)
-        require_lower = c2.checkbox("Lowercase", value=True)
-        require_digit = c3.checkbox("Digit", value=True)
-        c4, c5 = st.columns(2)
-        require_symbol = c4.checkbox("Symbol", value=True)
-        disallow_whitespace = c5.checkbox("No whitespace", value=True)
+        st.markdown('<div class="tool-panel-eyebrow">Character rules</div>', unsafe_allow_html=True)
+        require_upper = st.checkbox("Uppercase", value=True)
+        require_lower = st.checkbox("Lowercase", value=True)
+        require_digit = st.checkbox("Digit", value=True)
+        require_symbol = st.checkbox("Symbol", value=True)
+        disallow_whitespace = st.checkbox("No whitespace", value=True)
         submitted = st.form_submit_button("Check", use_container_width=True)
 
 if submitted:
@@ -65,11 +64,9 @@ if result is not None:
             )
         else:
             if result["compliant"]:
-                st.success("Policy check passed. The password meets every selected rule.")
                 render_status_note("Compliant", "The password satisfies every selected policy rule.", tone="success")
             else:
                 failed_rule_count = sum(1 for rule in result["rules"] if not rule["passed"])
-                st.warning("Policy check failed. One or more selected rules were not met.")
                 render_status_note(
                     "Not compliant",
                     f"{failed_rule_count} rule(s) failed. Review each rule and adjust the password or policy settings.",

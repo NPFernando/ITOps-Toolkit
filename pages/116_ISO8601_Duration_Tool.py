@@ -56,10 +56,10 @@ with parse_tab:
                     remediation="Enter a valid ISO 8601 duration string (for example, PT15M) and parse again.",
                 )
             else:
-                st.success(f"Parsed duration: {parse_result['output']}")
+                st.code(parse_result["output"], language=None)
                 render_status_note(
                     "Parsed successfully",
-                    "The duration string was parsed into plain-English units without errors.",
+                    f"Duration parsed to plain-English units: {parse_result['output']}.",
                     tone="success",
                 )
 
@@ -67,16 +67,15 @@ with build_tab:
     with tool_form_panel("iso8601_build"):
         render_form_intro("Enter individual duration units", "")
         with st.form("iso8601-build-form"):
-            c1, c2 = st.columns(2)
-            years = c1.number_input("Years", min_value=0.0, value=0.0, step=1.0)
-            months = c2.number_input("Months", min_value=0.0, value=0.0, step=1.0)
-            c3, c4 = st.columns(2)
-            weeks = c3.number_input("Weeks", min_value=0.0, value=0.0, step=1.0)
-            days = c4.number_input("Days", min_value=0.0, value=0.0, step=1.0)
-            c5, c6, c7 = st.columns(3)
-            hours = c5.number_input("Hours", min_value=0.0, value=0.0, step=1.0)
-            minutes = c6.number_input("Minutes", min_value=0.0, value=0.0, step=1.0)
-            seconds = c7.number_input("Seconds", min_value=0.0, value=0.0, step=1.0)
+            st.markdown('<div class="tool-panel-eyebrow">Date units</div>', unsafe_allow_html=True)
+            years = st.number_input("Years", min_value=0.0, value=0.0, step=1.0)
+            months = st.number_input("Months", min_value=0.0, value=0.0, step=1.0)
+            weeks = st.number_input("Weeks", min_value=0.0, value=0.0, step=1.0)
+            days = st.number_input("Days", min_value=0.0, value=0.0, step=1.0)
+            st.markdown('<div class="tool-panel-eyebrow">Time units</div>', unsafe_allow_html=True)
+            hours = st.number_input("Hours", min_value=0.0, value=0.0, step=1.0)
+            minutes = st.number_input("Minutes", min_value=0.0, value=0.0, step=1.0)
+            seconds = st.number_input("Seconds", min_value=0.0, value=0.0, step=1.0)
             build_submitted = st.form_submit_button("Build", use_container_width=True)
 
     if build_submitted:

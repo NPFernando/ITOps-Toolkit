@@ -31,7 +31,7 @@ _EXAMPLE_DOMAINS = ("example.com", "example.org", "example.net")
 
 def generate_test_data(count: int, seed: int | None = None) -> dict[str, Any]:
     """Generate ``count`` fake test records: full_name, email, username, phone."""
-    result: dict[str, Any] = {"ok": False, "error": None, "records": None}
+    result: dict[str, Any] = {"ok": False, "error": None, "records": None, "seed": seed}
 
     if count < 1:
         result["error"] = "Enter a count of at least 1."
