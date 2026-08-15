@@ -444,6 +444,14 @@ When a roadmap badge asset is unavailable, compact text fallback glyphs are used
 - Include one `<=720px` viewport pass to confirm Home controls, Roadmap filters/AI triage action, and wave-27 submit/generate/convert actions (with shared control headings) stay full-width/tap-friendly with no clipping/overflow.
 - Include one keyboard-only pass to confirm wave-27 explicit status semantics (`role="status"`/`role="alert"` + `aria-live`) and focus visibility remain intact.
 
+### Phase 35 Wave 28 add-on QA focus
+
+- Confirm wave-28 touchpoint slugs resolve to slug-specific assets before category defaults (`git_command_cheat_sheet`, `bip39_mnemonic_generator_validator`, `lorem_ipsum_generator`, `text_to_binary_hex_octal_converter`).
+- Confirm wave-28 slug-specific icons still fall back to text badges when SVG rendering is unavailable.
+- Include one shell pass confirming shared shell + baseline markers remain visible/unchanged on Home, Roadmap, and wave-28 touchpoint pages.
+- Include one `<=720px` viewport pass to confirm Home controls, Roadmap filters/AI triage action, and wave-28 submit/generate/convert actions (with shared control headings) stay full-width/tap-friendly with no clipping/overflow.
+- Include one keyboard-only pass to confirm wave-28 explicit status semantics (`role="status"`/`role="alert"` + `aria-live`) and focus visibility remain intact.
+
 ## Docs/release media inventory
 
 ### Posters

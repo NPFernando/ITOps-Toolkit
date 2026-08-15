@@ -43,6 +43,7 @@ st.set_page_config(page_title="Git Command Cheat Sheet", layout="wide")
 apply_app_shell(active_page="Git Command Cheat Sheet")
 mark_page_baseline(_baseline, "shell-ready")
 mark_page_baseline(_baseline, "wave27-shell-mobile")
+mark_page_baseline(_baseline, "wave28-shell-mobile")
 
 render_page_header("Git Command Cheat Sheet", "Filter practical Git commands by category and copy snippets quickly on mobile or desktop.")
 

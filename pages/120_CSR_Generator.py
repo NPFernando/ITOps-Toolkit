@@ -6,8 +6,8 @@ from utils.csr_generator import RSA_KEY_SIZES, generate_csr
 from utils.dev_baseline import mark_page_baseline, render_page_baseline, start_page_baseline
 from utils.ui import (
     apply_app_shell,
+    render_control_heading,
     render_empty_state,
-    render_failure_note,
     render_form_intro,
     render_page_header,
     render_section_heading,
@@ -21,6 +21,7 @@ _baseline = start_page_baseline("CSR Generator")
 st.set_page_config(page_title="CSR Generator", layout="wide")
 apply_app_shell(active_page="CSR Generator")
 mark_page_baseline(_baseline, "shell-ready")
+mark_page_baseline(_baseline, "wave28-shell-mobile")
 
 
 render_page_header(
@@ -30,20 +31,21 @@ render_page_header(
 )
 
 with tool_form_panel("csr_generator"):
-    render_form_intro("Enter subject fields", "Only Common Name is required.")
+    render_form_intro("Enter subject fields", "Shared headings and one full-width action keep certificate setup consistent on small screens.")
     with st.form("csr-generator-form"):
-        st.markdown('<div class="tool-panel-eyebrow">Required field</div>', unsafe_allow_html=True)
+        render_control_heading("Required field")
         common_name = st.text_input("Common Name", placeholder="example.com")
-        st.markdown('<div class="tool-panel-eyebrow">Organization details</div>', unsafe_allow_html=True)
+        render_control_heading("Organization details")
         organization = st.text_input("Organization", placeholder="Acme Inc")
         organizational_unit = st.text_input("Organizational Unit", placeholder="Engineering")
-        st.markdown('<div class="tool-panel-eyebrow">Location details</div>', unsafe_allow_html=True)
+        render_control_heading("Location details")
         locality = st.text_input("Locality (city)")
         state = st.text_input("State/Province")
-        st.markdown('<div class="tool-panel-eyebrow">Certificate options</div>', unsafe_allow_html=True)
+        render_control_heading("Certificate options")
         country = st.text_input("Country (2-letter)", placeholder="US", max_chars=2)
         san_input = st.text_input("Subject Alternative Names (comma-separated)", placeholder="example.com, www.example.com")
         rsa_key_size = st.selectbox("RSA key size", RSA_KEY_SIZES, index=0)
+        render_control_heading("Primary action")
         submitted = st.form_submit_button("Generate CSR", use_container_width=True)
 
 if submitted:
@@ -57,8 +59,8 @@ result = st.session_state.get("csr_generator_result")
 if result is None:
     render_empty_state("Ready to generate", "The private key and CSR appear here.")
     render_status_note(
-        "Ready for CSR input",
-        "No CSR generation has run yet. Enter certificate subject fields, then select Generate CSR.",
+        "Outcome: CSR generation ready",
+        "No CSR generation has run yet. Enter certificate subject fields, then select Generate CSR to continue.",
         tone="neutral",
     )
 
@@ -66,14 +68,14 @@ if result is not None:
     with tool_result_panel("csr_generator_result_panel", related_to="csr_generator"):
         render_section_heading("Generated CSR", eyebrow="Result")
         if not result["ok"]:
-            render_failure_note(
-                "CSR generation",
-                result["error"],
-                remediation="Provide a Common Name and valid optional fields, then generate again.",
+            render_status_note(
+                "Outcome: CSR generation blocked",
+                f"CSR generation did not complete. {result['error']} Provide a Common Name and valid optional fields, then generate again.",
+                tone="warning",
             )
         else:
             render_status_note(
-                "CSR and private key generated",
+                "Outcome: CSR generation complete",
                 "Generation complete. CSR and private key PEM output are ready below.",
                 tone="success",
             )

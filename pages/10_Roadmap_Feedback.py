@@ -32,6 +32,7 @@ st.set_page_config(page_title="Roadmap & Feedback", page_icon=":material/route:"
 apply_app_shell(active_page="Roadmap & Feedback")
 mark_page_baseline(_baseline, "shell-ready")
 mark_page_baseline(_baseline, "wave27-shell-mobile")
+mark_page_baseline(_baseline, "wave28-shell-mobile")
 
 
 def _status_tone(status: str) -> str:

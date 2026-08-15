@@ -22,7 +22,7 @@ def test_generate_shows_result():
     assert "BEGIN PRIVATE KEY" in code
     md = " ".join(m.value for m in app.markdown)
     assert "tool-status-note-success" in md
-    assert "CSR and private key generated" in md
+    assert "Outcome: CSR generation complete" in md
 
 
 def test_empty_state_shown_before_submit():
@@ -33,7 +33,7 @@ def test_empty_state_shown_before_submit():
     md = " ".join(m.value for m in app.markdown)
     assert "tool-empty-state" in md
     assert "tool-status-note-neutral" in md
-    assert "Ready for CSR input" in md
+    assert "Outcome: CSR generation ready" in md
 
 
 def test_empty_submission_shows_warning_status():
@@ -46,7 +46,7 @@ def test_empty_submission_shows_warning_status():
 
     md = " ".join(m.value for m in app.markdown)
     assert "tool-status-note-warning" in md
-    assert "CSR generation needs attention" in md
+    assert "Outcome: CSR generation blocked" in md
 
 
 def test_results_persist_after_sidebar_interaction():
