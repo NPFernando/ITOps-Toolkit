@@ -500,6 +500,20 @@ This guide documents the UI direction used for the Streamlit dashboard and tool 
 - Record Wave 27 outcomes in `docs/release-notes-template.md` using synthetic/sanitized evidence only.
 - Keep non-tool exceptions explicit and confirm desktop/mobile readability after wave-27 updates.
 
+## Phase 35 Wave 28 Standards (Shell, Mobile, Visual, A11y + QA Gates)
+
+- **Shell consistency:** keep shared shell + baseline markers (`shell-ready`, `content-rendered`) stable on Home, Roadmap & Feedback, Git Command Cheat Sheet, BIP39 Mnemonic Generator/Validator, Lorem Ipsum Generator, and Text to Binary/Hex/Octal Converter.
+- **Mobile baseline (`<=720px`):** keep wave-28 form panels and primary actions full-width/tap-friendly (`use_container_width=True`), keep wave-28 grouped controls single-column readable with shared control headings, and avoid fixed two-column form layouts on wave-28 touchpoint pages.
+- **Visual mapping integrity:** keep wave-28 touchpoint slug mappings readable (`git_command_cheat_sheet`, `bip39_mnemonic_generator_validator`, `lorem_ipsum_generator`, `text_to_binary_hex_octal_converter`) before category defaults, with text badge fallback always readable.
+- **Accessibility guardrail:** keep keyboard flow and visible focus rings intact, and preserve explicit neutral/warning/success status semantics (`role="status"`/`role="alert"` + `aria-live`) for Home and Roadmap states plus wave-28 tool outcomes.
+- **QA gate behavior:** treat Wave 28 shell/mobile/visual/a11y regressions as release blockers unless an intentional exception is documented.
+
+### Wave 28 QA handoff guidance
+
+- Run Wave 28 checks in `docs/release-checklist.md` before release.
+- Record Wave 28 outcomes in `docs/release-notes-template.md` using synthetic/sanitized evidence only.
+- Keep non-tool exceptions explicit and confirm desktop/mobile readability after wave-28 updates.
+
 ## Maintenance Rules
 
 - Do not duplicate tool titles, descriptions, paths, or accent colors outside `utils/ui.py`.

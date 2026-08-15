@@ -35,6 +35,7 @@ Use this template for deployment notes, GitHub releases, or pull request summari
 - QA baseline add-on: Phase 32 wave-25 shell/mobile/visual/a11y QA gates completed
 - QA baseline add-on: Phase 33 wave-26 shell/mobile/visual/a11y QA gates completed
 - QA baseline add-on: Phase 34 wave-27 shell/mobile/visual/a11y QA gates completed
+- QA baseline add-on: Phase 35 wave-28 shell/mobile/visual/a11y QA gates completed
 
 ## User-Facing Changes
 
@@ -171,6 +172,10 @@ curl http://localhost:8502/_stcore/health
 - Wave 27 mobile readability spot check (`<=720px`, grouped controls stay single-column readable with shared control headings, Home controls + Roadmap filters/AI triage action + wave-27 submit/generate/convert actions stay full-width/tap-friendly, no clipping/overflow):
 - Wave 27 visual mapping spot check (wave-27 touchpoint slug-specific icon priority + fallback for `git_command_cheat_sheet`, `bip39_mnemonic_generator_validator`, `lorem_ipsum_generator`, `text_to_binary_hex_octal_converter`):
 - Wave 27 accessibility spot check (explicit neutral/warning/success status semantics with `role="status"`/`role="alert"` + `aria-live`, plus keyboard/focus):
+- Wave 28 shell consistency spot check (shared shell + baseline markers on Home/Roadmap/Git Command Cheat Sheet/BIP39 Mnemonic Generator/Validator/Lorem Ipsum Generator/Text to Binary Hex Octal Converter):
+- Wave 28 mobile readability spot check (`<=720px`, grouped controls stay single-column readable with shared control headings, Home controls + Roadmap filters/AI triage action + wave-28 submit/generate/convert actions stay full-width/tap-friendly, no clipping/overflow):
+- Wave 28 visual mapping spot check (wave-28 touchpoint slug-specific icon priority + fallback for `git_command_cheat_sheet`, `bip39_mnemonic_generator_validator`, `lorem_ipsum_generator`, `text_to_binary_hex_octal_converter`):
+- Wave 28 accessibility spot check (explicit neutral/warning/success status semantics with `role="status"`/`role="alert"` + `aria-live`, plus keyboard/focus):
 - Log Troubleshooting AI unavailable state:
 - Optional Azure AI state, if secrets were available:
 

@@ -58,6 +58,7 @@ st.set_page_config(page_title="BIP39 Mnemonic Generator Validator", layout="wide
 apply_app_shell(active_page="BIP39 Mnemonic Generator Validator")
 mark_page_baseline(_baseline, "shell-ready")
 mark_page_baseline(_baseline, "wave27-shell-mobile")
+mark_page_baseline(_baseline, "wave28-shell-mobile")
 
 render_page_header(
     "BIP39 Mnemonic Generator Validator",

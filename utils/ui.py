@@ -149,20 +149,21 @@ TOOL_CARD_ICON_ASSETS: dict[str, str] = {
     "ipv4_format_converter": "icons/exported/icon-workflow-ipv4-format-outline-24x24-v01.svg",
     "ipv4_address_format_converter": "icons/exported/icon-workflow-ipv4-format-outline-24x24-v01.svg",
     "ipv4_range_expander": "icons/exported/icon-workflow-subnet-planning-outline-24x24-v01.svg",
-    # Phase 34 / wave-27 target slugs with explicit per-tool artwork.
+    # Phase 35 / wave-28 target slugs with explicit per-tool artwork.
+    "csr_generator": "icons/exported/icon-workflow-csr-generator-outline-24x24-v01.svg",
+    "caa_record_builder": "icons/exported/icon-workflow-caa-record-builder-outline-24x24-v01.svg",
     "git_command_cheat_sheet": "icons/exported/icon-workflow-git-command-cheat-sheet-outline-24x24-v01.svg",
     "bip39_mnemonic_generator_validator": "icons/exported/icon-workflow-bip39-mnemonic-generator-validator-outline-24x24-v01.svg",
     "lorem_ipsum_generator": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
     "text_to_binary_hex_octal_converter": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
     # Backward-compatible aliases for earlier provisional/page-level slug names.
+    "bip39_mnemonic_validator": "icons/exported/icon-workflow-bip39-mnemonic-generator-validator-outline-24x24-v01.svg",
     "bip39_mnemonic": "icons/exported/icon-workflow-bip39-mnemonic-generator-validator-outline-24x24-v01.svg",
     "text_radix_converter": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
     "csv_column_selector": "icons/exported/icon-workflow-csv-column-selector-outline-24x24-v01.svg",
     "line_numberer": "icons/exported/icon-workflow-line-numberer-outline-24x24-v01.svg",
     "column_aligner": "icons/exported/icon-workflow-column-aligner-outline-24x24-v01.svg",
     "css_gradient_generator": "icons/exported/icon-workflow-css-gradient-generator-outline-24x24-v01.svg",
-    "csr_generator": "icons/exported/icon-workflow-csr-generator-outline-24x24-v01.svg",
-    "caa_record_builder": "icons/exported/icon-workflow-caa-record-builder-outline-24x24-v01.svg",
 }
 CATEGORY_TOOL_CARD_ICON_ASSETS: dict[str, str] = {
     "Network": "icons/exported/icon-workflow-dns-lookup-outline-24x24-v01.svg",
@@ -3385,6 +3386,7 @@ def _material_icon_for(slug: str) -> str:
         "markdown_link_extractor": ":material/insert_link:",
         "health_diagnostics": ":material/health_and_safety:",
         "git_command_cheat_sheet": ":material/menu_book:",
+        "bip39_mnemonic_validator": ":material/vpn_key:",
         "bip39_mnemonic": ":material/vpn_key:",
         "bip39_mnemonic_generator_validator": ":material/vpn_key:",
         "lorem_ipsum_generator": ":material/text_fields:",
