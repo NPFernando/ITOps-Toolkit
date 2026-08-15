@@ -85,6 +85,19 @@ def test_invalid_chain_order_shows_warning_status():
     assert "Chain needs attention" in md
 
 
+def test_empty_submission_shows_warning_status():
+    app = AppTest.from_file(PAGE, default_timeout=30)
+    app.run()
+    assert not app.exception
+
+    app.button[0].click().run()
+    assert not app.exception
+
+    md = " ".join(m.value for m in app.markdown)
+    assert "tool-status-note-warning" in md
+    assert "Cannot validate certificate chain yet" in md
+
+
 def test_results_persist_after_sidebar_interaction():
     app = AppTest.from_file(PAGE, default_timeout=30)
     app.run()

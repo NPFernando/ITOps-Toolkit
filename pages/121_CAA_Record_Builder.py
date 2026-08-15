@@ -7,7 +7,6 @@ from utils.dev_baseline import mark_page_baseline, render_page_baseline, start_p
 from utils.ui import (
     apply_app_shell,
     render_empty_state,
-    render_failure_note,
     render_form_intro,
     render_page_header,
     render_section_heading,
@@ -31,7 +30,7 @@ render_page_header(
 with tool_form_panel("caa_record_builder"):
     render_form_intro("Choose a tag and value", "")
     with st.form("caa-record-builder-form"):
-        tag = st.radio("Tag", TAGS, horizontal=True)
+        tag = st.radio("Tag", TAGS)
         value = st.text_input("Value", placeholder="letsencrypt.org")
         critical = st.checkbox("Critical (unrecognized CAs must refuse to issue)")
         submitted = st.form_submit_button("Build record", use_container_width=True)
@@ -53,10 +52,10 @@ if result is not None:
     with tool_result_panel("caa_record_builder_result_panel", related_to="caa_record_builder"):
         render_section_heading("CAA record", eyebrow="Result")
         if not result["ok"]:
-            render_failure_note(
-                "CAA record build",
-                result["error"],
-                remediation="Provide a valid value for the selected tag and build the record again.",
+            render_status_note(
+                "Cannot build CAA record yet",
+                f"{result['error']} Provide a valid value for the selected tag and build the record again.",
+                tone="warning",
             )
         else:
             render_status_note("CAA record ready", "The zone-file CAA record is ready below.", tone="success")

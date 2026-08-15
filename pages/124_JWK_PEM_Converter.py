@@ -7,7 +7,6 @@ from utils.jwk_pem_converter import MAX_INPUT_LENGTH, jwk_to_pem, pem_to_jwk
 from utils.ui import (
     apply_app_shell,
     render_empty_state,
-    render_failure_note,
     render_form_intro,
     render_page_header,
     render_section_heading,
@@ -51,10 +50,10 @@ with jwk_to_pem_tab:
         with tool_result_panel("jwk_to_pem_result_panel", related_to="jwk_pem_converter"):
             render_section_heading("PEM public key", eyebrow="Result")
             if not jwk_result["ok"]:
-                render_failure_note(
-                    "JWK to PEM conversion",
-                    jwk_result["error"],
-                    remediation="Confirm the JWK is valid JSON with RSA key fields, then retry conversion.",
+                render_status_note(
+                    "Cannot convert JWK to PEM yet",
+                    f"{jwk_result['error']} Confirm the JWK is valid JSON with RSA key fields, then retry conversion.",
+                    tone="warning",
                 )
             else:
                 render_status_note("Conversion complete", "PEM public key output is ready below.", tone="success")
@@ -81,10 +80,10 @@ with pem_to_jwk_tab:
         with tool_result_panel("pem_to_jwk_result_panel", related_to="jwk_pem_converter"):
             render_section_heading("JWK", eyebrow="Result")
             if not pem_result["ok"]:
-                render_failure_note(
-                    "PEM to JWK conversion",
-                    pem_result["error"],
-                    remediation="Use a valid RSA PEM public key and retry conversion.",
+                render_status_note(
+                    "Cannot convert PEM to JWK yet",
+                    f"{pem_result['error']} Use a valid RSA PEM public key and retry conversion.",
+                    tone="warning",
                 )
             else:
                 render_status_note("Conversion complete", "JWK output is ready below.", tone="success")

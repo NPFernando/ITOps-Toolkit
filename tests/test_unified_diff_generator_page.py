@@ -47,7 +47,7 @@ def test_empty_submission_shows_warning_status():
 
     md = " ".join(m.value for m in app.markdown)
     assert "tool-status-note-warning" in md
-    assert "Diff generation needs attention" in md
+    assert "Cannot generate diff yet" in md
 
 
 def test_results_persist_after_sidebar_interaction():

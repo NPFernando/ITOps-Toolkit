@@ -7,7 +7,6 @@ from utils.ssh_config_validator import MAX_INPUT_LENGTH, lint_ssh_config
 from utils.ui import (
     apply_app_shell,
     render_empty_state,
-    render_failure_note,
     render_form_intro,
     render_page_header,
     render_section_heading,
@@ -30,7 +29,7 @@ render_page_header(
 )
 
 with tool_form_panel("ssh_config_validator"):
-    render_form_intro("Paste ~/.ssh/config content", "")
+    render_form_intro("Paste ~/.ssh/config content", "Paste the full file to lint Host-block structure and ordering.")
     with st.form("ssh-config-validator-form"):
         config_input = st.text_area("Config", height=280, max_chars=MAX_INPUT_LENGTH, placeholder="Host prod\n    HostName 1.2.3.4\n    User admin")
         submitted = st.form_submit_button("Lint", use_container_width=True)
@@ -48,7 +47,11 @@ if result is not None:
     with tool_result_panel("ssh_config_validator_result_panel", related_to="ssh_config_validator"):
         render_section_heading("Lint results", eyebrow="Result")
         if not result["ok"]:
-            render_failure_note("SSH config lint", result["error"], remediation="Fix malformed content and lint again.")
+            render_status_note(
+                "Cannot lint SSH config yet",
+                f"{result['error']} Fix malformed content and lint again.",
+                tone="warning",
+            )
         elif not result["issues"]:
             render_status_note(
                 "Lint complete",
@@ -56,12 +59,12 @@ if result is not None:
                 tone="success",
             )
         else:
-            st.table([{"Line": issue["line"], "Issue": issue["message"]} for issue in result["issues"]])
             render_status_note(
                 "Lint issues detected",
                 f"Found {len(result['issues'])} structural issue(s). Review each line item before using this config.",
                 tone="warning",
             )
+            st.table([{"Line": issue["line"], "Issue": issue["message"]} for issue in result["issues"]])
 
 mark_page_baseline(_baseline, "content-rendered")
 render_page_baseline(_baseline)

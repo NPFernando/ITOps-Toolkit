@@ -8,7 +8,6 @@ from utils.markdown_link_extractor import MAX_INPUT_LENGTH, extract_links
 from utils.ui import (
     apply_app_shell,
     render_empty_state,
-    render_failure_note,
     render_form_intro,
     render_page_header,
     render_section_heading,
@@ -48,18 +47,18 @@ if result is not None:
     with tool_result_panel("markdown_link_extractor_result_panel", related_to="markdown_link_extractor"):
         render_section_heading("Links found", eyebrow="Result")
         if not result["ok"]:
-            render_failure_note(
-                "Link extraction",
-                result["error"],
-                remediation="Provide Markdown content that includes at least one valid link, then run extraction again.",
+            render_status_note(
+                "Cannot extract links yet",
+                f"{result['error']} Provide Markdown content that includes at least one valid link, then run extraction again.",
+                tone="warning",
             )
         else:
+            render_status_note("Extraction complete", f"Found {len(result['links'])} link(s) in the provided Markdown.", tone="success")
             st.dataframe(
                 pd.DataFrame([{"Text": link["text"], "URL": link["url"], "Type": link["type"]} for link in result["links"]]),
                 width="stretch",
                 hide_index=True,
             )
-            render_status_note("Extraction complete", f"Found {len(result['links'])} link(s) in the provided Markdown.", tone="success")
 
 mark_page_baseline(_baseline, "content-rendered")
 render_page_baseline(_baseline)

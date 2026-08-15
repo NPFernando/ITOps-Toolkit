@@ -50,7 +50,8 @@ TOOL_CARD_ICON_ASSETS: dict[str, str] = {
     "base64_tool": "icons/exported/icon-workflow-encoding-tools-outline-24x24-v01.svg",
     "base32_tools": "icons/exported/icon-workflow-encoding-tools-outline-24x24-v01.svg",
     "base58_tool": "icons/exported/icon-workflow-encoding-tools-outline-24x24-v01.svg",
-    "base62_tool": "icons/exported/icon-workflow-encoding-tools-outline-24x24-v01.svg",
+    "base62_tool": "icons/exported/icon-workflow-base62-encoder-decoder-outline-24x24-v01.svg",
+    "base62_encoder_decoder": "icons/exported/icon-workflow-base62-encoder-decoder-outline-24x24-v01.svg",
     "base_converter": "icons/exported/icon-workflow-encoding-tools-outline-24x24-v01.svg",
     "unified_diff_generator": "icons/exported/icon-workflow-diff-patch-outline-24x24-v01.svg",
     "jwk_pem_converter": "icons/exported/icon-workflow-key-format-outline-24x24-v01.svg",
@@ -150,8 +151,8 @@ TOOL_CARD_ICON_ASSETS: dict[str, str] = {
     "csv_column_selector": "icons/exported/icon-workflow-list-transform-outline-24x24-v01.svg",
     "line_numberer": "icons/exported/icon-workflow-id-sequence-outline-24x24-v01.svg",
     "column_aligner": "icons/exported/icon-workflow-column-align-outline-24x24-v01.svg",
-    "csr_generator": "icons/exported/icon-workflow-cert-chain-outline-24x24-v01.svg",
-    "caa_record_builder": "icons/exported/icon-workflow-policy-controls-outline-24x24-v01.svg",
+    "csr_generator": "icons/exported/icon-workflow-csr-generator-outline-24x24-v01.svg",
+    "caa_record_builder": "icons/exported/icon-workflow-caa-record-builder-outline-24x24-v01.svg",
 }
 CATEGORY_TOOL_CARD_ICON_ASSETS: dict[str, str] = {
     "Network": "icons/exported/icon-workflow-dns-lookup-outline-24x24-v01.svg",

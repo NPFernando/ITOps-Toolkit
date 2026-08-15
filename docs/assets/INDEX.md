@@ -1,4 +1,4 @@
-# Assets Index (phase8 + wave2 + wave3 + wave4 + wave5 + wave6 + wave7 + wave8 + wave9 + wave10 + wave11 + wave12 + wave13)
+# Assets Index (phase8 + wave2 + wave3 + wave4 + wave5 + wave6 + wave7 + wave8 + wave9 + wave10 + wave11 + wave12 + wave13 + wave14)
 
 Generated assets available under `docs/assets/**/exported`. Runtime mappings are implemented in `utils/ui.py`.
 
@@ -197,6 +197,13 @@ When a roadmap badge asset is unavailable, compact text fallback glyphs are used
 - JSON merge patch icon: `json_merge_patch`
 - Column align icon: `column_aligner`
 
+### Phase 21 Wave 14 icon mapping coverage
+
+- SSH config check icon: `ssh_config_validator`
+- CSR generation icon: `csr_generator`
+- CAA record builder icon: `caa_record_builder`
+- Base62 encoding icon: `base62_tool`
+
 ### Phase 12 Wave 5 add-on QA focus
 
 - Confirm wave-5 slugs resolve to slug-specific assets before category defaults.
@@ -268,6 +275,14 @@ When a roadmap badge asset is unavailable, compact text fallback glyphs are used
 - Include one shell pass confirming shared shell + baseline markers remain visible/unchanged on Home, Roadmap, and wave-13 pages.
 - Include one `<=720px` viewport pass to confirm wave-13 primary actions stay full-width/tap-friendly with no clipping/overflow.
 - Include one keyboard-only pass to confirm wave-13 notice semantics and focus visibility remain intact.
+
+### Phase 21 Wave 14 add-on QA focus
+
+- Confirm wave-14 touchpoint slugs resolve to slug-specific assets before category defaults (`ssh_config_validator`, `csr_generator`, `caa_record_builder`, `base62_tool`).
+- Confirm slug-specific wave-14 icons still fall back to text badges when SVG rendering is unavailable.
+- Include one shell pass confirming shared shell + baseline markers remain visible/unchanged on Home, Roadmap, and wave-14 pages.
+- Include one `<=720px` viewport pass to confirm wave-14 primary actions stay full-width/tap-friendly with readable controls and no clipping/overflow.
+- Include one keyboard-only pass to confirm wave-14 notice semantics and focus visibility remain intact.
 
 ## Docs/release media inventory
 

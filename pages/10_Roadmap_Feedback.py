@@ -15,7 +15,15 @@ from utils.cache_policy import (
     runtime_cache_scope,
 )
 from utils.dev_baseline import mark_page_baseline, render_page_baseline, start_page_baseline
-from utils.ui import apply_app_shell, render_failure_note, render_section_heading, render_status_note, roadmap_badge_icon_html
+from utils.ui import (
+    apply_app_shell,
+    render_failure_note,
+    render_form_intro,
+    render_section_heading,
+    render_status_note,
+    roadmap_badge_icon_html,
+    tool_form_panel,
+)
 
 
 _baseline = start_page_baseline("Roadmap & Feedback")
@@ -207,17 +215,19 @@ st.markdown(
 )
 
 render_section_heading("Browse roadmap items", "Use search and category filters to focus the board view.", eyebrow="Explore")
-query = st.text_input("Search roadmap", placeholder="Search features, categories, or ideas...")
-category = st.pills(
-    "Filter category",
-    options=("All", *roadmap.roadmap_categories()),
-    default="All",
-    required=True,  # without this, clicking the already-selected pill deselects it
-    # to None (documented st.pills behavior with required=False). Already safely
-    # coerced by `category or "All"` below, but fixed at the source anyway --
-    # same bug class as PR #63.
-    label_visibility="collapsed",
-)
+with tool_form_panel("roadmap_filters"):
+    render_form_intro("Search and filter roadmap", "Use keyword search and category pills to narrow the board.")
+    query = st.text_input("Search roadmap", placeholder="Search features, categories, or ideas...")
+    category = st.pills(
+        "Filter category",
+        options=("All", *roadmap.roadmap_categories()),
+        default="All",
+        required=True,  # without this, clicking the already-selected pill deselects it
+        # to None (documented st.pills behavior with required=False). Already safely
+        # coerced by `category or "All"` below, but fixed at the source anyway --
+        # same bug class as PR #63.
+        label_visibility="collapsed",
+    )
 
 selected_category = category or "All"
 filtered_items = roadmap.filter_roadmap_items(query, selected_category, board.items)

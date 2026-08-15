@@ -7,7 +7,6 @@ from utils.wsl_path_converter import TARGETS, convert_path
 from utils.ui import (
     apply_app_shell,
     render_empty_state,
-    render_failure_note,
     render_form_intro,
     render_page_header,
     render_section_heading,
@@ -48,10 +47,10 @@ if result is not None:
     with tool_result_panel("wsl_path_converter_result_panel", related_to="wsl_path_converter"):
         render_section_heading("Converted path", eyebrow="Result")
         if not result["ok"]:
-            render_failure_note(
-                "Path conversion",
-                result["error"],
-                remediation="Provide a valid Windows, WSL, or Git Bash path and try conversion again.",
+            render_status_note(
+                "Cannot convert path yet",
+                f"{result['error']} Provide a valid Windows, WSL, or Git Bash path and try conversion again.",
+                tone="warning",
             )
         else:
             render_status_note("Conversion complete", "The path has been converted to the selected format.", tone="success")

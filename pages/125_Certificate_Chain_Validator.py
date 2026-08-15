@@ -7,7 +7,6 @@ from utils.dev_baseline import mark_page_baseline, render_page_baseline, start_p
 from utils.ui import (
     apply_app_shell,
     render_empty_state,
-    render_failure_note,
     render_form_intro,
     render_page_header,
     render_section_heading,
@@ -48,10 +47,10 @@ if result is not None:
     with tool_result_panel("cert_chain_validator_result_panel", related_to="cert_chain_validator"):
         render_section_heading("Chain validation", eyebrow="Result")
         if not result["ok"]:
-            render_failure_note(
-                "Certificate chain validation",
-                result["error"],
-                remediation="Provide at least two valid PEM certificates ordered from leaf to issuer, then validate again.",
+            render_status_note(
+                "Cannot validate certificate chain yet",
+                f"{result['error']} Provide at least two valid PEM certificates ordered from leaf to issuer, then validate again.",
+                tone="warning",
             )
         else:
             if result["chain_valid"]:

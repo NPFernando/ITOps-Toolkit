@@ -21,6 +21,7 @@ from utils.ui import (
     render_tool_section,
     shared_favorite_tools,
     sort_tools,
+    tool_form_panel,
 )
 
 
@@ -46,26 +47,28 @@ newest_tools = tuple(tool for tool in TOOLS if tool.is_new)
 if st.session_state.pop("home_force_quick_access", False):
     st.session_state["home_navigation_mode"] = "Quick access"
 
-st.markdown('<div class="tool-panel-eyebrow">Filter by profession</div>', unsafe_allow_html=True)
-profession = st.pills(
-    "Filter by profession",
-    options=("All", *PROFESSIONS),
-    default="All",
-    required=True,  # without this, clicking the already-selected pill deselects it to
-    # None (documented st.pills behavior with required=False) -- profession != "All"
-    # then evaluates True for None, so show_all sticks and the heading renders the
-    # literal string "None Tools" instead of "All Tools". Same bug class as PR #63.
-    label_visibility="collapsed",
-    key="home_profession_filter",
-)
+with tool_form_panel("home_navigation_controls"):
+    st.markdown('<div class="tool-panel-eyebrow">Filter by profession</div>', unsafe_allow_html=True)
+    profession = st.pills(
+        "Filter by profession",
+        options=("All", *PROFESSIONS),
+        default="All",
+        required=True,  # without this, clicking the already-selected pill deselects it to
+        # None (documented st.pills behavior with required=False) -- profession != "All"
+        # then evaluates True for None, so show_all sticks and the heading renders the
+        # literal string "None Tools" instead of "All Tools". Same bug class as PR #63.
+        label_visibility="collapsed",
+        key="home_profession_filter",
+    )
 
-navigation_mode = st.pills(
-    "Home navigation",
-    options=("Quick access", "All tools"),
-    required=True,
-    label_visibility="collapsed",
-    key="home_navigation_mode",
-)
+    st.markdown('<div class="tool-panel-eyebrow">Navigation</div>', unsafe_allow_html=True)
+    navigation_mode = st.pills(
+        "Home navigation",
+        options=("Quick access", "All tools"),
+        required=True,
+        label_visibility="collapsed",
+        key="home_navigation_mode",
+    )
 
 show_all_flag = st.session_state.get("home_show_all", False)
 # `show_all` also factors in an active search/profession filter, which can
@@ -78,13 +81,14 @@ show_all_flag = st.session_state.get("home_show_all", False)
 show_all = show_all_flag or bool(search_query.strip()) or profession != "All" or navigation_mode == "All tools"
 button_label = "Hide all tools" if show_all else "Show all tools"
 button_icon = ":material/expand_less:" if show_all else ":material/apps:"
-if st.button(button_label, icon=button_icon, use_container_width=True):
-    if show_all and navigation_mode == "All tools" and not search_query.strip() and profession == "All":
-        st.session_state["home_force_quick_access"] = True
-        st.session_state["home_show_all"] = False
-    else:
-        st.session_state["home_show_all"] = not show_all
-    st.rerun()
+with tool_form_panel("home_primary_action"):
+    if st.button(button_label, icon=button_icon, use_container_width=True):
+        if show_all and navigation_mode == "All tools" and not search_query.strip() and profession == "All":
+            st.session_state["home_force_quick_access"] = True
+            st.session_state["home_show_all"] = False
+        else:
+            st.session_state["home_show_all"] = not show_all
+        st.rerun()
 
 if show_all:
     filtered_tools = filter_tools(search_query, profession)

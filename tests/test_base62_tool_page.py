@@ -62,7 +62,7 @@ def test_encode_empty_submission_shows_warning_status():
 
     md = " ".join(m.value for m in app.markdown)
     assert "tool-status-note-warning" in md
-    assert "Base62 encode needs attention" in md
+    assert "Cannot encode to Base62 yet" in md
 
 
 def test_decode_invalid_input_shows_warning_status():
@@ -76,7 +76,7 @@ def test_decode_invalid_input_shows_warning_status():
 
     md = " ".join(m.value for m in app.markdown)
     assert "tool-status-note-warning" in md
-    assert "Base62 decode needs attention" in md
+    assert "Cannot decode Base62 yet" in md
 
 
 def test_results_persist_after_sidebar_interaction():
