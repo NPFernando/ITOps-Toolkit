@@ -33,6 +33,7 @@ Use this template for deployment notes, GitHub releases, or pull request summari
 - QA baseline add-on: Phase 30 wave-23 shell/mobile/visual/a11y QA gates completed
 - QA baseline add-on: Phase 31 wave-24 shell/mobile/visual/a11y QA gates completed
 - QA baseline add-on: Phase 32 wave-25 shell/mobile/visual/a11y QA gates completed
+- QA baseline add-on: Phase 33 wave-26 shell/mobile/visual/a11y QA gates completed
 
 ## User-Facing Changes
 
@@ -161,6 +162,10 @@ curl http://localhost:8502/_stcore/health
 - Wave 25 mobile readability spot check (`<=720px`, grouped controls stay single-column readable, Home controls + Roadmap filters/AI triage action + wave-25 submit/generate/convert actions stay full-width/tap-friendly, no clipping/overflow):
 - Wave 25 visual mapping spot check (wave-25 touchpoint slug-specific icon priority + fallback for `git_command_cheat_sheet`, `bip39_mnemonic_generator_validator`, `lorem_ipsum_generator`, `text_to_binary_hex_octal_converter`):
 - Wave 25 accessibility spot check (status/failure note semantics + keyboard/focus):
+- Wave 26 shell consistency spot check (shared shell + baseline markers on Home/Roadmap/Git Command Cheat Sheet/BIP39 Mnemonic Generator/Validator/Lorem Ipsum Generator/Text to Binary Hex Octal Converter):
+- Wave 26 mobile readability spot check (`<=720px`, grouped controls stay single-column readable with shared control headings, Home controls + Roadmap filters/AI triage action + wave-26 submit/generate/convert actions stay full-width/tap-friendly, no clipping/overflow):
+- Wave 26 visual mapping spot check (wave-26 touchpoint slug-specific icon priority + fallback for `git_command_cheat_sheet`, `bip39_mnemonic_generator_validator`, `lorem_ipsum_generator`, `text_to_binary_hex_octal_converter`):
+- Wave 26 accessibility spot check (explicit neutral/warning/success status semantics with `role="status"`/`role="alert"` + `aria-live`, plus keyboard/focus):
 - Log Troubleshooting AI unavailable state:
 - Optional Azure AI state, if secrets were available:
 

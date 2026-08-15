@@ -326,6 +326,16 @@ Confirm these release-blocking checks pass:
 - **Accessibility:** keyboard-only navigation remains intact, focus rings stay visible, and neutral/blocking outcomes continue to use shared status/failure note semantics.
 - **Release evidence:** Wave 25 outcomes are captured in `docs/release-notes-template.md` with synthetic/sanitized QA evidence only.
 
+### 4.27 Phase 33 Wave 26 Regression Checklist (Shell/Mobile/Visual/A11y QA Gates)
+
+Confirm these release-blocking checks pass:
+
+- **Shell consistency:** shared shell + baseline markers (`shell-ready`, `content-rendered`) remain present on Home, Roadmap & Feedback, Git Command Cheat Sheet, BIP39 Mnemonic Generator/Validator, Lorem Ipsum Generator, and Text to Binary/Hex/Octal Converter.
+- **Mobile (`<=720px`):** wave-26 form panels and primary actions stay single-column readable and full-width/tap-friendly, including Home controls, Roadmap filters/AI triage action, and wave-26 tool submit/generate/convert actions; shared control headings remain readable.
+- **Visual mapping (wave-26 focus):** wave-26 touchpoint slugs (`git_command_cheat_sheet`, `bip39_mnemonic_generator_validator`, `lorem_ipsum_generator`, `text_to_binary_hex_octal_converter`) resolve to slug-specific icon assets before category defaults; when assets are missing, text fallback badges remain readable.
+- **Accessibility:** keyboard-only navigation remains intact, focus rings stay visible, and explicit status semantics (`role="status"`/`role="alert"` with `aria-live`) remain present for Home/Roadmap and wave-26 tool outcomes.
+- **Release evidence:** Wave 26 outcomes are captured in `docs/release-notes-template.md` with synthetic/sanitized QA evidence only.
+
 ## 5. Log Troubleshooting AI States
 
 Without Azure secrets:
@@ -379,7 +389,7 @@ git diff --cached --check
 
 ## 9. Release Notes
 
-Use `docs/release-notes-template.md` to summarize the release, QA commands, privacy posture, known limitations, Wave 2/Wave 3/Wave 4/Wave 5/Wave 6/Wave 7/Wave 8/Wave 9/Wave 10/Wave 11/Wave 12/Wave 13/Wave 14/Wave 15/Wave 16/Wave 17/Wave 18/Wave 19/Wave 20/Wave 21/Wave 22/Wave 23/Wave 24/Wave 25 shell-mobile-visual-a11y outcomes, and the UX Quality Outcomes release reporting kit.
+Use `docs/release-notes-template.md` to summarize the release, QA commands, privacy posture, known limitations, Wave 2/Wave 3/Wave 4/Wave 5/Wave 6/Wave 7/Wave 8/Wave 9/Wave 10/Wave 11/Wave 12/Wave 13/Wave 14/Wave 15/Wave 16/Wave 17/Wave 18/Wave 19/Wave 20/Wave 21/Wave 22/Wave 23/Wave 24/Wave 25/Wave 26 shell-mobile-visual-a11y outcomes, and the UX Quality Outcomes release reporting kit.
 
 Minimum UX reporting before publish:
 - Record one outcome each for navigation, readability/layout, task completion confidence, and public-safe behavior.

@@ -8,6 +8,7 @@ import streamlit as st
 from utils.dev_baseline import mark_page_baseline, render_page_baseline, start_page_baseline
 from utils.ui import (
     apply_app_shell,
+    render_control_heading,
     render_empty_state,
     render_form_intro,
     render_page_header,
@@ -62,11 +63,11 @@ render_page_header("Lorem Ipsum Generator", "Generate deterministic placeholder 
 with tool_form_panel("lorem_ipsum_generator"):
     render_form_intro("Set lorem output", "Grouped controls plus one full-width action keep mobile drafting fast and predictable.")
     with st.form("lorem-ipsum-generator-form"):
-        st.markdown('<div class="tool-panel-eyebrow">Output shape</div>', unsafe_allow_html=True)
+        render_control_heading("Output shape")
         unit = st.selectbox("Generate by", options=("Words", "Sentences", "Paragraphs"), key="lorem_unit")
         default_count = 24 if unit == "Words" else 3
         count = st.number_input("Count", min_value=1, max_value=100, value=default_count, key="lorem_count")
-        st.markdown('<div class="tool-panel-eyebrow">Deterministic seed</div>', unsafe_allow_html=True)
+        render_control_heading("Deterministic seed")
         seed_text = st.text_input("Deterministic seed (optional)", placeholder="wave-25", key="lorem_seed")
         submitted = st.form_submit_button("Generate lorem ipsum", use_container_width=True)
 
@@ -80,7 +81,7 @@ with tool_result_panel("lorem_ipsum_result", related_to="lorem_ipsum_generator")
         render_empty_state("Ready to generate", "Generated lorem ipsum text appears here after submission.")
         render_status_note("Outcome: lorem generation awaiting input", "Choose output shape and count, then generate text.", tone="neutral")
     else:
-        render_status_note("Outcome: lorem text generated", "Copy generated placeholder text below.", tone="success")
+        render_status_note("Outcome: lorem text generated", "Placeholder text is ready to copy from the output block below.", tone="success")
         st.code(str(result), language=None)
 
 mark_page_baseline(_baseline, "content-rendered")

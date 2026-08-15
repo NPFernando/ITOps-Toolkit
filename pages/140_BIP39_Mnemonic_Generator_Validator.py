@@ -8,6 +8,7 @@ import streamlit as st
 from utils.dev_baseline import mark_page_baseline, render_page_baseline, start_page_baseline
 from utils.ui import (
     apply_app_shell,
+    render_control_heading,
     render_empty_state,
     render_form_intro,
     render_page_header,
@@ -65,7 +66,7 @@ render_page_header(
 with tool_form_panel("bip39_mnemonic_generator_validator"):
     render_form_intro("Configure mnemonic generation", "Grouped controls and a single full-width action keep generation predictable on phones.")
     with st.form("bip39-mnemonic-generator-form"):
-        st.markdown('<div class="tool-panel-eyebrow">Generation settings</div>', unsafe_allow_html=True)
+        render_control_heading("Generation settings")
         word_count = st.selectbox("Word count", options=_ALLOWED_COUNTS, index=0)
         seed_text = st.text_input("Deterministic seed (optional)", placeholder="release-wave-23")
         submitted_generate = st.form_submit_button("Generate mnemonic", use_container_width=True)
@@ -73,7 +74,7 @@ with tool_form_panel("bip39_mnemonic_generator_validator"):
 with tool_form_panel("bip39_mnemonic_validator"):
     render_form_intro("Validate mnemonic phrase", "Validation only checks word count and membership in the embedded subset.")
     with st.form("bip39-mnemonic-validator-form"):
-        st.markdown('<div class="tool-panel-eyebrow">Mnemonic phrase</div>', unsafe_allow_html=True)
+        render_control_heading("Mnemonic phrase")
         phrase_input = st.text_area("Mnemonic phrase", height=140, placeholder="abandon ability about ...")
         submitted_validate = st.form_submit_button("Validate mnemonic", use_container_width=True)
 
@@ -103,7 +104,7 @@ with tool_result_panel("bip39_generated_phrase", related_to="bip39_mnemonic_gene
     else:
         render_status_note(
             "Outcome: mnemonic generation complete",
-            "A phrase was generated with deterministic seed behavior when provided.",
+            "A phrase is ready. Providing the same seed reproduces the same output.",
             tone="success",
         )
         st.code(str(phrase), language=None)
@@ -119,7 +120,7 @@ with tool_result_panel("bip39_validation_result", related_to="bip39_mnemonic_val
             detail += " Unknown words: " + ", ".join(str(item) for item in validation["unknown"])
         render_status_note("Outcome: mnemonic validation blocked", detail, tone="warning")
     else:
-        render_status_note("Outcome: mnemonic validation complete", "Word count and embedded subset checks passed.", tone="success")
+        render_status_note("Outcome: mnemonic validation complete", "Word count and embedded subset checks passed for this phrase.", tone="success")
 
 mark_page_baseline(_baseline, "content-rendered")
 render_page_baseline(_baseline)

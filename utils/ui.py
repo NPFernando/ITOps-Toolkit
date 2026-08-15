@@ -149,14 +149,14 @@ TOOL_CARD_ICON_ASSETS: dict[str, str] = {
     "ipv4_format_converter": "icons/exported/icon-workflow-ipv4-format-outline-24x24-v01.svg",
     "ipv4_address_format_converter": "icons/exported/icon-workflow-ipv4-format-outline-24x24-v01.svg",
     "ipv4_range_expander": "icons/exported/icon-workflow-subnet-planning-outline-24x24-v01.svg",
+    # Phase 33 / wave-26 target slugs with explicit per-tool artwork.
     "git_command_cheat_sheet": "icons/exported/icon-workflow-git-command-cheat-sheet-outline-24x24-v01.svg",
-    "bip39_mnemonic": "icons/exported/icon-workflow-bip39-mnemonic-generator-validator-outline-24x24-v01.svg",
     "bip39_mnemonic_generator_validator": "icons/exported/icon-workflow-bip39-mnemonic-generator-validator-outline-24x24-v01.svg",
-    # Phase 32 / wave-25 placeholder pages 143/144 map to these implemented slugs.
-    # Final slugs used: git_command_cheat_sheet, bip39_mnemonic_generator_validator.
     "lorem_ipsum_generator": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
-    "text_radix_converter": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
     "text_to_binary_hex_octal_converter": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
+    # Backward-compatible aliases for earlier provisional/page-level slug names.
+    "bip39_mnemonic": "icons/exported/icon-workflow-bip39-mnemonic-generator-validator-outline-24x24-v01.svg",
+    "text_radix_converter": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
     "csv_column_selector": "icons/exported/icon-workflow-csv-column-selector-outline-24x24-v01.svg",
     "line_numberer": "icons/exported/icon-workflow-line-numberer-outline-24x24-v01.svg",
     "column_aligner": "icons/exported/icon-workflow-column-aligner-outline-24x24-v01.svg",
@@ -2834,6 +2834,10 @@ def render_form_intro(title: str, description: str) -> None:
         """,
         unsafe_allow_html=True,
     )
+
+
+def render_control_heading(label: str) -> None:
+    st.markdown(f'<div class="tool-panel-eyebrow">{escape(label)}</div>', unsafe_allow_html=True)
 
 
 def render_section_heading(title: str, description: str | None = None, eyebrow: str = "Results") -> None:

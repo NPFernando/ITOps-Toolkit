@@ -17,6 +17,7 @@ from utils.cache_policy import (
 from utils.dev_baseline import mark_page_baseline, render_page_baseline, start_page_baseline
 from utils.ui import (
     apply_app_shell,
+    render_control_heading,
     render_failure_note,
     render_form_intro,
     render_section_heading,
@@ -193,13 +194,19 @@ board_freshness_tone, board_freshness = cache_freshness_message(
     board_payload["cached_at"],
     ROADMAP_BOARD_CACHE_TTL_SECONDS,
 )
-render_status_note("Roadmap cache freshness", board_freshness, tone=board_freshness_tone)
+render_status_note("Outcome: roadmap cache checked", board_freshness, tone=board_freshness_tone)
 
 if board.github_error:
     render_failure_note(
         "GitHub roadmap sync",
         board.github_error,
         remediation="The seed roadmap is already loaded. Refresh later to retry GitHub issue sync.",
+    )
+else:
+    render_status_note(
+        "Outcome: roadmap sync complete",
+        "Seed roadmap items and public GitHub issues are loaded into this board view.",
+        tone="success",
     )
 
 counts = roadmap.category_counts(board.items)
@@ -214,9 +221,9 @@ st.markdown(
 render_section_heading("Browse roadmap items", "Use search and category filters to focus the board view.", eyebrow="Explore")
 with tool_form_panel("roadmap_filters"):
     render_form_intro("Search and filter roadmap", "Use keyword search and category pills to narrow the board.")
-    st.markdown('<div class="tool-panel-eyebrow">Keyword search</div>', unsafe_allow_html=True)
+    render_control_heading("Keyword search")
     query = st.text_input("Search roadmap", placeholder="Search features, categories, or ideas...")
-    st.markdown('<div class="tool-panel-eyebrow">Category filter</div>', unsafe_allow_html=True)
+    render_control_heading("Category filter")
     category = st.pills(
         "Filter category",
         options=("All", *roadmap.roadmap_categories()),
@@ -258,19 +265,19 @@ open_items = [item for item in board.items if item.status != "Complete"]
 ai_available = optional_ai_configured()
 if not ai_available:
     render_status_note(
-        "AI triage unavailable",
+        "Outcome: AI triage unavailable",
         "Configure Azure OpenAI settings to enable this. The roadmap board above works the same either way.",
         tone="neutral",
     )
 elif not open_items:
-    render_status_note("Nothing to triage", "All roadmap items are currently marked Complete.", tone="neutral")
+    render_status_note("Outcome: no open roadmap items", "All roadmap items are currently marked Complete.", tone="neutral")
 else:
     with tool_form_panel("roadmap_ai_triage_action"):
         render_form_intro(
             "Generate optional AI triage",
             "Runs only when clicked and uses public roadmap item text already shown on this page.",
         )
-        st.markdown('<div class="tool-panel-eyebrow">Triage action</div>', unsafe_allow_html=True)
+        render_control_heading("Triage action")
         summarize_with_ai = st.button(f"Summarize {len(open_items)} open items with AI", icon=":material/auto_awesome:", use_container_width=True)
     if summarize_with_ai:
         triage_cache_key = compose_cache_key(
@@ -286,8 +293,13 @@ else:
             triage_payload["cached_at"],
             ROADMAP_AI_TRIAGE_CACHE_TTL_SECONDS,
         )
-        render_status_note("AI triage cache freshness", triage_freshness, tone=triage_tone)
+        render_status_note("Outcome: AI triage cache checked", triage_freshness, tone=triage_tone)
         if triage.get("enabled"):
+            render_status_note(
+                "Outcome: AI triage generated",
+                "AI prioritization summary is available below for maintainer review.",
+                tone="success",
+            )
             render_status_note("AI triage summary", triage["summary"], tone="ai")
         else:
             if triage.get("status") == "error":
@@ -297,7 +309,7 @@ else:
                     remediation="Check Azure OpenAI configuration and retry when the service is available.",
                 )
             else:
-                render_status_note("AI triage summary", triage["message"], tone="neutral")
+                render_status_note("Outcome: AI triage skipped", triage["message"], tone="neutral")
 
 st.markdown(
     f"""

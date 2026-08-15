@@ -16,8 +16,10 @@ from utils.ui import (
     render_feature_strip,
     render_form_intro,
     render_fragment,
+    render_control_heading,
     render_home_hero,
     render_important_notice,
+    render_status_note,
     render_guided_workflows,
     render_tool_section,
     shared_favorite_tools,
@@ -34,7 +36,7 @@ mark_page_baseline(_baseline, "shell-ready")
 
 repo_url = github_url()
 if repo_url:
-    st.markdown('<div class="tool-panel-eyebrow">Project</div>', unsafe_allow_html=True)
+    render_control_heading("Project")
     st.link_button("GitHub", repo_url, icon=":material/code:", width="stretch")
 
 search_query = render_home_hero()
@@ -50,7 +52,7 @@ if st.session_state.pop("home_force_quick_access", False):
 
 with tool_form_panel("home_navigation_controls"):
     render_form_intro("Choose how to browse tools", "Filter by profession and switch between quick access or full catalog.")
-    st.markdown('<div class="tool-panel-eyebrow">Filter by profession</div>', unsafe_allow_html=True)
+    render_control_heading("Filter by profession")
     profession = st.pills(
         "Filter by profession",
         options=("All", *PROFESSIONS),
@@ -63,7 +65,7 @@ with tool_form_panel("home_navigation_controls"):
         key="home_profession_filter",
     )
 
-    st.markdown('<div class="tool-panel-eyebrow">Navigation</div>', unsafe_allow_html=True)
+    render_control_heading("Navigation")
     navigation_mode = st.pills(
         "Home navigation",
         options=("Quick access", "All tools"),
@@ -85,7 +87,7 @@ button_label = "Hide all tools" if show_all else "Show all tools"
 button_icon = ":material/expand_less:" if show_all else ":material/apps:"
 with tool_form_panel("home_primary_action"):
     render_form_intro("Toggle catalog visibility", "Use a full-width action to expand or collapse the tool catalog.")
-    st.markdown('<div class="tool-panel-eyebrow">Catalog action</div>', unsafe_allow_html=True)
+    render_control_heading("Catalog action")
     if st.button(button_label, icon=button_icon, use_container_width=True):
         if show_all and navigation_mode == "All tools" and not search_query.strip() and profession == "All":
             st.session_state["home_force_quick_access"] = True
@@ -116,6 +118,18 @@ if show_all:
         )
     sort_mode = {"Default": "default", "A-Z": "az", "Z-A": "za"}[sort_mode_label]
     all_tools = sort_tools(filtered_tools, sort_mode)
+    if all_tools:
+        render_status_note(
+            "Outcome: full catalog visible",
+            f"Showing {len(all_tools)} tool(s) in {all_heading}.",
+            tone="success",
+        )
+    else:
+        render_status_note(
+            "Outcome: catalog filters need adjustment",
+            "No tools matched the current search and profession filters. Adjust filters to continue.",
+            tone="warning",
+        )
     render_fragment(
         "home_all_tools",
         lambda: render_tool_section(
@@ -126,6 +140,11 @@ if show_all:
         ),
     )
 else:
+    render_status_note(
+        "Outcome: quick access ready",
+        "Browse favorites, recents, and guided workflows, or expand to the full tool catalog.",
+        tone="neutral",
+    )
     searched_tools = filter_tools(search_query, profession) if search_query.strip() else ()
     quick_access_tools = sort_tools(filter_tools("", profession), "default")
     quick_access_slugs = {tool.slug for tool in quick_access_tools}
@@ -137,7 +156,7 @@ else:
         searched = {tool.slug for tool in searched_tools}
         return tuple(tool for tool in matches if tool.slug in searched)
 
-    st.markdown('<div class="tool-panel-eyebrow">Quick access</div>', unsafe_allow_html=True)
+    render_control_heading("Quick access")
     render_fragment(
         "home_guided_workflows",
         lambda: render_guided_workflows(query=search_query, profession=profession),
