@@ -1,22 +1,26 @@
 from __future__ import annotations
 
 from html import escape
-import os
+from datetime import datetime, timezone
 
 import streamlit as st
 
 from utils import roadmap
 from utils.ai_tools import optional_ai_configured, summarize_feature_requests_with_azure
+from utils.cache_policy import (
+    ROADMAP_AI_TRIAGE_CACHE_TTL_SECONDS,
+    ROADMAP_BOARD_CACHE_TTL_SECONDS,
+    cache_freshness_message,
+    compose_cache_key,
+    runtime_cache_scope,
+)
 from utils.dev_baseline import mark_page_baseline, render_page_baseline, start_page_baseline
-from utils.ui import apply_app_shell, render_section_heading, render_status_note, roadmap_badge_icon_html
+from utils.ui import apply_app_shell, render_failure_note, render_section_heading, render_status_note, roadmap_badge_icon_html
 
 
 _baseline = start_page_baseline("Roadmap & Feedback")
 st.set_page_config(page_title="Roadmap & Feedback", page_icon=":material/route:", layout="wide")
 apply_app_shell(active_page="Roadmap & Feedback")
-
-ROADMAP_BOARD_CACHE_TTL_SECONDS = 300
-ROADMAP_AI_TRIAGE_CACHE_TTL_SECONDS = 3600
 mark_page_baseline(_baseline, "shell-ready")
 
 
@@ -110,22 +114,32 @@ def _roadmap_column(status: str, status_items: tuple[roadmap.RoadmapItem, ...]) 
 
 
 @st.cache_data(ttl=ROADMAP_BOARD_CACHE_TTL_SECONDS, show_spinner=False)
-def _cached_roadmap_board(repo_url: str, _cache_scope: str) -> roadmap.RoadmapBoard:
-    return roadmap.load_roadmap_board(repo_url=repo_url)
+def _cached_roadmap_board(_cache_key: str, repo_url: str) -> dict:
+    return {
+        "board": roadmap.load_roadmap_board(repo_url=repo_url),
+        "cached_at": datetime.now(timezone.utc).isoformat(),
+    }
 
 
 @st.cache_data(ttl=ROADMAP_AI_TRIAGE_CACHE_TTL_SECONDS, show_spinner=False)
-def _cached_triage_summary(open_items: tuple[roadmap.RoadmapItem, ...]) -> dict:
+def _cached_triage_summary(_cache_key: str, open_items: tuple[roadmap.RoadmapItem, ...]) -> dict:
     """Cached for an hour so repeated clicks (by any visitor) reuse one AI call
     per hour rather than paying for the same summary over and over."""
-    return summarize_feature_requests_with_azure(list(open_items))
+    return {
+        "triage": summarize_feature_requests_with_azure(list(open_items)),
+        "cached_at": datetime.now(timezone.utc).isoformat(),
+    }
 
 
 feedback_url = roadmap.github_feature_request_url()
 repo_url = roadmap.github_repository_url()
-# Keep production cache keys stable while allowing isolated cache keys per test case.
-cache_scope = os.getenv("PYTEST_CURRENT_TEST", "").split(" (", 1)[0] or "runtime"
-board = _cached_roadmap_board(repo_url, cache_scope)
+board_cache_key = compose_cache_key(
+    "roadmap-board",
+    repo_url=repo_url,
+    scope=runtime_cache_scope(),
+)
+board_payload = _cached_roadmap_board(board_cache_key, repo_url)
+board = board_payload["board"]
 
 st.markdown(
     f"""
@@ -168,11 +182,18 @@ st.markdown(
     + "</div>",
     unsafe_allow_html=True,
 )
+board_freshness_tone, board_freshness = cache_freshness_message(
+    "Roadmap board",
+    board_payload["cached_at"],
+    ROADMAP_BOARD_CACHE_TTL_SECONDS,
+)
+render_status_note("Roadmap cache freshness", board_freshness, tone=board_freshness_tone)
 
 if board.github_error:
-    st.markdown(
-        _roadmap_notice("GitHub unavailable, showing seed data", board.github_error, "neutral", "IT"),
-        unsafe_allow_html=True,
+    render_failure_note(
+        "GitHub roadmap sync",
+        board.github_error,
+        remediation="The seed roadmap is already loaded. Refresh later to retry GitHub issue sync.",
     )
 
 counts = roadmap.category_counts(board.items)
@@ -237,13 +258,31 @@ elif not open_items:
     render_status_note("Nothing to triage", "All roadmap items are currently marked Complete.", tone="neutral")
 else:
     if st.button(f"Summarize {len(open_items)} open items with AI", icon=":material/auto_awesome:"):
+        triage_cache_key = compose_cache_key(
+            "roadmap-ai-triage",
+            open_items=open_items,
+            scope=runtime_cache_scope(),
+        )
         with st.spinner("Generating triage summary..."):
-            triage = _cached_triage_summary(tuple(open_items))
+            triage_payload = _cached_triage_summary(triage_cache_key, tuple(open_items))
+        triage = triage_payload["triage"]
+        triage_tone, triage_freshness = cache_freshness_message(
+            "AI triage summary",
+            triage_payload["cached_at"],
+            ROADMAP_AI_TRIAGE_CACHE_TTL_SECONDS,
+        )
+        render_status_note("AI triage cache freshness", triage_freshness, tone=triage_tone)
         if triage.get("enabled"):
             render_status_note("AI triage summary", triage["summary"], tone="ai")
         else:
-            status_tone = "warning" if triage.get("status") == "error" else "neutral"
-            render_status_note("AI triage summary", triage["message"], tone=status_tone)
+            if triage.get("status") == "error":
+                render_failure_note(
+                    "AI triage",
+                    triage.get("message"),
+                    remediation="Check Azure OpenAI configuration and retry when the service is available.",
+                )
+            else:
+                render_status_note("AI triage summary", triage["message"], tone="neutral")
 
 st.markdown(
     f"""

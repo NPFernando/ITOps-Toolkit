@@ -2,8 +2,10 @@
 
 from __future__ import annotations
 
+import errno
 import socket
 import ssl
+import time
 from datetime import UTC, datetime
 from typing import Any
 
@@ -24,6 +26,22 @@ _CHAIN_DIAGNOSES: dict[int, tuple[str, str]] = {
     24: ("Untrusted root", "The root CA certificate is not trusted."),
     62: ("Hostname mismatch", "The certificate does not match the requested hostname."),
 }
+DEFAULT_TLS_TIMEOUT_SECONDS = 5
+DEFAULT_TLS_RETRY_ATTEMPTS = 3
+TLS_RETRY_BACKOFF_SECONDS = 0.25
+_RETRYABLE_OS_ERRNOS = {
+    errno.ECONNREFUSED,
+    errno.ECONNRESET,
+    errno.ETIMEDOUT,
+    errno.EHOSTUNREACH,
+    errno.ENETUNREACH,
+}
+
+
+def _retryable_connection_error(exc: OSError) -> bool:
+    if isinstance(exc, socket.gaierror):
+        return exc.errno == socket.EAI_AGAIN
+    return exc.errno in _RETRYABLE_OS_ERRNOS
 
 
 def diagnose_chain(verify_code: int | None, verify_message: str | None) -> tuple[str, str]:
@@ -68,7 +86,7 @@ def _empty_result(domain: str, port: int) -> dict[str, Any]:
     }
 
 
-def get_certificate_info(domain: str, port: int = 443, timeout: int = 5) -> dict[str, Any]:
+def get_certificate_info(domain: str, port: int = 443, timeout: int = DEFAULT_TLS_TIMEOUT_SECONDS) -> dict[str, Any]:
     """Open a TLS connection and return certificate details without persistence."""
     normalized = normalize_domain(domain)
     result = _empty_result(normalized, port)
@@ -88,9 +106,35 @@ def get_certificate_info(domain: str, port: int = 443, timeout: int = 5) -> dict
 
     context = ssl.create_default_context()
     try:
-        with socket.create_connection((normalized, port), timeout=timeout) as sock:
-            with context.wrap_socket(sock, server_hostname=normalized) as tls_sock:
-                cert = tls_sock.getpeercert()
+        cert: dict[str, Any] | None = None
+        for attempt in range(1, DEFAULT_TLS_RETRY_ATTEMPTS + 1):
+            try:
+                with socket.create_connection((normalized, port), timeout=timeout) as sock:
+                    with context.wrap_socket(sock, server_hostname=normalized) as tls_sock:
+                        cert = tls_sock.getpeercert()
+                break
+            except ssl.SSLCertVerificationError:
+                raise
+            except ssl.SSLError:
+                raise
+            except socket.timeout:
+                if attempt < DEFAULT_TLS_RETRY_ATTEMPTS:
+                    time.sleep(TLS_RETRY_BACKOFF_SECONDS * attempt)
+                    continue
+                result["tls_status"] = "Unknown"
+                result["error"] = f"TLS connection timed out after {DEFAULT_TLS_RETRY_ATTEMPTS} attempts."
+                return result
+            except OSError as exc:
+                if attempt < DEFAULT_TLS_RETRY_ATTEMPTS and _retryable_connection_error(exc):
+                    time.sleep(TLS_RETRY_BACKOFF_SECONDS * attempt)
+                    continue
+                result["tls_status"] = "Unknown"
+                result["error"] = f"Could not connect to TLS endpoint: {exc}"
+                return result
+        if cert is None:
+            result["tls_status"] = "Unknown"
+            result["error"] = "Could not read a certificate from the TLS endpoint."
+            return result
     except ssl.SSLCertVerificationError as exc:
         message = str(exc)
         chain_status, chain_explanation = diagnose_chain(getattr(exc, "verify_code", None), getattr(exc, "verify_message", None))
@@ -102,14 +146,6 @@ def get_certificate_info(domain: str, port: int = 443, timeout: int = 5) -> dict
     except ssl.SSLError as exc:
         result["tls_status"] = "Critical"
         result["error"] = f"TLS connection failed: {exc}"
-        return result
-    except socket.timeout:
-        result["tls_status"] = "Unknown"
-        result["error"] = "TLS connection timed out."
-        return result
-    except OSError as exc:
-        result["tls_status"] = "Unknown"
-        result["error"] = f"Could not connect to TLS endpoint: {exc}"
         return result
 
     valid_from = _cert_time(cert.get("notBefore"))

@@ -32,12 +32,14 @@ def test_current_code_rejects_oversized_secret():
     assert "longer than" in result["error"]
 
 
-def test_current_code_matches_pyotp_directly():
+def test_current_code_matches_pyotp_directly(monkeypatch):
     secret = pyotp.random_base32()
+    fixed_now = 1_700_000_000
+    monkeypatch.setattr("utils.totp_tools.time.time", lambda: fixed_now)
     result = current_code(secret)
 
     assert result["ok"] is True
-    assert result["code"] == pyotp.TOTP(secret).now()
+    assert result["code"] == pyotp.TOTP(secret).at(fixed_now)
     assert 0 < result["seconds_remaining"] <= 30
 
 

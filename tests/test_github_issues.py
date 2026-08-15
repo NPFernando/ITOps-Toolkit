@@ -60,7 +60,35 @@ def test_fetch_public_issues_handles_request_errors(monkeypatch):
     result = github_issues.fetch_public_issues("https://github.com/NPFernando/ITOps-Toolkit")
 
     assert result.issues == ()
-    assert result.error == "GitHub issues are unavailable. Showing seed roadmap data."
+    assert result.error == "GitHub issues timed out or could not connect after 3 attempts. Showing seed roadmap data."
+
+
+def test_fetch_public_issues_retries_retryable_status_then_succeeds(monkeypatch):
+    calls = {"count": 0}
+
+    def fake_get(*args, **kwargs):
+        calls["count"] += 1
+        if calls["count"] < 3:
+            return FakeResponse(status_code=503, payload=[])
+        return FakeResponse(status_code=200, payload=[{"number": 10, "title": "Retry win"}])
+
+    monkeypatch.setattr(github_issues.requests, "get", fake_get)
+    monkeypatch.setattr(github_issues.time, "sleep", lambda *_: None)
+
+    result = github_issues.fetch_public_issues("https://github.com/NPFernando/ITOps-Toolkit")
+
+    assert calls["count"] == 3
+    assert result.error is None
+    assert tuple(issue["number"] for issue in result.issues) == (10,)
+
+
+def test_fetch_public_issues_surfaces_http_status_when_unavailable(monkeypatch):
+    monkeypatch.setattr(github_issues.requests, "get", lambda *args, **kwargs: FakeResponse(status_code=404, payload=[]))
+
+    result = github_issues.fetch_public_issues("https://github.com/NPFernando/ITOps-Toolkit")
+
+    assert result.issues == ()
+    assert result.error == "GitHub issues are unavailable (HTTP 404). Showing seed roadmap data."
 
 
 def test_fetch_public_issues_rejects_invalid_repo_url():

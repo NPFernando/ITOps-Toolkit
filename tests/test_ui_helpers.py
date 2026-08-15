@@ -72,6 +72,33 @@ def test_render_status_note_escapes_description_and_normalizes_tone(monkeypatch)
     assert "<script>" not in html
 
 
+def test_classify_failure_mode_distinguishes_transient_and_persistent():
+    assert ui.classify_failure_mode("HTTP request timed out after 3 attempts.") == "transient"
+    assert ui.classify_failure_mode("Domain does not exist.") == "persistent"
+
+
+def test_render_failure_note_hides_raw_sensitive_error(monkeypatch):
+    rendered = []
+
+    def fake_markdown(value, unsafe_allow_html=False):
+        rendered.append((value, unsafe_allow_html))
+
+    monkeypatch.setattr(ui.st, "markdown", fake_markdown)
+
+    ui.render_failure_note(
+        "HTTP check",
+        "Connection failed after 3 attempts: https://internal.example.local/token=super-secret",
+        remediation="Retry from a network with egress access.",
+    )
+
+    html, unsafe = rendered[0]
+    assert unsafe is True
+    assert "HTTP check temporarily unavailable" in html
+    assert "super-secret" not in html
+    assert "internal.example.local" not in html
+    assert "Next step: Retry from a network with egress access." in html
+
+
 def test_render_page_header_includes_tool_category_overline(monkeypatch):
     rendered = []
 
@@ -642,6 +669,7 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "iso8601_duration",
             "column_aligner",
             "wsl_path_converter",
+            "health_diagnostics",
         ],
         "Reference": [
             "port_reference",

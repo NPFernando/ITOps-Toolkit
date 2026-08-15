@@ -34,21 +34,23 @@ flowchart TD
 - Shared UI system: `utils/ui.py` provides theme CSS, sidebar navigation, command palette, tool metadata, generated-asset hooks (`HOME_HERO_ILLUSTRATION`, `TOOL_CARD_ICON_ASSETS`, `TOOL_HEADER_ILLUSTRATION_BY_CATEGORY`, `EMPTY_STATE_ILLUSTRATIONS`, `ROADMAP_BADGE_ICONS`), page headers, and home dashboard sections
 - Home render isolation: selected high-rerun card grids on `app.py` render through `utils/ui.py::render_fragment(...)`, so favorite/reorder clicks can rerun only the local fragment (`st.rerun(scope="fragment")`) where supported instead of rerunning the full shell
 - Dev-only baseline instrumentation: `utils/dev_baseline.py` provides optional render timing for selected high-traffic surfaces, gated by `ITOPS_DEV_BASELINE`
+- Health diagnostics surface: `pages/128_Health_Diagnostics.py` provides public-safe runtime checks (runtime basics, optional integration availability, feature flags, and safe smoke probes) without exposing secrets or user payloads
 - UI navigation state boundary: recents/favorites/shared favorites are URL-query-param driven with browser localStorage mirroring (`utils/ui.py`); write paths skip no-op query-param rewrites to avoid unnecessary reruns; no server-side persistence
 - Home tool filtering/sorting is metadata-only and memoized (`utils/ui.py::filter_tools` uses a bounded cache) to avoid repeated recomputation during frequent shell-driven reruns
 - Application/core helpers: `utils/scoring.py`, `utils/text_tools.py`, and rule definitions in `utils/ai_tools.py`
-- Roadmap data: `utils/roadmap.py` loads curated seed items from `data/roadmap_seed.json`, normalizes public GitHub issues, and provides merge/search/filter helpers; `pages/10_Roadmap_Feedback.py` applies short-TTL `st.cache_data` (5 min board data, 1 hour AI triage summary) with stable runtime cache keys and per-test cache scoping
+- Roadmap data: `utils/roadmap.py` loads curated seed items from `data/roadmap_seed.json`, normalizes public GitHub issues, and provides merge/search/filter helpers; `pages/10_Roadmap_Feedback.py` applies short-TTL `st.cache_data` (5 min board data, 1 hour AI triage summary) via shared cache policy controls in `utils/cache_policy.py` (tier constants, stable cache-key composition, runtime test scoping, and freshness messaging)
 - Project links: `utils/project_links.py` contains the default GitHub repository URL and optional `ITOPS_GITHUB_URL` override used by feedback links
 - Adapters: `utils/dns_tools.py`, `utils/http_tools.py`, `utils/ssl_tools.py`, and read-only public GitHub issue fetching in `utils/github_issues.py`
 - Optional AI adapter: `utils/ai_tools.py` can call Azure OpenAI for log summaries only when Azure settings are configured and the user opts in for a submission
 - Persistence: none
 
-## Phase 3 Performance Playbook (placement)
+## Phase 4 Contributor Reliability Playbook (placement)
 
 - **Fragment patterns** (`st.fragment`) belong in shell/home interaction hot spots (`app.py`, `utils/ui.py`) where partial reruns reduce full-shell reruns.
-- **Caching patterns** (`st.cache_data`) belong in read-only fetch/merge helpers with explicit short TTLs (current example: Roadmap loaders in `pages/10_Roadmap_Feedback.py`).
+- **Caching patterns** (`st.cache_data`) belong in read-only fetch/merge helpers with explicit short TTLs and shared cache policy controls (`utils/cache_policy.py`) for key composition, test scoping, and freshness notes.
 - **Session-state patterns** (`st.session_state`) belong in page-level UX/result boundaries; keep data session-local and never persist user-entered diagnostics content.
 - **Baseline instrumentation** is dev-only and local (`ITOPS_DEV_BASELINE=1`), currently instrumenting Home, Roadmap & Feedback, Domain Health Checker, DNS Record Checker, SSL Certificate Checker, and HTTP Status Checker.
+- **Health diagnostics checks** belong in `pages/128_Health_Diagnostics.py` and must remain non-sensitive, runtime-only signals.
 
 ## Runtime Visual Fallback Boundaries
 
@@ -70,3 +72,7 @@ flowchart TD
 - Download buttons generate CSV, Markdown, HTML, JSON, or text outputs in memory.
 - The Log Troubleshooting Assistant sends sanitized logs to Azure OpenAI only when optional Azure settings are configured and the user checks the AI summary opt-in for that submission.
 - Roadmap & Feedback submissions leave the app through a GitHub Issue URL. The Streamlit app reads public issues but does not store submitted ideas, votes, names, or issue content.
+
+## Reliability Contract
+
+- Adapter reliability defaults and standards for timeout budgets, retry/backoff classes, error taxonomy/message shape, cache tiers/stale indicators, and public-safe failure logging are defined in `docs/reliability-contract.md`.

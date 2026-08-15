@@ -10,6 +10,10 @@ import requests
 
 
 MAX_URL_LENGTH = 2048
+DEFAULT_TIMEOUT_SECONDS = 10
+DEFAULT_RETRY_ATTEMPTS = 3
+RETRY_BACKOFF_SECONDS = 0.3
+RETRYABLE_STATUS_CODES = {408, 429, 500, 502, 503, 504}
 SELECTED_HEADERS = [
     "server",
     "content-type",
@@ -43,7 +47,7 @@ def _empty_result(url: str) -> dict[str, Any]:
     }
 
 
-def check_http_status(url: str, timeout: int = 10) -> dict[str, Any]:
+def check_http_status(url: str, timeout: int = DEFAULT_TIMEOUT_SECONDS) -> dict[str, Any]:
     """Check a URL using requests and return a safe serializable result."""
     normalized = normalize_url(url)
     result = _empty_result(url)
@@ -62,34 +66,47 @@ def check_http_status(url: str, timeout: int = 10) -> dict[str, Any]:
     headers = {"User-Agent": "ITOpsToolkit/1.0 public-safe-checker"}
     started = time.perf_counter()
     response: requests.Response | None = None
-    try:
-        response = requests.get(
-            normalized,
-            headers=headers,
-            timeout=timeout,
-            allow_redirects=True,
-            stream=True,
-        )
-        elapsed_ms = round((time.perf_counter() - started) * 1000, 1)
-        response.close()
-    except requests.exceptions.SSLError as exc:
-        result["error"] = f"TLS/SSL error: {exc}"
-        result["recommendations"].append("Check the certificate chain and hostname match.")
+    for attempt in range(1, DEFAULT_RETRY_ATTEMPTS + 1):
+        try:
+            response = requests.get(
+                normalized,
+                headers=headers,
+                timeout=timeout,
+                allow_redirects=True,
+                stream=True,
+            )
+            if response.status_code in RETRYABLE_STATUS_CODES and attempt < DEFAULT_RETRY_ATTEMPTS:
+                response.close()
+                time.sleep(RETRY_BACKOFF_SECONDS * attempt)
+                continue
+            break
+        except requests.exceptions.SSLError as exc:
+            result["error"] = f"TLS/SSL error: {exc}"
+            result["recommendations"].append("Check the certificate chain and hostname match.")
+            return result
+        except requests.exceptions.Timeout:
+            if attempt < DEFAULT_RETRY_ATTEMPTS:
+                time.sleep(RETRY_BACKOFF_SECONDS * attempt)
+                continue
+            result["error"] = f"HTTP request timed out after {DEFAULT_RETRY_ATTEMPTS} attempts."
+            result["recommendations"].append("Check network reachability and application response time.")
+            return result
+        except requests.exceptions.ConnectionError as exc:
+            if attempt < DEFAULT_RETRY_ATTEMPTS:
+                time.sleep(RETRY_BACKOFF_SECONDS * attempt)
+                continue
+            result["error"] = f"Connection failed after {DEFAULT_RETRY_ATTEMPTS} attempts: {exc}"
+            result["recommendations"].append("Check DNS, firewall rules, listener ports, and service health.")
+            return result
+        except requests.exceptions.RequestException as exc:
+            result["error"] = f"HTTP request failed: {exc}"
+            return result
+
+    if response is None:
+        result["error"] = "HTTP request failed before a response was received."
         return result
-    except requests.exceptions.Timeout:
-        result["error"] = "HTTP request timed out."
-        result["recommendations"].append("Check network reachability and application response time.")
-        return result
-    except requests.exceptions.ConnectionError as exc:
-        result["error"] = f"Connection failed: {exc}"
-        result["recommendations"].append("Check DNS, firewall rules, listener ports, and service health.")
-        return result
-    except requests.exceptions.RequestException as exc:
-        result["error"] = f"HTTP request failed: {exc}"
-        return result
-    finally:
-        if response is not None:
-            response.close()
+
+    elapsed_ms = round((time.perf_counter() - started) * 1000, 1)
 
     selected_headers = {
         key: response.headers.get(key, "")
@@ -121,17 +138,20 @@ def check_http_status(url: str, timeout: int = 10) -> dict[str, Any]:
     elif response.status_code >= 400:
         recommendations.append("Confirm the URL path, authentication requirements, and routing.")
 
-    result.update(
-        {
-            "ok": response.status_code < 400,
-            "status_code": response.status_code,
-            "reason": response.reason,
-            "response_time_ms": elapsed_ms,
-            "final_url": final_url,
-            "uses_https": uses_https,
-            "redirect_chain": redirect_chain,
-            "headers": selected_headers,
-            "recommendations": recommendations,
-        }
-    )
-    return result
+    try:
+        result.update(
+            {
+                "ok": response.status_code < 400,
+                "status_code": response.status_code,
+                "reason": response.reason,
+                "response_time_ms": elapsed_ms,
+                "final_url": final_url,
+                "uses_https": uses_https,
+                "redirect_chain": redirect_chain,
+                "headers": selected_headers,
+                "recommendations": recommendations,
+            }
+        )
+        return result
+    finally:
+        response.close()

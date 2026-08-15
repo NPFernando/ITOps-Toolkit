@@ -15,9 +15,11 @@ from utils.ui import (
     apply_app_shell,
     display_rows_frame,
     render_empty_state,
+    render_failure_note,
     render_form_intro,
     render_page_header,
     render_section_heading,
+    render_status_note,
     run_validated_lookup,
     tool_download_panel,
     tool_form_panel,
@@ -39,13 +41,13 @@ def _format_dt(value: Any) -> str:
 
 def _status(status: str) -> None:
     if status == "Healthy":
-        st.success(status)
+        render_status_note("Status: Healthy", "The certificate and chain checks passed.", tone="success")
     elif status == "Warning":
-        st.warning(status)
+        render_status_note("Status: Warning", "Certificate state needs review soon.", tone="warning")
     elif status == "Critical":
-        st.error(status)
+        render_status_note("Status: Critical", "Certificate validation failed and needs action.", tone="warning")
     else:
-        st.info(status or "Unknown")
+        render_status_note("Status: Unknown", "Unable to determine TLS state from current response.", tone="neutral")
 
 
 render_page_header(
@@ -88,14 +90,18 @@ if validation_error is None and result is None:
     )
 
 if validation_error is not None:
-    st.error(validation_error)
+    render_failure_note("TLS input", validation_error, remediation="Provide a valid public domain and TLS port, then retry.")
 
 if result is not None:
     with tool_result_panel("ssl_result", related_to="ssl_certificate"):
         render_section_heading("Certificate result", "Connection status, expiration, issuer, and subject details.")
         _status(result["tls_status"])
         if result["error"]:
-            st.error(result["error"])
+            render_failure_note(
+                "TLS certificate check",
+                result["error"],
+                remediation="Verify DNS, certificate chain, hostname coverage, and port reachability before retrying.",
+            )
 
         c1, c2, c3, c4 = st.columns(4)
         c1.metric("TLS connection", "OK" if result["verification_ok"] else "Failed")

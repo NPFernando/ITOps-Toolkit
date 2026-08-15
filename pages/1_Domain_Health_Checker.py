@@ -23,9 +23,11 @@ from utils.ui import (
     apply_app_shell,
     display_rows_frame,
     render_empty_state,
+    render_failure_note,
     render_form_intro,
     render_page_header,
     render_section_heading,
+    render_status_note,
     tool_download_panel,
     tool_form_panel,
     tool_result_panel,
@@ -40,13 +42,13 @@ mark_page_baseline(_baseline, "shell-ready")
 
 def _display_status(status: str) -> None:
     if status == "Healthy":
-        st.success(status)
+        render_status_note("Status: Healthy", "Signals look healthy in this section.", tone="success")
     elif status == "Warning":
-        st.warning(status)
+        render_status_note("Status: Warning", "One or more checks need attention.", tone="warning")
     elif status == "Critical":
-        st.error(status)
+        render_status_note("Status: Critical", "An actionable issue was detected.", tone="warning")
     else:
-        st.info(status or "Unknown")
+        render_status_note("Status: Unknown", "Not enough data to confirm this section yet.", tone="neutral")
 
 
 def _join(values: list[Any]) -> str:
@@ -163,9 +165,9 @@ if submitted:
     ok, error = validate_length(domain, MAX_DOMAIN_LENGTH, "Domain")
     normalized = normalize_domain(domain)
     if not ok:
-        st.error(error)
+        render_failure_note("Domain input", error, remediation="Provide a valid public domain and run the check again.")
     elif not normalized:
-        st.error("Enter a domain name.")
+        render_failure_note("Domain input", "Enter a domain name.", remediation="Provide a valid public domain and run the check again.")
     else:
         with st.spinner("Running public checks..."):
             dns_summary = get_dns_summary(normalized, include_dmarc=include_dmarc)
@@ -278,7 +280,11 @@ if state is not None:
     render_section_heading("SSL", "Certificate validity, issuer, subject, and expiration state.")
     _display_status(ssl_result["tls_status"])
     if ssl_result["error"]:
-        st.error(ssl_result["error"])
+        render_failure_note(
+            "SSL check",
+            ssl_result["error"],
+            remediation="Confirm the hostname, TLS port, and certificate chain, then retry.",
+        )
     cert_rows = [
         {"field": "Subject", "value": ssl_result["subject"].get("commonName", "Unknown")},
         {"field": "Issuer", "value": ssl_result["issuer"].get("commonName", "Unknown")},
@@ -292,7 +298,11 @@ if state is not None:
 
     render_section_heading("HTTP", "Final URL, response status, timing, and redirect information.")
     if http_result["error"]:
-        st.error(http_result["error"])
+        render_failure_note(
+            "HTTP check",
+            http_result["error"],
+            remediation="Verify DNS resolution, firewall/proxy access, and web service availability, then retry.",
+        )
     http_rows = [
         {"field": "Final URL", "value": http_result["final_url"] or "Unknown"},
         {"field": "Status code", "value": http_result["status_code"] or "Unknown"},
@@ -310,7 +320,11 @@ if state is not None:
             st.metric("www DNS status", www_result["dns"]["status"])
             st.metric("www HTTP status", www_result["http"]["status_code"] or "Failed")
             if www_result["http"]["error"]:
-                st.warning(www_result["http"]["error"])
+                render_failure_note(
+                    "www subdomain HTTP check",
+                    www_result["http"]["error"],
+                    remediation="Verify the www record and web endpoint configuration before retrying.",
+                )
 
     render_section_heading("Recommendations", "Prioritized fixes from the current checks.", eyebrow="Actions")
     combined_recommendations = list(dict.fromkeys(risk["recommendations"] + http_result["recommendations"] + posture["recommendations"]))

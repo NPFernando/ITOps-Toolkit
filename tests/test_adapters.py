@@ -72,7 +72,26 @@ def test_resolve_records_filters_spf_and_handles_timeouts(monkeypatch):
     assert spf["raw_values"] == ["v=spf1 include:_spf.example.com"]
     assert timeout["ok"] is False
     assert timeout["status"] == "Timeout"
-    assert timeout["error"] == "DNS lookup timed out."
+    assert timeout["error"] == "DNS lookup timed out after 3 attempts."
+
+
+def test_resolve_records_retries_timeout_then_succeeds(monkeypatch):
+    calls = {"count": 0}
+
+    class FlakyResolver:
+        def resolve(self, query_name, query_type):
+            calls["count"] += 1
+            if calls["count"] < 3:
+                raise dns.exception.Timeout()
+            return [FakeARecord()]
+
+    monkeypatch.setattr(dns_tools, "get_resolver", lambda: FlakyResolver())
+    monkeypatch.setattr(dns_tools.time, "sleep", lambda *_: None)
+
+    result = dns_tools.resolve_records("example.com", "A")
+
+    assert result["ok"] is True
+    assert calls["count"] == 3
 
 
 def test_resolve_records_handles_dnssec_mta_sts_and_tls_rpt_queries(monkeypatch):
@@ -255,8 +274,33 @@ def test_check_http_status_validation_and_timeout(monkeypatch):
     result = http_tools.check_http_status("https://example.com")
 
     assert result["ok"] is False
-    assert result["error"] == "HTTP request timed out."
+    assert result["error"] == "HTTP request timed out after 3 attempts."
     assert result["recommendations"] == ["Check network reachability and application response time."]
+
+
+def test_check_http_status_retries_retryable_status_and_uses_last_response(monkeypatch):
+    calls = {"count": 0}
+
+    class RetryResponse(FakeResponse):
+        def __init__(self, status_code, reason):
+            super().__init__()
+            self.status_code = status_code
+            self.reason = reason
+
+    def fake_get(*args, **kwargs):
+        calls["count"] += 1
+        if calls["count"] < 3:
+            return RetryResponse(503, "Service Unavailable")
+        return RetryResponse(200, "OK")
+
+    monkeypatch.setattr(http_tools.requests, "get", fake_get)
+    monkeypatch.setattr(http_tools.time, "sleep", lambda *_: None)
+
+    result = http_tools.check_http_status("https://example.com")
+
+    assert result["ok"] is True
+    assert result["status_code"] == 200
+    assert calls["count"] == 3
 
 
 class FakeSocket:
@@ -318,7 +362,7 @@ def test_get_certificate_info_validation_and_timeout(monkeypatch):
 
     assert result["ok"] is False
     assert result["tls_status"] == "Unknown"
-    assert result["error"] == "TLS connection timed out."
+    assert result["error"] == "TLS connection timed out after 3 attempts."
 
 
 def test_get_certificate_info_ssl_error(monkeypatch):
@@ -334,3 +378,22 @@ def test_get_certificate_info_ssl_error(monkeypatch):
     assert result["ok"] is False
     assert result["tls_status"] == "Critical"
     assert result["error"] == "TLS connection failed: ('handshake failed',)"
+
+
+def test_get_certificate_info_retries_retryable_os_errors(monkeypatch):
+    calls = {"count": 0}
+
+    def flaky_connection(*args, **kwargs):
+        calls["count"] += 1
+        if calls["count"] < 3:
+            raise OSError(111, "Connection refused")
+        return FakeSocket()
+
+    monkeypatch.setattr(ssl_tools.ssl, "create_default_context", lambda: FakeContext())
+    monkeypatch.setattr(ssl_tools.socket, "create_connection", flaky_connection)
+    monkeypatch.setattr(ssl_tools.time, "sleep", lambda *_: None)
+
+    result = ssl_tools.get_certificate_info("example.com")
+
+    assert result["ok"] is True
+    assert calls["count"] == 3

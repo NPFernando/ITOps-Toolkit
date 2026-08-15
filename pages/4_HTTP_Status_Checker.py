@@ -10,9 +10,11 @@ from utils.ui import (
     apply_app_shell,
     display_rows_frame,
     render_empty_state,
+    render_failure_note,
     render_form_intro,
     render_page_header,
     render_section_heading,
+    render_status_note,
     run_validated_lookup,
     tool_download_panel,
     tool_form_panel,
@@ -56,17 +58,21 @@ if validation_error is None and result is None:
     )
 
 if validation_error is not None:
-    st.error(validation_error)
+    render_failure_note("HTTP input", validation_error, remediation="Provide a valid public HTTP(S) URL and retry.")
 
 if result is not None:
     with tool_result_panel("http_result", related_to="http_status"):
         render_section_heading("HTTP result", "Status, timing, HTTPS state, and final URL.")
         if result["ok"]:
-            st.success("Healthy")
+            render_status_note("HTTP check completed", "The endpoint returned a successful response.", tone="success")
         elif result["error"]:
-            st.error(result["error"])
+            render_failure_note(
+                "HTTP check",
+                result["error"],
+                remediation="Verify DNS, TLS, firewall/proxy access, and upstream service health before retrying.",
+            )
         else:
-            st.warning("Warning")
+            render_status_note("HTTP check warning", "The endpoint responded but needs follow-up action.", tone="warning")
 
         c1, c2, c3, c4 = st.columns(4)
         c1.metric("Status code", result["status_code"] or "Failed")
