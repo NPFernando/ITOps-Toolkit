@@ -45,6 +45,7 @@ mark_page_baseline(_baseline, "shell-ready")
 mark_page_baseline(_baseline, "wave27-shell-mobile")
 mark_page_baseline(_baseline, "wave28-shell-mobile")
 mark_page_baseline(_baseline, "wave29-shell-mobile")
+mark_page_baseline(_baseline, "wave30-shell-mobile")
 
 render_page_header("Git Command Cheat Sheet", "Filter practical Git commands by category and copy snippets quickly on mobile or desktop.")
 
@@ -81,13 +82,13 @@ with tool_result_panel("git_command_cheat_sheet_results", related_to="git_comman
         if was_submitted:
             render_status_note(
                 "Outcome: command list filtered",
-                f"Showing {len(rows)} matching command(s). Scan entries below and copy what you need.",
+                f"Showing {len(rows)} matching command(s). Review the list below and copy the snippet you need.",
                 tone="success",
             )
         else:
             render_status_note(
                 "Outcome: command reference ready",
-                f"Showing {len(rows)} commands. Apply filters to narrow the list.",
+                f"Showing {len(rows)} commands. Use search and category filters to narrow the list.",
                 tone="neutral",
             )
         for row in rows:

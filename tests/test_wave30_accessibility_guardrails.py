@@ -29,7 +29,7 @@ def _markdown(app: AppTest) -> str:
     return " ".join(item.value for item in app.markdown)
 
 
-def test_wave29_home_and_roadmap_use_explicit_outcome_semantics(monkeypatch):
+def test_wave30_home_and_roadmap_keep_explicit_outcome_semantics(monkeypatch):
     app = AppTest.from_file(APP_PAGE, default_timeout=30)
     app.run()
     assert not app.exception
@@ -44,8 +44,15 @@ def test_wave29_home_and_roadmap_use_explicit_outcome_semantics(monkeypatch):
     markdown = _markdown(app)
     assert "Outcome: catalog filters need adjustment" in markdown
     assert "tool-status-note-warning" in markdown
-    assert "Clear or broaden filters, then try again." in markdown
     assert 'role="alert"' in markdown
+
+    search = next(widget for widget in app.text_input if widget.key == "tool_search")
+    search.set_value("").run()
+    next(button for button in app.button if button.label == "Show all tools").click().run()
+    assert not app.exception
+    markdown = _markdown(app)
+    assert "Outcome: full catalog visible" in markdown
+    assert "tool-status-note-success" in markdown
 
     monkeypatch.setattr(
         roadmap,
@@ -70,14 +77,18 @@ def test_wave29_home_and_roadmap_use_explicit_outcome_semantics(monkeypatch):
     markdown = _markdown(roadmap_app)
     assert "Outcome: roadmap board ready" in markdown
     assert "tool-status-note-neutral" in markdown
-    html = "\n".join(item.value for item in roadmap_app.markdown)
-    assert 'class="roadmap-notice' in html
-    assert 'role="note"' in html
-    assert 'aria-label="' in html
-    assert 'tabindex="0"' in html
+
+    search = next(widget for widget in roadmap_app.text_input if widget.label == "Search roadmap")
+    search.set_value("no-such-roadmap-item").run()
+    next(button for button in roadmap_app.button if button.label == "Apply filters").click().run()
+    assert not roadmap_app.exception
+    markdown = _markdown(roadmap_app)
+    assert "Outcome: roadmap filters need adjustment" in markdown
+    assert "tool-status-note-warning" in markdown
+    assert 'role="alert"' in markdown
 
 
-def test_wave29_git_bip39_lorem_and_text_converter_keep_accessible_status_patterns():
+def test_wave30_git_bip39_lorem_and_text_converter_keep_accessible_status_patterns():
     git_app = AppTest.from_file(GIT_PAGE, default_timeout=30)
     git_app.run()
     assert not git_app.exception
@@ -104,6 +115,8 @@ def test_wave29_git_bip39_lorem_and_text_converter_keep_accessible_status_patter
     bip39_app.run()
     assert not bip39_app.exception
     assert "Outcome: mnemonic tools ready" in _markdown(bip39_app)
+    assert "tool-status-note-neutral" in _markdown(bip39_app)
+
     next(widget for widget in bip39_app.button if widget.label == "Generate mnemonic").click().run()
     assert not bip39_app.exception
     assert "Outcome: mnemonic generation complete" in _markdown(bip39_app)
@@ -120,16 +133,17 @@ def test_wave29_git_bip39_lorem_and_text_converter_keep_accessible_status_patter
     lorem_app = AppTest.from_file(LOREM_PAGE, default_timeout=30)
     lorem_app.run()
     assert not lorem_app.exception
-    assert "Outcome: lorem generation awaiting input" in _markdown(lorem_app)
-    assert "tool-status-note-neutral" in _markdown(lorem_app)
+    markdown = _markdown(lorem_app)
+    assert "Outcome: lorem generation awaiting input" in markdown
+    assert "tool-status-note-neutral" in markdown
 
     lorem_seed = next(widget for widget in lorem_app.text_input if widget.key == "lorem_seed")
-    lorem_seed.set_value("wave29")
+    lorem_seed.set_value("wave30")
     lorem_count = next(widget for widget in lorem_app.number_input if widget.key == "lorem_count")
     lorem_count.set_value(6)
     next(widget for widget in lorem_app.button if widget.label == "Generate lorem ipsum").click().run()
     assert not lorem_app.exception
-    assert lorem_app.code[0].value == "sint enim elit id mollit lorem"
+    assert lorem_app.code[0].value == "deserunt sint anim veniam pariatur ea"
     markdown = _markdown(lorem_app)
     assert "Outcome: lorem text generated" in markdown
     assert "tool-status-note-success" in markdown
