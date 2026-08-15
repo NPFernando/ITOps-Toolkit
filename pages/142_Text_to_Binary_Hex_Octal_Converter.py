@@ -36,6 +36,7 @@ st.set_page_config(page_title="Text to Binary Hex Octal Converter", layout="wide
 apply_app_shell(active_page="Text to Binary Hex Octal Converter")
 mark_page_baseline(_baseline, "shell-ready")
 mark_page_baseline(_baseline, "wave27-shell-mobile")
+mark_page_baseline(_baseline, "wave29-shell-mobile")
 
 render_page_header("Text to Binary Hex Octal Converter", "Convert plain text into binary, hexadecimal, and octal byte sequences.")
 
@@ -55,11 +56,11 @@ with tool_result_panel("text_radix_result", related_to="text_to_binary_hex_octal
     render_section_heading("Converted output", eyebrow="Result")
     if result is None:
         render_empty_state("Ready to encode", "Binary, hex, and octal output appears here after submission.")
-        render_status_note("Outcome: conversion awaiting input", "Paste text, then choose Convert text.", tone="neutral")
+        render_status_note("Outcome: conversion awaiting input", "Paste source text, then choose Convert text.", tone="neutral")
     elif not bool(result["ok"]):
-        render_status_note("Outcome: text conversion blocked", f"{result['error']} Provide plain text to continue.", tone="warning")
+        render_status_note("Outcome: text conversion blocked", f"{result['error']} Enter plain text to continue.", tone="warning")
     else:
-        render_status_note("Outcome: text conversion complete", "Binary, hex, and octal byte values are ready.", tone="success")
+        render_status_note("Outcome: text conversion complete", "Binary, hexadecimal, and octal byte values are ready.", tone="success")
         st.code(f"Binary: {result['binary']}\nHex: {result['hex']}\nOctal: {result['octal']}", language=None)
 
 mark_page_baseline(_baseline, "content-rendered")

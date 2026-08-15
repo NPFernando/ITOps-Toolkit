@@ -44,6 +44,7 @@ apply_app_shell(active_page="Git Command Cheat Sheet")
 mark_page_baseline(_baseline, "shell-ready")
 mark_page_baseline(_baseline, "wave27-shell-mobile")
 mark_page_baseline(_baseline, "wave28-shell-mobile")
+mark_page_baseline(_baseline, "wave29-shell-mobile")
 
 render_page_header("Git Command Cheat Sheet", "Filter practical Git commands by category and copy snippets quickly on mobile or desktop.")
 
@@ -73,16 +74,20 @@ with tool_result_panel("git_command_cheat_sheet_results", related_to="git_comman
         render_empty_state("No commands matched", "Try another search phrase or reset category to All.")
         render_status_note(
             "Outcome: command filtering blocked",
-            "No commands matched the current search and category. Update keywords or switch category to All.",
+            "No commands matched the current search and category. Adjust keywords or switch category to All.",
             tone="warning",
         )
     else:
         if was_submitted:
-            render_status_note("Outcome: command list filtered", f"Showing {len(rows)} matching command(s).", tone="success")
+            render_status_note(
+                "Outcome: command list filtered",
+                f"Showing {len(rows)} matching command(s). Scan entries below and copy what you need.",
+                tone="success",
+            )
         else:
             render_status_note(
                 "Outcome: command reference ready",
-                f"Showing {len(rows)} commands. Submit filters to narrow the list.",
+                f"Showing {len(rows)} commands. Apply filters to narrow the list.",
                 tone="neutral",
             )
         for row in rows:

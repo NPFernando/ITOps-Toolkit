@@ -34,6 +34,7 @@ apply_app_shell(active_page="Home")
 mark_page_baseline(_baseline, "shell-ready")
 mark_page_baseline(_baseline, "wave27-shell-mobile")
 mark_page_baseline(_baseline, "wave28-shell-mobile")
+mark_page_baseline(_baseline, "wave29-shell-mobile")
 
 
 repo_url = github_url()
@@ -123,13 +124,13 @@ if show_all:
     if all_tools:
         render_status_note(
             "Outcome: full catalog visible",
-            f"Showing {len(all_tools)} tool(s) in {all_heading}.",
+            f"Showing {len(all_tools)} tool(s) in {all_heading}. Use search, profession, and sort controls to refine results.",
             tone="success",
         )
     else:
         render_status_note(
             "Outcome: catalog filters need adjustment",
-            "No tools matched the current search and profession filters. Adjust filters to continue.",
+            "No tools matched the active search and profession filters. Clear or broaden filters, then try again.",
             tone="warning",
         )
     render_fragment(
@@ -144,7 +145,7 @@ if show_all:
 else:
     render_status_note(
         "Outcome: quick access ready",
-        "Browse favorites, recents, and guided workflows, or expand to the full tool catalog.",
+        "Browse favorites, recent tools, and guided workflows, or expand to the full catalog when needed.",
         tone="neutral",
     )
     searched_tools = filter_tools(search_query, profession) if search_query.strip() else ()

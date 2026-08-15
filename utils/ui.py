@@ -149,7 +149,7 @@ TOOL_CARD_ICON_ASSETS: dict[str, str] = {
     "ipv4_format_converter": "icons/exported/icon-workflow-ipv4-format-outline-24x24-v01.svg",
     "ipv4_address_format_converter": "icons/exported/icon-workflow-ipv4-format-outline-24x24-v01.svg",
     "ipv4_range_expander": "icons/exported/icon-workflow-subnet-planning-outline-24x24-v01.svg",
-    # Phase 35 / wave-28 target slugs with explicit per-tool artwork.
+    # Phase 36 / wave-29 target slugs with explicit per-tool artwork.
     "csr_generator": "icons/exported/icon-workflow-csr-generator-outline-24x24-v01.svg",
     "caa_record_builder": "icons/exported/icon-workflow-caa-record-builder-outline-24x24-v01.svg",
     "git_command_cheat_sheet": "icons/exported/icon-workflow-git-command-cheat-sheet-outline-24x24-v01.svg",
