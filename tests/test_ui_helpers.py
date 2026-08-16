@@ -191,10 +191,6 @@ def test_expected_tools_are_tagged_new():
         "cron_builder",
         "http_status_reference",
         "totp_generator",
-        "keypair_generator",
-        "qr_code_generator",
-        "bcrypt_tool",
-        "sql_formatter",
     }
 
 
@@ -343,16 +339,6 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "cve_lookup",
             "file_integrity",
             "totp_generator",
-            "keypair_generator",
-        ],
-        "Security": [
-            "ssl_certificate",
-            "jwt_decoder",
-            "hash_generator",
-            "email_header_analyzer",
-            "password_generator",
-            "jwt_encoder",
-            "security_headers",
         ],
         "Web & Dev": [
             "http_status",

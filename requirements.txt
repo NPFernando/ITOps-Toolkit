@@ -10,7 +10,3 @@ openai
 tzdata
 pyyaml
 pyotp
-cryptography
-qrcode
-bcrypt
-sqlparse
