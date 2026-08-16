@@ -43,7 +43,7 @@ def _assert_warning_status_live_region(markdown: str) -> None:
     assert 'tabindex="0"' in markdown
 
 
-def test_wave46_status_helper_semantics_guardrails():
+def test_wave47_status_helper_semantics_guardrails():
     source = (PROJECT_ROOT / "utils/ui.py").read_text(encoding="utf-8")
     assert 'role = "alert" if normalized_tone == "warning" else "status"' in source
     assert 'aria_live = "assertive" if normalized_tone == "warning" else "polite"' in source
@@ -52,7 +52,7 @@ def test_wave46_status_helper_semantics_guardrails():
     assert 'tabindex="0"' in source
 
 
-def test_wave46_read_order_and_status_live_regions_are_deterministic():
+def test_wave47_read_order_and_status_live_regions_are_deterministic():
     home_app = AppTest.from_file(APP_PAGE, default_timeout=30)
     home_app.run()
     assert not home_app.exception

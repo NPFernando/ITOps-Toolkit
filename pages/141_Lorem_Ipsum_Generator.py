@@ -76,6 +76,7 @@ mark_page_baseline(_baseline, "wave43-shell-mobile")
 mark_page_baseline(_baseline, "wave44-shell-mobile")
 mark_page_baseline(_baseline, "wave45-shell-mobile")
 mark_page_baseline(_baseline, "wave46-shell-mobile")
+mark_page_baseline(_baseline, "wave47-shell-mobile")
 
 render_page_header("Lorem Ipsum Generator", "Generate deterministic placeholder text by words, sentences, or paragraphs.")
 
@@ -96,10 +97,9 @@ with tool_form_panel("lorem_ipsum_generator"):
         render_control_heading("Deterministic seed")
         seed_text = st.text_input("Deterministic seed (optional)", placeholder="wave-25", key="lorem_seed")
         render_control_heading("Primary action")
-        st.caption("Read order: configure output shape and seed, run generate, then review status guidance and output.")
-        st.caption("Status tip: read the outcome note first to confirm whether text is ready or more input is needed.")
-        st.caption("Quick tip: confirm the status note before copying output.")
-        st.caption("New here? Leave seed empty for random text, or add one only when you need repeatable output.")
+        st.caption("Read order: choose output shape and seed, run generate, then review the outcome note and output.")
+        st.caption("Status tip: neutral means waiting for input; success means text is ready to copy.")
+        st.caption("New here? Leave seed blank for random text, then add a seed only for repeatable output.")
         submitted = st.form_submit_button("Generate lorem ipsum", use_container_width=True)
 
 if submitted:
