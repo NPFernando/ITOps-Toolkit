@@ -935,14 +935,9 @@ TITLE_TO_SLUG: dict[str, str] = {tool.title: tool.slug for tool in TOOLS}
 
 
 def apply_app_shell(active_page: str) -> None:
-    """Apply global theme CSS and render the shared sidebar shell.
-
-    Sidebar renders first so the theme-toggle widget resolves this run's
-    value into session_state before CSS is injected -- injecting CSS first
-    would use last run's stale mode and make a mode switch lag by one click.
-    """
+    """Apply global theme CSS and render the shared sidebar shell."""
     render_sidebar(active_page)
-    _inject_global_css(current_theme_mode())
+    _inject_global_css("dark")
     slug = TITLE_TO_SLUG.get(active_page)
     if slug is not None:
         record_recent_visit(slug)
@@ -1056,7 +1051,6 @@ def render_sidebar(active_page: str) -> None:
             """,
             unsafe_allow_html=True,
         )
-        _render_theme_toggle()
         quick_search = st.text_input(
             "Quick search",
             placeholder="Jump to a tool...",
@@ -1729,15 +1723,12 @@ def _key_slug(value: str) -> str:
     return "".join(char.lower() if char.isalnum() else "_" for char in value).strip("_")
 
 
-THEME_MODE_KEY = "itops_theme_mode"
-
-# Dark matches the shared palette reused across cloudscope, odysseus, and
-# hermes-workspace. Light restores this app's original palette. Only these
-# central tokens switch between modes -- decorative one-off gradients and
-# shadows elsewhere in this file are not mode-aware (see THEME.md note in
-# the PR/commit history) and keep their original literal values in both
-# modes, since there's no way to visually verify a full per-mode conversion
-# of ~150 one-off values in this environment.
+# Matches the shared palette reused across cloudscope, odysseus, and
+# hermes-workspace. This app ships dark-only -- a Light palette existed
+# behind a toggle but Streamlit's native widget chrome (buttons, selects,
+# sliders, alerts) is read once from .streamlit/config.toml at server
+# start and never followed the in-app toggle, so "Light mode" never
+# looked fully correct and was dropped rather than fixed.
 _THEME_TOKENS = {
     "dark": {
         "blue": "#e06c75",
@@ -1753,41 +1744,7 @@ _THEME_TOKENS = {
         "purple": "#c678dd",
         "orange": "#f0ad4e",
     },
-    "light": {
-        "blue": "#126bff",
-        "blue-dark": "#0a47c9",
-        "ink": "#07142f",
-        "muted": "#52637f",
-        "line": "#d7e2f5",
-        "bg": "#f6f9ff",
-        "panel": "#fbfdff",
-        "sidebar": "#071a33",
-        "sidebar-2": "#0b2748",
-        "green": "#22ba4f",
-        "purple": "#6d55e9",
-        "orange": "#ff6a13",
-    },
 }
-
-
-def current_theme_mode() -> str:
-    """Return the active theme mode, defaulting to dark."""
-    mode = st.session_state.get(THEME_MODE_KEY, "dark")
-    return mode if mode in _THEME_TOKENS else "dark"
-
-
-def _render_theme_toggle() -> None:
-    """Sidebar control letting visitors switch between the dark (default) and light palette."""
-    current_label = "Dark" if current_theme_mode() == "dark" else "Light"
-    selection = st.segmented_control(
-        "Theme",
-        options=["Dark", "Light"],
-        default=current_label,
-        label_visibility="collapsed",
-        key="itops_theme_toggle_control",
-        persist_state="session",
-    )
-    st.session_state[THEME_MODE_KEY] = "dark" if selection == "Dark" else "light"
 
 
 def _inject_global_css(mode: str) -> None:
