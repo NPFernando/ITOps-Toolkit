@@ -381,10 +381,10 @@
     {
       "title": "File hash / integrity comparator",
       "category": "Security",
-      "status": "Planned",
+      "status": "Complete",
       "votes": 6,
       "description": "Upload two files (or a file plus an expected hash string) and compare their digests to confirm a download wasn't corrupted or tampered with.",
-      "rationale": "Extends the existing Hash Generator (which only hashes typed/pasted text) to file uploads, a distinct and common verification workflow for downloaded installers/patches.",
+      "rationale": "Shipped as a dedicated File Integrity Comparator page. Extends the existing Hash Generator (text-only) to file uploads: compare two uploaded files directly, or check one file against a pasted expected hash (auto-matched across MD5/SHA-1/SHA-256/SHA-512, case-insensitive). Stdlib hashlib only, capped at 100MB per file to avoid memory pressure on Streamlit Cloud.",
       "updated_at": "2026-08-06"
     },
     {
