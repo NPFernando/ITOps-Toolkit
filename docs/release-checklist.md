@@ -497,6 +497,17 @@ Confirm these release-blocking checks pass:
 - **Deterministic regression tests:** run and pass `tests/test_ui_helpers.py` (slug precedence + alias mapping), `tests/test_wave41_shell_mobile_markers.py` (shell/mobile marker + heading hierarchy guardrails), and `tests/test_wave41_accessibility_guardrails.py` (status semantics + deterministic outcomes).
 - **Release evidence:** Wave 41 outcomes are captured in `docs/release-notes-template.md` with synthetic/sanitized QA evidence only.
 
+### 4.43 Phase 49 Wave 42 Regression Checklist (Shell/Mobile/Visual/A11y QA Gates)
+
+Confirm these release-blocking checks pass:
+
+- **Shell consistency:** shared shell + baseline markers (`shell-ready`, `content-rendered`, `wave42-shell-mobile`) remain present on Home, Roadmap & Feedback, Lorem Ipsum Generator, and Text to Binary/Hex/Octal Converter.
+- **Mobile (`<=720px`):** Step 1/Step 2 heading hierarchy copy remains concise/readable, grouped controls stay single-column readable with shared headings, and Home controls, Roadmap filters/AI triage action, plus wave-42 generate/convert actions remain full-width/tap-friendly with no clipping/overflow.
+- **Visual mapping (wave-42 focus):** placeholder-to-real alias routing notes are documented and validated for wave-42 governance (`177_tool_slug_pending_roadmap` + `177_<tool_slug_pending_roadmap>` → wave-42 lorem touchpoint `141_Lorem_Ipsum_Generator.py`/`lorem_ipsum_generator`; `178_tool_slug_pending_roadmap` + `178_<tool_slug_pending_roadmap>` → wave-42 converter touchpoint `142_Text_to_Binary_Hex_Octal_Converter.py`/`text_to_binary_hex_octal_converter`) while deterministic slug-first icon lookup still precedes category defaults and readable text fallback badges remain available.
+- **Accessibility:** keyboard-only navigation remains intact, focus rings stay visible, and explicit status semantics (`role="status"`/`role="alert"` with `aria-live`) remain present for Home/Roadmap and wave-42 tool outcomes.
+- **Deterministic regression tests:** run and pass `tests/test_ui_helpers.py` (slug precedence + alias mapping), `tests/test_wave42_shell_mobile_markers.py` (shell/mobile marker + heading hierarchy guardrails), and `tests/test_wave42_accessibility_guardrails.py` (status semantics + deterministic outcomes).
+- **Release evidence:** Wave 42 outcomes are captured in `docs/release-notes-template.md` with synthetic/sanitized QA evidence only.
+
 ## 5. Log Troubleshooting AI States
 
 Without Azure secrets:

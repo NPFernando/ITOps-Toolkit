@@ -53,7 +53,7 @@ def test_wave40_pages_keep_grouped_controls_and_mobile_primary_actions():
             'eyebrow="Step 2",',
             'heading_level="h3",',
             'st.caption("If you\'re new, begin with Planned and In Progress columns before opening issue links.")',
-            '"Optional triage", eyebrow="Step 2", heading_level="h3"',
+            '"Optional triage", eyebrow="Step 3a", heading_level="h3"',
         ],
         "pages/141_Lorem_Ipsum_Generator.py": [
             'with tool_form_panel("lorem_ipsum_generator"):',
