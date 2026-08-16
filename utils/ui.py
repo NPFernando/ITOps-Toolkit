@@ -1345,6 +1345,18 @@ TOOLS: tuple[ToolMeta, ...] = (
         category="Ops & Automation",
         is_new=True,
     ),
+    ToolMeta(
+        title="Config Format Converter",
+        short_title="Config Converter",
+        description="Convert a config snippet between JSON, YAML, TOML, and XML.",
+        path="pages/38_Config_Format_Converter.py",
+        icon="CFC",
+        accent="#457b9d",
+        slug="config_format_converter",
+        professions=("Sysadmin / DevOps", "Web Developer", "Automation Engineer"),
+        category="Web & Dev",
+        is_new=True,
+    ),
 )
 
 # Curated, not usage-derived -- this app deliberately has no usage tracking
@@ -1398,11 +1410,7 @@ TOOL_BUNDLES: dict[str, tuple[str, ...]] = {
     "qr_code_generator": ("url_encoder_decoder", "color_converter"),
     "jwt_decoder": ("jwt_encoder", "hash_generator"),
     "jwt_encoder": ("jwt_decoder", "hash_generator"),
-    "json_formatter": ("base64_tool", "config_format_converter", "json_diff"),
-    "id_generator": ("hash_generator", "json_formatter", "ulid_uuid_decoder"),
-    "json_diff": ("json_formatter", "text_diff_checker"),
-    "sql_formatter": ("json_formatter", "config_format_converter"),
-    "base_converter": ("hash_generator", "id_generator"),
+    "json_formatter": ("base64_tool", "regex_tester", "config_format_converter"),
     "config_format_converter": ("json_formatter", "text_diff_checker"),
     "base64_tool": ("json_formatter", "url_encoder_decoder"),
     "url_encoder_decoder": ("base64_tool", "json_formatter"),
@@ -2399,12 +2407,6 @@ def _material_icon_for(slug: str) -> str:
         "email_record_builder": ":material/build:",
         "windows_error_reference": ":material/error_outline:",
         "config_format_converter": ":material/sync_alt:",
-        "m365_sku_decoder": ":material/badge:",
-        "id_generator": ":material/fingerprint:",
-        "json_diff": ":material/compare_arrows:",
-        "ip_geolocation": ":material/location_on:",
-        "file_integrity": ":material/verified:",
-        "chmod_calculator": ":material/lock_open:",
     }
     return icons.get(slug, ":material/build:")
 

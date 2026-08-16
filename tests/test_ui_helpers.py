@@ -175,12 +175,6 @@ def test_expected_tools_are_tagged_new():
         "email_record_builder",
         "windows_error_reference",
         "config_format_converter",
-        "m365_sku_decoder",
-        "id_generator",
-        "json_diff",
-        "ip_geolocation",
-        "file_integrity",
-        "chmod_calculator",
     }
 
 
@@ -270,7 +264,7 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "user_agent_parser",
             "webhook_tester",
             "uptime_trend",
-            "curl_builder",
+            "config_format_converter",
         ],
         "Data & Text": [
             "json_formatter",

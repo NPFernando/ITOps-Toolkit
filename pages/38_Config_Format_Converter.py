@@ -30,35 +30,20 @@ with tool_form_panel("config_format_converter"):
         text = st.text_area("Config text", height=280, max_chars=MAX_INPUT_LENGTH)
         submitted = st.form_submit_button("Convert")
 
-if submitted:
-    # Stored in session_state (not rendered directly here) because the download
-    # button below triggers its own rerun -- on that rerun `submitted` is False
-    # again, which would otherwise collapse this whole results section right
-    # after the click.
-    st.session_state["config_format_state"] = {
-        "result": convert_config(text, from_format, to_format),
-        "from_format": from_format,
-        "to_format": to_format,
-    }
-
-state = st.session_state.get("config_format_state")
-
-if state is None:
+if not submitted:
     render_empty_state("Ready to convert", "The converted output appears here after conversion.")
 
-if state is not None:
-    result = state["result"]
-    result_from = state["from_format"]
-    result_to = state["to_format"]
+if submitted:
+    result = convert_config(text, from_format, to_format)
     with tool_result_panel("config_format_result", related_to="config_format_converter"):
-        render_section_heading(f"{result_from} -> {result_to}", "Converted output.")
+        render_section_heading(f"{from_format} -> {to_format}", "Converted output.")
         if not result["ok"]:
             st.error(result["error"])
         else:
-            st.code(result["output"], language=result_to.lower() if result_to != "TOML" else "toml")
+            st.code(result["output"], language=to_format.lower() if to_format != "TOML" else "toml")
             st.download_button(
-                f"Download as .{result_to.lower()}",
+                f"Download as .{to_format.lower()}",
                 result["output"],
-                file_name=f"converted.{result_to.lower()}",
+                file_name=f"converted.{to_format.lower()}",
                 mime="text/plain",
             )
