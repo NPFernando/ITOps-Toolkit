@@ -173,6 +173,13 @@ def test_expected_tools_are_tagged_new():
         "bulk_domain_health",
         "webhook_tester",
         "uptime_trend",
+        "security_headers",
+        "cve_lookup",
+        "dns_propagation",
+        "windows_event_reference",
+        "dkim_lookup",
+        "email_record_builder",
+        "windows_error_reference",
     }
 
 
@@ -330,7 +337,7 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "uptime_trend",
         ],
         "Ops & Automation": ["cron_explainer", "log_troubleshooting", "timestamp_converter"],
-        "Reference": ["port_reference", "windows_event_reference", "windows_error_reference", "m365_sku_decoder"],
+        "Reference": ["port_reference", "windows_event_reference", "windows_error_reference"],
     }
 
 
