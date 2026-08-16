@@ -647,6 +647,141 @@
       "description": "Paste two timestamps (in any of several common log formats -- ISO 8601, syslog, Apache/nginx access log) and get the elapsed duration between them, auto-detecting the format of each.",
       "rationale": "Common troubleshooting task (how long did this incident/request actually take, from two log lines in different formats) that the existing Timestamp Converter doesn't directly answer since it only converts single values, not computes a delta between two auto-detected formats.",
       "updated_at": "2026-08-08"
+    },
+    {
+      "title": "URL parser / breakdown tool",
+      "category": "Tools",
+      "status": "Complete",
+      "votes": 7,
+      "description": "Paste a URL and see it broken down into scheme, host, port, path, query parameters (as a table), and fragment.",
+      "rationale": "Distinct from the existing URL Encoder/Decoder (which only percent-encodes/decodes a string) -- this parses structure. Common need when debugging a long URL with many query params pasted from a browser or log line. Buildable with stdlib urllib.parse only, no new dependency. Verified directly: urllib.parse.urlsplit/parse_qsl handle scheme/host/port/path/query/fragment cleanly.",
+      "updated_at": "2026-08-10"
+    },
+    {
+      "title": "Base32 encoder/decoder",
+      "category": "Tools",
+      "status": "Complete",
+      "votes": 5,
+      "description": "Encode/decode text or bytes to/from Base32 (RFC 4648), the encoding TOTP secrets and some other systems use.",
+      "rationale": "Distinct from Base64 Tool (different alphabet/encoding) and Integer Base Converter (which converts numbers between numeric bases, not byte encoding). Directly complements the existing TOTP Generator, which already consumes Base32 secrets. Stdlib base64.b32encode/b32decode only, no new dependency -- verified directly.",
+      "updated_at": "2026-08-10"
+    },
+    {
+      "title": "Raw HTTP header parser",
+      "category": "Tools",
+      "status": "Complete",
+      "votes": 6,
+      "description": "Paste a raw block of HTTP request or response headers (e.g. copied from browser devtools) and see them parsed into a labeled table with brief explanations for well-known headers.",
+      "rationale": "Distinct from Security Headers Checker and HTTP Status Checker, both of which fetch headers live from a URL -- this parses headers a user already has in hand (from devtools, a support ticket, a curl -v output) with no network call at all. Stdlib text parsing only, no new dependency.",
+      "updated_at": "2026-08-10"
+    },
+    {
+      "title": "CIDR overlap checker",
+      "category": "Tools",
+      "status": "Complete",
+      "votes": 5,
+      "description": "Enter two or more CIDR ranges and check whether any of them overlap.",
+      "rationale": "Complements the existing Subnet Calculator and CIDR Aggregator (which describe/merge ranges but don't flag overlap between separately-entered ranges) -- a common pre-flight check before allocating a new subnet block. Stdlib ipaddress.ip_network(...).overlaps() only, no new dependency -- verified directly.",
+      "updated_at": "2026-08-10"
+    },
+    {
+      "title": "CSR decoder",
+      "category": "Security",
+      "status": "Complete",
+      "votes": 6,
+      "description": "Paste a PEM-encoded Certificate Signing Request (CSR) and see its subject, SAN entries, public key algorithm/size, and signature validity.",
+      "rationale": "Complements SSL Certificate Checker (which inspects an issued cert, not the request that preceded it) and RSA/SSH Key Pair Generator. Uses the `cryptography` package already installed for this app's TOTP/keypair/bcrypt tools -- x509.load_pem_x509_csr() and CSR.is_signature_valid -- no new dependency. Verified directly by generating and parsing a real CSR.",
+      "updated_at": "2026-08-10"
+    },
+    {
+      "title": "PEM certificate bundle splitter",
+      "category": "Security",
+      "status": "Complete",
+      "votes": 5,
+      "description": "Paste a multi-certificate PEM bundle (e.g. a full chain file) and see it split into individual certificates, each with its subject, issuer, and expiration shown separately.",
+      "rationale": "Complements SSL Certificate Checker -- a common troubleshooting need when a server's chain file has certs in the wrong order or an unexpected extra/missing intermediate, which is hard to eyeball from one long PEM blob. Uses the `cryptography` package already installed (x509.load_pem_x509_certificates), no new dependency.",
+      "updated_at": "2026-08-10"
+    },
+    {
+      "title": "Invisible/whitespace character visualizer",
+      "category": "Tools",
+      "status": "Complete",
+      "votes": 4,
+      "description": "Paste text and highlight non-breaking spaces, tabs, zero-width characters, and other invisible/lookalike characters that commonly cause silent copy-paste bugs (e.g. in config files or scripts).",
+      "rationale": "A common, hard-to-self-diagnose class of bug (a config value that 'looks' right but has a stray non-breaking space or zero-width character pasted in from a rich-text source). Stdlib only -- iterate codepoints and flag anything outside printable ASCII plus common accented text.",
+      "updated_at": "2026-08-10"
+    },
+    {
+      "title": "Date calculator",
+      "category": "Tools",
+      "status": "Complete",
+      "votes": 4,
+      "description": "Add or subtract a number of days/weeks/months from a date, or compute the number of calendar days between two dates.",
+      "rationale": "Distinct from Timestamp Converter (single-value epoch/ISO conversion), Business Hours Calculator (business-hours-only elapsed time), and Log Timestamp Duration Calculator (log-format auto-detection) -- this is plain calendar-date arithmetic (e.g. 'what date is 90 days from now', 'how many days until this deadline'), a different and more common everyday need. Stdlib datetime.timedelta only, no new dependency.",
+      "updated_at": "2026-08-10"
+    },
+    {
+      "title": "XML formatter/validator",
+      "category": "Tools",
+      "status": "Complete",
+      "votes": 4,
+      "description": "Paste XML and get it pretty-printed with consistent indentation, or flagged with a clear error if it's not well-formed.",
+      "rationale": "Distinct from JSON Formatter and Config Format Converter's XML support (which only converts a JSON-shaped object model to a simple XML convention, not general XML with attributes/mixed content/namespaces) -- this formats/validates arbitrary XML as-is. Stdlib xml.dom.minidom.toprettyxml, no new dependency -- verified directly.",
+      "updated_at": "2026-08-10"
+    },
+    {
+      "title": "HTML entity encoder/decoder",
+      "category": "Tools",
+      "status": "Complete",
+      "votes": 6,
+      "description": "Encode text to HTML entities (&lt;, &amp;, &quot;, etc.) or decode HTML entities back to plain text.",
+      "rationale": "Distinct from URL Encoder/Decoder and Base64/Base32 Tools (different encoding entirely) -- a common need when embedding user text in HTML or debugging entity-encoded content copied from a web page. Stdlib html.escape/html.unescape only, no new dependency -- verified directly, including numeric character references.",
+      "updated_at": "2026-08-11"
+    },
+    {
+      "title": "Deterministic UUID generator (v3/v5)",
+      "category": "Tools",
+      "status": "Complete",
+      "votes": 5,
+      "description": "Generate a namespace-based UUID (v3 MD5 or v5 SHA-1) from a namespace + name pair -- the same input always produces the same UUID.",
+      "rationale": "Distinct from the existing ID Generator, which only generates random v1/v4/v7 UUIDs -- v3/v5 are deterministic/hash-based, useful for generating stable IDs from external identifiers (e.g. a URL or DNS name) without a database. Stdlib uuid.uuid3/uuid5 with the 4 standard namespaces (DNS, URL, OID, X.500), no new dependency -- verified directly.",
+      "updated_at": "2026-08-11"
+    },
+    {
+      "title": "Luhn checksum validator",
+      "category": "Tools",
+      "status": "Complete",
+      "votes": 4,
+      "description": "Validate a credit card number, IMEI, or other Luhn-checksummed number, and optionally compute the correct check digit for a partial number.",
+      "rationale": "Common quick-validation need (did I mistype a card/IMEI number) with no existing tool covering it. Stdlib arithmetic only, no new dependency -- verified directly against a known-valid test card number.",
+      "updated_at": "2026-08-11"
+    },
+    {
+      "title": "Text statistics / word frequency counter",
+      "category": "Tools",
+      "status": "Complete",
+      "votes": 5,
+      "description": "Paste text and see word count, character count, sentence count, and the most frequent words.",
+      "rationale": "No existing general-purpose text-stats tool -- JSON Formatter's stats are JSON-structure-specific, not applicable to plain prose/logs. Stdlib re + collections.Counter only, no new dependency -- verified directly.",
+      "updated_at": "2026-08-11"
+    },
+    {
+      "title": "CSV to Markdown table converter",
+      "category": "Tools",
+      "status": "Complete",
+      "votes": 4,
+      "description": "Paste CSV (or TSV) and get a Markdown table, ready to paste into a README, PR description, or wiki page.",
+      "rationale": "Complements CSV Diff Viewer and Markdown/HTML Converter, but distinct from both -- this is a common one-off formatting task (turning a spreadsheet export into a Markdown table) with no existing tool. Stdlib csv module only, no new dependency -- verified directly.",
+      "updated_at": "2026-08-11"
+    },
+    {
+      "title": "SSH key fingerprint tool",
+      "category": "Security",
+      "status": "Complete",
+      "votes": 5,
+      "description": "Paste a public SSH key (or a known_hosts line) and see its MD5 and SHA256 fingerprints, matching the format ssh-keygen -lf prints.",
+      "rationale": "Complements the existing RSA/SSH Key Pair Generator -- useful for verifying a key you already have against a fingerprint shown elsewhere (e.g. a GitHub deploy key or server host key). Uses the `cryptography` package already installed for this app's other key/cert tools, no new dependency -- verified directly against a freshly generated key, matching ssh-keygen's known fingerprint format.",
+      "updated_at": "2026-08-11"
     }
   ]
 }

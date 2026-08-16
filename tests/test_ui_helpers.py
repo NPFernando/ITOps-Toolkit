@@ -147,12 +147,12 @@ def test_expected_tools_are_tagged_new():
     new_slugs = {tool.slug for tool in TOOLS if tool.is_new}
 
     assert new_slugs == {
-        "csv_diff",
-        "markdown_converter",
-        "encoding_detector",
-        "robots_validator",
-        "jwt_weak_secret",
-        "log_duration",
+        "html_entity_tools",
+        "deterministic_uuid",
+        "luhn_validator",
+        "text_stats",
+        "csv_to_markdown",
+        "ssh_fingerprint",
     }
 
 
@@ -237,6 +237,10 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "bcrypt_tool",
             "tls_scanner",
             "jwt_weak_secret",
+            "csr_decoder",
+            "pem_bundle_splitter",
+            "luhn_validator",
+            "ssh_fingerprint",
         ],
         "Web & Dev": [
             "http_status",
@@ -246,6 +250,9 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "uptime_trend",
             "curl_builder",
             "robots_validator",
+            "url_parser",
+            "http_header_parser",
+            "html_entity_tools",
         ],
         "Data & Text": [
             "json_formatter",
@@ -265,6 +272,12 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "csv_diff",
             "markdown_converter",
             "encoding_detector",
+            "base32_tools",
+            "whitespace_visualizer",
+            "xml_formatter",
+            "deterministic_uuid",
+            "text_stats",
+            "csv_to_markdown",
         ],
         "Ops & Automation": [
             "cron_explainer",
