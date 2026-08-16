@@ -64,7 +64,10 @@ search_query = render_home_hero()
 
 favorites = favorite_tools()
 if favorites:
-    render_tool_section(favorites, heading="Favorites", section_id=None, key_prefix="fav")
+    render_tool_section(favorites, heading="Favorites", section_id=None, key_prefix="fav", show_reorder=True)
+    with st.popover("Share favorites", icon=":material/share:"):
+        st.caption("Anyone with this link can view your current favorites list. It won't affect their own favorites.")
+        st.code(favorites_share_link(favorites), language=None)
 
 recent_param = st.query_params.get("recent", "")
 recent_slugs = [slug for slug in recent_param.split(",") if slug]

@@ -10,6 +10,7 @@ from utils.ui import (
     display_rows_frame,
     favorite_tools,
     filter_tools,
+    move_favorite,
     record_recent_visit,
     recent_or_popular_tools,
     sort_tools,
@@ -207,6 +208,36 @@ def test_toggle_favorite_adds_and_removes(monkeypatch):
 
     toggle_favorite(slug)
     assert "fav" not in ui.st.query_params
+
+
+def test_move_favorite_swaps_with_neighbor(monkeypatch):
+    a, b, c = TOOLS[0].slug, TOOLS[1].slug, TOOLS[2].slug
+    monkeypatch.setattr(ui.st, "query_params", {"fav": f"{a},{b},{c}"})
+
+    move_favorite(b, -1)
+    assert ui.st.query_params["fav"] == f"{b},{a},{c}"
+
+    move_favorite(b, 1)
+    assert ui.st.query_params["fav"] == f"{a},{b},{c}"
+
+
+def test_move_favorite_out_of_bounds_is_a_noop(monkeypatch):
+    a, b = TOOLS[0].slug, TOOLS[1].slug
+    monkeypatch.setattr(ui.st, "query_params", {"fav": f"{a},{b}"})
+
+    move_favorite(a, -1)
+    assert ui.st.query_params["fav"] == f"{a},{b}"
+
+    move_favorite(b, 1)
+    assert ui.st.query_params["fav"] == f"{a},{b}"
+
+
+def test_move_favorite_ignores_slug_not_in_favorites(monkeypatch):
+    a = TOOLS[0].slug
+    monkeypatch.setattr(ui.st, "query_params", {"fav": a})
+
+    move_favorite(TOOLS[1].slug, 1)
+    assert ui.st.query_params["fav"] == a
 
 
 def test_favorite_tools_reads_query_params_and_skips_unknown(monkeypatch):
