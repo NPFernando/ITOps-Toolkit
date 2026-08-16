@@ -4259,6 +4259,38 @@ def _inject_global_css(mode: str) -> None:
             box-shadow: 0 18px 36px rgba(0, 0, 0, 0.28);
         }
 
+        /* Streamlit columns stay on one row by default, which makes five-card
+           Home sections too narrow on laptops and tablet-sized windows. Scope
+           wrapping to rows containing tool-card containers so metric rows and
+           ordinary form columns retain Streamlit's native layout behavior. */
+        [data-testid="stHorizontalBlock"]:has([class*="st-key-tool_card_"]) {
+            align-items: stretch;
+        }
+
+        @media (max-width: 1180px) {
+            [data-testid="stHorizontalBlock"]:has([class*="st-key-tool_card_"]) {
+                flex-wrap: wrap;
+            }
+
+            [data-testid="stHorizontalBlock"]:has([class*="st-key-tool_card_"]) > [data-testid="stColumn"] {
+                flex: 1 1 calc(33.333% - 1rem) !important;
+                min-width: min(17rem, 100%) !important;
+            }
+        }
+
+        @media (max-width: 860px) {
+            [data-testid="stHorizontalBlock"]:has([class*="st-key-tool_card_"]) > [data-testid="stColumn"] {
+                flex-basis: calc(50% - 0.75rem) !important;
+            }
+        }
+
+        @media (max-width: 560px) {
+            [data-testid="stHorizontalBlock"]:has([class*="st-key-tool_card_"]) > [data-testid="stColumn"] {
+                flex-basis: 100% !important;
+                min-width: 0 !important;
+            }
+        }
+
         .tool-card-shell {
             position: relative;
             min-height: 15.1rem;

@@ -33,6 +33,23 @@ def test_css_injects_before_sidebar_and_has_no_blocking_import():
     assert ui_source.index("_inject_global_css(\"dark\")") < ui_source.index("render_sidebar(active_page)")
 
 
+def test_home_tool_card_rows_wrap_at_responsive_breakpoints():
+    """Home card rows must reflow rather than shrink five cards into an
+    unreadable strip on laptop, tablet, and phone-sized viewports."""
+    ui_source = UI_MODULE.read_text(encoding="utf-8")
+    tool_row = '[data-testid="stHorizontalBlock"]:has([class*="st-key-tool_card_"])'
+
+    assert tool_row in ui_source
+    assert '[data-testid="stColumn"]' in ui_source
+    assert "@media (max-width: 1180px)" in ui_source
+    assert "flex-wrap: wrap;" in ui_source
+    assert "flex: 1 1 calc(33.333% - 1rem) !important;" in ui_source
+    assert "@media (max-width: 860px)" in ui_source
+    assert "flex-basis: calc(50% - 0.75rem) !important;" in ui_source
+    assert "@media (max-width: 560px)" in ui_source
+    assert "flex-basis: 100% !important;" in ui_source
+
+
 def test_home_pills_are_required_and_cannot_deselect_to_none():
     """Regression: st.pills defaults to required=False, meaning a click on an
     already-selected pill deselects it to None. The sort pill's value used to
