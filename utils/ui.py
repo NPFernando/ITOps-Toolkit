@@ -1369,6 +1369,18 @@ TOOLS: tuple[ToolMeta, ...] = (
         category="Ops & Automation",
         is_new=True,
     ),
+    ToolMeta(
+        title="CVE Lookup",
+        short_title="CVE Lookup",
+        description="Search the NIST National Vulnerability Database by CVE ID or keyword.",
+        path="pages/32_CVE_Lookup.py",
+        icon="CVE",
+        accent="#c1121f",
+        slug="cve_lookup",
+        professions=("Security Engineer", "Sysadmin / DevOps", "Support Engineer"),
+        category="Security",
+        is_new=True,
+    ),
 )
 
 # Curated, not usage-derived -- this app deliberately has no usage tracking
@@ -1390,14 +1402,12 @@ TITLE_TO_SLUG: dict[str, str] = {tool.title: tool.slug for tool in TOOLS}
 # render_related_tools() renders nothing for an absent slug rather than a
 # forced, meaningless section.
 TOOL_BUNDLES: dict[str, tuple[str, ...]] = {
-    "domain_health": ("dns_records", "ssl_certificate", "whois_lookup", "tls_scanner"),
-    "dns_records": ("domain_health", "whois_lookup", "dns_propagation"),
-    "dns_propagation": ("dns_records", "domain_health"),
-    "ssl_certificate": ("domain_health", "dns_records", "http_status", "tls_scanner"),
-    "http_status": ("domain_health", "ssl_certificate", "uptime_trend", "security_headers", "robots_validator"),
-    "http_status_reference": ("http_status", "webhook_tester"),
-    "uptime_trend": ("http_status", "domain_health", "business_hours"),
-    "security_headers": ("http_status", "ssl_certificate", "robots_validator"),
+    "domain_health": ("dns_records", "ssl_certificate", "whois_lookup"),
+    "dns_records": ("domain_health", "whois_lookup", "ssl_certificate"),
+    "ssl_certificate": ("domain_health", "dns_records", "http_status"),
+    "http_status": ("domain_health", "ssl_certificate", "uptime_trend", "security_headers"),
+    "uptime_trend": ("http_status", "domain_health"),
+    "security_headers": ("http_status", "ssl_certificate"),
     "cve_lookup": ("security_headers", "ssl_certificate"),
     "whois_lookup": ("dns_records", "domain_health", "ssl_certificate"),
     "bulk_domain_health": ("domain_health", "dns_records", "ssl_certificate"),
@@ -2414,20 +2424,6 @@ def _material_icon_for(slug: str) -> str:
         "uptime_trend": ":material/show_chart:",
         "security_headers": ":material/shield:",
         "cve_lookup": ":material/bug_report:",
-        "dns_propagation": ":material/travel_explore:",
-        "windows_event_reference": ":material/event_note:",
-        "dkim_lookup": ":material/key:",
-        "email_record_builder": ":material/build:",
-        "windows_error_reference": ":material/error_outline:",
-        "config_format_converter": ":material/sync_alt:",
-        "m365_sku_decoder": ":material/badge:",
-        "id_generator": ":material/fingerprint:",
-        "json_diff": ":material/compare_arrows:",
-        "ip_geolocation": ":material/location_on:",
-        "file_integrity": ":material/verified:",
-        "chmod_calculator": ":material/lock_open:",
-        "base_converter": ":material/pin:",
-        "cron_builder": ":material/schedule_send:",
     }
     return icons.get(slug, ":material/build:")
 

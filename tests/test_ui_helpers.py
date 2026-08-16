@@ -169,20 +169,6 @@ def test_expected_tools_are_tagged_new():
         "uptime_trend",
         "security_headers",
         "cve_lookup",
-        "dns_propagation",
-        "windows_event_reference",
-        "dkim_lookup",
-        "email_record_builder",
-        "windows_error_reference",
-        "config_format_converter",
-        "m365_sku_decoder",
-        "id_generator",
-        "json_diff",
-        "ip_geolocation",
-        "file_integrity",
-        "chmod_calculator",
-        "base_converter",
-        "cron_builder",
     }
 
 
@@ -261,10 +247,6 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "jwt_encoder",
             "security_headers",
             "cve_lookup",
-            "file_integrity",
-            "totp_generator",
-            "keypair_generator",
-            "bcrypt_tool",
         ],
         "Web & Dev": [
             "http_status",
