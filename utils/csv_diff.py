@@ -15,26 +15,9 @@ def _parse_csv(text: str) -> list[dict[str, str]]:
     return list(csv.DictReader(io.StringIO(text)))
 
 
-def _duplicate_keys(rows: list[dict[str, str]], key_column: str) -> list[str]:
-    seen: set[str] = set()
-    duplicates: list[str] = []
-    for row in rows:
-        key = row[key_column]
-        if key in seen and key not in duplicates:
-            duplicates.append(key)
-        seen.add(key)
-    return duplicates
-
-
 def diff_csv(text_a: str, text_b: str, key_column: str) -> dict[str, Any]:
-    """Compare two CSVs row-by-row, matched on ``key_column``.
-
-    A duplicate key value within either CSV would otherwise be silently
-    collapsed by the last-row-wins dict indexing below (earlier rows sharing
-    that key simply vanish from the diff with no indication) -- so duplicate
-    keys are detected and surfaced in the result before that happens.
-    """
-    result: dict[str, Any] = {"ok": False, "error": None, "differences": [], "identical": False, "duplicate_keys": {"first_csv": [], "second_csv": []}}
+    """Compare two CSVs row-by-row, matched on ``key_column``."""
+    result: dict[str, Any] = {"ok": False, "error": None, "differences": [], "identical": False}
 
     ok_a, error_a = validate_length(text_a, MAX_INPUT_LENGTH, "First CSV")
     if not ok_a:
@@ -64,11 +47,6 @@ def diff_csv(text_a: str, text_b: str, key_column: str) -> dict[str, Any]:
     if key_column not in rows_a[0] or key_column not in rows_b[0]:
         result["error"] = f"Key column '{key_column}' was not found in both CSVs' headers."
         return result
-
-    result["duplicate_keys"] = {
-        "first_csv": _duplicate_keys(rows_a, key_column),
-        "second_csv": _duplicate_keys(rows_b, key_column),
-    }
 
     by_key_a = {row[key_column]: row for row in rows_a}
     by_key_b = {row[key_column]: row for row in rows_b}

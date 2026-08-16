@@ -147,15 +147,12 @@ def test_expected_tools_are_tagged_new():
     new_slugs = {tool.slug for tool in TOOLS if tool.is_new}
 
     assert new_slugs == {
-        "url_parser",
-        "base32_tools",
-        "http_header_parser",
-        "cidr_overlap",
-        "csr_decoder",
-        "pem_bundle_splitter",
-        "whitespace_visualizer",
-        "date_calculator",
-        "xml_formatter",
+        "csv_diff",
+        "markdown_converter",
+        "encoding_detector",
+        "robots_validator",
+        "jwt_weak_secret",
+        "log_duration",
     }
 
 
@@ -240,8 +237,6 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "bcrypt_tool",
             "tls_scanner",
             "jwt_weak_secret",
-            "csr_decoder",
-            "pem_bundle_splitter",
         ],
         "Web & Dev": [
             "http_status",
@@ -251,8 +246,6 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "uptime_trend",
             "curl_builder",
             "robots_validator",
-            "url_parser",
-            "http_header_parser",
         ],
         "Data & Text": [
             "json_formatter",
@@ -272,9 +265,6 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "csv_diff",
             "markdown_converter",
             "encoding_detector",
-            "base32_tools",
-            "whitespace_visualizer",
-            "xml_formatter",
         ],
         "Ops & Automation": [
             "cron_explainer",
@@ -284,9 +274,7 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "cron_builder",
             "business_hours",
             "log_duration",
-            "date_calculator",
         ],
-        "Ops & Automation": ["cron_explainer", "log_troubleshooting", "timestamp_converter", "chmod_calculator", "cron_builder", "business_hours"],
         "Reference": [
             "port_reference",
             "windows_event_reference",

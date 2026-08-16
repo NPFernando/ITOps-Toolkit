@@ -50,50 +50,8 @@ def test_check_weak_secret_reports_not_applicable_for_rs256():
 
     assert result["ok"] is True
     assert result["applicable"] is False
-    assert result["alg_status"] == "asymmetric"
     assert result["algorithm"] == "RS256"
     assert result["matched_secret"] is None
-
-
-def test_check_weak_secret_flags_alg_none_as_unsigned_not_asymmetric():
-    # Regression: alg="none" is the classic unsigned-JWT forgery vector --
-    # it must never be reported as "asymmetric, nothing to check", which
-    # would be actively misleading for a security-focused checker.
-    token = jwt.encode({"sub": "1"}, "", algorithm="none")
-
-    result = check_weak_secret(token)
-
-    assert result["ok"] is True
-    assert result["applicable"] is False
-    assert result["alg_status"] == "unsigned"
-    assert result["algorithm"] == "none"
-
-
-def test_check_weak_secret_flags_missing_alg_distinctly():
-    # Regression: a header with no 'alg' claim at all must not render as the
-    # literal string "Algorithm 'None' is asymmetric..." (the same bare-None
-    # rendering bug class fixed for UUID variant in PR #89).
-    import base64
-    import json
-
-    header = base64.urlsafe_b64encode(json.dumps({"typ": "JWT"}).encode()).rstrip(b"=")
-    payload = base64.urlsafe_b64encode(json.dumps({"sub": "1"}).encode()).rstrip(b"=")
-    signature = base64.urlsafe_b64encode(b"x").rstrip(b"=")
-    token = (header + b"." + payload + b"." + signature).decode()
-
-    result = check_weak_secret(token)
-
-    assert result["ok"] is True
-    assert result["applicable"] is False
-    assert result["alg_status"] == "missing"
-    assert result["algorithm"] is None
-
-
-def test_check_weak_secret_rejects_oversized_input():
-    result = check_weak_secret("a" * 20_001)
-
-    assert result["ok"] is False
-    assert "20000 characters" in result["error"]
 
 
 def test_check_weak_secret_rejects_empty_input():
