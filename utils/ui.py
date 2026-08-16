@@ -2394,7 +2394,7 @@ def _inject_global_css(mode: str) -> None:
         [data-testid="stSkeleton"],
         [data-testid="stSkeleton"] > div,
         [class*="Skeleton"] {
-            border-radius: var(--card-radius) !important;
+            border-radius: 8px !important;
             background-color: var(--itops-surface-strong) !important;
             background-image: linear-gradient(
                 90deg,
@@ -3080,7 +3080,7 @@ def _inject_global_css(mode: str) -> None:
             gap: 1rem;
             align-items: center;
             padding: 1rem 1.15rem;
-            border-radius: var(--card-radius);
+            border-radius: 8px;
             border: 1px solid color-mix(in srgb, var(--itops-orange), transparent 30%);
             background: linear-gradient(135deg, color-mix(in srgb, var(--itops-orange), transparent 87%), var(--itops-surface));
         }
@@ -3105,9 +3105,7 @@ def _inject_global_css(mode: str) -> None:
             display: grid;
             place-items: center;
             background: var(--itops-orange);
-            /* White text measured 1.95:1 against --itops-orange -- below
-               WCAG AA's 4.5:1. Dark ink clears it (9.75:1). */
-            color: #0c1116;
+            color: #ffffff;
             font-weight: 900;
         }
 
@@ -3294,7 +3292,7 @@ def _inject_global_css(mode: str) -> None:
             color: #ffffff;
             font-size: 0.72rem;
             font-weight: 900;
-            background: linear-gradient(145deg, var(--itops-blue), color-mix(in srgb, var(--itops-blue-dark), white 2%));
+            background: linear-gradient(145deg, var(--itops-blue), var(--itops-blue-dark));
         }
 
         .tool-empty-state strong,
@@ -3313,7 +3311,7 @@ def _inject_global_css(mode: str) -> None:
 
         .tool-safe-note {
             border: 1px solid color-mix(in srgb, var(--itops-green), transparent 72%);
-            border-radius: var(--card-radius);
+            border-radius: 8px;
             background: color-mix(in srgb, var(--itops-green), transparent 92%);
             padding: 0.85rem 1rem;
             margin: 0.8rem 0;
@@ -3902,7 +3900,7 @@ def _inject_global_css(mode: str) -> None:
             /* #64758e measured 2.98:1 against the dark bg -- below WCAG AA's
                4.5:1 minimum for normal text. --itops-muted (4.59:1) clears it. */
             color: var(--itops-muted);
-            font-size: 0.75rem;
+            font-size: 0.72rem;
             line-height: 1.4;
             display: -webkit-box;
             -webkit-line-clamp: 2;
