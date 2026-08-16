@@ -177,9 +177,6 @@ def test_expected_tools_are_tagged_new():
         "cve_lookup",
         "dns_propagation",
         "windows_event_reference",
-        "dkim_lookup",
-        "email_record_builder",
-        "windows_error_reference",
     }
 
 
@@ -337,7 +334,7 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "uptime_trend",
         ],
         "Ops & Automation": ["cron_explainer", "log_troubleshooting", "timestamp_converter"],
-        "Reference": ["port_reference", "windows_event_reference", "windows_error_reference"],
+        "Reference": ["port_reference", "windows_event_reference"],
     }
 
 

@@ -411,8 +411,17 @@
       "status": "Complete",
       "votes": 5,
       "description": "Generate a QR code for a URL, Wi-Fi credentials, or plain text/contact info, for onboarding handoffs and support materials.",
-      "rationale": "Shipped as a QR Code Generator page with two tabs: plain text/URL, and Wi-Fi credentials (WIFI: payload format most phone cameras recognize directly, with proper backslash-escaping of special characters in SSID/password per the format spec). Adds qrcode as a new dependency; Pillow was already a transitive dependency (streamlit itself needs it for st.image), so this only adds the one package. Live-updates, no submit button -- no results-vanishing risk.",
-      "updated_at": "2026-08-07"
+      "rationale": "Common small MSP/support utility (e.g. printed Wi-Fi onboarding cards) that fits the existing 'small standalone utility' shape of Color Converter and Case Converter.",
+      "updated_at": "2026-08-06"
+    },
+    {
+      "title": "Windows Event ID reference",
+      "category": "Tools",
+      "status": "Complete",
+      "votes": 8,
+      "description": "Searchable reference of common Windows Event Log IDs with description, source, and severity, similar to killertools.net's Windows Event Lookup.",
+      "rationale": "Shipped as a dedicated Windows Event Reference page, same static-dataset + search shape as the existing Port Reference. Curated set of ~38 commonly-triaged event IDs across System/Application/Security/PowerShell logs, each with log, source, severity, summary, and common cause.",
+      "updated_at": "2026-08-06"
     },
     {
       "title": "Windows/Win32 error code lookup",
