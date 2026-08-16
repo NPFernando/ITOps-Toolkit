@@ -190,6 +190,10 @@ TOOL_CARD_ICON_ASSETS: dict[str, str] = {
     "174_tool_slug_pending_roadmap": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
     "173_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
     "174_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
+    "175_tool_slug_pending_roadmap": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
+    "176_tool_slug_pending_roadmap": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
+    "175_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
+    "176_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
     "csv_column_selector": "icons/exported/icon-workflow-csv-column-selector-outline-24x24-v01.svg",
     "line_numberer": "icons/exported/icon-workflow-line-numberer-outline-24x24-v01.svg",
     "column_aligner": "icons/exported/icon-workflow-column-aligner-outline-24x24-v01.svg",
@@ -3453,6 +3457,10 @@ def _material_icon_for(slug: str) -> str:
         "174_tool_slug_pending_roadmap": ":material/pin:",
         "173_<tool_slug_pending_roadmap>": ":material/text_fields:",
         "174_<tool_slug_pending_roadmap>": ":material/pin:",
+        "175_tool_slug_pending_roadmap": ":material/text_fields:",
+        "176_tool_slug_pending_roadmap": ":material/pin:",
+        "175_<tool_slug_pending_roadmap>": ":material/text_fields:",
+        "176_<tool_slug_pending_roadmap>": ":material/pin:",
     }
     return icons.get(slug, ":material/build:")
 
