@@ -1501,42 +1501,6 @@ TOOLS: tuple[ToolMeta, ...] = (
         category="Network",
         is_new=True,
     ),
-    ToolMeta(
-        title="File Integrity Comparator",
-        short_title="File Integrity",
-        description="Compare two files, or check one file against an expected hash, to confirm a download wasn't corrupted or tampered with.",
-        path="pages/43_File_Integrity_Comparator.py",
-        icon="FIC",
-        accent="#e76f51",
-        slug="file_integrity",
-        professions=("Sysadmin / DevOps", "Security Engineer", "Support Engineer"),
-        category="Security",
-        is_new=True,
-    ),
-    ToolMeta(
-        title="chmod Calculator",
-        short_title="chmod Calculator",
-        description="Convert between symbolic (rwxr-xr-x) and octal (755) Unix file permission notation.",
-        path="pages/44_Chmod_Calculator.py",
-        icon="CHM",
-        accent="#5c6bc0",
-        slug="chmod_calculator",
-        professions=("Sysadmin / DevOps", "Automation Engineer"),
-        category="Ops & Automation",
-        is_new=True,
-    ),
-    ToolMeta(
-        title="Integer Base Converter",
-        short_title="Base Converter",
-        description="Convert a number between binary, octal, decimal, and hexadecimal, live as you type.",
-        path="pages/45_Integer_Base_Converter.py",
-        icon="BAS",
-        accent="#264653",
-        slug="base_converter",
-        professions=("Web Developer", "Automation Engineer", "Sysadmin / DevOps"),
-        category="Web & Dev",
-        is_new=True,
-    ),
 )
 
 # Curated, not usage-derived -- this app deliberately has no usage tracking
@@ -1571,8 +1535,8 @@ TOOL_BUNDLES: dict[str, tuple[str, ...]] = {
     "bulk_domain_health": ("domain_health", "dns_records", "ssl_certificate"),
     "mac_address_tool": ("subnet_calculator", "cidr_aggregator", "ipv6_compressor"),
     "ip_geolocation": ("whois_lookup", "dns_records", "http_status"),
-    "subnet_calculator": ("cidr_aggregator", "ipv6_compressor", "mac_address_tool", "cidr_overlap"),
-    "cidr_aggregator": ("subnet_calculator", "ipv6_compressor", "cidr_overlap"),
+    "subnet_calculator": ("cidr_aggregator", "ipv6_compressor", "mac_address_tool"),
+    "cidr_aggregator": ("subnet_calculator", "ipv6_compressor"),
     "ipv6_compressor": ("subnet_calculator", "cidr_aggregator"),
     "port_reference": ("subnet_calculator", "mac_address_tool"),
     "windows_event_reference": ("log_troubleshooting", "port_reference"),
@@ -2633,9 +2597,6 @@ def _material_icon_for(slug: str) -> str:
         "id_generator": ":material/fingerprint:",
         "json_diff": ":material/compare_arrows:",
         "ip_geolocation": ":material/location_on:",
-        "file_integrity": ":material/verified:",
-        "chmod_calculator": ":material/lock_open:",
-        "base_converter": ":material/pin:",
     }
     return icons.get(slug, ":material/build:")
 
