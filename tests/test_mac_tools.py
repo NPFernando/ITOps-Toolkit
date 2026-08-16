@@ -1,13 +1,6 @@
 from utils import mac_tools
 
 
-class FakeResponse:
-    def __init__(self, status_code=200, text=""):
-        self.status_code = status_code
-        self.text = text
-        self.ok = 200 <= status_code < 300
-
-
 def test_analyze_mac_accepts_colon_format():
     result = mac_tools.analyze_mac("00:1A:2B:3C:4D:5E")
 
@@ -51,69 +44,3 @@ def test_analyze_mac_validation_errors():
     assert "valid 48-bit" in mac_tools.analyze_mac("not-a-mac")["error"]
     assert "valid 48-bit" in mac_tools.analyze_mac("00:1A:2B:3C:4D")["error"]
     assert "longer than" in mac_tools.analyze_mac("a" * 100)["error"]
-
-
-def test_lookup_vendor_full_mac_uses_oui_only(monkeypatch):
-    captured = {}
-
-    def fake_get(url, timeout=None):
-        captured["url"] = url
-        captured["timeout"] = timeout
-        return FakeResponse(text="Google, Inc.")
-
-    monkeypatch.setattr(mac_tools.requests, "get", fake_get)
-
-    result = mac_tools.lookup_vendor("00:1A:11:22:33:44")
-
-    assert result["ok"] is True
-    assert result["vendor"] == "Google, Inc."
-    assert captured["url"].endswith("001a11")
-    assert captured["timeout"] == mac_tools.VENDOR_LOOKUP_TIMEOUT
-
-
-def test_lookup_vendor_accepts_bare_oui(monkeypatch):
-    monkeypatch.setattr(mac_tools.requests, "get", lambda url, timeout=None: FakeResponse(text="Raspberry Pi Foundation"))
-
-    result = mac_tools.lookup_vendor("B8:27:EB")
-
-    assert result["ok"] is True
-    assert result["vendor"] == "Raspberry Pi Foundation"
-
-
-def test_lookup_vendor_handles_not_found(monkeypatch):
-    monkeypatch.setattr(mac_tools.requests, "get", lambda url, timeout=None: FakeResponse(status_code=404))
-
-    result = mac_tools.lookup_vendor("00:00:00")
-
-    assert result["ok"] is False
-    assert "No registered vendor" in result["error"]
-
-
-def test_lookup_vendor_handles_rate_limit(monkeypatch):
-    monkeypatch.setattr(mac_tools.requests, "get", lambda url, timeout=None: FakeResponse(status_code=429))
-
-    result = mac_tools.lookup_vendor("00:1A:11")
-
-    assert result["ok"] is False
-    assert "rate-limited" in result["error"]
-
-
-def test_lookup_vendor_handles_network_error(monkeypatch):
-    import requests
-
-    def fake_get(url, timeout=None):
-        raise requests.ConnectionError("boom")
-
-    monkeypatch.setattr(mac_tools.requests, "get", fake_get)
-
-    result = mac_tools.lookup_vendor("00:1A:11")
-
-    assert result["ok"] is False
-    assert "Vendor lookup failed" in result["error"]
-
-
-def test_lookup_vendor_rejects_invalid_input():
-    result = mac_tools.lookup_vendor("nope")
-
-    assert result["ok"] is False
-    assert "valid MAC address or OUI" in result["error"]

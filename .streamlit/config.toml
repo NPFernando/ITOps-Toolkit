@@ -24,7 +24,6 @@ linkColor = "#9cdef2"
 codeBackgroundColor = "#111111"
 baseRadius = "0.75rem"
 font = "sans-serif"
-showWidgetBorder = false
 blueColor = "#61afef"
 greenColor = "#50fa7b"
 orangeColor = "#f0ad4e"

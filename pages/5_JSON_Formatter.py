@@ -57,12 +57,9 @@ state = st.session_state.get("json_formatter_state")
 if state is None:
     render_empty_state("Ready to process JSON", "Validation status and formatted output appear here after you run an action.")
 
-if state is not None:
-    json_input = state["json_input"]
-    result = state["result"]
-    format_clicked = state["format_clicked"]
-    minify_clicked = state["minify_clicked"]
-    with tool_result_panel("json_result", related_to="json_formatter"):
+if validate_clicked or format_clicked or minify_clicked:
+    result = format_json_text(json_input, minify=minify_clicked, indent=indent)
+    with tool_result_panel("json_result"):
         render_section_heading("JSON result", "Validation status and transformed output.")
         if not result["ok"]:
             st.error(result["error"])

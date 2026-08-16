@@ -36,41 +36,24 @@ with tool_form_panel("hash_generator"):
             hmac_algorithm = st.selectbox("HMAC algorithm", HMAC_ALGORITHMS, label_visibility="collapsed")
             hmac_clicked = st.form_submit_button("Generate HMAC")
 
-if hash_clicked:
-    # Stored in session_state (not rendered directly here) because the sidebar's
-    # quick-search box, favorite-star buttons, and any other widget outside this
-    # page's st.form trigger reruns of their own -- on those reruns the transient
-    # *_clicked flags are False again, which would otherwise collapse this whole
-    # results section the instant any of them is touched.
-    st.session_state["hash_generator_hash_result"] = generate_hashes(text_input)
-if hmac_clicked:
-    # hmac_algorithm captured alongside the result (not read fresh at render time)
-    # so the heading always matches what was actually used, even if the dropdown
-    # is changed again before the next submit.
-    st.session_state["hash_generator_hmac_result"] = generate_hmac(text_input, secret_input, hmac_algorithm)
-    st.session_state["hash_generator_hmac_algorithm"] = hmac_algorithm
-
-hash_result = st.session_state.get("hash_generator_hash_result")
-hmac_result = st.session_state.get("hash_generator_hmac_result")
-
-if hash_result is None and hmac_result is None:
+if not (hash_clicked or hmac_clicked):
     render_empty_state("Ready for input", "Digests or an HMAC signature appear here after you submit text.")
 
-if hash_result is not None:
-    with tool_result_panel("hash_result", related_to="hash_generator"):
+if hash_clicked:
+    result = generate_hashes(text_input)
+    with tool_result_panel("hash_result"):
         render_section_heading("Digests", "Hex-encoded digests for the entered text.")
-        if not hash_result["ok"]:
-            st.error(hash_result["error"])
+        if not result["ok"]:
+            st.error(result["error"])
         else:
-            for algorithm, digest in hash_result["digests"].items():
-                st.caption(algorithm.upper())
-                st.code(digest, language=None)
+            for algorithm, digest in result["digests"].items():
+                st.text_input(algorithm.upper(), value=digest, disabled=True)
 
-if hmac_result is not None:
-    used_algorithm = st.session_state["hash_generator_hmac_algorithm"]
-    with tool_result_panel("hmac_result", related_to="hash_generator"):
-        render_section_heading("HMAC", f"HMAC-{used_algorithm.upper()} of the entered text.")
-        if not hmac_result["ok"]:
-            st.error(hmac_result["error"])
+if hmac_clicked:
+    result = generate_hmac(text_input, secret_input, hmac_algorithm)
+    with tool_result_panel("hmac_result"):
+        render_section_heading("HMAC", f"HMAC-{hmac_algorithm.upper()} of the entered text.")
+        if not result["ok"]:
+            st.error(result["error"])
         else:
-            st.code(hmac_result["digest"], language=None)
+            st.text_input("HMAC digest", value=result["digest"], disabled=True)
