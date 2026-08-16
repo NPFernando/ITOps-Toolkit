@@ -7,24 +7,7 @@ import streamlit as st
 
 from utils import roadmap
 from utils.ai_tools import optional_ai_configured, summarize_feature_requests_with_azure
-from utils.cache_policy import (
-    ROADMAP_AI_TRIAGE_CACHE_TTL_SECONDS,
-    ROADMAP_BOARD_CACHE_TTL_SECONDS,
-    cache_freshness_message,
-    compose_cache_key,
-    runtime_cache_scope,
-)
-from utils.dev_baseline import mark_page_baseline, render_page_baseline, start_page_baseline
-from utils.ui import (
-    apply_app_shell,
-    render_control_heading,
-    render_failure_note,
-    render_form_intro,
-    render_section_heading,
-    render_status_note,
-    roadmap_badge_icon_html,
-    tool_form_panel,
-)
+from utils.ui import apply_app_shell, render_section_heading, render_status_note
 
 
 _baseline = start_page_baseline("Roadmap & Feedback")
@@ -152,6 +135,13 @@ def _cached_triage_summary(_cache_key: str, open_items: tuple[roadmap.RoadmapIte
     }
 
 
+@st.cache_data(ttl=3600, show_spinner=False)
+def _cached_triage_summary(open_items: tuple[roadmap.RoadmapItem, ...]) -> dict:
+    """Cached for an hour so repeated clicks (by any visitor) reuse one AI call
+    per hour rather than paying for the same summary over and over."""
+    return summarize_feature_requests_with_azure(list(open_items))
+
+
 feedback_url = roadmap.github_feature_request_url()
 repo_url = roadmap.github_repository_url()
 board_cache_key = compose_cache_key(
@@ -183,10 +173,23 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-render_status_note(
-    "Outcome: public feedback safety reminder",
-    "Submit ideas through public GitHub Issues only. Do not include secrets, internal hostnames, customer logs, tokens, keys, or private data.",
-    tone="warning",
+st.markdown(
+    '<div class="roadmap-notice-grid">'
+    + _roadmap_notice(
+        "Public-safe feedback only",
+        "Submit ideas through GitHub Issues. Do not include secrets, internal hostnames, customer logs, tokens, keys, or private data.",
+        "warning",
+        "!",
+    )
+    + _roadmap_notice(
+        "AI Recommended is curated",
+        "The \"AI Recommended\" status label is a static, curated tag, not AI output. An optional, opt-in AI triage "
+        "summary is available further down this page and only runs when explicitly requested.",
+        "ai",
+        "AI",
+    )
+    + "</div>",
+    unsafe_allow_html=True,
 )
 render_status_note(
     "Outcome: AI Recommended label clarified",
@@ -326,60 +329,27 @@ st.markdown(
 render_section_heading(
     "AI-assisted triage",
     "Summarize open (not-yet-Complete) roadmap items into a short, maintainer-facing prioritization -- opt-in, and only sends public roadmap data (titles, descriptions, vote counts) already shown above.",
-    eyebrow="Step 3",
-    heading_level="h3",
+    eyebrow="Optional",
 )
 open_items = [item for item in board.items if item.status != "Complete"]
 ai_available = optional_ai_configured()
 if not ai_available:
     render_status_note(
-        "Outcome: AI triage unavailable",
+        "AI triage unavailable",
         "Configure Azure OpenAI settings to enable this. The roadmap board above works the same either way.",
         tone="neutral",
     )
 elif not open_items:
-    render_status_note("Outcome: no open roadmap items", "All roadmap items are currently marked Complete.", tone="neutral")
+    render_status_note("Nothing to triage", "All roadmap items are currently marked Complete.", tone="neutral")
 else:
-    with tool_form_panel("roadmap_ai_triage_action"):
-        render_form_intro(
-            "Generate optional AI triage",
-            "Runs only when clicked and uses public roadmap item text already shown on this page.",
-        )
-        render_section_heading("Optional triage", eyebrow="Step 3a", heading_level="h3")
-        render_control_heading("Triage action")
-        st.caption("Use this after filtering so the summary reflects the items you are actively reviewing.")
-        summarize_with_ai = st.button(f"Summarize {len(open_items)} open items with AI", icon=":material/auto_awesome:", use_container_width=True)
-    if summarize_with_ai:
-        triage_cache_key = compose_cache_key(
-            "roadmap-ai-triage",
-            open_items=open_items,
-            scope=runtime_cache_scope(),
-        )
+    if st.button(f"Summarize {len(open_items)} open items with AI", icon=":material/auto_awesome:"):
         with st.spinner("Generating triage summary..."):
-            triage_payload = _cached_triage_summary(triage_cache_key, tuple(open_items))
-        triage = triage_payload["triage"]
-        triage_tone, triage_freshness = cache_freshness_message(
-            "AI triage summary",
-            triage_payload["cached_at"],
-            ROADMAP_AI_TRIAGE_CACHE_TTL_SECONDS,
-        )
-        render_status_note("Outcome: AI triage cache checked", triage_freshness, tone=triage_tone)
+            triage = _cached_triage_summary(tuple(open_items))
         if triage.get("enabled"):
-            render_status_note(
-                "Outcome: AI triage generated",
-                "AI prioritization summary is available below for maintainer review.",
-                tone="success",
-            )
-            render_status_note("Outcome: AI triage summary ready", triage["summary"], tone="neutral")
+            render_status_note("AI triage summary", triage["summary"], tone="ai")
         else:
-            if triage.get("status") == "error":
-                render_failure_note(
-                    "AI triage",
-                    triage.get("message"),
-                    remediation="Check Azure OpenAI configuration and retry when the service is available.",
-                )
-            else:
-                render_status_note("Outcome: AI triage skipped", triage["message"], tone="neutral")
+            status_tone = "warning" if triage.get("status") == "error" else "neutral"
+            render_status_note("AI triage summary", triage["message"], tone=status_tone)
 
 st.markdown(
     f"""
