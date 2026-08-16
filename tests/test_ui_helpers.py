@@ -222,10 +222,6 @@ def test_expected_tools_are_tagged_new():
         "timestamp_converter",
         "text_diff_checker",
         "jwt_encoder",
-        "cidr_aggregator",
-        "user_agent_parser",
-        "ipv6_compressor",
-        "case_converter",
     }
 
 
@@ -349,25 +345,9 @@ def test_sidebar_category_partition_matches_expected_grouping():
         by_category[tool.category].append(tool.slug)
 
     assert by_category == {
-        "Network": [
-            "domain_health",
-            "dns_records",
-            "subnet_calculator",
-            "mac_address_tool",
-            "cidr_aggregator",
-            "ipv6_compressor",
-        ],
+        "Network": ["domain_health", "dns_records", "subnet_calculator", "mac_address_tool"],
         "Security": ["ssl_certificate", "jwt_decoder", "hash_generator", "email_header_analyzer", "password_generator", "jwt_encoder"],
-        "Web & Dev": [
-            "http_status",
-            "json_formatter",
-            "base64_tool",
-            "url_encoder_decoder",
-            "regex_tester",
-            "text_diff_checker",
-            "user_agent_parser",
-            "case_converter",
-        ],
+        "Web & Dev": ["http_status", "json_formatter", "base64_tool", "url_encoder_decoder", "regex_tester", "text_diff_checker"],
         "Ops & Automation": ["cron_explainer", "log_troubleshooting", "timestamp_converter"],
         "Reference": ["port_reference", "windows_event_reference"],
     }

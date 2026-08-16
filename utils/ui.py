@@ -1213,6 +1213,18 @@ TOOLS: tuple[ToolMeta, ...] = (
         category="Web & Dev",
         is_new=True,
     ),
+    ToolMeta(
+        title="JWT Encoder",
+        short_title="JWT Encoder",
+        description="Build and sign a JWT from a JSON payload, secret, and HMAC algorithm.",
+        path="pages/21_JWT_Encoder.py",
+        icon="JWT+",
+        accent="#4338ca",
+        slug="jwt_encoder",
+        professions=("Web Developer", "Security Engineer", "Automation Engineer"),
+        category="Security",
+        is_new=True,
+    ),
 )
 
 # Curated, not usage-derived -- this app deliberately has no usage tracking
@@ -2258,10 +2270,6 @@ def _material_icon_for(slug: str) -> str:
         "timestamp_converter": ":material/schedule:",
         "text_diff_checker": ":material/difference:",
         "jwt_encoder": ":material/verified_user:",
-        "cidr_aggregator": ":material/merge_type:",
-        "user_agent_parser": ":material/devices:",
-        "ipv6_compressor": ":material/compress:",
-        "case_converter": ":material/text_fields:",
     }
     return icons.get(slug, ":material/build:")
 
