@@ -4,7 +4,7 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
 
-WAVE41_PAGES = (
+WAVE42_PAGES = (
     "app.py",
     "pages/10_Roadmap_Feedback.py",
     "pages/141_Lorem_Ipsum_Generator.py",
@@ -12,17 +12,17 @@ WAVE41_PAGES = (
 )
 
 
-def test_wave41_pages_keep_shell_and_baseline_markers():
-    for rel_path in WAVE41_PAGES:
+def test_wave42_pages_keep_shell_and_baseline_markers():
+    for rel_path in WAVE42_PAGES:
         source = (PROJECT_ROOT / rel_path).read_text(encoding="utf-8")
         assert "apply_app_shell(" in source, f"{rel_path}: missing shared shell"
         assert 'mark_page_baseline(_baseline, "shell-ready")' in source, f"{rel_path}: missing shell-ready marker"
-        assert 'mark_page_baseline(_baseline, "wave41-shell-mobile")' in source, f"{rel_path}: missing wave-41 marker"
+        assert 'mark_page_baseline(_baseline, "wave42-shell-mobile")' in source, f"{rel_path}: missing wave-42 marker"
         assert 'mark_page_baseline(_baseline, "content-rendered")' in source, f"{rel_path}: missing content marker"
         assert "render_page_baseline(_baseline)" in source, f"{rel_path}: missing baseline render"
 
 
-def test_wave41_pages_keep_grouped_controls_and_mobile_primary_actions():
+def test_wave42_pages_keep_grouped_controls_and_mobile_primary_actions():
     expected_snippets = {
         "app.py": [
             'with tool_form_panel("home_navigation_controls"):',
@@ -43,7 +43,7 @@ def test_wave41_pages_keep_grouped_controls_and_mobile_primary_actions():
             'with tool_form_panel("roadmap_filters"):',
             '"Filter setup",',
             'description="Set search terms and category scope first so roadmap results are easier to scan.",',
-            'eyebrow="Step 1",',
+            'eyebrow="Step 1a",',
             'heading_level="h3",',
             'render_control_heading("Apply filters")',
             'st.caption("Read order: set search + category, apply filters, then review status outcomes before scanning cards.")',
@@ -86,8 +86,8 @@ def test_wave41_pages_keep_grouped_controls_and_mobile_primary_actions():
     for rel_path, snippets in expected_snippets.items():
         source = (PROJECT_ROOT / rel_path).read_text(encoding="utf-8")
         for snippet in snippets:
-            assert snippet in source, f"{rel_path}: missing wave-41 shell/mobile snippet {snippet!r}"
+            assert snippet in source, f"{rel_path}: missing wave-42 shell/mobile snippet {snippet!r}"
 
-    for rel_path in WAVE41_PAGES[1:]:
+    for rel_path in WAVE42_PAGES[1:]:
         source = (PROJECT_ROOT / rel_path).read_text(encoding="utf-8")
         assert "st.columns(2)" not in source, f"{rel_path}: should avoid fixed two-column form layouts on small screens"

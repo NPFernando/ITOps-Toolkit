@@ -71,6 +71,7 @@ mark_page_baseline(_baseline, "wave38-shell-mobile")
 mark_page_baseline(_baseline, "wave39-shell-mobile")
 mark_page_baseline(_baseline, "wave40-shell-mobile")
 mark_page_baseline(_baseline, "wave41-shell-mobile")
+mark_page_baseline(_baseline, "wave42-shell-mobile")
 
 render_page_header("Lorem Ipsum Generator", "Generate deterministic placeholder text by words, sentences, or paragraphs.")
 

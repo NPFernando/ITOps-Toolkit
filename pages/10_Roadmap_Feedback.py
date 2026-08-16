@@ -46,6 +46,7 @@ mark_page_baseline(_baseline, "wave38-shell-mobile")
 mark_page_baseline(_baseline, "wave39-shell-mobile")
 mark_page_baseline(_baseline, "wave40-shell-mobile")
 mark_page_baseline(_baseline, "wave41-shell-mobile")
+mark_page_baseline(_baseline, "wave42-shell-mobile")
 
 
 def _status_tone(status: str) -> str:
@@ -230,7 +231,7 @@ with tool_form_panel("roadmap_filters"):
     render_section_heading(
         "Filter setup",
         description="Set search terms and category scope first so roadmap results are easier to scan.",
-        eyebrow="Step 1",
+        eyebrow="Step 1a",
         heading_level="h3",
     )
     with st.form("roadmap-filters-form"):
@@ -332,7 +333,7 @@ else:
             "Generate optional AI triage",
             "Runs only when clicked and uses public roadmap item text already shown on this page.",
         )
-        render_section_heading("Optional triage", eyebrow="Step 2", heading_level="h3")
+        render_section_heading("Optional triage", eyebrow="Step 3a", heading_level="h3")
         render_control_heading("Triage action")
         st.caption("Use this after filtering so the summary reflects the items you are actively reviewing.")
         summarize_with_ai = st.button(f"Summarize {len(open_items)} open items with AI", icon=":material/auto_awesome:", use_container_width=True)
