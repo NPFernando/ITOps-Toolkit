@@ -52,19 +52,9 @@ if submitted:
     # False again, which would otherwise collapse this whole results section the
     # instant any of them is touched.
     with st.spinner("Sending request..."):
-        st.session_state["webhook_tester_result"] = send_request(url, method, headers_text, body_text)
-
-result = st.session_state.get("webhook_tester_result")
-
-if result is None:
-    render_empty_state(
-        "Ready to send a test request",
-        "HTTP status, timing, headers, and response body appear here after the request completes.",
-    )
-
-if result is not None:
+        result = send_request(url, method, headers_text, body_text)
     with tool_result_panel("webhook_result", related_to="webhook_tester"):
-        render_section_heading("HTTP response", eyebrow="Result")
+        render_section_heading("Response", eyebrow="Result")
         if result["error"]:
             render_failure_note(
                 "Webhook request",

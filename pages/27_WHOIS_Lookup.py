@@ -42,16 +42,9 @@ if submitted:
     # False again, which would otherwise collapse this whole results section the
     # instant any of them is touched.
     with st.spinner("Querying RDAP..."):
-        st.session_state["whois_lookup_result"] = lookup_whois(domain_input)
-
-result = st.session_state.get("whois_lookup_result")
-
-if result is None:
-    render_empty_state("Ready to look up a domain", "Registrar, key dates, and name servers appear here.")
-
-if result is not None:
+        result = lookup_whois(domain_input)
     with tool_result_panel("whois_result", related_to="whois_lookup"):
-        render_section_heading("Lookup outcome", "Registration data visibility from the current RDAP response.", eyebrow="Result")
+        render_section_heading("Registration details", eyebrow="Result")
         if not result["ok"]:
             render_failure_note(
                 "WHOIS lookup",

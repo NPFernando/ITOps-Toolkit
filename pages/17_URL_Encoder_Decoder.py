@@ -50,7 +50,8 @@ decoded_result = st.session_state.get("url_encoder_decoder_decoded")
 if encoded_result is None and decoded_result is None:
     render_empty_state("Ready for input", "Encoded or decoded output appears here after you choose an action.")
 
-if encoded_result is not None:
+if encode_clicked:
+    result = encode_url_text(text_input, plus_for_space)
     with tool_result_panel("url_encoded", related_to="url_encoder_decoder"):
         render_section_heading("Encoded result", "Percent-encoded output generated from the current input.")
         if not encoded_result["ok"]:
@@ -58,7 +59,8 @@ if encoded_result is not None:
         else:
             st.text_area("Result", value=encoded_result["result"], height=180)
 
-if decoded_result is not None:
+if decode_clicked:
+    result = decode_url_text(text_input, plus_for_space)
     with tool_result_panel("url_decoded", related_to="url_encoder_decoder"):
         render_section_heading("Decoded result", "Decoded text from the current input.")
         if not decoded_result["ok"]:

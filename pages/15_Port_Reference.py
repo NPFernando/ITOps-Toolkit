@@ -20,7 +20,7 @@ with tool_form_panel("port_reference"):
     query = st.text_input("Search", placeholder="443, TCP, SSH, database...")
 
 results = search_ports(query)
-with tool_result_panel("port_reference_result"):
+with tool_result_panel("port_reference_result", related_to="port_reference"):
     render_section_heading("Ports", f"{len(results)} matching port(s).")
     if results:
         st.table(

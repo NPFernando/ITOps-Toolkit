@@ -62,13 +62,19 @@ with tool_form_panel("ssl_certificate"):
         submitted = st.form_submit_button("Check certificate")
 
 if submitted:
-    def _validate() -> str | None:
-        ok, error = validate_length(domain, MAX_DOMAIN_LENGTH, "Domain")
-        if not ok:
-            return error
-        if not normalize_domain(domain):
-            return "Enter a domain name."
-        return None
+    ok, error = validate_length(domain, MAX_DOMAIN_LENGTH, "Domain")
+    normalized = normalize_domain(domain)
+    if not ok:
+        st.error(error)
+    elif not normalized:
+        st.error("Enter a domain name.")
+    else:
+        result = get_certificate_info(normalized, int(port))
+        with tool_result_panel("ssl_result", related_to="ssl_certificate"):
+            render_section_heading("Certificate result", "Connection status, expiration, issuer, and subject details.")
+            _status(result["tls_status"])
+            if result["error"]:
+                st.error(result["error"])
 
     run_validated_lookup(
         "ssl_certificate",

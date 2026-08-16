@@ -50,12 +50,13 @@ decoded_result = st.session_state.get("base64_tool_decoded")
 if encoded_result is None and decoded_result is None:
     render_empty_state("Ready for Base64 input", "Encoded or decoded output appears here after you choose an action.")
 
-if encoded_result is not None:
+if encode_clicked:
     with tool_result_panel("base64_encoded", related_to="base64_tool"):
         render_section_heading("Encoded result", "Base64 output generated from the current input.")
         st.text_area("Result", value=encoded_result, height=220)
 
-if decoded_result is not None:
+if decode_clicked:
+    result = decode_base64_text(text_input.strip())
     with tool_result_panel("base64_decoded", related_to="base64_tool"):
         render_section_heading("Decoded result", "Decoded text from valid Base64 input.")
         if decoded_result["ok"]:

@@ -47,7 +47,8 @@ result = st.session_state.get("user_agent_parser_result")
 if result is None:
     render_empty_state("Ready to parse", "Browser, OS, and device details appear here after you submit a User-Agent.")
 
-if result is not None:
+if submitted:
+    result = parse_user_agent(ua_input)
     with tool_result_panel("user_agent_result", related_to="user_agent_parser"):
         render_section_heading("Parsed details", eyebrow="Result")
         if not result["ok"]:

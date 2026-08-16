@@ -34,7 +34,7 @@ if not submitted:
 
 if submitted:
     result = analyze_mac(mac_input)
-    with tool_result_panel("mac_result"):
+    with tool_result_panel("mac_result", related_to="mac_address_tool"):
         render_section_heading("MAC address details", "Canonical formats and address-class bits.")
         if not result["ok"]:
             st.error(result["error"])

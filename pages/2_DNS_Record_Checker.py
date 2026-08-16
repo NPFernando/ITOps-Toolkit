@@ -52,13 +52,16 @@ with tool_form_panel("dns_records"):
         submitted = st.form_submit_button("Look up records")
 
 if submitted:
-    def _validate() -> str | None:
-        ok, error = validate_length(domain, MAX_DOMAIN_LENGTH, "Domain")
-        if not ok:
-            return error
-        if not normalize_domain(domain):
-            return "Enter a domain name."
-        return None
+    ok, error = validate_length(domain, MAX_DOMAIN_LENGTH, "Domain")
+    normalized = normalize_domain(domain)
+    if not ok:
+        st.error(error)
+    elif not normalized:
+        st.error("Enter a domain name.")
+    else:
+        result = resolve_records(normalized, record_type)
+        with tool_result_panel("dns_result", related_to="dns_records"):
+            render_section_heading(f"{record_type} records", EXPLANATIONS[record_type])
 
     run_validated_lookup(
         "dns_records",

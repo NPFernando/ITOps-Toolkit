@@ -50,7 +50,8 @@ result = st.session_state.get("jwt_encoder_result")
 if result is None:
     render_empty_state("Ready to sign a token", "A signed JWT appears here after you submit a payload and secret.")
 
-if result is not None:
+if submitted:
+    result = encode_jwt(payload_input, secret_input, algorithm)
     with tool_result_panel("jwt_encode_result", related_to="jwt_encoder"):
         render_section_heading("Signed token", "Copy this now -- it is not stored or logged.")
         if not result["ok"]:

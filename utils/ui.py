@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+from contextlib import contextmanager
 from dataclasses import dataclass
 from functools import lru_cache
 from html import escape
@@ -1344,54 +1345,32 @@ TITLE_TO_SLUG: dict[str, str] = {tool.title: tool.slug for tool in TOOLS}
 # forced, meaningless section.
 TOOL_BUNDLES: dict[str, tuple[str, ...]] = {
     "domain_health": ("dns_records", "ssl_certificate", "whois_lookup"),
-    "dns_records": ("domain_health", "whois_lookup", "dns_propagation"),
-    "dns_propagation": ("dns_records", "domain_health"),
+    "dns_records": ("domain_health", "whois_lookup", "ssl_certificate"),
     "ssl_certificate": ("domain_health", "dns_records", "http_status"),
-    "http_status": ("domain_health", "ssl_certificate", "uptime_trend", "security_headers"),
-    "uptime_trend": ("http_status", "domain_health"),
-    "security_headers": ("http_status", "ssl_certificate"),
+    "http_status": ("domain_health", "ssl_certificate", "user_agent_parser"),
     "whois_lookup": ("dns_records", "domain_health", "ssl_certificate"),
     "bulk_domain_health": ("domain_health", "dns_records", "ssl_certificate"),
     "mac_address_tool": ("subnet_calculator", "cidr_aggregator", "ipv6_compressor"),
-    "ip_geolocation": ("whois_lookup", "dns_records", "http_status"),
     "subnet_calculator": ("cidr_aggregator", "ipv6_compressor", "mac_address_tool"),
     "cidr_aggregator": ("subnet_calculator", "ipv6_compressor"),
     "ipv6_compressor": ("subnet_calculator", "cidr_aggregator"),
     "port_reference": ("subnet_calculator", "mac_address_tool"),
-    "windows_event_reference": ("log_troubleshooting", "port_reference", "windows_error_reference"),
-    "windows_error_reference": ("windows_event_reference", "log_troubleshooting"),
-    "m365_sku_decoder": ("windows_event_reference", "port_reference"),
-    "email_header_analyzer": ("dns_records", "domain_health", "dkim_lookup"),
-    "dkim_lookup": ("email_header_analyzer", "domain_health", "email_record_builder"),
-    "email_record_builder": ("dkim_lookup", "dns_records"),
+    "email_header_analyzer": ("dns_records", "domain_health"),
     "password_generator": ("hash_generator",),
-    "hash_generator": ("password_generator", "jwt_decoder", "file_integrity"),
-    "file_integrity": ("hash_generator", "cve_lookup"),
-    "totp_generator": ("password_generator", "hash_generator"),
-    "keypair_generator": ("password_generator", "hash_generator"),
+    "hash_generator": ("password_generator", "jwt_decoder"),
     "jwt_decoder": ("jwt_encoder", "hash_generator"),
     "jwt_encoder": ("jwt_decoder", "hash_generator"),
-    "json_formatter": ("base64_tool", "config_format_converter", "json_diff"),
-    "id_generator": ("hash_generator", "json_formatter"),
-    "json_diff": ("json_formatter", "text_diff_checker"),
-    "sql_formatter": ("json_formatter", "config_format_converter"),
-    "base_converter": ("hash_generator", "id_generator"),
-    "config_format_converter": ("json_formatter", "text_diff_checker"),
+    "json_formatter": ("base64_tool", "regex_tester"),
     "base64_tool": ("json_formatter", "url_encoder_decoder"),
     "url_encoder_decoder": ("base64_tool", "json_formatter"),
-    "regex_tester": ("text_diff_checker", "json_formatter", "regex_cheat_sheet"),
+    "regex_tester": ("text_diff_checker", "json_formatter"),
     "text_diff_checker": ("regex_tester", "case_converter"),
     "case_converter": ("text_diff_checker", "url_encoder_decoder"),
     "timestamp_converter": ("cron_explainer",),
-    "cron_explainer": ("timestamp_converter", "log_troubleshooting", "cron_builder"),
-    "cron_builder": ("cron_explainer", "timestamp_converter"),
-    "log_troubleshooting": ("cron_explainer", "webhook_tester", "windows_event_reference"),
-    "chmod_calculator": ("cron_explainer", "log_troubleshooting"),
+    "cron_explainer": ("timestamp_converter", "log_troubleshooting"),
+    "log_troubleshooting": ("cron_explainer", "webhook_tester"),
     "webhook_tester": ("http_status", "log_troubleshooting"),
     "user_agent_parser": ("http_status", "email_header_analyzer"),
-    "ulid_uuid_decoder": ("id_generator", "timestamp_converter"),
-    "curl_builder": ("webhook_tester", "url_encoder_decoder"),
-    "regex_cheat_sheet": ("regex_tester",),
 }
 
 

@@ -59,7 +59,7 @@ if state is None:
 
 if validate_clicked or format_clicked or minify_clicked:
     result = format_json_text(json_input, minify=minify_clicked, indent=indent)
-    with tool_result_panel("json_result"):
+    with tool_result_panel("json_result", related_to="json_formatter"):
         render_section_heading("JSON result", "Validation status and transformed output.")
         if not result["ok"]:
             st.error(result["error"])

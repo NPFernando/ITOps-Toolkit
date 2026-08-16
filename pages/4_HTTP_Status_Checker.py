@@ -39,9 +39,19 @@ with tool_form_panel("http_status"):
         submitted = st.form_submit_button("Check URL")
 
 if submitted:
-    def _validate() -> str | None:
-        ok, error = validate_length(url, MAX_URL_LENGTH, "URL")
-        return None if ok else error
+    ok, error = validate_length(url, MAX_URL_LENGTH, "URL")
+    if not ok:
+        st.error(error)
+    else:
+        result = check_http_status(url)
+        with tool_result_panel("http_result", related_to="http_status"):
+            render_section_heading("HTTP result", "Status, timing, HTTPS state, and final URL.")
+            if result["ok"]:
+                st.success("Healthy")
+            elif result["error"]:
+                st.error(result["error"])
+            else:
+                st.warning("Warning")
 
     run_validated_lookup("http_status", _validate, lambda: check_http_status(url), spinner_text="Checking URL...")
 

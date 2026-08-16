@@ -92,59 +92,7 @@ if validation_error is not None:
         remediation="Upload or paste at least one valid public domain and rerun the check.",
     )
 
-if state is not None:
-    frame = state["frame"]
-    summary = state["summary"]
-    total_processed = len(state["results"])
-    with tool_result_panel("bulk_domain_health_result"):
-        render_section_heading("Batch results", eyebrow="Result")
-        if summary["critical"] > 0 or summary["errored"] > 0:
-            render_status_note(
-                "Bulk check completed with issues",
-                "One or more domains returned critical or unknown status. Review flagged rows before sharing the report.",
-                tone="warning",
-            )
-        elif summary["warning"] > 0:
-            render_status_note(
-                "Bulk check completed with review items",
-                "No critical failures were detected, but one or more domains returned warning-level findings to review.",
-                tone="neutral",
-            )
-        else:
-            render_status_note(
-                "Bulk check completed",
-                "All processed domains returned healthy or warning-level results.",
-                tone="success",
-            )
-        render_status_note(
-            "Processing summary",
-            f"Processed {total_processed} domain(s) in this run. Export includes only current in-memory results.",
-            tone="neutral",
-        )
-        if state["truncated"]:
-            render_status_note(
-                "Input list truncated",
-                f"{state['total_domains']} domains were provided; only the first {MAX_DOMAINS_PER_BATCH} were checked.",
-                tone="warning",
-            )
-
-        st.dataframe(frame, width="stretch", hide_index=True)
-
-        m1, m2, m3, m4 = st.columns(4)
-        m1.metric("Healthy", summary["healthy"])
-        m2.metric("Warning", summary["warning"])
-        m3.metric("Critical", summary["critical"])
-        m4.metric("Errored", summary["errored"])
-
-    with tool_download_panel("bulk_domain_health_export", related_to="bulk_domain_health"):
-        render_section_heading("Export", "Download the current in-memory results.", eyebrow="Downloads")
-        st.download_button(
-            "Download results as CSV",
-            state["csv_data"],
-            file_name="bulk-domain-health.csv",
-            mime="text/csv",
-            use_container_width=True,
-        )
-
-mark_page_baseline(_baseline, "content-rendered")
-render_page_baseline(_baseline)
+        csv_data = frame.to_csv(index=False).encode("utf-8")
+        with tool_download_panel("bulk_domain_health_export", related_to="bulk_domain_health"):
+            render_section_heading("Export", "Download the current in-memory results.", eyebrow="Downloads")
+            st.download_button("Download results as CSV", csv_data, file_name="bulk-domain-health.csv", mime="text/csv")

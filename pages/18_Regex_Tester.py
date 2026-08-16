@@ -35,19 +35,7 @@ with tool_form_panel("regex_tester"):
         submitted = st.form_submit_button("Test pattern")
 
 if submitted:
-    # Stored in session_state (not rendered directly here) because the sidebar's
-    # quick-search box, favorite-star buttons, and any other widget outside this
-    # page's st.form trigger reruns of their own -- on those reruns `submitted` is
-    # False again, which would otherwise collapse this whole results section the
-    # instant any of them is touched.
-    st.session_state["regex_tester_result"] = test_regex(pattern_input, text_input, tuple(flag_names))
-
-result = st.session_state.get("regex_tester_result")
-
-if result is None:
-    render_empty_state("Ready to test", "Matches and capture groups appear here after you test a pattern.")
-
-if result is not None:
+    result = test_regex(pattern_input, text_input, tuple(flag_names))
     with tool_result_panel("regex_result", related_to="regex_tester"):
         render_section_heading("Matches", f"{result['match_count']} match(es) found.")
         if not result["ok"]:

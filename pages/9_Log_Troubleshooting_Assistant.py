@@ -81,7 +81,8 @@ result = st.session_state.get("log_troubleshooting_result")
 if result is None:
     render_empty_state("Ready to analyze sanitized logs", "Findings, likely causes, commands, and safe next steps appear after analysis.")
 
-if result is not None:
+if submitted:
+    result = analyze_logs_rule_based(log_text)
     with tool_result_panel("log_result", related_to="log_troubleshooting"):
         render_section_heading("Log analysis", "Rule-based findings and safe operational next steps.")
         if not result["ok"]:
