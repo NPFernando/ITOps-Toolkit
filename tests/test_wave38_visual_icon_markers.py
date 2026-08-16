@@ -18,6 +18,7 @@ def test_wave38_pages_keep_shell_and_visual_icon_markers():
         assert "apply_app_shell(" in source, f"{rel_path}: missing shared shell"
         assert 'mark_page_baseline(_baseline, "shell-ready")' in source, f"{rel_path}: missing shell-ready marker"
         assert 'mark_page_baseline(_baseline, "wave38-shell-mobile")' in source, f"{rel_path}: missing wave-38 marker"
+        assert 'mark_page_baseline(_baseline, "wave50-shell-mobile")' in source, f"{rel_path}: missing wave-50 marker"
         assert 'mark_page_baseline(_baseline, "content-rendered")' in source, f"{rel_path}: missing content marker"
         assert "render_page_baseline(_baseline)" in source, f"{rel_path}: missing baseline render"
 
@@ -35,3 +36,27 @@ def test_wave38_roadmap_heading_hierarchy_snippets_remain_scan_friendly():
     )
     for snippet in expected_snippets:
         assert snippet in source, f"pages/10_Roadmap_Feedback.py: missing wave-38 heading hierarchy snippet {snippet!r}"
+
+
+def test_wave50_mapped_pages_keep_step_heading_hierarchy_scanability():
+    expected_snippets_by_page = {
+        "pages/141_Lorem_Ipsum_Generator.py": (
+            'render_section_heading(\n        "Output setup",',
+            'eyebrow="Step 1",',
+            'heading_level="h3",',
+            'render_section_heading(\n        "Generated lorem output",',
+            'eyebrow="Step 2",',
+        ),
+        "pages/142_Text_to_Binary_Hex_Octal_Converter.py": (
+            'render_section_heading(\n        "Input setup",',
+            'eyebrow="Step 1",',
+            'heading_level="h3",',
+            'render_section_heading(\n        "Encoded output",',
+            'eyebrow="Step 2",',
+        ),
+    }
+
+    for rel_path, snippets in expected_snippets_by_page.items():
+        source = (PROJECT_ROOT / rel_path).read_text(encoding="utf-8")
+        for snippet in snippets:
+            assert snippet in source, f"{rel_path}: missing wave-50 heading hierarchy snippet {snippet!r}"
