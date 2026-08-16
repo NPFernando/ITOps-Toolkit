@@ -35,24 +35,23 @@ def test_display_rows_frame_stringifies_mixed_values():
     assert all(isinstance(value, str) for value in frame["value"].tolist())
 
 
-def test_theme_toggle_requires_a_selection(monkeypatch):
-    """Regression: st.segmented_control defaults to required=False, meaning a click on
-    the already-selected pill deselects it to None -- which the mode-resolution ternary
-    then silently maps to "light". Without required=True, one click on "Dark" while it's
-    already selected flips the whole app to light mode, and that persists in
-    session_state indefinitely (survives reloads within the same browser session)."""
-    calls = []
+def test_apply_app_shell_injects_css_before_rendering_sidebar(monkeypatch):
+    """Regression: apply_app_shell() used to render the sidebar's custom HTML
+    before injecting the stylesheet that styles it -- a leftover ordering
+    from the removed Dark/Light toggle era (CSS injection has no
+    session_state dependency on sidebar widgets anymore). This left a window
+    where the sidebar's custom-styled HTML reached the browser before its
+    stylesheet existed, producing a flash of unstyled content."""
+    call_order = []
 
-    def fake_segmented_control(*args, **kwargs):
-        calls.append(kwargs)
-        return kwargs.get("default")
+    monkeypatch.setattr(ui, "_inject_global_css", lambda mode: call_order.append("css"))
+    monkeypatch.setattr(ui, "render_sidebar", lambda active_page: call_order.append("sidebar"))
+    monkeypatch.setattr(ui, "record_recent_visit", lambda slug: None)
+    monkeypatch.setattr(ui, "_sync_local_storage_mirror", lambda active_page: None)
 
-    monkeypatch.setattr(ui.st, "segmented_control", fake_segmented_control)
-    monkeypatch.setattr(ui.st, "session_state", {})
+    ui.apply_app_shell("Home")
 
-    ui._render_theme_toggle()
-
-    assert calls[0].get("required") is True
+    assert call_order == ["css", "sidebar"]
 
 
 def test_render_status_note_escapes_description_and_normalizes_tone(monkeypatch):
