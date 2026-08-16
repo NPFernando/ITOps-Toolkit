@@ -424,940 +424,139 @@
       "updated_at": "2026-08-06"
     },
     {
+      "title": "Windows Event ID reference",
+      "category": "Tools",
+      "status": "Planned",
+      "votes": 8,
+      "description": "Searchable reference of common Windows Event Log IDs with description, source, and severity, similar to killertools.net's Windows Event Lookup.",
+      "rationale": "Inspired by a comparison against killertools.net (a competing MSP/sysadmin toolkit). Same 'curated static dataset + search box' shape already proven out by the existing Port Reference page -- no external API needed, just a maintained data table.",
+      "updated_at": "2026-08-06"
+    },
+    {
       "title": "Windows/Win32 error code lookup",
       "category": "Tools",
-      "status": "Complete",
+      "status": "Planned",
       "votes": 7,
       "description": "Look up a Windows error code (hex or decimal) -- system errors, BSOD stop codes, WMI/RPC/MSI errors -- and get the plain-language meaning.",
-      "rationale": "Shipped as a dedicated Windows Error Reference page, same static-dataset + search shape as Windows Event Reference and Port Reference. Curated set of ~62 codes across Win32, Service Control, RPC, HRESULT, and NTSTATUS/BSOD categories, searchable by decimal code, hex code, category, or keyword.",
+      "rationale": "Inspired by killertools.net's Windows Error Code Lookup. Same reference-table pattern as Port Reference; complements the existing Log Troubleshooting Assistant for techs triaging Windows-side incidents.",
       "updated_at": "2026-08-06"
     },
     {
       "title": "M365 license SKU decoder",
       "category": "Tools",
-      "status": "Complete",
+      "status": "Planned",
       "votes": 6,
       "description": "Convert Microsoft 365 license SKU strings and GUIDs (e.g. SPE_E3, ENTERPRISEPACK) to readable product names.",
-      "rationale": "Shipped as a dedicated M365 SKU Decoder page. All 42 entries were verified directly against Microsoft's official licensing CSV (learn.microsoft.com/entra/identity/users/licensing-service-plan-reference) rather than reconstructed from memory -- an initial memory-based draft and a lossy AI-summarized page fetch both produced several wrong/swapped GUIDs, caught only by cross-checking against the raw authoritative CSV before shipping.",
+      "rationale": "Inspired by killertools.net's M365 SKU Decoder. High-value for MSPs auditing tenant licensing; a static lookup table, same shape as Port Reference.",
       "updated_at": "2026-08-06"
     },
     {
       "title": "CVE lookup",
       "category": "Security",
-      "status": "Complete",
+      "status": "Planned",
       "votes": 9,
       "description": "Search the NIST National Vulnerability Database by CVE ID or keyword and show severity, description, and affected products.",
-      "rationale": "Shipped as a dedicated CVE Lookup page against the live NIST NVD public API (no API key required for this usage level). Supports exact CVE ID lookup and free-text keyword search, and prefers the newest available CVSS score/severity (v3.1 > v3.0 > v2).",
+      "rationale": "Inspired by killertools.net's CVE Lookup. NVD has a public, keyless API for basic queries, so this follows the same 'optional live external lookup' pattern already validated by WHOIS/MAC-vendor/DNS work -- genuinely useful for MSP security triage, not currently covered by anything in this toolkit.",
       "updated_at": "2026-08-06"
     },
     {
       "title": "SPF/DMARC/DKIM record builder",
       "category": "Security",
-      "status": "Complete",
+      "status": "Planned",
       "votes": 7,
       "description": "Generate correctly-formatted SPF, DMARC, and DKIM TXT record strings from simple inputs (allowed senders, policy level, reporting address), the reverse of the existing DNS/email-security checks.",
-      "rationale": "Shipped as an Email Record Builder page with SPF/DMARC/DKIM tabs. SPF and DMARC are fully generated from structured inputs with built-in warnings (SPF 10-lookup limit, empty-sender records, DMARC missing rua, full pct=100 reject). DKIM formats an existing pasted public key into the correct TXT record and record name -- it does not generate a key pair (that's the separate RSA/SSH key pair generator roadmap item).",
+      "rationale": "Inspired by killertools.net's Email Record Generator. Directly complements the existing Domain Health Checker / DKIM selector lookup roadmap item -- checking is covered, building the record isn't yet.",
       "updated_at": "2026-08-06"
     },
     {
       "title": "Integer base converter",
       "category": "Tools",
-      "status": "Complete",
+      "status": "Planned",
       "votes": 5,
       "description": "Convert a number between binary, octal, decimal, and hexadecimal, with live conversion as you type.",
-      "rationale": "Shipped as a dedicated Integer Base Converter page, stdlib-only (int()/bin()/oct()/hex()). Handles negative numbers and same-base prefixes (0x/0b/0o) if included. Live-updates as you type, same no-submit-button pattern as chmod Calculator -- no results-vanishing risk since nothing is gated on a transient flag.",
-      "updated_at": "2026-08-07"
+      "rationale": "Inspired by killertools.net's Integer Base Converter. Small, stdlib-only, universally useful dev/IT utility not currently in this toolkit.",
+      "updated_at": "2026-08-06"
     },
     {
       "title": "UUID / ULID generator",
       "category": "Tools",
-      "status": "Complete",
+      "status": "Planned",
       "votes": 6,
       "description": "Generate UUIDs (v4) and ULIDs in bulk, with copy-to-clipboard and a CSV export for when a batch of test IDs is needed.",
-      "rationale": "Shipped as a dedicated ID Generator page. UUIDv4 uses Python's stdlib uuid module; ULID has no stdlib equivalent, so it's implemented directly against the spec (48-bit ms timestamp + 80-bit randomness, Crockford Base32, 26 chars) using only stdlib time/secrets -- no new dependency. Also caught and fixed a real bug while building this: st.download_button triggers a script rerun just like any other widget, so a download button inside a block gated on a transient form-submitted flag collapses the whole results section right after the file downloads -- the same bug class as PR #33/#34, now also confirmed present on several older, previously-shipped pages (tracked separately).",
+      "rationale": "Inspired by killertools.net's UUID/ULID generators. Extremely common dev/ops need not currently covered by this toolkit; stdlib `uuid` covers UUIDv4 with no new dependency.",
       "updated_at": "2026-08-06"
     },
     {
       "title": "TOTP/OTP code generator and validator",
       "category": "Security",
-      "status": "Complete",
+      "status": "Planned",
       "votes": 6,
       "description": "Generate and validate time-based one-time passcodes (TOTP) from a shared secret, for testing MFA setups without needing a phone in hand.",
-      "rationale": "Shipped as a TOTP Generator page with two tabs: generate a current code from a secret (with a 'generate random secret' button for quick testing), and verify a code against a secret with one 30-second window of clock-drift tolerance. Added pyotp as a new dependency (small, well-established, single-purpose library) -- flagged explicitly since this app has a history of dependency-related incidents.",
-      "updated_at": "2026-08-07"
+      "rationale": "Inspired by killertools.net's OTP tool. Useful for techs testing MFA enrollment/troubleshooting; buildable with the small, well-audited `pyotp` package (a new dependency, worth calling out at build time given this app's history with dependency-related outages).",
+      "updated_at": "2026-08-06"
     },
     {
       "title": "Bcrypt hash generator/verifier",
       "category": "Security",
-      "status": "Complete",
+      "status": "Planned",
       "votes": 5,
       "description": "Hash a value with bcrypt (configurable cost factor) and separately verify a value against an existing bcrypt hash.",
-      "rationale": "Shipped as a Bcrypt Tool page with Hash and Verify tabs. Configurable cost factor (4-15 rounds; capped below bcrypt's full range since round 16+ takes several seconds per hash, a DoS concern on a shared public app). Handles both of bcrypt's real error modes: passwords over the library's hard 72-byte limit, and invalid hash strings on verify. Adds bcrypt as a new dependency, verified installing cleanly with no extra transitive packages beyond itself.",
-      "updated_at": "2026-08-07"
+      "rationale": "Inspired by killertools.net's bcrypt tool. Complements the existing Hash Generator, which only covers fixed-digest algorithms (MD5/SHA family), not bcrypt's salted/adaptive scheme -- useful when testing an app's auth/password storage.",
+      "updated_at": "2026-08-06"
     },
     {
       "title": "RSA/SSH key pair generator",
       "category": "Security",
-      "status": "Complete",
+      "status": "Planned",
       "votes": 6,
       "description": "Generate an RSA (or ed25519) key pair in the browser for test/throwaway use -- SSH authorized_keys format and PEM private key.",
-      "rationale": "Shipped as an RSA/SSH Key Pair Generator page supporting RSA (2048/3072/4096) and Ed25519, outputting PKCS8 PEM private key + OpenSSH-format public key + SHA256 fingerprint (matches real ssh-keygen -lf output format). Adds cryptography as a new dependency -- widely-used, has prebuilt wheels for standard platforms, no compilation needed. Explicit warning on the page that this is for disposable test credentials only, never anything real, since the app has no way to protect a private key once rendered to the browser.",
-      "updated_at": "2026-08-07"
+      "rationale": "Inspired by killertools.net's RSA Key Pair Generator. Useful for spinning up disposable test credentials during troubleshooting; buildable with Python's `cryptography` package (a new dependency).",
+      "updated_at": "2026-08-06"
     },
     {
       "title": "chmod calculator",
       "category": "Tools",
-      "status": "Complete",
+      "status": "Planned",
       "votes": 5,
       "description": "Convert between symbolic (rwxr-xr--) and octal (754) Unix file permission notation, both directions, with a checkbox grid for building permissions visually.",
-      "rationale": "Shipped as a dedicated chmod Calculator page with three tabs: octal-to-symbolic, symbolic-to-octal, and a visual checkbox-grid builder. Correctly handles setuid/setgid/sticky special bits including the S/T (uppercase) forms when the underlying execute bit is absent -- verified against known real-world examples and round-tripped. Stdlib-only (regex), no dependency. Live-updates as you type with no submit button, so there's no results-vanishing risk (nothing is gated on a transient submit flag).",
+      "rationale": "Inspired by killertools.net's chmod calculator. Small, stdlib-only sysadmin staple, no external dependency needed.",
       "updated_at": "2026-08-06"
     },
     {
       "title": "Config format converter (YAML / TOML / XML / JSON)",
       "category": "Tools",
-      "status": "Complete",
+      "status": "Planned",
       "votes": 7,
       "description": "Convert a pasted config snippet between YAML, TOML, XML, and JSON, reusing the existing JSON Formatter's validation/error-display pattern.",
-      "rationale": "Shipped as a dedicated Config Format Converter page. JSON/YAML/TOML share the same object model and convert losslessly (modulo TOML's own restrictions -- no top-level list, no null). XML has no standard equivalent, so the tool uses one explicit, disclosed convention (keys become child elements, lists become repeated elements, scalars become element text) rather than pretending it's a universal mapping -- called out directly on the page. Added pyyaml to requirements.txt; toml was already a transitive dependency.",
+      "rationale": "Inspired by killertools.net's YAML/TOML/XML converters. Common ops task when moving config between tools (e.g. Ansible YAML to a JSON API payload); would need `PyYAML` and `toml`/`tomllib` (stdlib in 3.11+) as dependencies.",
       "updated_at": "2026-08-06"
     },
     {
       "title": "JSON diff viewer",
       "category": "Tools",
-      "status": "Complete",
+      "status": "Planned",
       "votes": 6,
       "description": "Structurally diff two JSON documents (key-aware, not line-based) and highlight added/removed/changed fields.",
-      "rationale": "Shipped as a dedicated JSON Diff Viewer page. Structurally diffs by key/path (not by line), so key reordering is not reported as a difference, unlike the existing Text Diff Checker. Walks iteratively with an explicit stack, not recursion, and caps results at 500 -- same defensive pattern already used by json_stats/search_json_paths in utils/text_tools.py for the same reason (a short but deeply-nested JSON string can exceed Python's recursion limit).",
+      "rationale": "Inspired by killertools.net's JSON diff tool. Complements the existing Text Diff Checker (line-based) and JSON Formatter -- useful for comparing API responses or config exports where line-based diffing produces noisy results from key reordering.",
       "updated_at": "2026-08-06"
     },
     {
       "title": "SQL formatter/prettifier",
       "category": "Tools",
-      "status": "Complete",
+      "status": "Planned",
       "votes": 5,
       "description": "Reformat a pasted SQL query with consistent indentation and keyword casing for readability.",
-      "rationale": "Shipped as a dedicated SQL Formatter page. sqlparse is a lenient tokenizer/formatter, not a validator for a specific SQL dialect -- it never rejects input as 'invalid SQL' and even uppercases recognized keywords inside otherwise-plain text (confirmed directly, not assumed, and stated on the page itself rather than implying validation that doesn't happen). Adds sqlparse as a new dependency, no transitive packages. Live-updates, no submit button -- no results-vanishing risk. This was the final remaining roadmap backlog item.",
-      "updated_at": "2026-08-07"
+      "rationale": "Inspired by killertools.net's SQL Prettify tool. Useful for sysadmins/DBAs pasting minified or exported queries; buildable with the small `sqlparse` package (a new dependency).",
+      "updated_at": "2026-08-06"
     },
     {
       "title": "HTTP status code reference",
       "category": "Tools",
-      "status": "Complete",
+      "status": "Planned",
       "votes": 4,
       "description": "Searchable static reference of HTTP status codes with meaning and common causes, standalone from the live HTTP Status Checker.",
-      "rationale": "Shipped as a dedicated HTTP Status Reference page, same static-dataset + search shape as Port Reference and the Windows Event/Error References. Covers 39 commonly-seen 1xx-5xx codes, searchable by code, category, or keyword.",
-      "updated_at": "2026-08-07"
-    },
-    {
-      "title": "ULID/UUID decoder",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 6,
-      "description": "Decode a ULID back to its embedded creation timestamp, or identify a UUID's version and (for v1/v7) extract its embedded timestamp.",
-      "rationale": "Reverse of the existing ID Generator -- useful when you have an ID from a log or database row and want to know when it was created without a lookup. Stdlib-only (struct/datetime), no new dependency.",
-      "updated_at": "2026-08-08"
-    },
-    {
-      "title": ".env file linter",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 6,
-      "description": "Paste a .env file and flag common mistakes: duplicate keys, unquoted values with spaces, trailing whitespace, missing '=', and accidental export/quote mismatches.",
-      "rationale": "Common DevOps footgun-catcher; distinct from Config Format Converter (which converts between structured formats, not this key=value convention). Stdlib-only, no dependency.",
-      "updated_at": "2026-08-08"
-    },
-    {
-      "title": "curl command builder",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 5,
-      "description": "Build a copy-pasteable curl command line from a method, URL, headers, and body -- the inverse of Webhook Tester, which executes the request instead of generating the command.",
-      "rationale": "Useful when you want the request to run somewhere else (a script, a teammate's terminal, a support ticket) rather than from this app. Reuses Webhook Tester's header/body parsing helpers where possible.",
-      "updated_at": "2026-08-08"
-    },
-    {
-      "title": "CSV diff viewer",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 5,
-      "description": "Structurally compare two CSV files by a chosen key column, showing added/removed/changed rows -- the CSV equivalent of the existing JSON Diff Viewer.",
-      "rationale": "Common export-comparison task (before/after a data migration, config export diffing) that a raw text diff handles poorly once rows reorder. Stdlib csv module, no new dependency.",
-      "updated_at": "2026-08-08"
-    },
-    {
-      "title": "Regex cheat sheet reference",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 4,
-      "description": "Static, searchable reference of common regex patterns (email, IPv4/IPv6, URL, phone number, UUID, hex color, etc.) with a short explanation for each.",
-      "rationale": "Same static-dataset + search shape as Port Reference and the Windows Event/Error References. Complements Regex Tester (which tests a pattern you already have) with patterns to start from.",
-      "updated_at": "2026-08-08"
-    },
-    {
-      "title": "Markdown <-> HTML converter",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 5,
-      "description": "Convert Markdown to HTML and HTML back to Markdown.",
-      "rationale": "Common content-authoring task (README snippets, ticket notes, wiki pages) not currently covered. Would need a small markdown-to-HTML dependency (e.g. `markdown`) and an HTML-to-Markdown one (e.g. `markdownify`) -- flag both at build time.",
-      "updated_at": "2026-08-08"
-    },
-    {
-      "title": "TLS cipher/protocol scanner",
-      "category": "Security",
-      "status": "Complete",
-      "votes": 6,
-      "description": "Connect to a host:port and report which TLS protocol versions (SSLv3-TLS1.3) and select cipher suites are accepted or rejected, similar to a lightweight SSL Labs check.",
-      "rationale": "Complements the existing SSL Certificate Checker (which reports the certificate actually presented) with what the server's TLS stack will negotiate. Buildable with stdlib `ssl`/`socket` (multiple connection attempts, one per protocol/cipher-set) -- no new dependency, but each check takes several real network round trips, so needs a sensible cap on how many combinations are probed.",
-      "updated_at": "2026-08-08"
-    },
-    {
-      "title": "Business hours / SLA duration calculator",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 6,
-      "description": "Compute elapsed business hours between two timestamps, excluding weekends and a configurable set of holidays -- for SLA/response-time tracking.",
-      "rationale": "Directly useful for MSP ticket SLA math, distinct from the existing Timestamp Converter (single-value conversion) and Uptime Trend (uptime %, not elapsed business time). Stdlib datetime only.",
-      "updated_at": "2026-08-08"
-    },
-    {
-      "title": "Text encoding detector and converter",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 4,
-      "description": "Detect the likely character encoding of pasted or uploaded text (e.g. Windows-1252 vs UTF-8 vs UTF-16) and convert it to clean UTF-8.",
-      "rationale": "Useful for garbled log files or CSV exports from older Windows tools that show mojibake when opened as UTF-8. Would need a small detection dependency (e.g. `charset-normalizer`, already a transitive dependency of `requests`) -- flag at build time whether it's already present.",
-      "updated_at": "2026-08-08"
-    },
-    {
-      "title": "robots.txt / sitemap.xml validator",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 4,
-      "description": "Fetch a domain's robots.txt and referenced sitemap(s), validate their syntax, and report basic issues (unreachable sitemap URL, malformed directives).",
-      "rationale": "Common pre-launch/SEO-audit check for web developers; reuses the same live-fetch pattern already validated by HTTP Status Checker and Security Headers Checker.",
-      "updated_at": "2026-08-08"
-    },
-    {
-      "title": "JWT weak-secret checker",
-      "category": "Security",
-      "status": "Complete",
-      "votes": 5,
-      "description": "Test whether a JWT's HMAC signature matches any secret from a small built-in list of common/weak secrets (e.g. 'secret', 'changeme', '123456') -- a quick sanity check for your own tokens, not a general cracking tool.",
-      "rationale": "Complements the existing JWT Decoder/Encoder. Deliberately scoped to a short built-in wordlist (not a brute-force engine or user-supplied wordlist upload) to keep this a quick sanity check rather than something that could be repurposed as an attack tool against third-party tokens.",
-      "updated_at": "2026-08-08"
-    },
-    {
-      "title": "Log timestamp duration calculator",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 4,
-      "description": "Paste two timestamps (in any of several common log formats -- ISO 8601, syslog, Apache/nginx access log) and get the elapsed duration between them, auto-detecting the format of each.",
-      "rationale": "Common troubleshooting task (how long did this incident/request actually take, from two log lines in different formats) that the existing Timestamp Converter doesn't directly answer since it only converts single values, not computes a delta between two auto-detected formats.",
-      "updated_at": "2026-08-08"
-    },
-    {
-      "title": "URL parser / breakdown tool",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 7,
-      "description": "Paste a URL and see it broken down into scheme, host, port, path, query parameters (as a table), and fragment.",
-      "rationale": "Distinct from the existing URL Encoder/Decoder (which only percent-encodes/decodes a string) -- this parses structure. Common need when debugging a long URL with many query params pasted from a browser or log line. Buildable with stdlib urllib.parse only, no new dependency. Verified directly: urllib.parse.urlsplit/parse_qsl handle scheme/host/port/path/query/fragment cleanly.",
-      "updated_at": "2026-08-10"
-    },
-    {
-      "title": "Base32 encoder/decoder",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 5,
-      "description": "Encode/decode text or bytes to/from Base32 (RFC 4648), the encoding TOTP secrets and some other systems use.",
-      "rationale": "Distinct from Base64 Tool (different alphabet/encoding) and Integer Base Converter (which converts numbers between numeric bases, not byte encoding). Directly complements the existing TOTP Generator, which already consumes Base32 secrets. Stdlib base64.b32encode/b32decode only, no new dependency -- verified directly.",
-      "updated_at": "2026-08-10"
-    },
-    {
-      "title": "Raw HTTP header parser",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 6,
-      "description": "Paste a raw block of HTTP request or response headers (e.g. copied from browser devtools) and see them parsed into a labeled table with brief explanations for well-known headers.",
-      "rationale": "Distinct from Security Headers Checker and HTTP Status Checker, both of which fetch headers live from a URL -- this parses headers a user already has in hand (from devtools, a support ticket, a curl -v output) with no network call at all. Stdlib text parsing only, no new dependency.",
-      "updated_at": "2026-08-10"
-    },
-    {
-      "title": "CIDR overlap checker",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 5,
-      "description": "Enter two or more CIDR ranges and check whether any of them overlap.",
-      "rationale": "Complements the existing Subnet Calculator and CIDR Aggregator (which describe/merge ranges but don't flag overlap between separately-entered ranges) -- a common pre-flight check before allocating a new subnet block. Stdlib ipaddress.ip_network(...).overlaps() only, no new dependency -- verified directly.",
-      "updated_at": "2026-08-10"
-    },
-    {
-      "title": "CSR decoder",
-      "category": "Security",
-      "status": "Complete",
-      "votes": 6,
-      "description": "Paste a PEM-encoded Certificate Signing Request (CSR) and see its subject, SAN entries, public key algorithm/size, and signature validity.",
-      "rationale": "Complements SSL Certificate Checker (which inspects an issued cert, not the request that preceded it) and RSA/SSH Key Pair Generator. Uses the `cryptography` package already installed for this app's TOTP/keypair/bcrypt tools -- x509.load_pem_x509_csr() and CSR.is_signature_valid -- no new dependency. Verified directly by generating and parsing a real CSR.",
-      "updated_at": "2026-08-10"
-    },
-    {
-      "title": "PEM certificate bundle splitter",
-      "category": "Security",
-      "status": "Complete",
-      "votes": 5,
-      "description": "Paste a multi-certificate PEM bundle (e.g. a full chain file) and see it split into individual certificates, each with its subject, issuer, and expiration shown separately.",
-      "rationale": "Complements SSL Certificate Checker -- a common troubleshooting need when a server's chain file has certs in the wrong order or an unexpected extra/missing intermediate, which is hard to eyeball from one long PEM blob. Uses the `cryptography` package already installed (x509.load_pem_x509_certificates), no new dependency.",
-      "updated_at": "2026-08-10"
-    },
-    {
-      "title": "Invisible/whitespace character visualizer",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 4,
-      "description": "Paste text and highlight non-breaking spaces, tabs, zero-width characters, and other invisible/lookalike characters that commonly cause silent copy-paste bugs (e.g. in config files or scripts).",
-      "rationale": "A common, hard-to-self-diagnose class of bug (a config value that 'looks' right but has a stray non-breaking space or zero-width character pasted in from a rich-text source). Stdlib only -- iterate codepoints and flag anything outside printable ASCII plus common accented text.",
-      "updated_at": "2026-08-10"
-    },
-    {
-      "title": "Date calculator",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 4,
-      "description": "Add or subtract a number of days/weeks/months from a date, or compute the number of calendar days between two dates.",
-      "rationale": "Distinct from Timestamp Converter (single-value epoch/ISO conversion), Business Hours Calculator (business-hours-only elapsed time), and Log Timestamp Duration Calculator (log-format auto-detection) -- this is plain calendar-date arithmetic (e.g. 'what date is 90 days from now', 'how many days until this deadline'), a different and more common everyday need. Stdlib datetime.timedelta only, no new dependency.",
-      "updated_at": "2026-08-10"
-    },
-    {
-      "title": "XML formatter/validator",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 4,
-      "description": "Paste XML and get it pretty-printed with consistent indentation, or flagged with a clear error if it's not well-formed.",
-      "rationale": "Distinct from JSON Formatter and Config Format Converter's XML support (which only converts a JSON-shaped object model to a simple XML convention, not general XML with attributes/mixed content/namespaces) -- this formats/validates arbitrary XML as-is. Stdlib xml.dom.minidom.toprettyxml, no new dependency -- verified directly.",
-      "updated_at": "2026-08-10"
-    },
-    {
-      "title": "HTML entity encoder/decoder",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 6,
-      "description": "Encode text to HTML entities (&lt;, &amp;, &quot;, etc.) or decode HTML entities back to plain text.",
-      "rationale": "Distinct from URL Encoder/Decoder and Base64/Base32 Tools (different encoding entirely) -- a common need when embedding user text in HTML or debugging entity-encoded content copied from a web page. Stdlib html.escape/html.unescape only, no new dependency -- verified directly, including numeric character references.",
-      "updated_at": "2026-08-11"
-    },
-    {
-      "title": "Deterministic UUID generator (v3/v5)",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 5,
-      "description": "Generate a namespace-based UUID (v3 MD5 or v5 SHA-1) from a namespace + name pair -- the same input always produces the same UUID.",
-      "rationale": "Distinct from the existing ID Generator, which only generates random v1/v4/v7 UUIDs -- v3/v5 are deterministic/hash-based, useful for generating stable IDs from external identifiers (e.g. a URL or DNS name) without a database. Stdlib uuid.uuid3/uuid5 with the 4 standard namespaces (DNS, URL, OID, X.500), no new dependency -- verified directly.",
-      "updated_at": "2026-08-11"
-    },
-    {
-      "title": "Luhn checksum validator",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 4,
-      "description": "Validate a credit card number, IMEI, or other Luhn-checksummed number, and optionally compute the correct check digit for a partial number.",
-      "rationale": "Common quick-validation need (did I mistype a card/IMEI number) with no existing tool covering it. Stdlib arithmetic only, no new dependency -- verified directly against a known-valid test card number.",
-      "updated_at": "2026-08-11"
-    },
-    {
-      "title": "Text statistics / word frequency counter",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 5,
-      "description": "Paste text and see word count, character count, sentence count, and the most frequent words.",
-      "rationale": "No existing general-purpose text-stats tool -- JSON Formatter's stats are JSON-structure-specific, not applicable to plain prose/logs. Stdlib re + collections.Counter only, no new dependency -- verified directly.",
-      "updated_at": "2026-08-11"
-    },
-    {
-      "title": "CSV to Markdown table converter",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 4,
-      "description": "Paste CSV (or TSV) and get a Markdown table, ready to paste into a README, PR description, or wiki page.",
-      "rationale": "Complements CSV Diff Viewer and Markdown/HTML Converter, but distinct from both -- this is a common one-off formatting task (turning a spreadsheet export into a Markdown table) with no existing tool. Stdlib csv module only, no new dependency -- verified directly.",
-      "updated_at": "2026-08-11"
-    },
-    {
-      "title": "SSH key fingerprint tool",
-      "category": "Security",
-      "status": "Complete",
-      "votes": 5,
-      "description": "Paste a public SSH key (or a known_hosts line) and see its MD5 and SHA256 fingerprints, matching the format ssh-keygen -lf prints.",
-      "rationale": "Complements the existing RSA/SSH Key Pair Generator -- useful for verifying a key you already have against a fingerprint shown elsewhere (e.g. a GitHub deploy key or server host key). Uses the `cryptography` package already installed for this app's other key/cert tools, no new dependency -- verified directly against a freshly generated key, matching ssh-keygen's known fingerprint format.",
-      "updated_at": "2026-08-11"
-    },
-    {
-      "title": "YAML formatter/validator",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 5,
-      "description": "Paste YAML and get it consistently re-indented, or flagged with a clear error and line number if it's not valid YAML.",
-      "rationale": "Distinct from Config Format Converter's YAML support (which only converts a JSON-shaped object model between formats, not format/validate YAML as-is) -- same relationship XML Formatter already has to Config Format Converter's XML support. Uses `pyyaml`, already an installed dependency, no new pin -- verified directly including a malformed-input error with line/column.",
-      "updated_at": "2026-08-11"
-    },
-    {
-      "title": "Byte size converter",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 5,
-      "description": "Convert a byte count into human-readable units (KB/MB/GB/TB, both decimal-1000-based and binary-1024-based), or the reverse.",
-      "rationale": "Common sysadmin need (interpreting a raw byte count from a log, df output, or API response) with no existing tool -- distinct from Integer Base Converter, which converts numeric bases, not units. Stdlib arithmetic only, no new dependency -- verified directly for both binary and decimal unit systems.",
-      "updated_at": "2026-08-11"
-    },
-    {
-      "title": "Line ending converter",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 4,
-      "description": "Convert pasted text between CRLF (Windows), LF (Unix/Mac), and CR (classic Mac) line endings.",
-      "rationale": "Common cross-platform text/config file issue (e.g. a script that fails silently because of Windows line endings) with no existing tool covering it directly. Stdlib string replacement only, no new dependency -- verified directly.",
-      "updated_at": "2026-08-11"
-    },
-    {
-      "title": "Regex find & replace",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 5,
-      "description": "Paste text and a regex pattern with a replacement (including backreferences like \\1), and see the substituted output.",
-      "rationale": "Distinct from Regex Tester (which only shows match/no-match and capture groups, not a substituted result) -- a common need when constructing a find/replace regex before using it in a script or editor. Stdlib re.sub only, no new dependency -- verified directly including backreference substitution.",
-      "updated_at": "2026-08-11"
-    },
-    {
-      "title": "Password strength / entropy checker",
-      "category": "Security",
-      "status": "Complete",
-      "votes": 6,
-      "description": "Paste a password and see an estimated entropy (bits) and rough strength category, based on character-set diversity and length.",
-      "rationale": "Distinct from the existing Password Generator (which creates new passwords, not scores existing ones) -- useful for checking a password you already have in mind. Deliberately scoped to a straightforward character-pool-based entropy estimate (not a dictionary/pattern-based cracking-time model, which would need an external wordlist/library) so it stays honest about what it measures. Stdlib math only, no new dependency -- verified directly.",
-      "updated_at": "2026-08-11"
-    },
-    {
-      "title": "Text pattern extractor (grep-style)",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 4,
-      "description": "Paste text and a regex pattern, and get back only the matching lines (or captured groups), like a grep -E over pasted text.",
-      "rationale": "Distinct from Regex Tester (single-string match/no-match) and Log Troubleshooting Assistant (fixed known-issue patterns, not a user-supplied pattern) -- a common need when scanning a pasted log or config for lines matching an arbitrary pattern. Stdlib re only, no new dependency -- verified directly.",
-      "updated_at": "2026-08-11"
-    },
-    {
-      "title": "CSV / JSON converter",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 5,
-      "description": "Convert CSV/TSV (with a header row) to a JSON array of objects, or the reverse.",
-      "rationale": "Distinct from Config Format Converter (handles JSON/YAML/TOML/XML, no CSV) and CSV to Markdown Table (one-way, CSV to Markdown only). Stdlib csv+json only, no new dependency -- verified directly, including a round-trip CSV->JSON->CSV check.",
-      "updated_at": "2026-08-11"
-    },
-    {
-      "title": "Sort & dedupe lines",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 5,
-      "description": "Sort pasted text's lines, remove duplicates, and/or drop blank lines -- like sort -u over pasted text.",
-      "rationale": "Distinct from Text Diff Checker (compares two texts) and CSV/TSV Cleaner (structured rows/cells, not arbitrary lines). Stdlib only, no new dependency -- verified directly, including numeric and case-insensitive sort modes.",
-      "updated_at": "2026-08-11"
-    },
-    {
-      "title": "User-Agent builder",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 4,
-      "description": "Build a User-Agent string for a chosen OS, browser, and version -- the reverse of User Agent Parser.",
-      "rationale": "User Agent Parser only decomposes an existing UA string; this fills the reverse need (testing how a site responds to a specific browser without switching devices). Rejects OS/browser combinations that never existed in the real world (e.g. Safari on Windows). Stdlib only, no new dependency.",
-      "updated_at": "2026-08-11"
-    },
-    {
-      "title": "SemVer comparator / sorter",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 6,
-      "description": "Compare two Semantic Versioning 2.0.0 version strings, or sort a whole list by precedence.",
-      "rationale": "Uses the official SemVer 2.0.0 regex and precedence rules published at semver.org, verified directly against the spec's own worked precedence-order example (1.0.0-alpha < ... < 1.0.0). Stdlib re only, no new dependency -- deliberately not using the packaging library's version comparator, which implements PEP 440, not SemVer.",
-      "updated_at": "2026-08-11"
-    },
-    {
-      "title": "World clock / meeting time planner",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 5,
-      "description": "See one date/time across major world timezones -- useful for planning a meeting or a maintenance window.",
-      "rationale": "Distinct from Timestamp Converter's convert_timezone (a single from/to conversion) -- shows every zone in a curated list side by side at once. Stdlib zoneinfo only, no new dependency.",
-      "updated_at": "2026-08-11"
-    },
-    {
-      "title": "CSV/TSV cleaner",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 4,
-      "description": "Paste messy CSV/TSV and trim cell whitespace, drop empty rows, and/or remove duplicate rows.",
-      "rationale": "Distinct from Sort & Dedupe Lines (arbitrary text lines, not structured rows/cells) and CSV Diff Viewer (compares two CSVs, doesn't clean one). Stdlib csv only, no new dependency.",
-      "updated_at": "2026-08-11"
-    },
-    {
-      "title": "JSON Path query (simple dotted path)",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 5,
-      "description": "Extract a value from JSON with a simple dotted path, e.g. user.addresses[0].city.",
-      "rationale": "Deliberately scoped to dotted keys and [index] array access only -- no wildcards, filters, or slicing -- so it stays honest about not being a full JSONPath/JMESPath implementation and doesn't need a new dependency. Distinct from JSON Diff Viewer (structural comparison) and JSON Formatter (pretty-print/minify).",
-      "updated_at": "2026-08-11"
-    },
-    {
-      "title": "IBAN validator",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 5,
-      "description": "Check an IBAN's structure (country-specific length) and mod-97 checksum.",
-      "rationale": "Distinct algorithm from Luhn Checksum Validator (card numbers). Verified the mod-97 implementation and the country-length table directly against known-valid published IBAN test vectors (Germany, UK) before shipping. Stdlib only, no new dependency.",
-      "updated_at": "2026-08-11"
-    },
-    {
-      "title": "Base58 encoder/decoder",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 4,
-      "description": "Encode or decode text using the Bitcoin/IPFS Base58 alphabet (excludes 0, O, I, l).",
-      "rationale": "Distinct from Base32/Base64 Tool (different alphabet and algorithm) and Integer Base Converter (arbitrary numeric base 2-16 of a single integer, not this specific alphabet/leading-zero-byte handling). Verified against the well-known 'Hello World' and Bitcoin-address Base58 test vectors before shipping. Stdlib only, no new dependency.",
-      "updated_at": "2026-08-11"
-    },
-    {
-      "title": "Exit code reference (Linux/Bash)",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 5,
-      "description": "Look up Linux/Bash process exit codes -- a quick lookup when a script or CI job fails with an unfamiliar code.",
-      "rationale": "Matches the established static-reference pattern (HTTP Status Reference, Windows Error Reference, Port Reference). Deliberately limits itself to codes with a universally-documented meaning (0-2, 126-165) rather than implying 3-125 mean something specific, since those are application-defined.",
-      "updated_at": "2026-08-11"
-    },
-    {
-      "title": "Timezone abbreviation reference",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 4,
-      "description": "Look up timezone abbreviations (EST, IST, CST...) and their UTC offset.",
-      "rationale": "Handles a well-documented real-world hazard head-on: many abbreviations (CST, IST, BST) are genuinely ambiguous with multiple real meanings at different UTC offsets, so every meaning is listed as its own row instead of picking one. Distinct from World Clock (interactive conversion of a specific date/time).",
-      "updated_at": "2026-08-11"
-    },
-    {
-      "title": "HTTP Basic Auth header tool",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 4,
-      "description": "Build or parse an HTTP Authorization: Basic header (RFC 7617).",
-      "rationale": "Distinct from Base64 Tool (generic encode/decode, no credential-format awareness) and HTTP Header Parser (parses a whole raw header block, not specifically this format). Rejects a colon in the username on build, since RFC 7617 uses the first colon as the user-id/password separator.",
-      "updated_at": "2026-08-11"
-    },
-    {
-      "title": ".gitignore pattern tester",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 5,
-      "description": "Paste .gitignore content and test whether specific paths would be ignored.",
-      "rationale": "Implements gitignore's core glob semantics (*, ?, [...], **, leading/trailing /, ! negation). The anchoring rules and ** zero-directory matching are notoriously easy to get wrong -- verified every rule directly against real `git check-ignore` output before shipping, and caught two real bugs in the draft implementation this way (an over-anchoring bug and a **-doesn't-match-zero-dirs bug). Deliberately doesn't implement git's parent-directory-blocks-reinclusion rule, since that needs a real directory tree, not a single path string -- disclosed in the page's warning.",
-      "updated_at": "2026-08-11"
-    },
-    {
-      "title": "Markdown table of contents generator",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 5,
-      "description": "Paste Markdown and get a linked table of contents built from its headings.",
-      "rationale": "Anchor slugs follow GitHub's actual algorithm, verified against GitHub's real rendered anchors for punctuation and duplicate headings. Distinct from Markdown/HTML Converter (format conversion, no TOC). Caught a real bug in the draft heading-closer regex (a heading literally ending in '#', like 'C#', had its trailing character wrongly stripped as a closing ATX sequence) before shipping.",
-      "updated_at": "2026-08-11"
-    },
-    {
-      "title": "Number to words",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 4,
-      "description": "Spell out an integer in English words, e.g. 1042 -> one thousand forty-two.",
-      "rationale": "Deliberately one direction only (number -> words) -- parsing loosely formatted English text back into a number is ambiguous in a way the forward direction isn't. Caught a real bug in the draft scale-word list (it skipped \"quadrillion\" entirely, mislabeling larger numbers and crashing at the largest supported magnitude) via direct testing before shipping.",
-      "updated_at": "2026-08-11"
-    },
-    {
-      "title": "JSON to TypeScript interface generator",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 5,
-      "description": "Infer a TypeScript interface from a JSON document, with nested objects broken out into their own interfaces.",
-      "rationale": "Distinct from JSON Formatter (pretty-print only, no type inference). Nested objects get their own named interface; an empty array is typed unknown[] rather than guessed, since its element type genuinely can't be inferred from the data.",
-      "updated_at": "2026-08-11"
-    },
-    {
-      "title": "CSS gradient generator",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 4,
-      "description": "Build a linear-gradient() or radial-gradient() CSS declaration from a list of hex color stops.",
-      "rationale": "Distinct from Color Converter (single-color format conversion, not a multi-stop gradient declaration). A live preview swatch was considered but dropped after review found it would have embedded an unvalidated free-text field (angle/shape) directly into an HTML style attribute via unsafe_allow_html -- a real injection risk removed before shipping rather than patched around.",
-      "updated_at": "2026-08-11"
-    },
-    {
-      "title": "JWT claims reference",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 4,
-      "description": "Look up what a JWT claim name means -- registered (RFC 7519) claims plus common OAuth 2.0/OpenID Connect conventions.",
-      "rationale": "Standalone from JWT Decoder/Encoder -- useful when you just need to remember what a claim name means without decoding a real token. Registered vs. common-but-unstandardized claims are labeled separately so this doesn't imply a false standardization.",
-      "updated_at": "2026-08-11"
-    },
-    {
-      "title": "CSP header builder",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 5,
-      "description": "Build a Content-Security-Policy header value from directives and source lists, entirely locally.",
-      "rationale": "Distinct from Security Headers Checker (fetches a live URL and checks whether a CSP is present/reasonable, doesn't build one). Known CSP keyword sources ('self', 'none', 'unsafe-inline', etc.) are auto-quoted per spec; anything else is left unquoted, since CSP only quotes its own reserved keywords.",
-      "updated_at": "2026-08-11"
-    },
-    {
-      "title": "Robots meta tag builder",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 4,
-      "description": "Build a <meta name=\"robots\" content=\"...\"> tag -- distinct from robots.txt, which applies site-wide.",
-      "rationale": "Distinct from robots.txt / Sitemap Validator (validates a site's robots.txt file, a separate mechanism, fetched live) -- this builds the per-page HTML meta tag, entirely locally, following Google's documented robots meta tag values.",
-      "updated_at": "2026-08-11"
-    },
-    {
-      "title": "Cache-Control tool",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 4,
-      "description": "Build a Cache-Control header from directives, or paste one to see each directive explained.",
-      "rationale": "Distinct from HTTP Header Parser (generic header block parsing, no per-directive explanations). Rejects contradictory combinations (public+private, no-store+max-age) rather than silently building a nonsensical header.",
-      "updated_at": "2026-08-11"
-    },
-    {
-      "title": "Markdown table formatter",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 4,
-      "description": "Paste a Markdown table with ragged/misaligned columns and get it re-aligned to consistent, padded widths.",
-      "rationale": "Distinct from CSV to Markdown Table (builds a table from CSV, doesn't reformat an existing Markdown table). Preserves each column's alignment marker (:---, ---:, :---:, ---) from the existing separator row.",
-      "updated_at": "2026-08-11"
-    },
-    {
-      "title": "CSV column selector",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 4,
-      "description": "Extract and reorder specific columns from CSV/TSV by header name.",
-      "rationale": "Distinct from CSV/TSV Cleaner (trims/dedupes rows and cells, doesn't select/reorder columns) and CSV to Markdown Table (converts everything, no column selection).",
-      "updated_at": "2026-08-11"
-    },
-    {
-      "title": "HTTP methods reference",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 5,
-      "description": "Look up HTTP methods and their safe/idempotent/cacheable properties per RFC 9110.",
-      "rationale": "Standalone from HTTP Status Checker/Reference -- methods and status codes are different axes of the HTTP spec. Safe/idempotent/cacheable are the three properties most often gotten wrong in practice (e.g. PUT being idempotent surprises people used to thinking only GET is safe); POST's conditional cacheability is called out explicitly rather than flattened to a plain No.",
-      "updated_at": "2026-08-11"
-    },
-    {
-      "title": "Line numberer",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 4,
-      "description": "Add line numbers to pasted text -- handy for referencing a specific line in a review or bug report.",
-      "rationale": "No existing tool numbers arbitrary pasted text lines. Right-aligns numbers to the widest needed width so columns stay lined up regardless of line count.",
-      "updated_at": "2026-08-11"
-    },
-    {
-      "title": "PII redactor",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 5,
-      "description": "Redact common sensitive-looking patterns from pasted text before sharing it in a ticket, log, or chat.",
-      "rationale": "Regex-based heuristics, explicitly disclosed as such -- not a real PII detector. All patterns matched in a single combined pass, with the broad credit-card pattern tried last so it can't swallow a more specific SSN/phone match sitting inside a longer digit run (verified directly).",
-      "updated_at": "2026-08-11"
-    },
-    {
-      "title": ".env file diff",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 4,
-      "description": "Compare two .env files and see which keys were added, removed, or changed.",
-      "rationale": "Distinct from .env File Linter (checks one file for mistakes, doesn't compare two) and JSON/CSV Diff (different formats). Parsing mirrors env_linter's own conventions (export prefix, first '=' as separator) for consistency.",
-      "updated_at": "2026-08-11"
-    },
-    {
-      "title": "Cron overlap checker",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 4,
-      "description": "Check whether two cron schedules ever fire in the same minute -- useful for spotting jobs that might contend for the same resource.",
-      "rationale": "Distinct from Cron Explainer/Builder (single-schedule tools). Reuses croniter (already a dependency). Hard-caps occurrences per schedule so a once-a-minute schedule combined with a long lookahead window can't turn into an unbounded loop.",
-      "updated_at": "2026-08-11"
-    },
-    {
-      "title": "Test data generator",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 4,
-      "description": "Generate fake names, emails, usernames, and phone numbers for filling in forms and test fixtures.",
-      "rationale": "Uses IANA-reserved example domains (RFC 2606) for emails and the North American 555-01XX fictional-use phone range, so nothing generated can collide with a real address. Optional seed for reproducible test fixtures.",
-      "updated_at": "2026-08-11"
-    },
-    {
-      "title": "Password policy checker",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 4,
-      "description": "Check a password against a configurable complexity policy -- pass/fail per rule, not an entropy estimate.",
-      "rationale": "Distinct from Password Strength Checker (continuous entropy estimate) and Password Generator (creates new passwords) -- this checks pass/fail compliance against explicit, configurable rules, the kind an org sets for its users.",
-      "updated_at": "2026-08-11"
-    },
-    {
-      "title": "ISO 8601 duration tool",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 4,
-      "description": "Parse an ISO 8601 duration (e.g. P3Y6M4DT12H30M5S) into plain English, or build one from individual units.",
-      "rationale": "Distinct from Timestamp Converter/Log Timestamp Duration Calculator, which work with actual timestamps, not the ISO 8601 duration format used in many APIs and config files (AWS, Kubernetes, iCalendar).",
-      "updated_at": "2026-08-11"
-    },
-    {
-      "title": "JSON merge patch",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 5,
-      "description": "Merge two JSON documents per RFC 7396 -- useful for layering an environment-specific override onto a base config.",
-      "rationale": "Distinct from JSON Diff Viewer (compares, doesn't combine) and JSON Path Query (extracts, doesn't merge). Verified directly against all 15 of RFC 7396's own Appendix A test cases before shipping.",
-      "updated_at": "2026-08-11"
-    },
-    {
-      "title": "Column aligner",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 4,
-      "description": "Align whitespace-separated columns of plain text -- like the Unix column -t command.",
-      "rationale": "Distinct from Markdown Table Formatter (pipe-delimited Markdown tables) and CSV Column Selector (comma-delimited, selects/reorders rather than aligns). Meant for pasted command output (ps aux, df -h) with ragged spacing.",
-      "updated_at": "2026-08-11"
-    },
-    {
-      "title": "SSH config validator",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 4,
-      "description": "Lint ~/.ssh/config content for structural mistakes -- directives before any Host block, empty Host blocks, duplicate Host patterns.",
-      "rationale": "Checks structure only, not individual directive names -- OpenSSH has ~100 valid ssh_config keywords, and an incomplete allowlist would flag valid but less common ones as errors.",
-      "updated_at": "2026-08-11"
-    },
-    {
-      "title": "CSR generator",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 5,
-      "description": "Generate a new RSA key pair and a Certificate Signing Request from subject fields -- the reverse of CSR Decoder.",
-      "rationale": "Verified the generated CSR round-trips correctly through the existing CSR Decoder (valid signature, correct subject/SAN fields) before shipping. Same disposable/test-use framing as RSA/SSH Key Pair Generator -- this app can't protect a private key once rendered to the browser.",
-      "updated_at": "2026-08-11"
-    },
-    {
-      "title": "CAA record builder",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 4,
-      "description": "Build a DNS CAA (Certification Authority Authorization) record, restricting which CAs may issue certificates for a domain.",
-      "rationale": "A different DNS record type (RFC 8659) from Email Record Builder's SPF/DMARC/DKIM, not covered by any existing tool.",
-      "updated_at": "2026-08-11"
-    },
-    {
-      "title": "Base62 encoder/decoder",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 4,
-      "description": "Encode a non-negative integer to Base62 (0-9, A-Z, a-z), or decode one back -- commonly used for URL-safe short IDs.",
-      "rationale": "Distinct from Integer Base Converter (bases 2-16, positional numeral systems only) and Base58 Encoder/Decoder (different alphabet and leading-zero-byte handling). Verified round-trips exactly, including at the 64-bit integer boundary.",
-      "updated_at": "2026-08-11"
-    },
-    {
-      "title": "Unified diff generator",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 5,
-      "description": "Generate a real unified diff (patch) from two texts -- applicable with the patch or git apply command.",
-      "rationale": "Distinct from Text Diff Checker, which produces its own on-screen summary, not a standard .patch-format file. Verified the generated patch actually applies correctly with the real `patch` command, not just that it looks diff-shaped.",
-      "updated_at": "2026-08-11"
-    },
-    {
-      "title": "JWK / PEM converter",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 5,
-      "description": "Convert an RSA public key between JWK (JSON Web Key) and PEM format -- useful when working with a JWKS endpoint.",
-      "rationale": "Distinct from every other JWT tool in this app, which work with tokens, not the keys used to verify them. Verified against RFC 7517 Appendix A.1's own published example key. RSA only -- EC/OKP JWKs use a different coordinate system and are deliberately out of scope.",
-      "updated_at": "2026-08-11"
-    },
-    {
-      "title": "Certificate chain validator",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 5,
-      "description": "Check that a pasted PEM certificate bundle is a correctly ordered, cryptographically linked chain.",
-      "rationale": "Distinct from PEM Bundle Splitter (splits a bundle, doesn't check ordering) -- checks both subject/issuer name matching AND that each cert's signature actually verifies against the next cert's public key, since name matching alone can't catch a chain where the names look right but the wrong key signed it.",
-      "updated_at": "2026-08-11"
-    },
-    {
-      "title": "WSL path converter",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 4,
-      "description": "Convert a filesystem path between Windows, WSL, and Git Bash forms.",
-      "rationale": "WSL mounts a Windows drive at /mnt/c/..., Git Bash mounts it at /c/... instead -- a real, frequently-confused difference, so both are supported as explicit targets. Fixed a real asymmetry found during testing: the tool could produce a bare drive-root path like /mnt/c as output but couldn't accept that same form as input.",
-      "updated_at": "2026-08-11"
-    },
-    {
-      "title": "Markdown link extractor",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 4,
-      "description": "Extract every link from Markdown text -- inline links, reference-style links, and bare autolinks.",
-      "rationale": "Distinct from Text Pattern Extractor (a generic user-supplied regex, no Markdown-specific link syntax) and Markdown TOC Generator (headings, not links). Correctly excludes image syntax (![alt](url)) from being treated as a link.",
-      "updated_at": "2026-08-11"
-    },
-    {
-      "title": "Outlook/M365 Safe Links decoder",
-      "category": "Tools",
-      "status": "Planned",
-      "votes": 6,
-      "description": "Unwrap a Microsoft Defender Safe Links-wrapped URL (the https://*.safelinks.protection.outlook.com/?url=... redirect) back to the real destination URL.",
-      "rationale": "Sourced from a feature comparison against IT-Tools (github.com/CorentinTh/it-tools, a popular open-source developer/IT tools site) -- not covered by any existing tool here. Genuinely common support/security need: a user pastes a suspicious-looking wrapped link and wants to know where it actually goes before clicking. Buildable with stdlib urllib.parse only (extract and URL-decode the 'url' query parameter), no network call needed.",
-      "updated_at": "2026-08-11"
-    },
-    {
-      "title": "docker run to docker-compose converter",
-      "category": "Tools",
-      "status": "Planned",
-      "votes": 5,
-      "description": "Paste a `docker run ...` command and get an equivalent docker-compose.yml service definition.",
-      "rationale": "Sourced from IT-Tools. Genuinely common DevOps need when migrating an ad-hoc container command into a reproducible compose file. Buildable by parsing common docker run flags (-p, -v, -e, --name, -d, image, command) with stdlib shlex/argparse -- scope limited to the well-documented common flags, with an honest note about flags it doesn't recognize.",
-      "updated_at": "2026-08-11"
-    },
-    {
-      "title": "NATO phonetic alphabet converter",
-      "category": "Tools",
-      "status": "Planned",
-      "votes": 5,
-      "description": "Convert text into the NATO phonetic alphabet (Alpha, Bravo, Charlie...) for reading serial numbers, license keys, or codes aloud over the phone.",
-      "rationale": "Sourced from IT-Tools. A real, frequent support-call need (reading a MAC address or license key to someone) that isn't covered by any existing tool. Static lookup table, stdlib only.",
-      "updated_at": "2026-08-11"
-    },
-    {
-      "title": "WiFi QR code generator",
-      "category": "Tools",
-      "status": "Planned",
-      "votes": 4,
-      "description": "Generate a QR code that, when scanned, joins a phone to a WiFi network -- encodes the WIFI:S:<ssid>;T:<type>;P:<password>;; format.",
-      "rationale": "Sourced from IT-Tools. Distinct from the existing QR Code Generator (which encodes arbitrary text/URLs, not this specific structured format) -- common for handing out guest WiFi access. The qrcode library is already a dependency (used by QR Code Generator), no new dependency needed.",
-      "updated_at": "2026-08-11"
-    },
-    {
-      "title": "HMAC generator",
-      "category": "Tools",
-      "status": "Planned",
-      "votes": 5,
-      "description": "Generate an HMAC (keyed hash) for a message using a secret key, in MD5/SHA-1/SHA-256/SHA-512.",
-      "rationale": "Sourced from IT-Tools. Distinct from Hash Generator (unkeyed hashing) -- HMAC needs a secret key and is used for webhook signature verification (Stripe, GitHub, etc.), which plain hashing can't do. Stdlib hmac/hashlib only.",
-      "updated_at": "2026-08-11"
-    },
-    {
-      "title": "IPv6 ULA generator",
-      "category": "Tools",
-      "status": "Planned",
-      "votes": 4,
-      "description": "Generate a random IPv6 Unique Local Address (RFC 4193) prefix for a private network.",
-      "rationale": "Sourced from IT-Tools. Distinct from IPv6 Compressor (formats an existing address, doesn't generate one). RFC 4193's algorithm (random 40-bit global ID derived via SHA-1, per the RFC's own recommended method) is well-specified and implementable with stdlib secrets/hashlib only.",
-      "updated_at": "2026-08-11"
-    },
-    {
-      "title": "Random MAC address generator",
-      "category": "Tools",
-      "status": "Planned",
-      "votes": 4,
-      "description": "Generate a random MAC address, with an option to set the locally-administered bit (for VM/virtual NIC configs that shouldn't collide with real vendor-assigned addresses).",
-      "rationale": "Sourced from IT-Tools. Distinct from the existing MAC Address Tool (analyzes/looks up an existing address, doesn't generate one). Setting the locally-administered bit correctly (per IEEE 802) avoids accidentally generating an address that collides with a real vendor OUI.",
-      "updated_at": "2026-08-11"
-    },
-    {
-      "title": "List converter",
-      "category": "Tools",
-      "status": "Planned",
-      "votes": 4,
-      "description": "Convert a list between formats: newline-separated, comma-separated, JSON array, quoted/comma-separated (e.g. for SQL IN clauses).",
-      "rationale": "Sourced from IT-Tools. A common small friction point (pasting a column of values and needing it as a JSON array or a SQL IN (...) list) not covered by any existing tool. Stdlib only.",
-      "updated_at": "2026-08-11"
-    },
-    {
-      "title": "Email address normalizer",
-      "category": "Tools",
-      "status": "Planned",
-      "votes": 4,
-      "description": "Normalize an email address for deduplication: lowercase, strip Gmail's ignored dots in the local part, strip +tag suffixes.",
-      "rationale": "Sourced from IT-Tools. Distinct from Email Header Analyzer (parses headers) and Email Record Builder (builds DNS records). Genuinely useful for deduplicating a user list where the same person signed up multiple times with dot/plus variations. Needs an honest scope note: the dot-and-plus rules are Gmail-specific conventions, not a universal email spec.",
-      "updated_at": "2026-08-11"
-    },
-    {
-      "title": "IPv4 address format converter",
-      "category": "Tools",
-      "status": "Planned",
-      "votes": 3,
-      "description": "Convert an IPv4 address between dotted-decimal, hexadecimal, binary, and 32-bit integer representations.",
-      "rationale": "Sourced from IT-Tools. Distinct from Subnet Calculator (network/broadcast/host-range math, not format conversion) and IPv6 Compressor (a different protocol). Stdlib ipaddress/socket only.",
-      "updated_at": "2026-08-11"
-    },
-    {
-      "title": "IPv4 range expander",
-      "category": "Tools",
-      "status": "Planned",
-      "votes": 3,
-      "description": "Expand a CIDR block or IP range into the individual addresses it contains.",
-      "rationale": "Sourced from IT-Tools. The reverse of CIDR Aggregator (which collapses individual addresses/ranges into a minimal CIDR set). Needs a hard cap on output size (a /8 has 16M addresses) with a clear error rather than hanging or producing an enormous page.",
-      "updated_at": "2026-08-11"
-    },
-    {
-      "title": "Git command cheat sheet",
-      "category": "Tools",
-      "status": "Planned",
-      "votes": 4,
-      "description": "Searchable static reference of common git commands and what they do.",
-      "rationale": "Sourced from IT-Tools. Matches this app's established static-reference pattern (Regex Cheat Sheet, HTTP Status Reference, Port Reference) -- a different, frequently-needed topic not yet covered.",
-      "updated_at": "2026-08-11"
-    },
-    {
-      "title": "BIP39 mnemonic generator/validator",
-      "category": "Tools",
-      "status": "Planned",
-      "votes": 2,
-      "description": "Generate or validate a BIP39 mnemonic seed phrase (the 12/24-word phrases used by crypto wallets) against the standard English wordlist.",
-      "rationale": "Sourced from IT-Tools. Niche compared to this app's core MSP/sysadmin focus, but a well-specified, self-contained algorithm (checksum bits derived from a SHA-256 hash of the entropy, per the BIP39 spec) that's easy to verify against the spec's own published test vectors. Lower priority than the other items in this batch.",
-      "updated_at": "2026-08-11"
-    },
-    {
-      "title": "Lorem ipsum generator",
-      "category": "Tools",
-      "status": "Planned",
-      "votes": 3,
-      "description": "Generate placeholder Lorem Ipsum text (by word, sentence, or paragraph count) for mockups and test fixtures.",
-      "rationale": "Sourced from IT-Tools. Complements the existing Test Data Generator (structured fake records like names/emails) with unstructured placeholder prose, a different and common mockup need.",
-      "updated_at": "2026-08-11"
-    },
-    {
-      "title": "Text to binary/hex/octal converter",
-      "category": "Tools",
-      "status": "Planned",
-      "votes": 3,
-      "description": "Convert text to its binary, hexadecimal, or octal byte representation, and back.",
-      "rationale": "Sourced from IT-Tools. Distinct from Integer Base Converter (converts a single number's base, not a text string's byte representation) and Base64/Base32 Tool (different encoding scheme entirely). Useful for teaching/debugging low-level byte representations.",
-      "updated_at": "2026-08-11"
+      "rationale": "Inspired by killertools.net's HTTP Status Codes reference. Same static-lookup pattern as Port Reference; useful as a quick lookup when a code shows up in a log rather than from a live check.",
+      "updated_at": "2026-08-06"
     }
   ]
 }
