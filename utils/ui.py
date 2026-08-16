@@ -3602,6 +3602,9 @@ def _inject_global_css(mode: str) -> None:
         unsafe_allow_html=True,
     )
     css = """
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
         <style>
 
         :root {
