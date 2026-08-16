@@ -660,6 +660,16 @@ When a roadmap badge asset is unavailable, compact text fallback glyphs are used
 - Include one deterministic regression-test pass confirming wave-49 guardrails in `tests/test_ui_helpers.py`, `tests/test_wave49_shell_mobile_markers.py`, `tests/test_wave49_visual_icon_markers.py`, and `tests/test_wave49_accessibility_guardrails.py`.
 - Include one keyboard-only pass to confirm wave-49 explicit status semantics (`role="status"`/`role="alert"` + `aria-live`) and focus visibility remain intact.
 
+### Phase 57 Wave 50 add-on QA focus
+
+- Confirm placeholder-to-real wave-50 slug alias notes remain explicit for diagnostics/release evidence (`193_tool_slug_pending_roadmap` + `193_<tool_slug_pending_roadmap>` -> wave-50 lorem touchpoint `141_Lorem_Ipsum_Generator.py`/`lorem_ipsum_generator`; `194_tool_slug_pending_roadmap` + `194_<tool_slug_pending_roadmap>` -> wave-50 converter touchpoint `142_Text_to_Binary_Hex_Octal_Converter.py`/`text_to_binary_hex_octal_converter`) and keep prior placeholder aliases documented for deterministic continuity.
+- Confirm deterministic slug-first icon lookup still checks tool slugs before category defaults and preserves readable text badge fallback when SVG assets are unavailable.
+- Include one shell pass confirming shared shell + baseline markers (`shell-ready`, `content-rendered`, `wave50-shell-mobile`) remain visible/unchanged on Home, Roadmap, and wave-50 touchpoint pages.
+- Include one `<=720px` viewport pass to confirm Home controls, Roadmap filters/AI triage action, and wave-50 generate/convert actions (with shared control headings) stay full-width/tap-friendly with no clipping/overflow.
+- Include one UX standards pass confirming Step 1/Step 2 heading hierarchy updates stay concise/readable with no clipped controls across mapped pages.
+- Include one deterministic regression-test pass confirming wave-50 guardrails in `tests/test_ui_helpers.py`, `tests/test_wave50_shell_mobile_markers.py`, `tests/test_wave50_visual_icon_markers.py`, and `tests/test_wave50_accessibility_guardrails.py`.
+- Include one keyboard-only pass to confirm wave-50 explicit status semantics (`role="status"`/`role="alert"` + `aria-live`) and focus visibility remain intact.
+
 
 ## Docs/release media inventory
 
