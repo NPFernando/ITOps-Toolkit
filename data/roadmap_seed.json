@@ -314,6 +314,42 @@
       "description": "Convert text between slug-case, camelCase, snake_case, kebab-case, and Title Case.",
       "rationale": "Everyday utility for developers naming files, variables, and URLs.",
       "updated_at": "2026-08-05"
+    },
+    {
+      "title": "MAC vendor (OUI) lookup",
+      "category": "Tools",
+      "status": "Complete",
+      "votes": 10,
+      "description": "Show the registered vendor/manufacturer for a MAC address's OUI prefix.",
+      "rationale": "Natural extension of the existing MAC Address Tool -- the OUI is already parsed out, just not looked up.",
+      "updated_at": "2026-08-05"
+    },
+    {
+      "title": "Color code converter",
+      "category": "Tools",
+      "status": "Complete",
+      "votes": 7,
+      "description": "Convert colors between HEX, RGB, and HSL, with a live swatch preview.",
+      "rationale": "Common small utility for anyone touching CSS/UI work alongside the IT-focused tools.",
+      "updated_at": "2026-08-05"
+    },
+    {
+      "title": "WHOIS lookup tool",
+      "category": "Tools",
+      "status": "AI Recommended",
+      "votes": 22,
+      "description": "Look up domain registration details (registrar, creation/expiry dates, name servers) via RDAP.",
+      "rationale": "Complements the existing Domain Health Checker and DNS Record Checker with registration/ownership context they don't cover.",
+      "updated_at": "2026-08-05"
+    },
+    {
+      "title": "Certificate chain validator",
+      "category": "Tools",
+      "status": "AI Recommended",
+      "votes": 17,
+      "description": "Show the full certificate chain (leaf to root) for a host and flag any missing intermediates.",
+      "rationale": "Extends the existing SSL Certificate Checker, which only surfaces the leaf certificate today -- chain issues are a common real-world outage cause.",
+      "updated_at": "2026-08-05"
     }
   ]
 }

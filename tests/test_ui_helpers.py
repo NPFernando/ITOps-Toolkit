@@ -224,6 +224,9 @@ def test_expected_tools_are_tagged_new():
         "jwt_encoder",
         "cidr_aggregator",
         "user_agent_parser",
+        "ipv6_compressor",
+        "case_converter",
+        "color_converter",
     }
 
 
@@ -357,6 +360,8 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "regex_tester",
             "text_diff_checker",
             "user_agent_parser",
+            "case_converter",
+            "color_converter",
         ],
         "Ops & Automation": ["cron_explainer", "log_troubleshooting", "timestamp_converter"],
         "Reference": ["port_reference", "windows_event_reference"],

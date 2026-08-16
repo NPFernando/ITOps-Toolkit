@@ -29,21 +29,12 @@ with tool_form_panel("color_converter"):
         color_input = st.text_input("Color", max_chars=MAX_INPUT_LENGTH, placeholder="#126bff")
         submitted = st.form_submit_button("Convert")
 
-if submitted:
-    # Stored in session_state (not rendered directly here) because the sidebar's
-    # quick-search box, favorite-star buttons, and any other widget outside this
-    # page's st.form trigger reruns of their own -- on those reruns `submitted` is
-    # False again, which would otherwise collapse this whole results section the
-    # instant any of them is touched.
-    st.session_state["color_converter_result"] = parse_color(color_input)
-
-result = st.session_state.get("color_converter_result")
-
-if result is None:
+if not submitted:
     render_empty_state("Ready to convert", "HEX, RGB, and HSL forms appear here after you submit a color.")
 
-if result is not None:
-    with tool_result_panel("color_result", related_to="color_converter"):
+if submitted:
+    result = parse_color(color_input)
+    with tool_result_panel("color_result"):
         render_section_heading("Converted forms", eyebrow="Result")
         if not result["ok"]:
             st.error(result["error"])

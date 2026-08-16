@@ -1189,6 +1189,42 @@ TOOLS: tuple[ToolMeta, ...] = (
         category="Web & Dev",
         is_new=True,
     ),
+    ToolMeta(
+        title="IPv6 Compressor",
+        short_title="IPv6 Compressor",
+        description="Convert an IPv6 address between its compressed (::) and fully expanded form.",
+        path="pages/24_IPv6_Compressor.py",
+        icon="V6",
+        accent="#0369a1",
+        slug="ipv6_compressor",
+        professions=("Network Engineer", "Sysadmin / DevOps"),
+        category="Network",
+        is_new=True,
+    ),
+    ToolMeta(
+        title="Case Converter",
+        short_title="Case Converter",
+        description="Convert text between slug-case, snake_case, camelCase, PascalCase, and Title Case.",
+        path="pages/25_Case_Converter.py",
+        icon="Aa",
+        accent="#ca8a04",
+        slug="case_converter",
+        professions=("Web Developer", "Automation Engineer"),
+        category="Web & Dev",
+        is_new=True,
+    ),
+    ToolMeta(
+        title="Color Converter",
+        short_title="Color Converter",
+        description="Convert colors between HEX, RGB, and HSL, with a live swatch preview.",
+        path="pages/26_Color_Converter.py",
+        icon="RGB",
+        accent="#db2777",
+        slug="color_converter",
+        professions=("Web Developer", "Automation Engineer"),
+        category="Web & Dev",
+        is_new=True,
+    ),
 )
 
 # Curated, not usage-derived -- this app deliberately has no usage tracking
@@ -2236,6 +2272,9 @@ def _material_icon_for(slug: str) -> str:
         "jwt_encoder": ":material/verified_user:",
         "cidr_aggregator": ":material/merge_type:",
         "user_agent_parser": ":material/devices:",
+        "ipv6_compressor": ":material/compress:",
+        "case_converter": ":material/text_fields:",
+        "color_converter": ":material/palette:",
     }
     return icons.get(slug, ":material/build:")
 
