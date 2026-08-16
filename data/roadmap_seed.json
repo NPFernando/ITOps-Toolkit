@@ -142,7 +142,7 @@
       "votes": 18,
       "description": "A keyboard-triggered launcher to jump straight to any tool, complementing the sidebar quick-search.",
       "rationale": "Power users on killer-tools-style sites expect a Ctrl+K-style jump; the sidebar search covers most of this need today but isn't reachable by keyboard shortcut. NOT flatly blocked like the PWA item, but not attempted this round either: unlike a real service worker, a global keydown listener + overlay is plausibly buildable via the same same-origin iframe trick this app already uses for the localStorage mirror (the iframe can reach window.top.document, so it could attach a listener and DOM-inject an overlay there). But it's a materially bigger and more fragile JS surface than anything shipped so far -- real DOM manipulation of the top-level page from inside an iframe script, a hand-built filter/keyboard-nav overlay, dark/light theme handling, focus trapping -- and this sandboxed dev environment has no real browser to visually verify any of it before it ships to a live auto-deploying site. Left open rather than built blind; worth a manual-verification pass with browser access, not a routine PR.",
-      "updated_at": "2026-08-08"
+      "updated_at": "2026-08-06"
     },
     {
       "title": "Drag-to-reorder favorites",
