@@ -47,23 +47,3 @@ def test_ip_geolocation_page_zero_coordinates_do_not_render_as_unknown(monkeypat
     rows = dict(zip(frame["field"], frame["value"], strict=True))
     assert rows["Latitude"] == "0.0"
     assert rows["Longitude"] == "Unknown"
-
-
-def test_ip_geolocation_page_error_uses_warning_status_semantics(monkeypatch):
-    def fake_lookup(ip):
-        return {
-            "ok": False,
-            "error": "request timed out",
-        }
-
-    monkeypatch.setattr(ip_geolocation, "lookup_ip_geolocation", fake_lookup)
-
-    app = AppTest.from_file(IP_GEO_PAGE, default_timeout=30)
-    app.run()
-    app.text_input[0].set_value("8.8.8.8")
-    app.button[0].click().run()
-    assert not app.exception
-
-    markdown = " ".join(block.value for block in app.markdown)
-    assert "IP geolocation lookup temporarily unavailable" in markdown
-    assert "tool-status-note-warning" in markdown

@@ -53,11 +53,9 @@ def test_bulk_domain_health_validation_error_survives_a_rerun():
     app.button[0].click()
     app.run(timeout=60)
     assert not app.exception
-    assert "Bulk domain input needs attention" in _page_text(app)
-    assert "Upload or paste at least one valid public domain" in _page_text(app)
+    assert any("Upload a file or paste at least one domain." in e.value for e in app.error)
 
     search = next(t for t in app.text_input if t.key == "sidebar_quick_search")
     search.set_value("test").run(timeout=60)
     assert not app.exception
-    assert "Bulk domain input needs attention" in _page_text(app)
-    assert "Upload or paste at least one valid public domain" in _page_text(app)
+    assert any("Upload a file or paste at least one domain." in e.value for e in app.error)

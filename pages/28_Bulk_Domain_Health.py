@@ -59,38 +59,24 @@ if submitted:
         truncated = len(domains) > MAX_DOMAINS_PER_BATCH
         with st.spinner(f"Checking {min(len(domains), MAX_DOMAINS_PER_BATCH)} domains..."):
             results = run_bulk_health_check(domains, include_dmarc=include_dmarc)
-        frame = pd.DataFrame(results)
-        summary = {
-            "healthy": sum(1 for r in results if r["risk_status"] == "Healthy"),
-            "warning": sum(1 for r in results if r["risk_status"] == "Warning"),
-            "critical": sum(1 for r in results if r["risk_status"] == "Critical"),
-            "errored": sum(1 for r in results if r["risk_status"] == "Unknown"),
-        }
         st.session_state["bulk_domain_health_validation_error"] = None
-        st.session_state["bulk_domain_health_state"] = {
-            "results": results,
-            "frame": frame,
-            "csv_data": frame.to_csv(index=False).encode("utf-8"),
-            "summary": summary,
-            "truncated": truncated,
-            "total_domains": len(domains),
-        }
+        st.session_state["bulk_domain_health_state"] = {"results": results, "truncated": truncated, "total_domains": len(domains)}
 
 validation_error = st.session_state.get("bulk_domain_health_validation_error")
 state = st.session_state.get("bulk_domain_health_state")
 
 if validation_error is None and state is None:
-    render_empty_state(
-        "Ready to run bulk checks",
-        "Per-domain risk status, findings, and an exportable CSV appear here after the run.",
-    )
+    render_empty_state("Ready for a domain list", "Per-domain risk scores and status appear here after the batch check completes.")
 
 if validation_error is not None:
-    render_failure_note(
-        "Bulk domain input",
-        validation_error,
-        remediation="Upload or paste at least one valid public domain and rerun the check.",
-    )
+    st.error(validation_error)
+
+if state is not None:
+    results = state["results"]
+    with tool_result_panel("bulk_domain_health_result"):
+        render_section_heading("Batch results", eyebrow="Result")
+        if state["truncated"]:
+            st.warning(f"{state['total_domains']} domains were provided; only the first {MAX_DOMAINS_PER_BATCH} were checked.")
 
         csv_data = frame.to_csv(index=False).encode("utf-8")
         with tool_download_panel("bulk_domain_health_export", related_to="bulk_domain_health"):
