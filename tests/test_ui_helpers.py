@@ -4,15 +4,18 @@ from utils import ui
 from utils.ui import (
     POPULAR_TOOLS,
     PROFESSIONS,
+    SHARED_FAVORITES_PARAM,
     SIDEBAR_CATEGORIES,
     TITLE_TO_SLUG,
     TOOLS,
     display_rows_frame,
     favorite_tools,
+    favorites_share_link,
     filter_tools,
     move_favorite,
     record_recent_visit,
     recent_or_popular_tools,
+    shared_favorite_tools,
     sort_tools,
     toggle_favorite,
 )
@@ -240,6 +243,26 @@ def test_favorite_tools_reads_query_params_and_skips_unknown(monkeypatch):
     monkeypatch.setattr(ui.st, "query_params", {"fav": f"not-a-real-slug,{slug}"})
 
     assert favorite_tools() == (TOOLS[2],)
+
+
+def test_favorites_share_link_encodes_slugs_and_uses_shared_param():
+    link = favorites_share_link([TOOLS[0], TOOLS[2]])
+
+    assert link.startswith(ui.app_base_url())
+    assert f"{SHARED_FAVORITES_PARAM}={TOOLS[0].slug}%2C{TOOLS[2].slug}" in link
+
+
+def test_shared_favorite_tools_reads_shared_param_and_skips_unknown(monkeypatch):
+    slug = TOOLS[3].slug
+    monkeypatch.setattr(ui.st, "query_params", {SHARED_FAVORITES_PARAM: f"not-a-real-slug,{slug}"})
+
+    assert shared_favorite_tools() == (TOOLS[3],)
+
+
+def test_shared_favorites_param_is_excluded_from_local_storage_mirror():
+    # Sharing a favorites link must never overwrite the visitor's own saved
+    # favorites -- confirm the mirror only ever touches "recent"/"fav".
+    assert SHARED_FAVORITES_PARAM not in ui.PERSISTED_LIST_PARAMS
 
 
 def test_every_tool_has_a_valid_sidebar_category():

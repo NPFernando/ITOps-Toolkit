@@ -6,7 +6,7 @@ import json
 from dataclasses import dataclass
 from functools import lru_cache
 from html import escape
-from typing import Any, Callable, Iterable
+from typing import Any, Iterable
 from urllib.parse import urlencode
 
 import pandas as pd
@@ -23,293 +23,6 @@ PERSISTED_LIST_PARAMS: tuple[str, ...] = ("recent", "fav")
 # persisted favorites -- that would silently overwrite a visitor's saved
 # favorites just from opening a link someone sent them.
 SHARED_FAVORITES_PARAM = "shared_fav"
-ASSETS_ROOT = Path(__file__).resolve().parents[1] / "docs" / "assets"
-
-HOME_HERO_ILLUSTRATION = "illustrations/exported/illustration-home-hero-ops-flow-light-1600x900-v01.svg"
-TOOL_CARD_ICON_ASSETS: dict[str, str] = {
-    "domain_health": "icons/exported/icon-workflow-dns-lookup-outline-24x24-v01.svg",
-    "dns_records": "icons/exported/icon-workflow-dns-lookup-outline-24x24-v01.svg",
-    "ssl_certificate": "icons/exported/icon-workflow-ssl-check-outline-24x24-v01.svg",
-    "http_status": "icons/exported/icon-workflow-http-probe-outline-24x24-v01.svg",
-    "webhook_tester": "icons/exported/icon-workflow-http-probe-outline-24x24-v01.svg",
-    "uptime_trend": "icons/exported/icon-workflow-uptime-monitor-outline-24x24-v01.svg",
-    "security_headers": "icons/exported/icon-workflow-incident-response-outline-24x24-v01.svg",
-    "cve_lookup": "icons/exported/icon-workflow-incident-response-outline-24x24-v01.svg",
-    "jwt_decoder": "icons/exported/icon-workflow-jwt-inspect-outline-24x24-v01.svg",
-    "jwt_encoder": "icons/exported/icon-workflow-jwt-inspect-outline-24x24-v01.svg",
-    "jwt_weak_secret": "icons/exported/icon-workflow-jwt-inspect-outline-24x24-v01.svg",
-    "jwt_claims_reference": "icons/exported/icon-workflow-jwt-inspect-outline-24x24-v01.svg",
-    "json_formatter": "icons/exported/icon-workflow-json-validate-outline-24x24-v01.svg",
-    "json_diff": "icons/exported/icon-workflow-json-validate-outline-24x24-v01.svg",
-    "json_path_query": "icons/exported/icon-workflow-json-validate-outline-24x24-v01.svg",
-    "json_merge_patch": "icons/exported/icon-workflow-json-merge-patch-outline-24x24-v01.svg",
-    "json_to_typescript": "icons/exported/icon-workflow-json-to-typescript-outline-24x24-v01.svg",
-    "base64_tool": "icons/exported/icon-workflow-encoding-tools-outline-24x24-v01.svg",
-    "base32_tools": "icons/exported/icon-workflow-encoding-tools-outline-24x24-v01.svg",
-    "base58_tool": "icons/exported/icon-workflow-encoding-tools-outline-24x24-v01.svg",
-    "base62_tool": "icons/exported/icon-workflow-base62-encoder-decoder-outline-24x24-v01.svg",
-    "base62_encoder_decoder": "icons/exported/icon-workflow-base62-encoder-decoder-outline-24x24-v01.svg",
-    "base_converter": "icons/exported/icon-workflow-encoding-tools-outline-24x24-v01.svg",
-    "unified_diff_generator": "icons/exported/icon-workflow-unified-diff-generator-outline-24x24-v01.svg",
-    "jwk_pem_converter": "icons/exported/icon-workflow-jwk-pem-converter-outline-24x24-v01.svg",
-    "cert_chain_validator": "icons/exported/icon-workflow-cert-chain-validator-outline-24x24-v01.svg",
-    "wsl_path_converter": "icons/exported/icon-workflow-wsl-path-converter-outline-24x24-v01.svg",
-    "markdown_link_extractor": "icons/exported/icon-workflow-markdown-link-extractor-outline-24x24-v01.svg",
-    "health_diagnostics": "icons/exported/icon-workflow-health-diagnostics-outline-24x24-v01.svg",
-    "regex_tester": "icons/exported/icon-workflow-regex-match-outline-24x24-v01.svg",
-    "regex_replace": "icons/exported/icon-workflow-regex-match-outline-24x24-v01.svg",
-    "regex_cheat_sheet": "icons/exported/icon-workflow-regex-match-outline-24x24-v01.svg",
-    "pattern_extractor": "icons/exported/icon-workflow-regex-match-outline-24x24-v01.svg",
-    "cron_explainer": "icons/exported/icon-workflow-cron-schedule-outline-24x24-v01.svg",
-    "cron_builder": "icons/exported/icon-workflow-cron-schedule-outline-24x24-v01.svg",
-    "cron_overlap": "icons/exported/icon-workflow-cron-schedule-outline-24x24-v01.svg",
-    "cron_overlap_checker": "icons/exported/icon-workflow-cron-schedule-outline-24x24-v01.svg",
-    "hash_generator": "icons/exported/icon-workflow-hash-digest-outline-24x24-v01.svg",
-    "file_integrity": "icons/exported/icon-workflow-hash-digest-outline-24x24-v01.svg",
-    "bcrypt_tool": "icons/exported/icon-workflow-hash-digest-outline-24x24-v01.svg",
-    "port_reference": "icons/exported/icon-workflow-port-scan-outline-24x24-v01.svg",
-    "tls_scanner": "icons/exported/icon-workflow-port-scan-outline-24x24-v01.svg",
-    "env_linter": "icons/exported/icon-workflow-env-guard-outline-24x24-v01.svg",
-    "env_diff": "icons/exported/icon-workflow-env-guard-outline-24x24-v01.svg",
-    "env_file_diff": "icons/exported/icon-workflow-env-guard-outline-24x24-v01.svg",
-    "test_data_generator": "icons/exported/icon-workflow-test-data-fixture-outline-24x24-v01.svg",
-    "markdown_toc_generator": "icons/exported/icon-workflow-markdown-toc-generator-outline-24x24-v01.svg",
-    "markdown_table_formatter": "icons/exported/icon-workflow-markdown-table-formatter-outline-24x24-v01.svg",
-    "id_generator": "icons/exported/icon-workflow-id-sequence-outline-24x24-v01.svg",
-    "ulid_uuid_decoder": "icons/exported/icon-workflow-id-sequence-outline-24x24-v01.svg",
-    "deterministic_uuid": "icons/exported/icon-workflow-id-sequence-outline-24x24-v01.svg",
-    "csp_builder": "icons/exported/icon-workflow-csp-header-builder-outline-24x24-v01.svg",
-    "csp_header_builder": "icons/exported/icon-workflow-csp-header-builder-outline-24x24-v01.svg",
-    "robots_meta_builder": "icons/exported/icon-workflow-robots-meta-tag-builder-outline-24x24-v01.svg",
-    "robots_meta_tag_builder": "icons/exported/icon-workflow-robots-meta-tag-builder-outline-24x24-v01.svg",
-    "cache_control_tool": "icons/exported/icon-workflow-cache-control-tool-outline-24x24-v01.svg",
-    "robots_validator": "icons/exported/icon-workflow-policy-controls-outline-24x24-v01.svg",
-    "basic_auth_tool": "icons/exported/icon-workflow-auth-controls-outline-24x24-v01.svg",
-    "keypair_generator": "icons/exported/icon-workflow-auth-controls-outline-24x24-v01.svg",
-    "password_policy_checker": "icons/exported/icon-workflow-password-policy-outline-24x24-v01.svg",
-    "password_entropy": "icons/exported/icon-workflow-auth-controls-outline-24x24-v01.svg",
-    "business_hours": "icons/exported/icon-workflow-time-operations-outline-24x24-v01.svg",
-    "world_clock": "icons/exported/icon-workflow-time-operations-outline-24x24-v01.svg",
-    "log_duration": "icons/exported/icon-workflow-time-operations-outline-24x24-v01.svg",
-    "date_calculator": "icons/exported/icon-workflow-time-operations-outline-24x24-v01.svg",
-    "pii_redactor": "icons/exported/icon-workflow-data-sanitization-outline-24x24-v01.svg",
-    "csv_cleaner": "icons/exported/icon-workflow-data-sanitization-outline-24x24-v01.svg",
-    "whitespace_visualizer": "icons/exported/icon-workflow-data-sanitization-outline-24x24-v01.svg",
-    "windows_event_reference": "icons/exported/icon-workflow-api-reference-outline-24x24-v01.svg",
-    "windows_error_reference": "icons/exported/icon-workflow-api-reference-outline-24x24-v01.svg",
-    "exit_code_reference": "icons/exported/icon-workflow-api-reference-outline-24x24-v01.svg",
-    "timezone_abbreviation_reference": "icons/exported/icon-workflow-api-reference-outline-24x24-v01.svg",
-    "http_methods_reference": "icons/exported/icon-workflow-http-methods-reference-outline-24x24-v01.svg",
-    "sql_formatter": "icons/exported/icon-workflow-query-format-outline-24x24-v01.svg",
-    "curl_builder": "icons/exported/icon-workflow-request-builder-outline-24x24-v01.svg",
-    "encoding_detector": "icons/exported/icon-workflow-encoding-detect-outline-24x24-v01.svg",
-    "url_parser": "icons/exported/icon-workflow-url-parse-outline-24x24-v01.svg",
-    "gitignore_tester": "icons/exported/icon-workflow-gitignore-match-outline-24x24-v01.svg",
-    "password_generator": "icons/exported/icon-workflow-password-generator-outline-24x24-v01.svg",
-    "url_encoder_decoder": "icons/exported/icon-workflow-url-encoding-outline-24x24-v01.svg",
-    "timestamp_converter": "icons/exported/icon-workflow-timestamp-convert-outline-24x24-v01.svg",
-    "user_agent_parser": "icons/exported/icon-workflow-user-agent-parse-outline-24x24-v01.svg",
-    "cidr_overlap": "icons/exported/icon-workflow-cidr-overlap-outline-24x24-v01.svg",
-    "m365_sku_decoder": "icons/exported/icon-workflow-m365-sku-lookup-outline-24x24-v01.svg",
-    "chmod_calculator": "icons/exported/icon-workflow-permission-bits-outline-24x24-v01.svg",
-    "semver_tools": "icons/exported/icon-workflow-semver-compare-outline-24x24-v01.svg",
-    "iso8601_duration": "icons/exported/icon-workflow-iso8601-duration-outline-24x24-v01.svg",
-    "ssh_config_validator": "icons/exported/icon-workflow-ssh-config-validator-outline-24x24-v01.svg",
-    "subnet_calculator": "icons/exported/icon-workflow-subnet-planning-outline-24x24-v01.svg",
-    "ip_geolocation": "icons/exported/icon-workflow-ip-geolocation-outline-24x24-v01.svg",
-    "totp_generator": "icons/exported/icon-workflow-totp-token-outline-24x24-v01.svg",
-    "http_header_parser": "icons/exported/icon-workflow-http-header-parse-outline-24x24-v01.svg",
-    "byte_size_converter": "icons/exported/icon-workflow-byte-size-convert-outline-24x24-v01.svg",
-    "number_to_words": "icons/exported/icon-workflow-number-to-words-outline-24x24-v01.svg",
-    "mac_address_tool": "icons/exported/icon-workflow-mac-address-outline-24x24-v01.svg",
-    "email_header_analyzer": "icons/exported/icon-workflow-email-header-trace-outline-24x24-v01.svg",
-    "text_diff_checker": "icons/exported/icon-workflow-text-diff-outline-24x24-v01.svg",
-    "cidr_aggregator": "icons/exported/icon-workflow-cidr-aggregate-outline-24x24-v01.svg",
-    "ipv6_compressor": "icons/exported/icon-workflow-ipv6-compress-outline-24x24-v01.svg",
-    "outlook_safelinks_decoder": "icons/exported/icon-workflow-safe-link-unwrap-outline-24x24-v01.svg",
-    "safelinks_decoder": "icons/exported/icon-workflow-safe-link-unwrap-outline-24x24-v01.svg",
-    "m365_safelinks_decoder": "icons/exported/icon-workflow-safe-link-unwrap-outline-24x24-v01.svg",
-    "docker_run_compose_converter": "icons/exported/icon-workflow-container-compose-outline-24x24-v01.svg",
-    "docker_run_to_compose": "icons/exported/icon-workflow-container-compose-outline-24x24-v01.svg",
-    "docker_compose_converter": "icons/exported/icon-workflow-container-compose-outline-24x24-v01.svg",
-    "nato_phonetic_converter": "icons/exported/icon-workflow-phonetic-spellout-outline-24x24-v01.svg",
-    "nato_alphabet_converter": "icons/exported/icon-workflow-phonetic-spellout-outline-24x24-v01.svg",
-    "wifi_qr_generator": "icons/exported/icon-workflow-wifi-qr-share-outline-24x24-v01.svg",
-    "wifi_qr_code_generator": "icons/exported/icon-workflow-wifi-qr-share-outline-24x24-v01.svg",
-    "hmac_generator": "icons/exported/icon-workflow-hash-digest-outline-24x24-v01.svg",
-    "ipv6_ula_generator": "icons/exported/icon-workflow-ipv6-compress-outline-24x24-v01.svg",
-    "random_mac_generator": "icons/exported/icon-workflow-mac-address-outline-24x24-v01.svg",
-    "random_mac_address_generator": "icons/exported/icon-workflow-mac-address-outline-24x24-v01.svg",
-    "list_converter": "icons/exported/icon-workflow-list-transform-outline-24x24-v01.svg",
-    "email_normalizer": "icons/exported/icon-workflow-email-normalize-outline-24x24-v01.svg",
-    "email_address_normalizer": "icons/exported/icon-workflow-email-normalize-outline-24x24-v01.svg",
-    "ipv4_format_converter": "icons/exported/icon-workflow-ipv4-format-outline-24x24-v01.svg",
-    "ipv4_address_format_converter": "icons/exported/icon-workflow-ipv4-format-outline-24x24-v01.svg",
-    "ipv4_range_expander": "icons/exported/icon-workflow-subnet-planning-outline-24x24-v01.svg",
-    # Phase 37 / wave-30 target slugs with explicit per-tool artwork.
-    "csr_generator": "icons/exported/icon-workflow-csr-generator-outline-24x24-v01.svg",
-    "caa_record_builder": "icons/exported/icon-workflow-caa-record-builder-outline-24x24-v01.svg",
-    "git_command_cheat_sheet": "icons/exported/icon-workflow-git-command-cheat-sheet-outline-24x24-v01.svg",
-    "bip39_mnemonic_generator_validator": "icons/exported/icon-workflow-bip39-mnemonic-generator-validator-outline-24x24-v01.svg",
-    # Phase 38 / wave-31 target slugs with explicit per-tool artwork.
-    "lorem_ipsum_generator": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
-    "text_to_binary_hex_octal_converter": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    # Backward-compatible aliases for earlier provisional/page-level slug names.
-    "bip39_mnemonic_validator": "icons/exported/icon-workflow-bip39-mnemonic-generator-validator-outline-24x24-v01.svg",
-    "bip39_mnemonic": "icons/exported/icon-workflow-bip39-mnemonic-generator-validator-outline-24x24-v01.svg",
-    "text_radix_converter": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    # Phase 39/40/41/42/43/44/45/46/47/48/49/50 placeholder slug aliases mapped to current real tool pages.
-    "157_tool_slug_pending_roadmap": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
-    "158_tool_slug_pending_roadmap": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    "157_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
-    "158_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    "159_tool_slug_pending_roadmap": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
-    "160_tool_slug_pending_roadmap": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    "159_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
-    "160_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    "165_tool_slug_pending_roadmap": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
-    "166_tool_slug_pending_roadmap": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    "165_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
-    "166_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    "167_tool_slug_pending_roadmap": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
-    "168_tool_slug_pending_roadmap": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    "167_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
-    "168_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    "169_tool_slug_pending_roadmap": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
-    "170_tool_slug_pending_roadmap": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    "169_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
-    "170_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    "171_tool_slug_pending_roadmap": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
-    "172_tool_slug_pending_roadmap": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    "171_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
-    "172_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    "173_tool_slug_pending_roadmap": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
-    "174_tool_slug_pending_roadmap": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    "173_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
-    "174_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    "175_tool_slug_pending_roadmap": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
-    "176_tool_slug_pending_roadmap": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    "175_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
-    "176_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    "177_tool_slug_pending_roadmap": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
-    "178_tool_slug_pending_roadmap": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    "177_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
-    "178_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    "179_tool_slug_pending_roadmap": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
-    "180_tool_slug_pending_roadmap": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    "179_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
-    "180_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    "181_tool_slug_pending_roadmap": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
-    "182_tool_slug_pending_roadmap": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    "181_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
-    "182_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    "183_tool_slug_pending_roadmap": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
-    "184_tool_slug_pending_roadmap": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    "183_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
-    "184_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    "185_tool_slug_pending_roadmap": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
-    "186_tool_slug_pending_roadmap": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    "185_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
-    "186_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    "187_tool_slug_pending_roadmap": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
-    "188_tool_slug_pending_roadmap": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    "187_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
-    "188_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    "189_tool_slug_pending_roadmap": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
-    "190_tool_slug_pending_roadmap": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    "189_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
-    "190_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    "191_tool_slug_pending_roadmap": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
-    "192_tool_slug_pending_roadmap": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    "191_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
-    "192_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    "193_tool_slug_pending_roadmap": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
-    "194_tool_slug_pending_roadmap": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    "193_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
-    "194_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    "csv_column_selector": "icons/exported/icon-workflow-csv-column-selector-outline-24x24-v01.svg",
-    "line_numberer": "icons/exported/icon-workflow-line-numberer-outline-24x24-v01.svg",
-    "column_aligner": "icons/exported/icon-workflow-column-aligner-outline-24x24-v01.svg",
-    "css_gradient_generator": "icons/exported/icon-workflow-css-gradient-generator-outline-24x24-v01.svg",
-}
-CATEGORY_TOOL_CARD_ICON_ASSETS: dict[str, str] = {
-    "Network": "icons/exported/icon-workflow-dns-lookup-outline-24x24-v01.svg",
-    "Security": "icons/exported/icon-workflow-incident-response-outline-24x24-v01.svg",
-    "Web & Dev": "icons/exported/icon-workflow-http-probe-outline-24x24-v01.svg",
-    "Data & Text": "icons/exported/icon-workflow-json-validate-outline-24x24-v01.svg",
-    "Ops & Automation": "icons/exported/icon-workflow-automation-runbook-outline-24x24-v01.svg",
-    "Reference": "icons/exported/icon-workflow-reference-catalog-outline-24x24-v01.svg",
-}
-TOOL_HEADER_ILLUSTRATION_BY_CATEGORY: dict[str, str] = {
-    "Network": "illustrations/exported/illustration-tool-network-header-flow-light-1600x900-v01.svg",
-    "Security": "illustrations/exported/illustration-tool-security-header-shield-light-1600x900-v01.svg",
-    "Web & Dev": "illustrations/exported/illustration-tool-web-dev-header-http-light-1600x900-v01.svg",
-    "Data & Text": "illustrations/exported/illustration-tool-data-text-header-parse-light-1600x900-v01.svg",
-    "Ops & Automation": "illustrations/exported/illustration-tool-ops-automation-header-pipeline-light-1600x900-v01.svg",
-    "Reference": "illustrations/exported/illustration-tool-reference-header-catalog-light-1600x900-v01.svg",
-}
-EMPTY_STATE_ILLUSTRATIONS: dict[str, str] = {
-    "ready": "illustrations/exported/illustration-empty-state-ready-checklist-light-1200x675-v01.svg",
-    "network": "illustrations/exported/illustration-empty-state-ready-network-light-1200x675-v01.svg",
-    "security": "illustrations/exported/illustration-empty-state-ready-shield-light-1200x675-v01.svg",
-}
-ROADMAP_BADGE_ICONS: dict[str, str] = {
-    "status_planned": "icons/exported/icon-roadmap-planned-badge-24x24-v01.svg",
-    "status_progress": "icons/exported/icon-roadmap-progress-badge-24x24-v01.svg",
-    "status_done": "icons/exported/icon-roadmap-done-badge-24x24-v01.svg",
-    "status_ai": "icons/exported/icon-roadmap-ai-badge-24x24-v01.svg",
-    "source_seed": "icons/exported/icon-roadmap-seed-badge-24x24-v01.svg",
-    "source_github": "icons/exported/icon-roadmap-github-badge-24x24-v01.svg",
-}
-TRANSIENT_FAILURE_HINTS: tuple[str, ...] = (
-    "timeout",
-    "timed out",
-    "temporar",
-    "unavailable",
-    "rate limit",
-    "429",
-    "503",
-    "502",
-    "connection",
-    "refused",
-    "reset",
-    "dns lookup timed out",
-    "nameserver",
-    "eai_again",
-)
-PERSISTENT_FAILURE_HINTS: tuple[str, ...] = (
-    "invalid",
-    "does not exist",
-    "nxdomain",
-    "no answer",
-    "expired",
-    "hostname mismatch",
-    "port must be",
-    "certificate verification failed",
-)
-
-
-@lru_cache(maxsize=256)
-def _svg_data_uri(relative_path: str) -> str | None:
-    asset_path = ASSETS_ROOT / relative_path
-    if not asset_path.exists() or asset_path.suffix.lower() != ".svg":
-        return None
-    return "data:image/svg+xml;base64," + base64.b64encode(asset_path.read_bytes()).decode("ascii")
-
-
-def _svg_img_html(relative_path: str, alt: str, class_name: str, decorative: bool = False) -> str | None:
-    uri = _svg_data_uri(relative_path)
-    if not uri:
-        return None
-    alt_text = "" if decorative else escape(alt)
-    decorative_attrs = ' aria-hidden="true" role="presentation"' if decorative else ""
-    return (
-        f'<img class="{escape(class_name)}" src="{uri}" alt="{alt_text}"{decorative_attrs} loading="lazy" decoding="async">'
-    )
-
-
-MAX_RECENT_TOOLS = 5
-PERSISTED_LIST_PARAMS: tuple[str, ...] = ("recent", "fav")
 
 
 @dataclass(frozen=True)
@@ -2449,6 +2162,19 @@ def recent_or_popular_tools(recent_slugs: Iterable[str]) -> tuple[ToolMeta, ...]
 def favorite_tools() -> tuple[ToolMeta, ...]:
     """Return the visitor's favorited tools, in the order they were favorited. No padding."""
     return tuple(_resolve_slugs(_get_persisted_slugs("fav")))
+
+
+def favorites_share_link(tools: Iterable[ToolMeta]) -> str:
+    """Build an absolute, read-only link that opens someone else's favorites as a shared list."""
+    slugs = ",".join(tool.slug for tool in tools)
+    query = urlencode({SHARED_FAVORITES_PARAM: slugs})
+    return f"{app_base_url()}/?{query}"
+
+
+def shared_favorite_tools() -> tuple[ToolMeta, ...]:
+    """Return the tools named by a visited ``shared_fav`` link, in order. Read-only, view-only."""
+    raw = st.query_params.get(SHARED_FAVORITES_PARAM, "")
+    return tuple(_resolve_slugs(slug for slug in raw.split(",") if slug))
 
 
 def sort_tools(tools: tuple[ToolMeta, ...], mode: str) -> tuple[ToolMeta, ...]:
