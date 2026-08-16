@@ -122,14 +122,10 @@ if result is not None:
                     st.code("\n".join(item["commands_to_check"]), language="bash")
                     st.markdown("**Remediation checklist**")
                     for step_index, step in enumerate(item["safe_next_steps"]):
-                        # Keying on content (not just position) keeps a checked box from
-                        # carrying over onto an unrelated step after a different log is
-                        # analyzed and happens to produce the same finding/step index.
-                        step_key = f"remediation_step_{finding_index}_{step_index}_{abs(hash((item['likely_issue'], step))) % 100000}"
-                        st.checkbox(step, key=step_key)
+                        st.checkbox(step, key=f"remediation_step_{finding_index}_{step_index}")
 
             psa_note = build_log_analysis_psa_note(result["findings"])
-            with tool_download_panel("log_troubleshooting_export", related_to="log_troubleshooting"):
+            with tool_download_panel("log_troubleshooting_export"):
                 render_section_heading(
                     "PSA / ticket note",
                     "Plain text, no markdown symbols -- ready to paste into a ConnectWise, Autotask, or Halo ticket note.",

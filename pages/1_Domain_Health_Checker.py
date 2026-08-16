@@ -10,12 +10,7 @@ import streamlit as st
 from utils.dev_baseline import mark_page_baseline, render_page_baseline, start_page_baseline
 from utils.dns_tools import MAX_DOMAIN_LENGTH, get_dns_summary, normalize_domain
 from utils.http_tools import check_http_status
-from utils.reporting import (
-    INCIDENT_MESSAGE_TARGETS,
-    build_domain_health_html_report,
-    build_domain_health_incident_message,
-    build_domain_health_psa_note,
-)
+from utils.reporting import build_domain_health_html_report, build_domain_health_psa_note
 from utils.scoring import calculate_risk_score
 from utils.ssl_tools import get_certificate_info
 from utils.text_tools import validate_length
@@ -211,12 +206,28 @@ if submitted:
 
 state = st.session_state.get("domain_health_state")
 
-if state is None:
-    render_empty_state(
-        "Ready for a public domain",
-        "Results, recommendations, and exports appear here after the health check completes.",
-        illustration="network",
-    )
+        rows = _csv_rows(dns_summary, ssl_result, http_result, risk)
+        csv_data = pd.DataFrame(rows).to_csv(index=False).encode("utf-8")
+        markdown_data = _markdown_summary(normalized, dns_summary, ssl_result, http_result, risk)
+        html_data = build_domain_health_html_report(normalized, dns_summary, ssl_result, http_result, risk, rows)
+        psa_note = build_domain_health_psa_note(normalized, dns_summary, ssl_result, http_result, risk)
+        with tool_download_panel("domain_exports", related_to="domain_health"):
+            render_section_heading("Export", "Download the current in-memory results.", eyebrow="Downloads")
+            export_col_a, export_col_b, export_col_c = st.columns(3)
+            export_col_a.download_button("Download results as CSV", csv_data, file_name=f"{normalized}-health.csv", mime="text/csv")
+            export_col_b.download_button(
+                "Download summary as Markdown",
+                markdown_data,
+                file_name=f"{normalized}-health.md",
+                mime="text/markdown",
+            )
+            st.code(psa_note, language=None)
+            st.download_button(
+                "Download PSA note (.txt)",
+                psa_note,
+                file_name=f"{normalized}-health-ticket-note.txt",
+                mime="text/plain",
+            )
 
             render_section_heading(
                 "PSA / ticket note",
@@ -230,14 +241,3 @@ if state is None:
                 file_name=f"{normalized}-health-ticket-note.txt",
                 mime="text/plain",
             )
-
-            render_section_heading(
-                "Incident message",
-                "Ready to paste into a Slack or Teams channel for a live incident update.",
-                eyebrow="Chat export",
-            )
-            incident_tabs = st.tabs([target.title() for target in INCIDENT_MESSAGE_TARGETS])
-            for tab, target in zip(incident_tabs, INCIDENT_MESSAGE_TARGETS, strict=True):
-                with tab:
-                    incident_message = build_domain_health_incident_message(normalized, dns_summary, ssl_result, http_result, risk, target)
-                    st.code(incident_message["message"], language=None)
