@@ -1287,6 +1287,18 @@ TOOLS: tuple[ToolMeta, ...] = (
         category="Security",
         is_new=True,
     ),
+    ToolMeta(
+        title="Uptime Trend",
+        short_title="Uptime Trend",
+        description="Run a short, one-off series of checks against a URL and see the latency trend for this session only.",
+        path="pages/30_Uptime_Trend.py",
+        icon="UPT",
+        accent="#0e9f6e",
+        slug="uptime_trend",
+        professions=("Sysadmin / DevOps", "Support Engineer", "Web Developer"),
+        category="Web & Dev",
+        is_new=True,
+    ),
 )
 
 # Curated, not usage-derived -- this app deliberately has no usage tracking
@@ -1311,7 +1323,8 @@ TOOL_BUNDLES: dict[str, tuple[str, ...]] = {
     "domain_health": ("dns_records", "ssl_certificate", "whois_lookup"),
     "dns_records": ("domain_health", "whois_lookup", "ssl_certificate"),
     "ssl_certificate": ("domain_health", "dns_records", "http_status"),
-    "http_status": ("domain_health", "ssl_certificate", "user_agent_parser"),
+    "http_status": ("domain_health", "ssl_certificate", "uptime_trend"),
+    "uptime_trend": ("http_status", "domain_health"),
     "whois_lookup": ("dns_records", "domain_health", "ssl_certificate"),
     "bulk_domain_health": ("domain_health", "dns_records", "ssl_certificate"),
     "mac_address_tool": ("subnet_calculator", "cidr_aggregator", "ipv6_compressor"),
@@ -2367,24 +2380,6 @@ def _material_icon_for(slug: str) -> str:
         "bulk_domain_health": ":material/upload_file:",
         "webhook_tester": ":material/webhook:",
         "uptime_trend": ":material/show_chart:",
-        "security_headers": ":material/shield:",
-        "cve_lookup": ":material/bug_report:",
-        "dns_propagation": ":material/travel_explore:",
-        "windows_event_reference": ":material/event_note:",
-        "dkim_lookup": ":material/key:",
-        "email_record_builder": ":material/build:",
-        "windows_error_reference": ":material/error_outline:",
-        "config_format_converter": ":material/sync_alt:",
-        "m365_sku_decoder": ":material/badge:",
-        "id_generator": ":material/fingerprint:",
-        "json_diff": ":material/compare_arrows:",
-        "ip_geolocation": ":material/location_on:",
-        "file_integrity": ":material/verified:",
-        "chmod_calculator": ":material/lock_open:",
-        "base_converter": ":material/pin:",
-        "cron_builder": ":material/schedule_send:",
-        "http_status_reference": ":material/http:",
-        "totp_generator": ":material/dialpad:",
     }
     return icons.get(slug, ":material/build:")
 
