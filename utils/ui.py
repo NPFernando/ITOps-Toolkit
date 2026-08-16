@@ -2224,7 +2224,10 @@ _THEME_TOKENS = {
         "blue": "#e06c75",
         "blue-dark": "#c65861",
         "ink": "#9cdef2",
-        "muted": "#6b8a94",
+        # #6b8a94 measured 3.79:1 against "bg" (#282c34) -- below WCAG AA's 4.5:1
+        # minimum for normal text, and this token backs captions/descriptions at
+        # 13-15px. Lightened to #7d98a1 (4.59:1), same hue, to clear AA.
+        "muted": "#7d98a1",
         "line": "#355a66",
         "bg": "#282c34",
         "panel": "#1e2228",
@@ -2923,7 +2926,10 @@ def _inject_global_css(mode: str) -> None:
             font-size: 0.62rem;
             font-weight: 800;
             letter-spacing: 0.04em;
-            color: #ffffff;
+            /* White text on this bright green badge measured as low as 1.4:1 (dark
+               theme) -- far below WCAG AA's 4.5:1 for small text. This dark green
+               clears 4.5:1+ against every gradient stop in both themes. */
+            color: #04140a;
             background: linear-gradient(135deg, var(--itops-green), color-mix(in srgb, var(--itops-green), #000 15%));
         }
 
