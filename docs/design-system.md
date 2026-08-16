@@ -671,6 +671,20 @@ This guide documents the UI direction used for the Streamlit dashboard and tool 
 - Record Wave 39 outcomes in `docs/release-notes-template.md` using synthetic/sanitized evidence only.
 - Confirm 171/172 placeholder mapping notes, 141/142 touchpoint routing, Step 1/Step 2 heading hierarchy guardrails, and deterministic shell/mobile/visual/a11y outcomes remain unchanged after UI refinements.
 
+## Phase 47 Wave 40 Standards (Shell, Mobile, Visual, A11y + QA Gates)
+
+- **Shell consistency:** keep shared shell + baseline markers (`shell-ready`, `content-rendered`, `wave40-shell-mobile`) stable on Home, Roadmap & Feedback, Lorem Ipsum Generator, and Text to Binary/Hex/Octal Converter.
+- **Mobile baseline (`<=720px`):** keep Step 1/Step 2 heading hierarchy concise/readable, maintain grouped controls in single-column flow, and keep Home controls, Roadmap filters/AI triage action, plus wave-40 generate/convert actions full-width/tap-friendly with no clipping/overflow.
+- **Visual mapping integrity:** keep deterministic slug-first icon lookup (`TOOL_CARD_ICON_ASSETS` before `CATEGORY_TOOL_CARD_ICON_ASSETS`) and document wave-40 placeholder governance (`173_tool_slug_pending_roadmap` + `173_<tool_slug_pending_roadmap>` → wave-40 lorem touchpoint `141_Lorem_Ipsum_Generator.py`/`lorem_ipsum_generator`; `174_tool_slug_pending_roadmap` + `174_<tool_slug_pending_roadmap>` → wave-40 converter touchpoint `142_Text_to_Binary_Hex_Octal_Converter.py`/`text_to_binary_hex_octal_converter`) while retaining prior wave placeholder alias continuity for deterministic release evidence.
+- **Accessibility guardrail:** keep keyboard flow/focus visibility intact and preserve explicit status semantics (`role="status"`/`role="alert"` + `aria-live`) for Home, Roadmap, and wave-40 tool outcomes.
+- **QA/test guardrail:** treat deterministic guardrails in `tests/test_ui_helpers.py`, `tests/test_wave40_shell_mobile_markers.py`, and `tests/test_wave40_accessibility_guardrails.py` as release blockers.
+
+### Wave 40 QA handoff guidance
+
+- Run Wave 40 checks in `docs/release-checklist.md` before release.
+- Record Wave 40 outcomes in `docs/release-notes-template.md` using synthetic/sanitized evidence only.
+- Confirm 173/174 placeholder mapping notes, 141/142 touchpoint routing, Step 1/Step 2 heading hierarchy guardrails, and deterministic shell/mobile/visual/a11y outcomes remain unchanged after UI refinements.
+
 ## Maintenance Rules
 
 - Do not duplicate tool titles, descriptions, paths, or accent colors outside `utils/ui.py`.

@@ -44,6 +44,7 @@ mark_page_baseline(_baseline, "wave36-shell-mobile")
 mark_page_baseline(_baseline, "wave37-shell-mobile")
 mark_page_baseline(_baseline, "wave38-shell-mobile")
 mark_page_baseline(_baseline, "wave39-shell-mobile")
+mark_page_baseline(_baseline, "wave40-shell-mobile")
 
 
 def _status_tone(status: str) -> str:
@@ -203,6 +204,12 @@ else:
     )
 
 counts = roadmap.category_counts(board.items)
+render_section_heading(
+    "Board overview",
+    description="Scan board totals first, then move to filters and status columns.",
+    eyebrow="Step 0",
+    heading_level="h3",
+)
 st.markdown('<div class="roadmap-section-label">Boards</div>', unsafe_allow_html=True)
 st.markdown(
     '<div class="roadmap-board-grid">'
