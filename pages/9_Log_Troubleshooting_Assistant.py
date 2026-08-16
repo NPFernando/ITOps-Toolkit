@@ -69,20 +69,18 @@ if submitted:
     # rerun where `submitted` is False again, which would otherwise make the whole
     # results section (checkboxes included) disappear the instant you check a box.
     st.session_state["log_troubleshooting_result"] = analyze_logs_rule_based(log_text)
-    with st.spinner("Generating AI summary..." if use_ai_summary else "Analyzing..."):
-        st.session_state["log_troubleshooting_ai_state"] = optional_ai_summary(
-            st.session_state["log_troubleshooting_result"]["sanitized"],
-            findings=st.session_state["log_troubleshooting_result"]["findings"],
-            opted_in=use_ai_summary,
-        )
+    st.session_state["log_troubleshooting_ai_state"] = optional_ai_summary(
+        st.session_state["log_troubleshooting_result"]["sanitized"],
+        findings=st.session_state["log_troubleshooting_result"]["findings"],
+        opted_in=use_ai_summary,
+    )
 
 result = st.session_state.get("log_troubleshooting_result")
 
 if result is None:
     render_empty_state("Ready to analyze sanitized logs", "Findings, likely causes, commands, and safe next steps appear after analysis.")
 
-if submitted:
-    result = analyze_logs_rule_based(log_text)
+if result is not None:
     with tool_result_panel("log_result", related_to="log_troubleshooting"):
         render_section_heading("Log analysis", "Rule-based findings and safe operational next steps.")
         if not result["ok"]:
@@ -123,7 +121,11 @@ if submitted:
                     st.code("\n".join(item["commands_to_check"]), language="bash")
                     st.markdown("**Remediation checklist**")
                     for step_index, step in enumerate(item["safe_next_steps"]):
-                        st.checkbox(step, key=f"remediation_step_{finding_index}_{step_index}")
+                        # Keying on content (not just position) keeps a checked box from
+                        # carrying over onto an unrelated step after a different log is
+                        # analyzed and happens to produce the same finding/step index.
+                        step_key = f"remediation_step_{finding_index}_{step_index}_{abs(hash((item['likely_issue'], step))) % 100000}"
+                        st.checkbox(step, key=step_key)
 
             psa_note = build_log_analysis_psa_note(result["findings"])
             with tool_download_panel("log_troubleshooting_export"):
