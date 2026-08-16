@@ -1153,6 +1153,18 @@ TOOLS: tuple[ToolMeta, ...] = (
         category="Reference",
         is_new=True,
     ),
+    ToolMeta(
+        title="Bulk Domain Health",
+        short_title="Bulk Domain Health",
+        description="Run the Domain Health Checker's core checks across a list of public domains at once.",
+        path="pages/28_Bulk_Domain_Health.py",
+        icon="CSV",
+        accent="#1668f4",
+        slug="bulk_domain_health",
+        professions=("Network Engineer", "Security Engineer", "Sysadmin / DevOps", "Web Developer"),
+        category="Network",
+        is_new=True,
+    ),
 )
 
 # Curated, not usage-derived -- this app deliberately has no usage tracking
@@ -2205,12 +2217,6 @@ def _material_icon_for(slug: str) -> str:
         "color_converter": ":material/palette:",
         "whois_lookup": ":material/badge:",
         "bulk_domain_health": ":material/upload_file:",
-        "webhook_tester": ":material/webhook:",
-        "uptime_trend": ":material/show_chart:",
-        "security_headers": ":material/shield:",
-        "cve_lookup": ":material/bug_report:",
-        "dns_propagation": ":material/travel_explore:",
-        "windows_event_reference": ":material/event_note:",
     }
     return icons.get(slug, ":material/build:")
 

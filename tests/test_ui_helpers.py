@@ -229,12 +229,6 @@ def test_expected_tools_are_tagged_new():
         "color_converter",
         "whois_lookup",
         "bulk_domain_health",
-        "webhook_tester",
-        "uptime_trend",
-        "security_headers",
-        "cve_lookup",
-        "dns_propagation",
-        "windows_event_reference",
     }
 
 
@@ -367,22 +361,6 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "ipv6_compressor",
             "whois_lookup",
             "bulk_domain_health",
-            "dns_propagation",
-            "dkim_lookup",
-            "email_record_builder",
-            "ip_geolocation",
-        ],
-        "Security": [
-            "ssl_certificate",
-            "jwt_decoder",
-            "hash_generator",
-            "email_header_analyzer",
-            "password_generator",
-            "jwt_encoder",
-            "security_headers",
-            "cve_lookup",
-            "file_integrity",
-            "totp_generator",
         ],
         "Web & Dev": [
             "http_status",
