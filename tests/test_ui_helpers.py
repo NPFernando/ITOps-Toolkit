@@ -3299,6 +3299,76 @@ def test_tool_card_html_wave39_slug_first_precedence_skips_category_fallback(mon
     assert f">{tool.icon}<" in html
 
 
+def test_tool_card_icon_asset_wave46_placeholder_alias_mappings_remain_deterministic():
+    expected_assets = {
+        "185_tool_slug_pending_roadmap": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
+        "186_tool_slug_pending_roadmap": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
+        "185_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
+        "186_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
+    }
+
+    for slug, expected in expected_assets.items():
+        tool = ui.ToolMeta(
+            title=f"Wave-46 {slug}",
+            short_title=slug,
+            description="planned",
+            path=f"pages/{slug}.py",
+            icon="W46",
+            accent="#22577a",
+            slug=slug,
+            professions=("Support Engineer",),
+            category="Data & Text",
+        )
+        assert ui._tool_card_icon_asset(tool) == expected
+
+
+def test_tool_card_html_wave46_slug_first_precedence_skips_category_fallback(monkeypatch):
+    slug = "185_tool_slug_pending_roadmap"
+    expected_asset = "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg"
+    category_default = "icons/exported/icon-workflow-json-validate-outline-24x24-v01.svg"
+    requested_paths: list[str] = []
+
+    def fake_svg_img_html(path, *args, **kwargs):
+        requested_paths.append(path)
+        if path == category_default:
+            return '<img class="tool-card-icon-image" data-icon="category-default" />'
+        return None
+
+    monkeypatch.setattr(ui, "_svg_img_html", fake_svg_img_html)
+
+    tool = ui.ToolMeta(
+        title=f"Wave-46 {slug}",
+        short_title=slug,
+        description="planned",
+        path=f"pages/{slug}.py",
+        icon="W46",
+        accent="#22577a",
+        slug=slug,
+        professions=("Support Engineer",),
+        category="Data & Text",
+    )
+    html = ui._tool_card_html(tool)
+
+    assert requested_paths == [expected_asset]
+    assert requested_paths[0] != category_default
+    assert "tool-card-icon-image" not in html
+    assert f">{tool.icon}<" in html
+
+
+def test_material_icon_for_wave46_placeholder_aliases_and_unknown_fallback():
+    expected_icons = {
+        "185_tool_slug_pending_roadmap": ":material/text_fields:",
+        "186_tool_slug_pending_roadmap": ":material/pin:",
+        "185_<tool_slug_pending_roadmap>": ":material/text_fields:",
+        "186_<tool_slug_pending_roadmap>": ":material/pin:",
+    }
+
+    for slug, expected in expected_icons.items():
+        assert ui._material_icon_for(slug) == expected
+
+    assert ui._material_icon_for("wave46-unknown-slug") == ":material/build:"
+
+
 def test_tool_card_icon_asset_wave44_placeholder_alias_mappings_remain_deterministic():
     expected_assets = {
         "181_tool_slug_pending_roadmap": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
@@ -3423,6 +3493,76 @@ def test_material_icon_for_wave45_placeholder_aliases_and_unknown_fallback():
         assert ui._material_icon_for(slug) == expected
 
     assert ui._material_icon_for("wave45-unknown-slug") == ":material/build:"
+
+
+def test_tool_card_icon_asset_wave46_placeholder_alias_mappings_remain_deterministic():
+    expected_assets = {
+        "185_tool_slug_pending_roadmap": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
+        "186_tool_slug_pending_roadmap": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
+        "185_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
+        "186_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
+    }
+
+    for slug, expected in expected_assets.items():
+        tool = ui.ToolMeta(
+            title=f"Wave-46 {slug}",
+            short_title=slug,
+            description="planned",
+            path=f"pages/{slug}.py",
+            icon="W46",
+            accent="#1e5f74",
+            slug=slug,
+            professions=("Support Engineer",),
+            category="Data & Text",
+        )
+        assert ui._tool_card_icon_asset(tool) == expected
+
+
+def test_tool_card_html_wave46_slug_first_precedence_skips_category_fallback(monkeypatch):
+    slug = "185_tool_slug_pending_roadmap"
+    expected_asset = "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg"
+    category_default = "icons/exported/icon-workflow-json-validate-outline-24x24-v01.svg"
+    requested_paths: list[str] = []
+
+    def fake_svg_img_html(path, *args, **kwargs):
+        requested_paths.append(path)
+        if path == category_default:
+            return '<img class="tool-card-icon-image" data-icon="category-default" />'
+        return None
+
+    monkeypatch.setattr(ui, "_svg_img_html", fake_svg_img_html)
+
+    tool = ui.ToolMeta(
+        title=f"Wave-46 {slug}",
+        short_title=slug,
+        description="planned",
+        path=f"pages/{slug}.py",
+        icon="W46",
+        accent="#1e5f74",
+        slug=slug,
+        professions=("Support Engineer",),
+        category="Data & Text",
+    )
+    html = ui._tool_card_html(tool)
+
+    assert requested_paths == [expected_asset]
+    assert requested_paths[0] != category_default
+    assert "tool-card-icon-image" not in html
+    assert f">{tool.icon}<" in html
+
+
+def test_material_icon_for_wave46_placeholder_aliases_and_unknown_fallback():
+    expected_icons = {
+        "185_tool_slug_pending_roadmap": ":material/text_fields:",
+        "186_tool_slug_pending_roadmap": ":material/pin:",
+        "185_<tool_slug_pending_roadmap>": ":material/text_fields:",
+        "186_<tool_slug_pending_roadmap>": ":material/pin:",
+    }
+
+    for slug, expected in expected_icons.items():
+        assert ui._material_icon_for(slug) == expected
+
+    assert ui._material_icon_for("wave46-unknown-slug") == ":material/build:"
 
 
 def test_tool_card_icon_asset_wave43_placeholder_alias_mappings_remain_deterministic():

@@ -53,6 +53,7 @@ mark_page_baseline(_baseline, "wave42-shell-mobile")
 mark_page_baseline(_baseline, "wave43-shell-mobile")
 mark_page_baseline(_baseline, "wave44-shell-mobile")
 mark_page_baseline(_baseline, "wave45-shell-mobile")
+mark_page_baseline(_baseline, "wave46-shell-mobile")
 
 render_page_header("Text to Binary Hex Octal Converter", "Convert plain text into binary, hexadecimal, and octal byte sequences.")
 
@@ -84,6 +85,7 @@ with tool_result_panel("text_radix_result", related_to="text_to_binary_hex_octal
         "Encoded output",
         description="Scan binary, hexadecimal, and octal rows together for quick verification.",
         eyebrow="Step 2",
+        heading_level="h3",
     )
     if result is None:
         render_empty_state("Ready to encode", "Binary, hex, and octal output appears here after submission.")

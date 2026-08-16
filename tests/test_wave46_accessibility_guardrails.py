@@ -1,0 +1,148 @@
+from __future__ import annotations
+
+import os
+from pathlib import Path
+
+import pytest
+import streamlit as st
+from streamlit.testing.v1 import AppTest
+
+
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+APP_PAGE = str(PROJECT_ROOT / "app.py")
+ROADMAP_PAGE = str(PROJECT_ROOT / "pages" / "10_Roadmap_Feedback.py")
+LOREM_PAGE = str(PROJECT_ROOT / "pages" / "141_Lorem_Ipsum_Generator.py")
+TEXT_RADIX_PAGE = str(PROJECT_ROOT / "pages" / "142_Text_to_Binary_Hex_Octal_Converter.py")
+
+
+@pytest.fixture(autouse=True)
+def _clear_cache_scope(monkeypatch):
+    st.cache_data.clear()
+    monkeypatch.setenv("ITOPS_CACHE_SCOPE", os.getenv("PYTEST_CURRENT_TEST", "runtime"))
+
+
+def _markdown(app: AppTest) -> str:
+    return " ".join(item.value for item in app.markdown)
+
+
+def _captions(app: AppTest) -> str:
+    return " ".join(item.value for item in app.caption)
+
+
+def _assert_polite_status_live_region(markdown: str) -> None:
+    assert 'role="status"' in markdown
+    assert 'aria-live="polite"' in markdown
+    assert 'aria-atomic="true"' in markdown
+    assert 'tabindex="0"' in markdown
+
+
+def _assert_warning_status_live_region(markdown: str) -> None:
+    assert 'role="alert"' in markdown
+    assert 'aria-live="assertive"' in markdown
+    assert 'aria-atomic="true"' in markdown
+    assert 'tabindex="0"' in markdown
+
+
+def test_wave46_status_helper_semantics_guardrails():
+    source = (PROJECT_ROOT / "utils/ui.py").read_text(encoding="utf-8")
+    assert 'role = "alert" if normalized_tone == "warning" else "status"' in source
+    assert 'aria_live = "assertive" if normalized_tone == "warning" else "polite"' in source
+    assert 'aria_label = f"{normalized_tone.capitalize()} status: {title}"' in source
+    assert 'aria-atomic="true"' in source
+    assert 'tabindex="0"' in source
+
+
+def test_wave46_read_order_and_status_live_regions_are_deterministic():
+    home_app = AppTest.from_file(APP_PAGE, default_timeout=30)
+    home_app.run()
+    assert not home_app.exception
+    home_markdown = _markdown(home_app)
+    home_captions = _captions(home_app)
+    assert "Read order: review browsing setup, run this full-width action, then verify status notes and tool results." in home_captions
+    assert "Status tip: confirm the outcome note after each action before changing filters." in home_captions
+    assert "Quick tip: check the status note before changing filters." in home_captions
+    assert "Outcome: quick access ready" in home_markdown
+    assert 'aria-label="Neutral status: Outcome: quick access ready"' in home_markdown
+    _assert_polite_status_live_region(home_markdown)
+
+    search = next(widget for widget in home_app.text_input if widget.key == "tool_search")
+    search.set_value("tool-that-does-not-exist-zzz").run()
+    assert not home_app.exception
+
+    home_markdown = _markdown(home_app)
+    assert "Outcome: catalog filters need adjustment" in home_markdown
+    assert 'aria-label="Warning status: Outcome: catalog filters need adjustment"' in home_markdown
+    _assert_warning_status_live_region(home_markdown)
+
+    roadmap_app = AppTest.from_file(ROADMAP_PAGE, default_timeout=30)
+    roadmap_app.run()
+    assert not roadmap_app.exception
+    roadmap_markdown = _markdown(roadmap_app)
+    roadmap_captions = _captions(roadmap_app)
+    assert "Read order: set search + category, apply filters, then review status outcomes before scanning cards." in roadmap_captions
+    assert "Status tip: check the outcome note first so you know whether to refine filters or continue." in roadmap_captions
+    assert "Quick tip: read the status note before scanning cards." in roadmap_captions
+    assert "Outcome: public feedback safety reminder" in roadmap_markdown
+    assert 'aria-label="Warning status: Outcome: public feedback safety reminder"' in roadmap_markdown
+    assert "Outcome: AI Recommended label clarified" in roadmap_markdown
+    assert 'aria-label="Neutral status: Outcome: AI Recommended label clarified"' in roadmap_markdown
+    _assert_warning_status_live_region(roadmap_markdown)
+    _assert_polite_status_live_region(roadmap_markdown)
+
+    lorem_app = AppTest.from_file(LOREM_PAGE, default_timeout=30)
+    lorem_app.run()
+    assert not lorem_app.exception
+    lorem_markdown = _markdown(lorem_app)
+    lorem_captions = _captions(lorem_app)
+    assert "Read order: configure output shape and seed, run generate, then review status guidance and output." in lorem_captions
+    assert "Status tip: read the outcome note first to confirm whether text is ready or more input is needed." in lorem_captions
+    assert "Quick tip: confirm the status note before copying output." in lorem_captions
+    assert "Outcome: lorem generation awaiting input" in lorem_markdown
+    assert 'aria-label="Neutral status: Outcome: lorem generation awaiting input"' in lorem_markdown
+    _assert_polite_status_live_region(lorem_markdown)
+
+    seed = next(widget for widget in lorem_app.text_input if widget.key == "lorem_seed")
+    seed.set_value("wave32")
+    count = next(widget for widget in lorem_app.number_input if widget.key == "lorem_count")
+    count.set_value(6)
+    next(widget for widget in lorem_app.button if widget.label == "Generate lorem ipsum").click().run()
+    assert not lorem_app.exception
+
+    assert lorem_app.code[0].value == "enim qui cupidatat mollit labore cillum"
+    lorem_markdown = _markdown(lorem_app)
+    assert "Outcome: lorem text generated" in lorem_markdown
+    assert 'aria-label="Success status: Outcome: lorem text generated"' in lorem_markdown
+    _assert_polite_status_live_region(lorem_markdown)
+
+    text_app = AppTest.from_file(TEXT_RADIX_PAGE, default_timeout=30)
+    text_app.run()
+    assert not text_app.exception
+    text_markdown = _markdown(text_app)
+    text_captions = _captions(text_app)
+    assert "Read order: enter source text, run convert, then confirm status and compare all three encoded outputs." in text_captions
+    assert "Status tip: read the outcome note first to confirm whether input is missing or conversion succeeded." in text_captions
+    assert "Quick tip: confirm the status note before comparing encodings." in text_captions
+    assert "Outcome: conversion awaiting input" in text_markdown
+    assert 'aria-label="Neutral status: Outcome: conversion awaiting input"' in text_markdown
+    _assert_polite_status_live_region(text_markdown)
+
+    next(widget for widget in text_app.button if widget.label == "Convert text").click().run()
+    assert not text_app.exception
+
+    text_markdown = _markdown(text_app)
+    assert "Outcome: text conversion blocked" in text_markdown
+    assert 'aria-label="Warning status: Outcome: text conversion blocked"' in text_markdown
+    _assert_warning_status_live_region(text_markdown)
+
+    text_app.text_area[0].set_value("Az")
+    next(widget for widget in text_app.button if widget.label == "Convert text").click().run()
+    assert not text_app.exception
+
+    output = text_app.code[0].value
+    assert "Binary: 01000001 01111010" in output
+    assert "Hex: 41 7A" in output
+    assert "Octal: 101 172" in output
+    text_markdown = _markdown(text_app)
+    assert "Outcome: text conversion complete" in text_markdown
+    assert 'aria-label="Success status: Outcome: text conversion complete"' in text_markdown
+    _assert_polite_status_live_region(text_markdown)

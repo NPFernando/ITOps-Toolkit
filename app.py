@@ -52,6 +52,7 @@ mark_page_baseline(_baseline, "wave42-shell-mobile")
 mark_page_baseline(_baseline, "wave43-shell-mobile")
 mark_page_baseline(_baseline, "wave44-shell-mobile")
 mark_page_baseline(_baseline, "wave45-shell-mobile")
+mark_page_baseline(_baseline, "wave46-shell-mobile")
 
 
 repo_url = github_url()
@@ -117,6 +118,7 @@ with tool_form_panel("home_primary_action"):
         "Catalog visibility",
         description="Run one full-width action to reveal or collapse catalog results after setup is complete.",
         eyebrow="Step 2",
+        heading_level="h3",
     )
     render_control_heading("Catalog action")
     st.caption("Read order: review browsing setup, run this full-width action, then verify status notes and tool results.")
