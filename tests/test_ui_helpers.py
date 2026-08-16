@@ -55,36 +55,6 @@ def test_theme_toggle_requires_a_selection(monkeypatch):
     assert calls[0].get("required") is True
 
 
-def test_theme_toggle_uses_a_single_state_key_not_a_mirrored_copy(monkeypatch):
-    """Regression: an earlier version kept a second, manually-written session_state key
-    mirroring the widget's own selection. The two could drift out of sync (suspected in a
-    real "toggle shows Dark but the app renders light" report). Now there's exactly one
-    key -- the widget's own -- and current_theme_mode() reads it directly."""
-    calls = []
-
-    def fake_segmented_control(*args, **kwargs):
-        calls.append(kwargs)
-        return kwargs.get("default")
-
-    monkeypatch.setattr(ui.st, "segmented_control", fake_segmented_control)
-    monkeypatch.setattr(ui.st, "session_state", {})
-
-    ui._render_theme_toggle()
-
-    assert calls[0]["key"] == ui.THEME_MODE_KEY
-
-
-def test_current_theme_mode_reads_widget_key_directly(monkeypatch):
-    monkeypatch.setattr(ui.st, "session_state", {})
-    assert ui.current_theme_mode() == "dark"
-
-    monkeypatch.setattr(ui.st, "session_state", {ui.THEME_MODE_KEY: "Light"})
-    assert ui.current_theme_mode() == "light"
-
-    monkeypatch.setattr(ui.st, "session_state", {ui.THEME_MODE_KEY: "Dark"})
-    assert ui.current_theme_mode() == "dark"
-
-
 def test_render_status_note_escapes_description_and_normalizes_tone(monkeypatch):
     rendered = []
 

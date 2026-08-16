@@ -2265,11 +2265,12 @@ def _render_theme_toggle() -> None:
     st.segmented_control(
         "Theme",
         options=["Dark", "Light"],
-        default="Dark",
+        default=current_label,
         required=True,  # without this, clicking the already-selected pill deselects it to
-        # None (documented segmented_control behavior with required=False), which would
-        # otherwise need a second place to paper over -- a real bug found earlier: one
-        # click on "Dark" while it's already selected flipped the whole app to light mode.
+        # None (documented segmented_control behavior with required=False), which the
+        # ternary below silently maps to "light" -- a real bug: one click on "Dark" while
+        # it's already selected would flip the whole app to light mode and that choice
+        # then persists in session_state indefinitely (survives reloads).
         label_visibility="collapsed",
         key=THEME_MODE_KEY,
     )
