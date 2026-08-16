@@ -51,6 +51,7 @@ mark_page_baseline(_baseline, "wave41-shell-mobile")
 mark_page_baseline(_baseline, "wave42-shell-mobile")
 mark_page_baseline(_baseline, "wave43-shell-mobile")
 mark_page_baseline(_baseline, "wave44-shell-mobile")
+mark_page_baseline(_baseline, "wave45-shell-mobile")
 
 
 repo_url = github_url()
@@ -75,7 +76,6 @@ with tool_form_panel("home_navigation_controls"):
         "Browsing setup",
         description="Pick a profession lens and choose quick access or full catalog before running actions.",
         eyebrow="Step 1",
-        heading_level="h3",
     )
     st.caption("Read order: choose profession and navigation mode first, then run the catalog action below.")
     render_control_heading("Filter by profession")
@@ -117,11 +117,11 @@ with tool_form_panel("home_primary_action"):
         "Catalog visibility",
         description="Run one full-width action to reveal or collapse catalog results after setup is complete.",
         eyebrow="Step 2",
-        heading_level="h3",
     )
     render_control_heading("Catalog action")
     st.caption("Read order: review browsing setup, run this full-width action, then verify status notes and tool results.")
     st.caption("Status tip: confirm the outcome note after each action before changing filters.")
+    st.caption("Quick tip: check the status note before changing filters.")
     st.caption("If you're new, begin in favorites/recent before opening the full catalog.")
     if st.button(button_label, icon=button_icon, use_container_width=True):
         if show_all and navigation_mode == "All tools" and not search_query.strip() and profession == "All":
@@ -198,7 +198,6 @@ else:
         "Quick access collections",
         description="Follow guided workflows first, then scan favorites, recent, shared, and new sections in order.",
         eyebrow="Step 3",
-        heading_level="h3",
     )
     render_fragment(
         "home_guided_workflows",

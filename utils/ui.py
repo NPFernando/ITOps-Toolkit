@@ -161,7 +161,7 @@ TOOL_CARD_ICON_ASSETS: dict[str, str] = {
     "bip39_mnemonic_validator": "icons/exported/icon-workflow-bip39-mnemonic-generator-validator-outline-24x24-v01.svg",
     "bip39_mnemonic": "icons/exported/icon-workflow-bip39-mnemonic-generator-validator-outline-24x24-v01.svg",
     "text_radix_converter": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    # Phase 39/40/41/42/43/44 placeholder slug aliases mapped to current real tool pages.
+    # Phase 39/40/41/42/43/44/45 placeholder slug aliases mapped to current real tool pages.
     "157_tool_slug_pending_roadmap": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
     "158_tool_slug_pending_roadmap": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
     "157_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
@@ -206,6 +206,10 @@ TOOL_CARD_ICON_ASSETS: dict[str, str] = {
     "182_tool_slug_pending_roadmap": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
     "181_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
     "182_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
+    "183_tool_slug_pending_roadmap": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
+    "184_tool_slug_pending_roadmap": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
+    "183_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
+    "184_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
     "csv_column_selector": "icons/exported/icon-workflow-csv-column-selector-outline-24x24-v01.svg",
     "line_numberer": "icons/exported/icon-workflow-line-numberer-outline-24x24-v01.svg",
     "column_aligner": "icons/exported/icon-workflow-column-aligner-outline-24x24-v01.svg",
@@ -3485,6 +3489,10 @@ def _material_icon_for(slug: str) -> str:
         "182_tool_slug_pending_roadmap": ":material/pin:",
         "181_<tool_slug_pending_roadmap>": ":material/text_fields:",
         "182_<tool_slug_pending_roadmap>": ":material/pin:",
+        "183_tool_slug_pending_roadmap": ":material/text_fields:",
+        "184_tool_slug_pending_roadmap": ":material/pin:",
+        "183_<tool_slug_pending_roadmap>": ":material/text_fields:",
+        "184_<tool_slug_pending_roadmap>": ":material/pin:",
     }
     return icons.get(slug, ":material/build:")
 

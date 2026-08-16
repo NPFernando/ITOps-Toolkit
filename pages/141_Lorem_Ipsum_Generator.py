@@ -74,6 +74,7 @@ mark_page_baseline(_baseline, "wave41-shell-mobile")
 mark_page_baseline(_baseline, "wave42-shell-mobile")
 mark_page_baseline(_baseline, "wave43-shell-mobile")
 mark_page_baseline(_baseline, "wave44-shell-mobile")
+mark_page_baseline(_baseline, "wave45-shell-mobile")
 
 render_page_header("Lorem Ipsum Generator", "Generate deterministic placeholder text by words, sentences, or paragraphs.")
 
@@ -83,7 +84,6 @@ with tool_form_panel("lorem_ipsum_generator"):
         "Output setup",
         description="Choose unit, count, and optional deterministic seed before generating text.",
         eyebrow="Step 1",
-        heading_level="h3",
     )
     st.caption("For first use: pick Words and a small count, then generate before trying seeded repeats.")
     with st.form("lorem-ipsum-generator-form"):
@@ -97,6 +97,7 @@ with tool_form_panel("lorem_ipsum_generator"):
         render_control_heading("Primary action")
         st.caption("Read order: configure output shape and seed, run generate, then review status guidance and output.")
         st.caption("Status tip: read the outcome note first to confirm whether text is ready or more input is needed.")
+        st.caption("Quick tip: confirm the status note before copying output.")
         st.caption("New here? Leave seed empty for random text, or add one only when you need repeatable output.")
         submitted = st.form_submit_button("Generate lorem ipsum", use_container_width=True)
 
@@ -109,7 +110,6 @@ with tool_result_panel("lorem_ipsum_result", related_to="lorem_ipsum_generator")
         "Generated lorem output",
         description="Review and copy output. Reuse the same seed to reproduce identical text.",
         eyebrow="Step 2",
-        heading_level="h3",
     )
     if result is None:
         render_empty_state("Ready to generate", "Generated lorem ipsum text appears here after submission.")

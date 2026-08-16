@@ -52,6 +52,7 @@ mark_page_baseline(_baseline, "wave41-shell-mobile")
 mark_page_baseline(_baseline, "wave42-shell-mobile")
 mark_page_baseline(_baseline, "wave43-shell-mobile")
 mark_page_baseline(_baseline, "wave44-shell-mobile")
+mark_page_baseline(_baseline, "wave45-shell-mobile")
 
 render_page_header("Text to Binary Hex Octal Converter", "Convert plain text into binary, hexadecimal, and octal byte sequences.")
 
@@ -61,7 +62,6 @@ with tool_form_panel("text_to_binary_hex_octal_converter"):
         "Input setup",
         description="Enter source text, then run one action to produce all byte-format outputs.",
         eyebrow="Step 1",
-        heading_level="h3",
     )
     st.caption("For first use: enter one short word, convert, then compare the same byte order across outputs.")
     with st.form("text-to-binary-hex-octal-converter-form"):
@@ -71,6 +71,7 @@ with tool_form_panel("text_to_binary_hex_octal_converter"):
         render_control_heading("Primary action")
         st.caption("Read order: enter source text, run convert, then confirm status and compare all three encoded outputs.")
         st.caption("Status tip: read the outcome note first to confirm whether input is missing or conversion succeeded.")
+        st.caption("Quick tip: confirm the status note before comparing encodings.")
         st.caption("If you're new, start with a short word first, then compare all three encodings.")
         submitted = st.form_submit_button("Convert text", use_container_width=True)
 
@@ -83,7 +84,6 @@ with tool_result_panel("text_radix_result", related_to="text_to_binary_hex_octal
         "Encoded output",
         description="Scan binary, hexadecimal, and octal rows together for quick verification.",
         eyebrow="Step 2",
-        heading_level="h3",
     )
     if result is None:
         render_empty_state("Ready to encode", "Binary, hex, and octal output appears here after submission.")
