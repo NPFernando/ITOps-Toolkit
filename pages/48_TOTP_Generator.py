@@ -6,7 +6,6 @@ from utils.totp_tools import MAX_CODE_LENGTH, MAX_SECRET_LENGTH, current_code, g
 from utils.ui import (
     apply_app_shell,
     render_empty_state,
-    render_failure_note,
     render_form_intro,
     render_page_header,
     render_section_heading,
@@ -42,9 +41,8 @@ with generate_tab:
         else:
             result = current_code(secret)
             if not result["ok"]:
-                render_failure_note("Secret input", result["error"], remediation="Provide a valid Base32 secret and try again.")
+                st.error(result["error"])
             else:
-                render_status_note("Code generated", "Current TOTP code generated from the provided secret.", tone="success")
                 c1, c2 = st.columns(2)
                 c1.metric("Code", result["code"])
                 c2.metric("Seconds remaining", result["seconds_remaining"])

@@ -62,7 +62,7 @@ if epoch_submitted:
 
 epoch_result = st.session_state.get("timestamp_converter_epoch_result")
 if epoch_result is None:
-    render_empty_state("Ready to convert epoch", "The readable date and time appear here after you convert an epoch value.")
+    render_empty_state("Ready to convert", "The readable date and time appear here after you convert an epoch value.")
 if epoch_result is not None:
     result = epoch_result
     with tool_result_panel("epoch_result", related_to="timestamp_converter"):
@@ -89,7 +89,7 @@ if date_submitted:
 
 date_result = st.session_state.get("timestamp_converter_date_result")
 if date_result is None:
-    render_empty_state("Ready to convert date/time", "The Unix epoch appears here after you convert a date/time value.")
+    render_empty_state("Ready to convert", "The Unix epoch appears here after you convert a date/time value.")
 if date_result is not None:
     result = date_result
     with tool_result_panel("date_result", related_to="timestamp_converter"):
@@ -118,7 +118,7 @@ if tz_submitted:
 
 timezone_result = st.session_state.get("timestamp_converter_timezone_result")
 if timezone_result is None:
-    render_empty_state("Ready to convert timezones", "The reinterpreted date/time appears here after you convert between timezones.")
+    render_empty_state("Ready to convert", "The reinterpreted date/time appears here after you convert between timezones.")
 if timezone_result is not None:
     result = timezone_result
     with tool_result_panel("timezone_result", related_to="timestamp_converter"):

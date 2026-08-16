@@ -46,8 +46,9 @@ if hash_clicked:
         if not result["ok"]:
             st.error(result["error"])
         else:
-            for algorithm, digest in result["digests"].items():
-                st.text_input(algorithm.upper(), value=digest, disabled=True)
+            for algorithm, digest in hash_result["digests"].items():
+                st.caption(algorithm.upper())
+                st.code(digest, language=None)
 
 if hmac_clicked:
     result = generate_hmac(text_input, secret_input, hmac_algorithm)
@@ -56,4 +57,4 @@ if hmac_clicked:
         if not result["ok"]:
             st.error(result["error"])
         else:
-            st.text_input("HMAC digest", value=result["digest"], disabled=True)
+            st.code(hmac_result["digest"], language=None)
