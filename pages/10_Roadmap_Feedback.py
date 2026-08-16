@@ -53,6 +53,7 @@ mark_page_baseline(_baseline, "wave45-shell-mobile")
 mark_page_baseline(_baseline, "wave46-shell-mobile")
 mark_page_baseline(_baseline, "wave47-shell-mobile")
 mark_page_baseline(_baseline, "wave48-shell-mobile")
+mark_page_baseline(_baseline, "wave49-shell-mobile")
 
 
 def _status_tone(status: str) -> str:
@@ -216,6 +217,7 @@ render_section_heading(
     "Board overview",
     description="Scan board totals first, then move to filters and status columns.",
     eyebrow="Step 0",
+    heading_level="h3",
 )
 st.markdown('<div class="roadmap-section-label">Boards</div>', unsafe_allow_html=True)
 st.markdown(
@@ -258,6 +260,7 @@ with tool_form_panel("roadmap_filters"):
         render_control_heading("Apply filters")
         st.caption("Read order: set search + category, apply filters, then check outcome status before scanning cards.")
         st.caption("Status tip: outcome notes tell you whether results are ready or filters need adjustment.")
+        st.caption("Quick tip: success = matches found, warning = adjust filters.")
         st.caption("New here? Clear filters if results look empty, then apply one filter at a time.")
         submitted_filters = st.form_submit_button("Apply filters", use_container_width=True)
 

@@ -55,6 +55,7 @@ mark_page_baseline(_baseline, "wave45-shell-mobile")
 mark_page_baseline(_baseline, "wave46-shell-mobile")
 mark_page_baseline(_baseline, "wave47-shell-mobile")
 mark_page_baseline(_baseline, "wave48-shell-mobile")
+mark_page_baseline(_baseline, "wave49-shell-mobile")
 
 
 repo_url = github_url()
@@ -126,6 +127,7 @@ with tool_form_panel("home_primary_action"):
     render_control_heading("Catalog action")
     st.caption("Read order: confirm browsing setup, run this full-width action, then review the outcome note before scanning results.")
     st.caption("Status tip: if the outcome says filters need adjustment, clear one filter and try again.")
+    st.caption("Quick tip: warning = adjust filters, success = ready to scan.")
     st.caption("New here? Start in Quick access, then open All tools only when needed.")
     if st.button(button_label, icon=button_icon, use_container_width=True):
         if show_all and navigation_mode == "All tools" and not search_query.strip() and profession == "All":
@@ -202,6 +204,7 @@ else:
         "Quick access collections",
         description="Follow guided workflows first, then scan favorites, recent, shared, and new sections in order.",
         eyebrow="Step 3",
+        heading_level="h3",
     )
     render_fragment(
         "home_guided_workflows",
