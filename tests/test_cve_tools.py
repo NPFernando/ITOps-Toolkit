@@ -1,4 +1,21 @@
+import time
+
 from utils import cve_tools
+
+
+def _lookup_cve_tolerating_rate_limit(query: str, attempts: int = 3, delay_seconds: float = 8.0) -> dict:
+    """NVD's public API (no key) allows ~5 requests per rolling 30s window. CI runs the
+    3.11/3.12 test matrix concurrently, which can trip that shared limit even though
+    nothing is wrong with the code -- lookup_cve() already handles 429 gracefully in
+    production (see check_security_headers-style error envelopes), so retry here rather
+    than let CI flake on a rate limit that isn't a real bug."""
+    result = cve_tools.lookup_cve(query)
+    for _ in range(attempts - 1):
+        if result.get("ok") or "rate limit" not in (result.get("error") or "").lower():
+            break
+        time.sleep(delay_seconds)
+        result = cve_tools.lookup_cve(query)
+    return result
 
 
 def test_lookup_cve_rejects_empty_query():
@@ -65,7 +82,7 @@ def test_english_description_empty_list():
 
 
 def test_lookup_cve_live_exact_id():
-    result = cve_tools.lookup_cve("CVE-2021-44228")
+    result = _lookup_cve_tolerating_rate_limit("CVE-2021-44228")
 
     assert result["ok"] is True
     assert len(result["results"]) == 1
@@ -76,7 +93,7 @@ def test_lookup_cve_live_exact_id():
 
 
 def test_lookup_cve_live_keyword_search():
-    result = cve_tools.lookup_cve("log4j remote code execution")
+    result = _lookup_cve_tolerating_rate_limit("log4j remote code execution")
 
     assert result["ok"] is True
     assert len(result["results"]) > 0
