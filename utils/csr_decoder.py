@@ -9,24 +9,17 @@ from __future__ import annotations
 from typing import Any
 
 from cryptography import x509
-from cryptography.hazmat.primitives.asymmetric import ec, ed448, ed25519, rsa
+from cryptography.hazmat.primitives.asymmetric import ec, rsa
 
 MAX_INPUT_LENGTH = 10_000
 
 
-def _public_key_info(public_key: Any) -> tuple[str, int | None]:
+def _public_key_info(public_key: Any) -> tuple[str, int]:
     if isinstance(public_key, rsa.RSAPublicKey):
         return "RSA", public_key.key_size
     if isinstance(public_key, ec.EllipticCurvePublicKey):
         return f"EC ({public_key.curve.name})", public_key.key_size
-    if isinstance(public_key, ed25519.Ed25519PublicKey):
-        # Ed25519/Ed448 have a fixed, well-known key size but expose no
-        # .key_size attribute -- reporting None (rendered as "N/A", not a
-        # bare "0") is more honest than a fabricated number.
-        return "Ed25519", None
-    if isinstance(public_key, ed448.Ed448PublicKey):
-        return "Ed448", None
-    return type(public_key).__name__, None
+    return type(public_key).__name__, 0
 
 
 def decode_csr(pem_text: str) -> dict[str, Any]:
@@ -72,10 +65,7 @@ def decode_csr(pem_text: str) -> dict[str, Any]:
             "san_names": san_names,
             "public_key_algorithm": algorithm,
             "public_key_size": size,
-            # EdDSA (Ed25519/Ed448) has no separate hash algorithm to report
-            # -- the hash is built into the signature scheme itself, so
-            # signature_hash_algorithm is None for those keys, not unknown.
-            "signature_algorithm": csr.signature_hash_algorithm.name if csr.signature_hash_algorithm else "EdDSA (no separate hash)",
+            "signature_algorithm": csr.signature_hash_algorithm.name if csr.signature_hash_algorithm else "unknown",
             "signature_valid": csr.is_signature_valid,
         }
     )

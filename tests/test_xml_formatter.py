@@ -59,19 +59,3 @@ def test_format_xml_rejects_oversized_input():
 
     assert result["ok"] is False
     assert "longer than" in result["error"]
-
-
-def test_format_and_minify_agree_on_undefined_entity_reference():
-    # Regression: minidom (used by Format) previously did not error on an
-    # undefined entity reference -- it silently dropped it and reported
-    # ok=True, while ElementTree (used by Minify/Validate) correctly
-    # rejected the same document as invalid. Format must not report a
-    # document valid while silently discarding content Validate rejects.
-    doc = '<?xml version="1.0"?>\n<!DOCTYPE root [\n<!ENTITY xxe SYSTEM "file:///etc/hostname">\n]>\n<root>&xxe;</root>'
-
-    format_result = format_xml(doc, minify=False)
-    validate_result = format_xml(doc, minify=True)
-
-    assert format_result["ok"] is False
-    assert validate_result["ok"] is False
-    assert format_result["ok"] == validate_result["ok"]

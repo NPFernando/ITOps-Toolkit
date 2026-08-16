@@ -44,19 +44,12 @@ def add_to_date(date_str: str, amount: int, unit: str) -> dict[str, Any]:
         result["error"] = "Enter a valid date (YYYY-MM-DD)."
         return result
 
-    try:
-        if unit == "days":
-            new_date = base + timedelta(days=amount)
-        elif unit == "weeks":
-            new_date = base + timedelta(weeks=amount)
-        else:
-            new_date = _add_months(base, amount)
-    except (OverflowError, ValueError):
-        # timedelta arithmetic raises OverflowError for an out-of-range
-        # result; _add_months's date(year, ...) construction raises
-        # ValueError instead once the computed year exceeds datetime.MAXYEAR.
-        result["error"] = "That amount pushes the result outside the range of representable dates."
-        return result
+    if unit == "days":
+        new_date = base + timedelta(days=amount)
+    elif unit == "weeks":
+        new_date = base + timedelta(weeks=amount)
+    else:
+        new_date = _add_months(base, amount)
 
     result.update({"ok": True, "result_date": new_date.isoformat(), "weekday": new_date.strftime("%A")})
     return result

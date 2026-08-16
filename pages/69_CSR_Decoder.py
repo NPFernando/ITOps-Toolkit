@@ -3,17 +3,7 @@ from __future__ import annotations
 import streamlit as st
 
 from utils.csr_decoder import MAX_INPUT_LENGTH, decode_csr
-from utils.ui import (
-    apply_app_shell,
-    render_empty_state,
-    render_failure_note,
-    render_form_intro,
-    render_page_header,
-    render_section_heading,
-    render_status_note,
-    tool_form_panel,
-    tool_result_panel,
-)
+from utils.ui import apply_app_shell, render_empty_state, render_form_intro, render_page_header, render_section_heading, tool_form_panel, tool_result_panel
 
 
 st.set_page_config(page_title="CSR Decoder", layout="wide")
@@ -26,38 +16,11 @@ render_page_header(
     warning="Do not paste private keys -- a CSR contains only the public key and requested subject.",
 )
 
-st.markdown(
-    """
-    <style>
-    @media (max-width: 768px) {
-      div[data-testid="stFormSubmitButton"] > button {
-        width: 100%;
-        min-height: 2.75rem;
-      }
-      div[data-testid="stMetricValue"] {
-        font-size: 1.25rem;
-        overflow-wrap: anywhere;
-      }
-      div[data-testid="stTable"] {
-        overflow-x: auto;
-      }
-    }
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
-
 with tool_form_panel("csr_decoder"):
     render_form_intro("Paste a CSR", "PEM-encoded, beginning with -----BEGIN CERTIFICATE REQUEST-----.")
     with st.form("csr-decoder-form"):
-        pem_input = st.text_area(
-            "CSR (PEM)",
-            height=280,
-            max_chars=MAX_INPUT_LENGTH,
-            placeholder="-----BEGIN CERTIFICATE REQUEST-----\n...\n-----END CERTIFICATE REQUEST-----",
-            help="Paste a PEM CSR block only; do not paste private keys.",
-        )
-        submitted = st.form_submit_button("Decode CSR")
+        pem_input = st.text_area("CSR (PEM)", height=280, max_chars=MAX_INPUT_LENGTH, placeholder="-----BEGIN CERTIFICATE REQUEST-----\n...\n-----END CERTIFICATE REQUEST-----")
+        submitted = st.form_submit_button("Decode")
 
 if submitted:
     st.session_state["csr_decoder_result"] = decode_csr(pem_input)
@@ -66,31 +29,20 @@ result = st.session_state.get("csr_decoder_result")
 
 if result is None:
     render_empty_state("Ready to decode", "Subject, SAN entries, key info, and signature validity appear here.")
-    render_status_note("Awaiting CSR input", "Paste a PEM CSR and decode to inspect subject, SAN, key size, and signature state.", tone="neutral")
 
 if result is not None:
     with tool_result_panel("csr_decoder_result_panel", related_to="csr_decoder"):
-        render_section_heading("Decoded CSR", "Subject, SAN entries, key details, and signature status.", eyebrow="Results")
+        render_section_heading("Decoded CSR", eyebrow="Result")
         if not result["ok"]:
-            render_failure_note(
-                "CSR decode",
-                result["error"],
-                remediation="Paste a valid PEM-encoded CSR block and decode again.",
-            )
+            st.error(result["error"])
         else:
             st.caption(f"Subject: {result['subject']}")
-            c1, c2 = st.columns(2)
+            c1, c2, c3 = st.columns(3)
             c1.metric("Public key", result["public_key_algorithm"])
-            c2.metric("Key size", result["public_key_size"] if result["public_key_size"] is not None else "N/A")
-            st.metric("Signature", "Valid" if result["signature_valid"] else "Invalid")
+            c2.metric("Key size", result["public_key_size"])
+            c3.metric("Signature", "Valid" if result["signature_valid"] else "Invalid")
             st.caption(f"Signature algorithm: {result['signature_algorithm']}")
             if result["san_names"]:
-                st.caption("Subject Alternative Name entries")
                 st.table([{"SAN": name} for name in result["san_names"]])
             else:
                 st.caption("No Subject Alternative Names.")
-            render_status_note(
-                "Decode complete",
-                f"CSR parsed successfully with signature marked as {'valid' if result['signature_valid'] else 'invalid'}.",
-                tone="success",
-            )

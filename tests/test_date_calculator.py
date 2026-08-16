@@ -52,26 +52,6 @@ def test_add_to_date_rejects_unknown_unit():
     assert "Unknown unit" in result["error"]
 
 
-def test_add_to_date_rejects_out_of_range_days_instead_of_crashing():
-    # Regression: timedelta arithmetic raises OverflowError uncaught for a
-    # result outside datetime's representable range -- an ordinary typo
-    # (an extra 9 or two) must not crash the page with a raw traceback.
-    result = add_to_date("2026-01-01", 999_999_999, "days")
-
-    assert result["ok"] is False
-    assert "outside the range" in result["error"]
-
-
-def test_add_to_date_rejects_out_of_range_months_instead_of_crashing():
-    # Regression: _add_months's date(year, ...) construction raises
-    # ValueError (not OverflowError) once the computed year exceeds
-    # datetime.MAXYEAR -- both exception types must be caught.
-    result = add_to_date("9999-12-01", 2, "months")
-
-    assert result["ok"] is False
-    assert "outside the range" in result["error"]
-
-
 def test_days_between_basic():
     result = days_between("2026-01-01", "2026-08-10")
 

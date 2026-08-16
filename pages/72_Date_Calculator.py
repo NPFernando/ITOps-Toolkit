@@ -23,7 +23,7 @@ with add_tab:
         with st.form("date-add-form"):
             base_date = st.text_input("Date (YYYY-MM-DD)", placeholder="2026-08-10", max_chars=MAX_INPUT_LENGTH)
             c1, c2 = st.columns(2)
-            amount = c1.number_input("Amount", value=0, step=1, min_value=-1_000_000, max_value=1_000_000)
+            amount = c1.number_input("Amount", value=0, step=1)
             unit = c2.selectbox("Unit", UNITS)
             add_submitted = st.form_submit_button("Calculate")
 

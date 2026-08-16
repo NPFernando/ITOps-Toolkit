@@ -28,19 +28,12 @@ def format_xml(text: str, minify: bool = False) -> dict[str, Any]:
         result["error"] = f"Input is longer than {MAX_INPUT_LENGTH:,} characters."
         return result
 
-    # Validate with ET.fromstring first, regardless of mode, and use it as
-    # the single source of truth for "is this XML valid." minidom's parser
-    # (used below for pretty-printing) does NOT error on an undefined
-    # entity reference -- it silently drops it instead -- which previously
-    # let Format XML report ok=True on a document Validate/Minify correctly
-    # rejected, discarding the entity's content without any warning.
-    try:
-        root = ET.fromstring(value)
-    except ET.ParseError as exc:
-        result["error"] = f"Invalid XML: {exc}"
-        return result
-
     if minify:
+        try:
+            root = ET.fromstring(value)
+        except ET.ParseError as exc:
+            result["error"] = f"Invalid XML: {exc}"
+            return result
         result.update({"ok": True, "output": ET.tostring(root, encoding="unicode")})
         return result
 

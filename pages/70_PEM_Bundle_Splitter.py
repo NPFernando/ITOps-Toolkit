@@ -42,14 +42,11 @@ if result is not None:
                     "#": c["index"],
                     "Subject": c["subject"],
                     "Issuer": c["issuer"],
-                    "Valid from": c["not_valid_before"],
                     "Expires": c["not_valid_after"],
-                    "Status": "Not yet valid" if c["is_not_yet_valid"] else "Expired" if c["is_expired"] else "Valid",
+                    "Expired": "Yes" if c["is_expired"] else "No",
                 }
                 for c in result["certificates"]
             ]
             st.dataframe(pd.DataFrame(rows), width="stretch", hide_index=True)
             if any(c["is_expired"] for c in result["certificates"]):
                 st.warning("At least one certificate in this bundle has expired.")
-            if any(c["is_not_yet_valid"] for c in result["certificates"]):
-                st.warning("At least one certificate in this bundle is not yet valid -- its validity period starts in the future.")
