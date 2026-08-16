@@ -2221,7 +2221,12 @@ def _key_slug(value: str) -> str:
 # looked fully correct and was dropped rather than fixed.
 _THEME_TOKENS = {
     "dark": {
-        "blue": "#e06c75",
+        # #e06c75 measured 4.38:1 against "bg" (#282c34) -- just below WCAG
+        # AA's 4.5:1 minimum for normal text, and this token backs several
+        # small/body-text spots (.section-bolt, .feature-blue,
+        # .tool-panel-eyebrow, .roadmap-status-badge). Lightened to #e1727b
+        # (4.60:1 vs bg, 5.24:1 vs panel), same hue, to clear AA.
+        "blue": "#e1727b",
         "blue-dark": "#c65861",
         "ink": "#9cdef2",
         # #6b8a94 measured 3.79:1 against "bg" (#282c34) -- below WCAG AA's 4.5:1
