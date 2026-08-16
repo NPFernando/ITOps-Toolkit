@@ -237,11 +237,11 @@
     {
       "title": "Webhook / HTTP request tester",
       "category": "Integrations",
-      "status": "AI Recommended",
+      "status": "Complete",
       "votes": 10,
-      "description": "A RequestBin-style ephemeral endpoint to inspect incoming webhook payloads, with no persistent storage.",
+      "description": "Shipped the outbound half: send a one-off HTTP request with a custom method, headers, and body, and inspect the response. The originally scoped RequestBin-style inbound endpoint (capturing incoming webhook calls at a public URL) is a materially different feature -- it needs a real receiving endpoint and in-memory/session storage for arrivals, not just a request client -- so it's still open as a separate, larger idea rather than folded into this one.",
       "rationale": "Common need when debugging integrations; fits the toolkit's no-storage, public-safe model if payloads are ephemeral and session-scoped.",
-      "updated_at": "2026-08-05"
+      "updated_at": "2026-08-06"
     },
     {
       "title": "Timestamp / epoch converter",
@@ -287,6 +287,60 @@
       "description": "Break a User-Agent header down into browser, OS, and device details.",
       "rationale": "Common companion lookup alongside HTTP Status Checker and Email Header Analyzer.",
       "updated_at": "2026-08-05"
+    },
+    {
+      "title": "IPv6 address compressor/expander",
+      "category": "Tools",
+      "status": "Complete",
+      "votes": 7,
+      "description": "Convert an IPv6 address between its compressed (::) and fully expanded form.",
+      "rationale": "Small, frequently-needed complement to the Subnet Calculator and CIDR Aggregator.",
+      "updated_at": "2026-08-05"
+    },
+    {
+      "title": "Cron next-run calendar export",
+      "category": "Tools",
+      "status": "Complete",
+      "votes": 6,
+      "description": "Export the Cron Explainer's next-run times as a downloadable .ics calendar file.",
+      "rationale": "Lets users drop scheduled job times straight into their calendar instead of re-reading the explainer each time.",
+      "updated_at": "2026-08-05"
+    },
+    {
+      "title": "Slugify / case converter",
+      "category": "Tools",
+      "status": "Complete",
+      "votes": 8,
+      "description": "Convert text between slug-case, camelCase, snake_case, kebab-case, and Title Case.",
+      "rationale": "Everyday utility for developers naming files, variables, and URLs.",
+      "updated_at": "2026-08-05"
+    },
+    {
+      "title": "MAC vendor (OUI) lookup",
+      "category": "Tools",
+      "status": "Complete",
+      "votes": 10,
+      "description": "Show the registered vendor/manufacturer for a MAC address's OUI prefix.",
+      "rationale": "Natural extension of the existing MAC Address Tool -- the OUI is already parsed out, just not looked up.",
+      "updated_at": "2026-08-05"
+    },
+    {
+      "title": "Color code converter",
+      "category": "Tools",
+      "status": "Complete",
+      "votes": 7,
+      "description": "Convert colors between HEX, RGB, and HSL, with a live swatch preview.",
+      "rationale": "Common small utility for anyone touching CSS/UI work alongside the IT-focused tools.",
+      "updated_at": "2026-08-05"
+    },
+    {
+      "title": "RequestBin-style inbound webhook capture",
+      "category": "Integrations",
+      "status": "AI Recommended",
+      "votes": 10,
+      "description": "A real ephemeral endpoint (e.g. /webhook/<session-id>) that captures incoming HTTP calls from third-party services and displays them live, with no persistent storage.",
+      "rationale": "Split out from the original 'Webhook / HTTP request tester' idea once the outbound request-testing half shipped -- this inbound-capture half needs a real receiving endpoint and session-scoped in-memory storage, a bigger architectural lift than a single Streamlit page.",
+      "updated_at": "2026-08-06"
     }
   ]
 }
