@@ -32,7 +32,7 @@ with hash_tab:
 
     hash_result = st.session_state.get("bcrypt_hash_result")
     if hash_result is not None:
-        with tool_result_panel("bcrypt_hash_result_panel"):
+        with tool_result_panel("bcrypt_hash_result_panel", related_to="bcrypt_tool"):
             render_section_heading("Result", "Bcrypt hash, including the embedded salt and cost factor.")
             if not hash_result["ok"]:
                 st.error(hash_result["error"])
@@ -52,7 +52,7 @@ with verify_tab:
 
     verify_result = st.session_state.get("bcrypt_verify_result")
     if verify_result is not None:
-        with tool_result_panel("bcrypt_verify_result_panel"):
+        with tool_result_panel("bcrypt_verify_result_panel", related_to="bcrypt_tool"):
             if not verify_result["ok"]:
                 st.error(verify_result["error"])
             elif verify_result["matches"]:

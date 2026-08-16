@@ -43,7 +43,7 @@ if result is None:
     render_empty_state("Ready to convert", "HEX, RGB, and HSL forms appear here after you submit a color.")
 
 if result is not None:
-    with tool_result_panel("color_result"):
+    with tool_result_panel("color_result", related_to="color_converter"):
         render_section_heading("Converted forms", eyebrow="Result")
         if not result["ok"]:
             st.error(result["error"])
