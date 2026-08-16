@@ -1393,30 +1393,6 @@ TOOLS: tuple[ToolMeta, ...] = (
         category="Network",
         is_new=True,
     ),
-    ToolMeta(
-        title="Windows Event Reference",
-        short_title="Windows Events",
-        description="Look up common Windows Event Log IDs by number, log, source, severity, or keyword.",
-        path="pages/34_Windows_Event_Reference.py",
-        icon="WEV",
-        accent="#5c6bc0",
-        slug="windows_event_reference",
-        professions=("Sysadmin / DevOps", "Support Engineer", "Helpdesk / L1"),
-        category="Reference",
-        is_new=True,
-    ),
-    ToolMeta(
-        title="DKIM Selector Lookup",
-        short_title="DKIM Lookup",
-        description="Look up a DKIM TXT record for a domain and selector, and parse its public key/algorithm fields.",
-        path="pages/35_DKIM_Selector_Lookup.py",
-        icon="DKM",
-        accent="#2a9d8f",
-        slug="dkim_lookup",
-        professions=("Sysadmin / DevOps", "Security Engineer", "Support Engineer"),
-        category="Network",
-        is_new=True,
-    ),
 )
 
 # Curated, not usage-derived -- this app deliberately has no usage tracking
@@ -1439,7 +1415,8 @@ TITLE_TO_SLUG: dict[str, str] = {tool.title: tool.slug for tool in TOOLS}
 # forced, meaningless section.
 TOOL_BUNDLES: dict[str, tuple[str, ...]] = {
     "domain_health": ("dns_records", "ssl_certificate", "whois_lookup"),
-    "dns_records": ("domain_health", "whois_lookup", "ssl_certificate"),
+    "dns_records": ("domain_health", "whois_lookup", "dns_propagation"),
+    "dns_propagation": ("dns_records", "domain_health"),
     "ssl_certificate": ("domain_health", "dns_records", "http_status"),
     "http_status": ("domain_health", "ssl_certificate", "uptime_trend", "security_headers"),
     "uptime_trend": ("http_status", "domain_health"),
@@ -2458,8 +2435,6 @@ def _material_icon_for(slug: str) -> str:
         "security_headers": ":material/shield:",
         "cve_lookup": ":material/bug_report:",
         "dns_propagation": ":material/travel_explore:",
-        "windows_event_reference": ":material/event_note:",
-        "dkim_lookup": ":material/key:",
     }
     return icons.get(slug, ":material/build:")
 

@@ -170,8 +170,6 @@ def test_expected_tools_are_tagged_new():
         "security_headers",
         "cve_lookup",
         "dns_propagation",
-        "windows_event_reference",
-        "dkim_lookup",
     }
 
 
@@ -236,7 +234,6 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "whois_lookup",
             "bulk_domain_health",
             "dns_propagation",
-            "dkim_lookup",
         ],
         "Security": [
             "ssl_certificate",
