@@ -1393,6 +1393,42 @@ TOOLS: tuple[ToolMeta, ...] = (
         category="Network",
         is_new=True,
     ),
+    ToolMeta(
+        title="Windows Event Reference",
+        short_title="Windows Events",
+        description="Look up common Windows Event Log IDs by number, log, source, severity, or keyword.",
+        path="pages/34_Windows_Event_Reference.py",
+        icon="WEV",
+        accent="#5c6bc0",
+        slug="windows_event_reference",
+        professions=("Sysadmin / DevOps", "Support Engineer", "Helpdesk / L1"),
+        category="Reference",
+        is_new=True,
+    ),
+    ToolMeta(
+        title="DKIM Selector Lookup",
+        short_title="DKIM Lookup",
+        description="Look up a DKIM TXT record for a domain and selector, and parse its public key/algorithm fields.",
+        path="pages/35_DKIM_Selector_Lookup.py",
+        icon="DKM",
+        accent="#2a9d8f",
+        slug="dkim_lookup",
+        professions=("Sysadmin / DevOps", "Security Engineer", "Support Engineer"),
+        category="Network",
+        is_new=True,
+    ),
+    ToolMeta(
+        title="Email Record Builder",
+        short_title="Email Records",
+        description="Build SPF, DMARC, and DKIM TXT record strings from simple inputs -- the reverse of the existing checks.",
+        path="pages/36_Email_Record_Builder.py",
+        icon="ERB",
+        accent="#f4a261",
+        slug="email_record_builder",
+        professions=("Sysadmin / DevOps", "Security Engineer", "Support Engineer"),
+        category="Network",
+        is_new=True,
+    ),
 )
 
 # Curated, not usage-derived -- this app deliberately has no usage tracking
@@ -1432,7 +1468,8 @@ TOOL_BUNDLES: dict[str, tuple[str, ...]] = {
     "port_reference": ("subnet_calculator", "mac_address_tool"),
     "windows_event_reference": ("log_troubleshooting", "port_reference"),
     "email_header_analyzer": ("dns_records", "domain_health", "dkim_lookup"),
-    "dkim_lookup": ("email_header_analyzer", "domain_health"),
+    "dkim_lookup": ("email_header_analyzer", "domain_health", "email_record_builder"),
+    "email_record_builder": ("dkim_lookup", "dns_records"),
     "password_generator": ("hash_generator",),
     "hash_generator": ("password_generator", "jwt_decoder", "file_integrity"),
     "file_integrity": ("hash_generator", "cve_lookup"),
@@ -2435,6 +2472,9 @@ def _material_icon_for(slug: str) -> str:
         "security_headers": ":material/shield:",
         "cve_lookup": ":material/bug_report:",
         "dns_propagation": ":material/travel_explore:",
+        "windows_event_reference": ":material/event_note:",
+        "dkim_lookup": ":material/key:",
+        "email_record_builder": ":material/build:",
     }
     return icons.get(slug, ":material/build:")
 
