@@ -41,6 +41,39 @@ class ToolMeta:
     aliases: tuple[str, ...] = ()
 
 
+def _icon_text_color(accent: str) -> str:
+    """Pick white or dark icon text, whichever has higher contrast against ``accent``.
+
+    Tool icon badges (.tool-page-icon/.tool-card-icon) draw small bold text
+    directly on a per-tool accent gradient. Several accents (e.g. #ffb703,
+    measured 1.75:1 with white text) fail WCAG AA's 4.5:1 minimum with a
+    hardcoded white. Every one of TOOLS' 51 accents clears 4.5:1 with either
+    white (#ffffff) or dark (#0c1116) text -- verified in
+    tests/test_theme_contrast.py -- so picking the higher-contrast of the two
+    is sufficient; no accent needs its own color redesigned.
+    """
+
+    def hex_to_rgb(value: str) -> tuple[int, int, int]:
+        value = value.lstrip("#")
+        return tuple(int(value[i : i + 2], 16) for i in (0, 2, 4))
+
+    def linearize(channel: int) -> float:
+        c = channel / 255
+        return c / 12.92 if c <= 0.03928 else ((c + 0.055) / 1.055) ** 2.4
+
+    def luminance(hex_value: str) -> float:
+        r, g, b = hex_to_rgb(hex_value)
+        return 0.2126 * linearize(r) + 0.7152 * linearize(g) + 0.0722 * linearize(b)
+
+    def contrast(hex_a: str, hex_b: str) -> float:
+        lum_a, lum_b = luminance(hex_a), luminance(hex_b)
+        lighter, darker = max(lum_a, lum_b), min(lum_a, lum_b)
+        return (lighter + 0.05) / (darker + 0.05)
+
+    white, dark = "#ffffff", "#0c1116"
+    return white if contrast(white, accent) >= contrast(dark, accent) else dark
+
+
 PROFESSIONS: tuple[str, ...] = (
     "Support Engineer",
     "Network Engineer",
@@ -1674,40 +1707,14 @@ def render_page_header(
     tool = tool_by_title(title)
     icon = tool.icon if tool else "IT"
     accent = tool.accent if tool else "#1668f4"
-    overline = f"{tool.category} Tool" if tool else "Tool"
     icon_text = _icon_text_color(accent)
-    illustration_path = (
-        TOOL_HEADER_ILLUSTRATION_BY_CATEGORY.get(illustration, illustration)
-        if illustration
-        else (TOOL_HEADER_ILLUSTRATION_BY_CATEGORY.get(tool.category) if tool else None)
-    )
-    illustration_html = (
-        _svg_img_html(
-            illustration_path,
-            f"{tool.category if tool else 'Tool'} illustration",
-            "tool-page-header-illustration-image",
-            decorative=True,
-        )
-        if illustration_path
-        else None
-    )
-    layout_class = " tool-page-header-with-illustration" if illustration_html else ""
-    header_id = f"tool-page-title-{_key_slug(title)}"
-    illustration_slot = (
-        f'<div class="tool-page-header-illustration" aria-hidden="true">{illustration_html}</div>'
-        if illustration_html
-        else ""
-    )
     st.markdown(
         f"""
-        <section class="tool-page-header{layout_class}" style="--tool-accent: {accent}; --tool-icon-text: {icon_text};" aria-labelledby="{header_id}">
-            <div class="tool-page-header-main">
-                <div class="tool-page-icon">{escape(icon)}</div>
-                <div>
-                    <p class="tool-page-overline">{escape(overline)}</p>
-                    <h1 id="{header_id}">{escape(title)}</h1>
-                    <p>{escape(description)}</p>
-                </div>
+        <section class="tool-page-header" style="--tool-accent: {accent}; --tool-icon-text: {icon_text};">
+            <div class="tool-page-icon">{escape(icon)}</div>
+            <div>
+                <h1>{escape(title)}</h1>
+                <p>{escape(description)}</p>
             </div>
             {illustration_slot}
         </section>
@@ -2120,8 +2127,9 @@ def _tool_card_html(tool: ToolMeta, delay_ms: int = 0) -> str:
     # the card renders as literal escaped tag text. Keeping it on the same
     # line as the opening tag means that line is never blank.
     new_badge = '<span class="tool-card-badge-new">NEW</span>' if tool.is_new else ""
+    icon_text = _icon_text_color(tool.accent)
     return f"""
-    <div class="tool-card-shell" style="--tool-accent: {tool.accent}; animation-delay: {delay_ms}ms;">{new_badge}
+    <div class="tool-card-shell" style="--tool-accent: {tool.accent}; --tool-icon-text: {icon_text}; animation-delay: {delay_ms}ms;">{new_badge}
         <div class="tool-card-icon">{escape(tool.icon)}</div>
         <h3>{escape(tool.title)}</h3>
         <p>{escape(tool.description)}</p>
