@@ -323,3 +323,10 @@ Use this matrix as a quick release gate:
 - Wave 48 docs also record deterministic regression-test evidence (`tests/test_ui_helpers.py`, `tests/test_wave48_shell_mobile_markers.py`, `tests/test_wave48_visual_icon_markers.py`, `tests/test_wave48_accessibility_guardrails.py`) including status semantics and deterministic outcome checks in release notes/checklists.
 - This matrix remains the Phase 8 baseline; Wave 48 adds release-playbook QA evidence requirements without changing core consistency rules.
 
+## Wave 49 Documentation Sync Note (Phase 56)
+
+- Wave 49 release docs now extend shell/mobile/visual/a11y gates for shared shell baseline-marker coverage on Home/Roadmap plus Lorem Ipsum Generator/Text to Binary Hex Octal Converter, with Step 1/Step 2 heading hierarchy guidance updates and full-width primary actions on touchpoint pages.
+- Wave 49 docs add explicit placeholder-to-real mapping notes for release governance (`191_*`/`192_*` placeholders mapped to the canonical wave touchpoints `141_Lorem_Ipsum_Generator.py`/`142_Text_to_Binary_Hex_Octal_Converter.py` and their slugs) while preserving deterministic slug-first icon precedence and readable text fallback badges.
+- Wave 49 docs also record deterministic regression-test evidence (`tests/test_ui_helpers.py`, `tests/test_wave49_shell_mobile_markers.py`, `tests/test_wave49_visual_icon_markers.py`, `tests/test_wave49_accessibility_guardrails.py`) including status semantics and deterministic outcome checks in release notes/checklists.
+- This matrix remains the Phase 8 baseline; Wave 49 adds release-playbook QA evidence requirements without changing core consistency rules.
+
