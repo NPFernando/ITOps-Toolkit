@@ -225,8 +225,6 @@ def test_expected_tools_are_tagged_new():
         "case_converter",
         "color_converter",
         "whois_lookup",
-        "bulk_domain_health",
-        "webhook_tester",
     }
 
 
@@ -358,7 +356,6 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "cidr_aggregator",
             "ipv6_compressor",
             "whois_lookup",
-            "bulk_domain_health",
         ],
         "Security": ["ssl_certificate", "jwt_decoder", "hash_generator", "email_header_analyzer", "password_generator", "jwt_encoder"],
         "Web & Dev": [
