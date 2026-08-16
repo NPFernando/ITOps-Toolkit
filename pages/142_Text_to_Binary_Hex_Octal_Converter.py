@@ -51,6 +51,7 @@ mark_page_baseline(_baseline, "wave40-shell-mobile")
 mark_page_baseline(_baseline, "wave41-shell-mobile")
 mark_page_baseline(_baseline, "wave42-shell-mobile")
 mark_page_baseline(_baseline, "wave43-shell-mobile")
+mark_page_baseline(_baseline, "wave44-shell-mobile")
 
 render_page_header("Text to Binary Hex Octal Converter", "Convert plain text into binary, hexadecimal, and octal byte sequences.")
 
@@ -69,6 +70,7 @@ with tool_form_panel("text_to_binary_hex_octal_converter"):
         st.caption("Conversion uses UTF-8 bytes and updates all three outputs together for easier verification.")
         render_control_heading("Primary action")
         st.caption("Read order: enter source text, run convert, then confirm status and compare all three encoded outputs.")
+        st.caption("Status tip: read the outcome note first to confirm whether input is missing or conversion succeeded.")
         st.caption("If you're new, start with a short word first, then compare all three encodings.")
         submitted = st.form_submit_button("Convert text", use_container_width=True)
 

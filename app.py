@@ -50,6 +50,7 @@ mark_page_baseline(_baseline, "wave40-shell-mobile")
 mark_page_baseline(_baseline, "wave41-shell-mobile")
 mark_page_baseline(_baseline, "wave42-shell-mobile")
 mark_page_baseline(_baseline, "wave43-shell-mobile")
+mark_page_baseline(_baseline, "wave44-shell-mobile")
 
 
 repo_url = github_url()
@@ -120,6 +121,7 @@ with tool_form_panel("home_primary_action"):
     )
     render_control_heading("Catalog action")
     st.caption("Read order: review browsing setup, run this full-width action, then verify status notes and tool results.")
+    st.caption("Status tip: confirm the outcome note after each action before changing filters.")
     st.caption("If you're new, begin in favorites/recent before opening the full catalog.")
     if st.button(button_label, icon=button_icon, use_container_width=True):
         if show_all and navigation_mode == "All tools" and not search_query.strip() and profession == "All":

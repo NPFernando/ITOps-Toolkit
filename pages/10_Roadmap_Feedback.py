@@ -48,6 +48,7 @@ mark_page_baseline(_baseline, "wave40-shell-mobile")
 mark_page_baseline(_baseline, "wave41-shell-mobile")
 mark_page_baseline(_baseline, "wave42-shell-mobile")
 mark_page_baseline(_baseline, "wave43-shell-mobile")
+mark_page_baseline(_baseline, "wave44-shell-mobile")
 
 
 def _status_tone(status: str) -> str:
@@ -253,6 +254,7 @@ with tool_form_panel("roadmap_filters"):
         st.caption("Search first, then narrow with category pills to keep the board readable on mobile screens.")
         render_control_heading("Apply filters")
         st.caption("Read order: set search + category, apply filters, then review status outcomes before scanning cards.")
+        st.caption("Status tip: check the outcome note first so you know whether to refine filters or continue.")
         submitted_filters = st.form_submit_button("Apply filters", use_container_width=True)
 
 if submitted_filters or "roadmap_filter_state" not in st.session_state:
