@@ -408,11 +408,11 @@
     {
       "title": "QR code generator",
       "category": "Tools",
-      "status": "Planned",
+      "status": "Complete",
       "votes": 5,
       "description": "Generate a QR code for a URL, Wi-Fi credentials, or plain text/contact info, for onboarding handoffs and support materials.",
-      "rationale": "Common small MSP/support utility (e.g. printed Wi-Fi onboarding cards) that fits the existing 'small standalone utility' shape of Color Converter and Case Converter.",
-      "updated_at": "2026-08-06"
+      "rationale": "Shipped as a QR Code Generator page with two tabs: plain text/URL, and Wi-Fi credentials (WIFI: payload format most phone cameras recognize directly, with proper backslash-escaping of special characters in SSID/password per the format spec). Adds qrcode as a new dependency; Pillow was already a transitive dependency (streamlit itself needs it for st.image), so this only adds the one package. Live-updates, no submit button -- no results-vanishing risk.",
+      "updated_at": "2026-08-07"
     },
     {
       "title": "Windows/Win32 error code lookup",

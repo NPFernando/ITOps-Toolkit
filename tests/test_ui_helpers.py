@@ -177,6 +177,17 @@ def test_expected_tools_are_tagged_new():
         "windows_error_reference",
         "config_format_converter",
         "m365_sku_decoder",
+        "id_generator",
+        "json_diff",
+        "ip_geolocation",
+        "file_integrity",
+        "chmod_calculator",
+        "base_converter",
+        "cron_builder",
+        "http_status_reference",
+        "totp_generator",
+        "keypair_generator",
+        "qr_code_generator",
     }
 
 
@@ -295,6 +306,8 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "config_format_converter",
             "id_generator",
             "json_diff",
+            "base_converter",
+            "qr_code_generator",
         ],
         "Ops & Automation": ["cron_explainer", "log_troubleshooting", "timestamp_converter"],
         "Reference": ["port_reference", "windows_event_reference", "windows_error_reference", "m365_sku_decoder"],
