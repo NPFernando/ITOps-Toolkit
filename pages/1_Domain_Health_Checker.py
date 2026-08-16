@@ -150,11 +150,11 @@ with tool_form_panel("domain_health"):
         "Enter a public domain to check DNS, TLS, HTTP reachability, and email security signals.",
     )
     with st.form("domain-health-form"):
-        domain_col, options_col = st.columns([1.3, 1], gap="medium")
-        domain = domain_col.text_input("Domain name", placeholder="example.com", max_chars=MAX_DOMAIN_LENGTH)
-        check_www = options_col.checkbox("Check www subdomain", value=True)
-        include_dmarc = options_col.checkbox("Include DMARC check", value=True)
-        submitted = st.form_submit_button("Run health check", use_container_width=True)
+        domain = st.text_input("Domain name", placeholder="example.com", max_chars=MAX_DOMAIN_LENGTH)
+        col_a, col_b = st.columns(2)
+        check_www = col_a.checkbox("Check www subdomain", value=True)
+        include_dmarc = col_b.checkbox("Include DMARC check", value=True)
+        submitted = st.form_submit_button("Run health check")
 
 if submitted:
     ok, error = validate_length(domain, MAX_DOMAIN_LENGTH, "Domain")
@@ -177,18 +177,6 @@ if submitted:
                 spf_found=bool(dns_summary["spf_found"]),
                 dmarc_found=dmarc_for_score,
             )
-            # Computed once here (not in the render section below) because the
-            # render section runs on every rerun while results are showing --
-            # touching the sidebar search, expanding another section, or
-            # clicking any of the download buttons further down would otherwise
-            # re-fire these two live network calls every single time.
-            www_result = None
-            if check_www and not normalized.startswith("www."):
-                www_domain = f"www.{normalized}"
-                www_result = {
-                    "dns": get_dns_summary(www_domain, include_dmarc=False),
-                    "http": check_http_status(www_domain),
-                }
         # Stored in session_state (not rendered directly here) because the export
         # panel's download buttons and incident-message tabs below trigger reruns
         # of their own -- on those reruns `submitted` is False again, which would
@@ -201,32 +189,15 @@ if submitted:
             "risk": risk,
             "check_www": check_www,
             "include_dmarc": include_dmarc,
-            "www_result": www_result,
         }
 
 state = st.session_state.get("domain_health_state")
 
-        rows = _csv_rows(dns_summary, ssl_result, http_result, risk)
-        csv_data = pd.DataFrame(rows).to_csv(index=False).encode("utf-8")
-        markdown_data = _markdown_summary(normalized, dns_summary, ssl_result, http_result, risk)
-        html_data = build_domain_health_html_report(normalized, dns_summary, ssl_result, http_result, risk, rows)
-        with tool_download_panel("domain_exports", related_to="domain_health"):
-            render_section_heading("Export", "Download the current in-memory results.", eyebrow="Downloads")
-            export_col_a, export_col_b, export_col_c = st.columns(3)
-            export_col_a.download_button("Download results as CSV", csv_data, file_name=f"{normalized}-health.csv", mime="text/csv")
-            export_col_b.download_button(
-                "Download summary as Markdown",
-                markdown_data,
-                file_name=f"{normalized}-health.md",
-                mime="text/markdown",
-            )
-            st.code(psa_note, language=None)
-            st.download_button(
-                "Download PSA note (.txt)",
-                psa_note,
-                file_name=f"{normalized}-health-ticket-note.txt",
-                mime="text/plain",
-            )
+if state is None:
+    render_empty_state(
+        "Ready for a public domain",
+        "Results, recommendations, and exports appear here after the health check completes.",
+    )
 
 if state is not None:
     normalized = state["normalized"]
@@ -234,6 +205,7 @@ if state is not None:
     ssl_result = state["ssl_result"]
     http_result = state["http_result"]
     risk = state["risk"]
+    check_www = state["check_www"]
     include_dmarc = state["include_dmarc"]
 
     with tool_result_panel("domain_summary"):
@@ -316,13 +288,15 @@ if state is not None:
         with st.expander("Redirect chain"):
             st.dataframe(pd.DataFrame(http_result["redirect_chain"]), width="stretch", hide_index=True)
 
-    www_result = state.get("www_result")
-    if www_result is not None:
+    if check_www and not normalized.startswith("www."):
         with st.expander("www subdomain check"):
-            st.metric("www DNS status", www_result["dns"]["status"])
-            st.metric("www HTTP status", www_result["http"]["status_code"] or "Failed")
-            if www_result["http"]["error"]:
-                st.warning(www_result["http"]["error"])
+            www_domain = f"www.{normalized}"
+            www_dns = get_dns_summary(www_domain, include_dmarc=False)
+            www_http = check_http_status(www_domain)
+            st.metric("www DNS status", www_dns["status"])
+            st.metric("www HTTP status", www_http["status_code"] or "Failed")
+            if www_http["error"]:
+                st.warning(www_http["error"])
 
     render_section_heading("Recommendations", "Prioritized fixes from the current checks.", eyebrow="Actions")
     combined_recommendations = list(dict.fromkeys(risk["recommendations"] + http_result["recommendations"] + posture["recommendations"]))

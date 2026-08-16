@@ -40,7 +40,7 @@ with tool_form_panel("bulk_domain_health"):
         uploaded_file = st.file_uploader("CSV or text file", type=["csv", "txt"])
         pasted_text = st.text_area("Or paste domains here (one per line)", height=140, placeholder="example.com\nexample.org")
         include_dmarc = st.checkbox("Include DMARC check", value=True)
-        submitted = st.form_submit_button("Run checks", use_container_width=True)
+        submitted = st.form_submit_button("Run bulk check")
 
 if submitted:
     # Stored in session_state (not rendered directly here) because the export
@@ -59,17 +59,16 @@ if submitted:
         truncated = len(domains) > MAX_DOMAINS_PER_BATCH
         with st.spinner(f"Checking {min(len(domains), MAX_DOMAINS_PER_BATCH)} domains..."):
             results = run_bulk_health_check(domains, include_dmarc=include_dmarc)
-        st.session_state["bulk_domain_health_validation_error"] = None
+        # Stored in session_state (not rendered directly here) because the export
+        # panel's download button below triggers its own rerun -- on that rerun
+        # `submitted` is False again, which would otherwise collapse this whole
+        # results section right after the click.
         st.session_state["bulk_domain_health_state"] = {"results": results, "truncated": truncated, "total_domains": len(domains)}
 
-validation_error = st.session_state.get("bulk_domain_health_validation_error")
 state = st.session_state.get("bulk_domain_health_state")
 
-if validation_error is None and state is None:
+if state is None:
     render_empty_state("Ready for a domain list", "Per-domain risk scores and status appear here after the batch check completes.")
-
-if validation_error is not None:
-    st.error(validation_error)
 
 if state is not None:
     results = state["results"]
@@ -78,7 +77,20 @@ if state is not None:
         if state["truncated"]:
             st.warning(f"{state['total_domains']} domains were provided; only the first {MAX_DOMAINS_PER_BATCH} were checked.")
 
-        csv_data = frame.to_csv(index=False).encode("utf-8")
-        with tool_download_panel("bulk_domain_health_export", related_to="bulk_domain_health"):
-            render_section_heading("Export", "Download the current in-memory results.", eyebrow="Downloads")
-            st.download_button("Download results as CSV", csv_data, file_name="bulk-domain-health.csv", mime="text/csv")
+        frame = pd.DataFrame(results)
+        st.dataframe(frame, width="stretch", hide_index=True)
+
+        healthy = sum(1 for r in results if r["risk_status"] == "Healthy")
+        warning = sum(1 for r in results if r["risk_status"] == "Warning")
+        critical = sum(1 for r in results if r["risk_status"] == "Critical")
+        errored = sum(1 for r in results if r["risk_status"] == "Unknown")
+        m1, m2, m3, m4 = st.columns(4)
+        m1.metric("Healthy", healthy)
+        m2.metric("Warning", warning)
+        m3.metric("Critical", critical)
+        m4.metric("Errored", errored)
+
+    csv_data = frame.to_csv(index=False).encode("utf-8")
+    with tool_download_panel("bulk_domain_health_export", related_to="bulk_domain_health"):
+        render_section_heading("Export", "Download the current in-memory results.", eyebrow="Downloads")
+        st.download_button("Download results as CSV", csv_data, file_name="bulk-domain-health.csv", mime="text/csv")

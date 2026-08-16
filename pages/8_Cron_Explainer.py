@@ -41,9 +41,9 @@ state = st.session_state.get("cron_explainer_state")
 if state is None:
     render_empty_state("Ready to explain a schedule", "A readable explanation and the next five run times appear after validation.")
 
-if submitted:
+if state is not None:
+    result = state["result"]
     with tool_result_panel("cron_result", related_to="cron_explainer"):
-        result = explain_cron(expression)
         render_section_heading("Cron result", "Readable schedule summary and next run times.")
         if result["ok"]:
             st.success("Valid cron expression")
