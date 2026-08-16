@@ -1769,16 +1769,7 @@ def render_form_intro(title: str, description: str) -> None:
     )
 
 
-def render_control_heading(label: str) -> None:
-    st.markdown(f'<div class="tool-panel-eyebrow">{escape(label)}</div>', unsafe_allow_html=True)
-
-
-def render_section_heading(
-    title: str,
-    description: str | None = None,
-    eyebrow: str = "Results",
-    heading_level: str = "h2",
-) -> None:
+def render_section_heading(title: str, description: str | None = None, eyebrow: str = "Results") -> None:
     # description_html sits on the same line as </h2> above, not alone on its
     # own line, because when it's "" (no description) a whitespace-only line
     # there is a blank line per CommonMark -- which ends this raw HTML block
@@ -1792,7 +1783,7 @@ def render_section_heading(
         f"""
         <div class="tool-section-heading {heading_class}" data-heading-level="{heading_level_value}">
             <div class="tool-panel-eyebrow">{escape(eyebrow)}</div>
-            <{heading_tag}>{escape(title)}</{heading_tag}>{description_html}
+            <h2>{escape(title)}</h2>{description_html}
         </div>
         """,
         unsafe_allow_html=True,
@@ -2122,10 +2113,15 @@ def _fallback_href(path: str) -> str:
 
 
 def _tool_card_html(tool: ToolMeta, delay_ms: int = 0) -> str:
+    # NOTE: new_badge must not sit alone on its own line below. When it's ""
+    # (not a new tool), a whitespace-only line there is a blank line per
+    # CommonMark, which ends this raw HTML block early -- everything after
+    # it then gets parsed as an indented code block instead of HTML, and
+    # the card renders as literal escaped tag text. Keeping it on the same
+    # line as the opening tag means that line is never blank.
     new_badge = '<span class="tool-card-badge-new">NEW</span>' if tool.is_new else ""
     return f"""
-    <div class="tool-card-shell" style="--tool-accent: {tool.accent}; animation-delay: {delay_ms}ms;">
-        {new_badge}
+    <div class="tool-card-shell" style="--tool-accent: {tool.accent}; animation-delay: {delay_ms}ms;">{new_badge}
         <div class="tool-card-icon">{escape(tool.icon)}</div>
         <h3>{escape(tool.title)}</h3>
         <p>{escape(tool.description)}</p>
