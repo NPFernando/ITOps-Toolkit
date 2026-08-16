@@ -345,10 +345,10 @@
     {
       "title": "Security headers checker",
       "category": "Security",
-      "status": "Planned",
+      "status": "Complete",
       "votes": 9,
-      "description": "Inspect a URL's HTTP response headers (CSP, HSTS, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy) and grade what's missing, similar to securityheaders.com.",
-      "rationale": "Reuses the same request/response pattern already proven out by HTTP Status Checker and Webhook Tester -- just reads headers instead of status/body. Common MSP pre-audit check that isn't covered by the existing SSL/DNS/email-security tools.",
+      "description": "Inspect a URL's HTTP response headers (HSTS, CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy) and grade what's missing (A-F), similar to securityheaders.com.",
+      "rationale": "Shipped as its own Security Headers Checker page, reusing the same request pattern as HTTP Status Checker/Webhook Tester. Grading also flags weak (not just missing) HSTS max-age and permissive CSP values, not just presence/absence.",
       "updated_at": "2026-08-06"
     },
     {
