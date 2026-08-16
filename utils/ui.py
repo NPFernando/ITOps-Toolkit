@@ -4765,10 +4765,7 @@ def _inject_global_css(mode: str) -> None:
 
         .tool-status-note-neutral .tool-status-mark {
             /* No neutral theme token exists -- this is its own fixed
-               gray-blue, not derived from any var(--itops-*) accent. White
-               text measured 3.39:1 against it -- below WCAG AA's 4.5:1;
-               dark ink clears it (5.60:1). */
-            color: #0c1116;
+               gray-blue, not derived from any var(--itops-*) accent. */
             background: #7a8da8;
         }
 
@@ -4958,7 +4955,6 @@ def _inject_global_css(mode: str) -> None:
 
         .roadmap-notice-neutral .roadmap-notice-mark {
             /* No neutral theme token exists -- see .tool-status-note-neutral. */
-            color: #0c1116;
             background: #7a8da8;
         }
 
