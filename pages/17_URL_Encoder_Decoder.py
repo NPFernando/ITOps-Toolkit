@@ -34,23 +34,34 @@ with tool_form_panel("url_encoder_decoder"):
         with c2:
             decode_clicked = st.form_submit_button("Decode")
 
-if not (encode_clicked or decode_clicked):
+if encode_clicked:
+    # Stored in session_state (not rendered directly here) because the sidebar's
+    # quick-search box, favorite-star buttons, and any other widget outside this
+    # page's st.form trigger reruns of their own -- on those reruns the transient
+    # *_clicked flags are False again, which would otherwise collapse this whole
+    # results section the instant any of them is touched.
+    st.session_state["url_encoder_decoder_encoded"] = encode_url_text(text_input, plus_for_space)
+if decode_clicked:
+    st.session_state["url_encoder_decoder_decoded"] = decode_url_text(text_input, plus_for_space)
+
+encoded_result = st.session_state.get("url_encoder_decoder_encoded")
+decoded_result = st.session_state.get("url_encoder_decoder_decoded")
+
+if encoded_result is None and decoded_result is None:
     render_empty_state("Ready for input", "Encoded or decoded output appears here after you choose an action.")
 
-if encode_clicked:
-    result = encode_url_text(text_input, plus_for_space)
-    with tool_result_panel("url_encoded"):
+if encoded_result is not None:
+    with tool_result_panel("url_encoded", related_to="url_encoder_decoder"):
         render_section_heading("Encoded result", "Percent-encoded output generated from the current input.")
-        if not result["ok"]:
-            st.error(result["error"])
+        if not encoded_result["ok"]:
+            st.error(encoded_result["error"])
         else:
-            st.text_area("Result", value=result["result"], height=180)
+            st.text_area("Result", value=encoded_result["result"], height=180)
 
-if decode_clicked:
-    result = decode_url_text(text_input, plus_for_space)
-    with tool_result_panel("url_decoded"):
+if decoded_result is not None:
+    with tool_result_panel("url_decoded", related_to="url_encoder_decoder"):
         render_section_heading("Decoded result", "Decoded text from the current input.")
-        if not result["ok"]:
-            st.error(result["error"])
+        if not decoded_result["ok"]:
+            st.error(decoded_result["error"])
         else:
-            st.text_area("Result", value=result["result"], height=180)
+            st.text_area("Result", value=decoded_result["result"], height=180)

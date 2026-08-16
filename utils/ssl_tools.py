@@ -26,6 +26,22 @@ _CHAIN_DIAGNOSES: dict[int, tuple[str, str]] = {
     24: ("Untrusted root", "The root CA certificate is not trusted."),
     62: ("Hostname mismatch", "The certificate does not match the requested hostname."),
 }
+DEFAULT_TLS_TIMEOUT_SECONDS = 5
+DEFAULT_TLS_RETRY_ATTEMPTS = 3
+TLS_RETRY_BACKOFF_SECONDS = 0.25
+_RETRYABLE_OS_ERRNOS = {
+    errno.ECONNREFUSED,
+    errno.ECONNRESET,
+    errno.ETIMEDOUT,
+    errno.EHOSTUNREACH,
+    errno.ENETUNREACH,
+}
+
+
+def _retryable_connection_error(exc: OSError) -> bool:
+    if isinstance(exc, socket.gaierror):
+        return exc.errno == socket.EAI_AGAIN
+    return exc.errno in _RETRYABLE_OS_ERRNOS
 
 
 def diagnose_chain(verify_code: int | None, verify_message: str | None) -> tuple[str, str]:

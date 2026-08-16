@@ -3,7 +3,17 @@ from __future__ import annotations
 import streamlit as st
 
 from utils.totp_tools import MAX_CODE_LENGTH, MAX_SECRET_LENGTH, current_code, generate_secret, verify_code
-from utils.ui import apply_app_shell, render_form_intro, render_page_header, render_section_heading, render_status_note, tool_form_panel, tool_result_panel
+from utils.ui import (
+    apply_app_shell,
+    render_empty_state,
+    render_failure_note,
+    render_form_intro,
+    render_page_header,
+    render_section_heading,
+    render_status_note,
+    tool_form_panel,
+    tool_result_panel,
+)
 
 
 st.set_page_config(page_title="TOTP Generator", layout="wide")
@@ -27,13 +37,17 @@ with generate_tab:
 
     with tool_result_panel("totp_generate_result", related_to="totp_generator"):
         render_section_heading("Current code", "Regenerates automatically when the page reruns; refresh to get a new code near the end of the window.")
-        result = current_code(secret)
-        if not result["ok"]:
-            st.error(result["error"])
+        if not secret.strip():
+            render_empty_state("Ready for a secret", "The current code appears here as soon as you enter or generate a secret.")
         else:
-            c1, c2 = st.columns(2)
-            c1.metric("Code", result["code"])
-            c2.metric("Seconds remaining", result["seconds_remaining"])
+            result = current_code(secret)
+            if not result["ok"]:
+                render_failure_note("Secret input", result["error"], remediation="Provide a valid Base32 secret and try again.")
+            else:
+                render_status_note("Code generated", "Current TOTP code generated from the provided secret.", tone="success")
+                c1, c2 = st.columns(2)
+                c1.metric("Code", result["code"])
+                c2.metric("Seconds remaining", result["seconds_remaining"])
 
 with verify_tab:
     with tool_form_panel("totp_verify"):
@@ -47,10 +61,16 @@ with verify_tab:
         st.session_state["totp_verify_result"] = verify_code(verify_secret, verify_code_input)
 
     verify_result = st.session_state.get("totp_verify_result")
+    if verify_result is None:
+        render_empty_state("Ready to verify", "The verification result appears here after you check a code.")
     if verify_result is not None:
-        with tool_result_panel("totp_verify_result_panel"):
+        with tool_result_panel("totp_verify_result_panel", related_to="totp_generator"):
             if not verify_result["ok"]:
-                st.error(verify_result["error"])
+                render_failure_note(
+                    "Verification input",
+                    verify_result["error"],
+                    remediation="Use a valid Base32 secret and a 6-digit code, then retry.",
+                )
             elif verify_result["valid"]:
                 render_status_note("Valid", "The code matches the secret within the allowed time window.", tone="success")
             else:

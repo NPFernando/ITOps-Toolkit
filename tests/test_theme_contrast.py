@@ -34,9 +34,11 @@ def test_dark_theme_muted_text_meets_aa_against_bg_and_panel():
     assert contrast_ratio(muted, _THEME_TOKENS["dark"]["panel"]) >= 4.5
 
 
-def test_light_theme_muted_text_meets_aa_against_bg():
-    muted = _THEME_TOKENS["light"]["muted"]
-    assert contrast_ratio(muted, _THEME_TOKENS["light"]["bg"]) >= 4.5
+def test_theme_contract_is_dark_only():
+    # Streamlit's native controls read server configuration at startup and
+    # cannot track an in-app palette toggle. The unsupported light mode was
+    # intentionally removed rather than presenting a partially themed UI.
+    assert set(_THEME_TOKENS) == {"dark"}
 
 
 def test_dark_theme_muted_text_meets_aa_against_surface_strong():
@@ -73,7 +75,7 @@ def test_new_badge_text_meets_aa_against_green_gradient_stops():
     # The badge background is `linear-gradient(135deg, green, color-mix(green, #000 15%))`
     # -- check both stops, since darkening the green toward black is the worst case.
     badge_text = "#04140a"
-    for mode in ("dark", "light"):
+    for mode in _THEME_TOKENS:
         green = _THEME_TOKENS[mode]["green"]
         r, g, b = _hex_to_rgb(green)
         darkened = f"#{round(r * 0.85):02x}{round(g * 0.85):02x}{round(b * 0.85):02x}"

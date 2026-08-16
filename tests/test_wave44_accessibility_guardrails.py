@@ -44,8 +44,8 @@ def test_wave44_read_order_and_status_live_regions_are_deterministic():
     assert not home_app.exception
     home_markdown = _markdown(home_app)
     home_captions = _captions(home_app)
-    assert "Read order: review browsing setup, run this full-width action, then verify status notes and tool results." in home_captions
-    assert "Status tip: confirm the outcome note after each action before changing filters." in home_captions
+    assert "Read order: confirm browsing setup, run this full-width action, then review the outcome note before scanning results." in home_captions
+    assert "Status tip: if the outcome says filters need adjustment, clear one filter and try again." in home_captions
     assert "Outcome: quick access ready" in home_markdown
     assert 'aria-label="Neutral status: Outcome: quick access ready"' in home_markdown
     assert 'role="status"' in home_markdown
@@ -58,8 +58,8 @@ def test_wave44_read_order_and_status_live_regions_are_deterministic():
     assert not roadmap_app.exception
     roadmap_markdown = _markdown(roadmap_app)
     roadmap_captions = _captions(roadmap_app)
-    assert "Read order: set search + category, apply filters, then review status outcomes before scanning cards." in roadmap_captions
-    assert "Status tip: check the outcome note first so you know whether to refine filters or continue." in roadmap_captions
+    assert "Read order: set search + category, apply filters, then check outcome status before scanning cards." in roadmap_captions
+    assert "Status tip: outcome notes tell you whether results are ready or filters need adjustment." in roadmap_captions
     assert "Outcome: public feedback safety reminder" in roadmap_markdown
     assert 'aria-label="Warning status: Outcome: public feedback safety reminder"' in roadmap_markdown
     assert 'role="alert"' in roadmap_markdown
@@ -72,8 +72,8 @@ def test_wave44_read_order_and_status_live_regions_are_deterministic():
     assert not lorem_app.exception
     lorem_markdown = _markdown(lorem_app)
     lorem_captions = _captions(lorem_app)
-    assert "Read order: configure output shape and seed, run generate, then review status guidance and output." in lorem_captions
-    assert "Status tip: read the outcome note first to confirm whether text is ready or more input is needed." in lorem_captions
+    assert "Read order: choose output shape and seed, run generate, then review the outcome note and output." in lorem_captions
+    assert "Status tip: neutral means waiting for input; success means text is ready to copy." in lorem_captions
     assert "Outcome: lorem generation awaiting input" in lorem_markdown
     assert 'aria-label="Neutral status: Outcome: lorem generation awaiting input"' in lorem_markdown
     assert 'role="status"' in lorem_markdown
@@ -86,8 +86,8 @@ def test_wave44_read_order_and_status_live_regions_are_deterministic():
     assert not text_app.exception
     text_markdown = _markdown(text_app)
     text_captions = _captions(text_app)
-    assert "Read order: enter source text, run convert, then confirm status and compare all three encoded outputs." in text_captions
-    assert "Status tip: read the outcome note first to confirm whether input is missing or conversion succeeded." in text_captions
+    assert "Read order: enter source text, run convert, then check status and compare all three encoded outputs." in text_captions
+    assert "Status tip: warning means input is missing; success means all encodings are ready." in text_captions
     assert "Outcome: conversion awaiting input" in text_markdown
     assert 'aria-label="Neutral status: Outcome: conversion awaiting input"' in text_markdown
     assert 'role="status"' in text_markdown

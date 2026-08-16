@@ -37,7 +37,6 @@ def test_wave14_mobile_layout_and_primary_actions():
         "pages/119_SSH_Config_Validator.py": ['st.form_submit_button("Lint", use_container_width=True)'],
         "pages/120_CSR_Generator.py": [
             'st.form_submit_button("Generate CSR", use_container_width=True)',
-            "c3, c4 = st.columns(2)",
             'country = st.text_input("Country (2-letter)", placeholder="US", max_chars=2)',
         ],
         "pages/121_CAA_Record_Builder.py": [

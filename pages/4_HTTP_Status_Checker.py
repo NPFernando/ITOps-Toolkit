@@ -14,7 +14,9 @@ from utils.ui import (
     render_form_intro,
     render_page_header,
     render_section_heading,
+    render_status_note,
     run_validated_lookup,
+    tool_download_panel,
     tool_form_panel,
     tool_result_panel,
 )
@@ -39,37 +41,9 @@ with tool_form_panel("http_status"):
         submitted = st.form_submit_button("Check URL")
 
 if submitted:
-    # Stored in session_state (not rendered directly here) because the sidebar's
-    # quick-search box, favorite-star buttons, and any other widget outside this
-    # page's st.form trigger reruns of their own -- on those reruns `submitted` is
-    # False again, which would otherwise collapse this whole results section the
-    # instant any of them is touched.
-    ok, error = validate_length(url, MAX_URL_LENGTH, "URL")
-    if not ok:
-        st.session_state["http_status_validation_error"] = error
-        st.session_state["http_status_result"] = None
-    else:
-        st.session_state["http_status_validation_error"] = None
-        st.session_state["http_status_result"] = check_http_status(url)
-
-validation_error = st.session_state.get("http_status_validation_error")
-result = st.session_state.get("http_status_result")
-
-if validation_error is None and result is None:
-    render_empty_state("Ready to check HTTP", "Response status, selected headers, redirects, and recommendations appear after the check.")
-
-if validation_error is not None:
-    st.error(validation_error)
-
-if result is not None:
-    with tool_result_panel("http_result", related_to="http_status"):
-            render_section_heading("HTTP result", "Status, timing, HTTPS state, and final URL.")
-            if result["ok"]:
-                st.success("Healthy")
-            elif result["error"]:
-                st.error(result["error"])
-            else:
-                st.warning("Warning")
+    def _validate() -> str | None:
+        ok, error = validate_length(url, MAX_URL_LENGTH, "URL")
+        return None if ok else error
 
     run_validated_lookup("http_status", _validate, lambda: check_http_status(url), spinner_text="Checking URL...")
 
@@ -90,11 +64,15 @@ if result is not None:
     with tool_result_panel("http_result", related_to="http_status"):
         render_section_heading("HTTP result", "Status, timing, HTTPS state, and final URL.")
         if result["ok"]:
-            st.success("Healthy")
+            render_status_note("HTTP check completed", "The endpoint returned a successful response.", tone="success")
         elif result["error"]:
-            st.error(result["error"])
+            render_failure_note(
+                "HTTP check",
+                result["error"],
+                remediation="Verify DNS, TLS, firewall/proxy access, and upstream service health before retrying.",
+            )
         else:
-            st.warning("Warning")
+            render_status_note("HTTP check warning", "The endpoint responded but needs follow-up action.", tone="warning")
 
         c1, c2, c3, c4 = st.columns(4)
         c1.metric("Status code", result["status_code"] or "Failed")
@@ -130,3 +108,33 @@ if result is not None:
                 st.warning(item)
         else:
             st.success("No header or HTTPS recommendations from this check.")
+
+    summary_csv = display_rows_frame(rows).to_csv(index=False).encode("utf-8")
+    headers_csv = pd.DataFrame(
+        [{"header": key, "value": value} for key, value in result["headers"].items()]
+    ).to_csv(index=False).encode("utf-8")
+    redirect_csv = pd.DataFrame(result["redirect_chain"]).to_csv(index=False).encode("utf-8")
+    with tool_download_panel("http_downloads", related_to="http_status"):
+        render_section_heading("Export", "Download current in-memory HTTP check output.", eyebrow="Downloads")
+        col_a, col_b, col_c = st.columns(3)
+        col_a.download_button(
+            "Download summary as CSV",
+            summary_csv,
+            file_name="http-status-summary.csv",
+            mime="text/csv",
+        )
+        col_b.download_button(
+            "Download headers as CSV",
+            headers_csv,
+            file_name="http-status-headers.csv",
+            mime="text/csv",
+        )
+        col_c.download_button(
+            "Download redirects as CSV",
+            redirect_csv,
+            file_name="http-status-redirects.csv",
+            mime="text/csv",
+        )
+
+mark_page_baseline(_baseline, "content-rendered")
+render_page_baseline(_baseline)

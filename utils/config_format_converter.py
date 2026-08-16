@@ -26,6 +26,29 @@ FORMATS: tuple[str, ...] = ("JSON", "YAML", "TOML", "XML")
 MAX_INPUT_LENGTH = 100_000
 
 
+class _DuplicateKeyLoader(yaml.SafeLoader):
+    """SafeLoader that raises on a duplicate mapping key instead of silently keeping the last value.
+
+    Duplicate keys are invalid per the YAML spec, but PyYAML's default
+    loader accepts them anyway and keeps the last value with no warning.
+    """
+
+
+def _no_duplicate_keys(loader: yaml.SafeLoader, node: Any, deep: bool = False) -> dict[Any, Any]:
+    mapping: dict[Any, Any] = {}
+    for key_node, value_node in node.value:
+        key = loader.construct_object(key_node, deep=deep)
+        if key in mapping:
+            raise yaml.constructor.ConstructorError(
+                "while constructing a mapping", node.start_mark, f"found duplicate key {key!r}", key_node.start_mark
+            )
+        mapping[key] = loader.construct_object(value_node, deep=deep)
+    return mapping
+
+
+_DuplicateKeyLoader.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, _no_duplicate_keys)
+
+
 def _dict_to_xml(data: Any, tag: str) -> ET.Element:
     element = ET.Element(tag)
     if isinstance(data, dict):
@@ -66,7 +89,7 @@ def _parse(text: str, fmt: str) -> Any:
     if fmt == "JSON":
         return json.loads(text)
     if fmt == "YAML":
-        return yaml.safe_load(text)
+        return yaml.load(text, Loader=_DuplicateKeyLoader)
     if fmt == "TOML":
         return toml.loads(text)
     if fmt == "XML":

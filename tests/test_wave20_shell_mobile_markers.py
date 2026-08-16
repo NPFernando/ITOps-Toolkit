@@ -55,13 +55,13 @@ def test_wave20_mobile_layout_grouped_controls_and_primary_actions():
         ],
         "pages/120_CSR_Generator.py": [
             'with tool_form_panel("csr_generator"):',
-            'st.markdown(\'<div class="tool-panel-eyebrow">Organization details</div>\', unsafe_allow_html=True)',
-            'st.markdown(\'<div class="tool-panel-eyebrow">Location details</div>\', unsafe_allow_html=True)',
+            'render_control_heading("Organization details")',
+            'render_control_heading("Location details")',
             'submitted = st.form_submit_button("Generate CSR", use_container_width=True)',
         ],
         "pages/121_CAA_Record_Builder.py": [
             'with tool_form_panel("caa_record_builder"):',
-            'st.markdown(\'<div class="tool-panel-eyebrow">Authorization settings</div>\', unsafe_allow_html=True)',
+            'render_control_heading("Authorization settings")',
             'submitted = st.form_submit_button("Build record", use_container_width=True)',
         ],
         "pages/122_Base62_Encoder_Decoder.py": [
