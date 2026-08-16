@@ -51,6 +51,7 @@ mark_page_baseline(_baseline, "wave43-shell-mobile")
 mark_page_baseline(_baseline, "wave44-shell-mobile")
 mark_page_baseline(_baseline, "wave45-shell-mobile")
 mark_page_baseline(_baseline, "wave46-shell-mobile")
+mark_page_baseline(_baseline, "wave47-shell-mobile")
 
 
 def _status_tone(status: str) -> str:
@@ -227,6 +228,7 @@ render_section_heading(
     "Browse roadmap items",
     "Use search and category filters to focus the board view.",
     eyebrow="Step 1",
+    heading_level="h3",
 )
 with tool_form_panel("roadmap_filters"):
     render_form_intro("Search and filter roadmap", "Use keyword search and category pills to narrow the board.")
@@ -236,8 +238,7 @@ with tool_form_panel("roadmap_filters"):
         eyebrow="Step 1a",
         heading_level="h3",
     )
-    st.caption("If you're new, keep category on All first, apply filters, then narrow category only if needed.")
-    st.caption("New here? Keep category on All for your first pass.")
+    st.caption("New here? Keep category on All, apply once, then narrow if needed.")
     with st.form("roadmap-filters-form"):
         render_control_heading("Keyword search")
         query = st.text_input("Search roadmap", placeholder="Search features, categories, or ideas...")
@@ -252,11 +253,11 @@ with tool_form_panel("roadmap_filters"):
             # same bug class as PR #63.
             label_visibility="collapsed",
         )
-        st.caption("Search first, then narrow with category pills to keep the board readable on mobile screens.")
+        st.caption("Search first, then use one category filter to keep board results readable on mobile.")
         render_control_heading("Apply filters")
-        st.caption("Read order: set search + category, apply filters, then review status outcomes before scanning cards.")
-        st.caption("Status tip: check the outcome note first so you know whether to refine filters or continue.")
-        st.caption("Quick tip: read the status note before scanning cards.")
+        st.caption("Read order: set search + category, apply filters, then check outcome status before scanning cards.")
+        st.caption("Status tip: outcome notes tell you whether results are ready or filters need adjustment.")
+        st.caption("New here? Clear filters if results look empty, then apply one filter at a time.")
         submitted_filters = st.form_submit_button("Apply filters", use_container_width=True)
 
 if submitted_filters or "roadmap_filter_state" not in st.session_state:
@@ -321,6 +322,7 @@ render_section_heading(
     "AI-assisted triage",
     "Summarize open (not-yet-Complete) roadmap items into a short, maintainer-facing prioritization -- opt-in, and only sends public roadmap data (titles, descriptions, vote counts) already shown above.",
     eyebrow="Step 3",
+    heading_level="h3",
 )
 open_items = [item for item in board.items if item.status != "Complete"]
 ai_available = optional_ai_configured()

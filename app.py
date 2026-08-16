@@ -53,6 +53,7 @@ mark_page_baseline(_baseline, "wave43-shell-mobile")
 mark_page_baseline(_baseline, "wave44-shell-mobile")
 mark_page_baseline(_baseline, "wave45-shell-mobile")
 mark_page_baseline(_baseline, "wave46-shell-mobile")
+mark_page_baseline(_baseline, "wave47-shell-mobile")
 
 
 repo_url = github_url()
@@ -77,6 +78,7 @@ with tool_form_panel("home_navigation_controls"):
         "Browsing setup",
         description="Pick a profession lens and choose quick access or full catalog before running actions.",
         eyebrow="Step 1",
+        heading_level="h3",
     )
     st.caption("Read order: choose profession and navigation mode first, then run the catalog action below.")
     render_control_heading("Filter by profession")
@@ -121,10 +123,9 @@ with tool_form_panel("home_primary_action"):
         heading_level="h3",
     )
     render_control_heading("Catalog action")
-    st.caption("Read order: review browsing setup, run this full-width action, then verify status notes and tool results.")
-    st.caption("Status tip: confirm the outcome note after each action before changing filters.")
-    st.caption("Quick tip: check the status note before changing filters.")
-    st.caption("If you're new, begin in favorites/recent before opening the full catalog.")
+    st.caption("Read order: confirm browsing setup, run this full-width action, then review the outcome note before scanning results.")
+    st.caption("Status tip: if the outcome says filters need adjustment, clear one filter and try again.")
+    st.caption("New here? Start in Quick access, then open All tools only when needed.")
     if st.button(button_label, icon=button_icon, use_container_width=True):
         if show_all and navigation_mode == "All tools" and not search_query.strip() and profession == "All":
             st.session_state["home_force_quick_access"] = True

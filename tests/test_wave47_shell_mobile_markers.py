@@ -4,7 +4,7 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
 
-WAVE46_PAGES = (
+WAVE47_PAGES = (
     "app.py",
     "pages/10_Roadmap_Feedback.py",
     "pages/141_Lorem_Ipsum_Generator.py",
@@ -12,17 +12,17 @@ WAVE46_PAGES = (
 )
 
 
-def test_wave46_pages_keep_shell_and_baseline_markers():
-    for rel_path in WAVE46_PAGES:
+def test_wave47_pages_keep_shell_and_baseline_markers():
+    for rel_path in WAVE47_PAGES:
         source = (PROJECT_ROOT / rel_path).read_text(encoding="utf-8")
         assert "apply_app_shell(" in source, f"{rel_path}: missing shared shell"
         assert 'mark_page_baseline(_baseline, "shell-ready")' in source, f"{rel_path}: missing shell-ready marker"
-        assert 'mark_page_baseline(_baseline, "wave46-shell-mobile")' in source, f"{rel_path}: missing wave-46 marker"
+        assert 'mark_page_baseline(_baseline, "wave47-shell-mobile")' in source, f"{rel_path}: missing wave-47 marker"
         assert 'mark_page_baseline(_baseline, "content-rendered")' in source, f"{rel_path}: missing content marker"
         assert "render_page_baseline(_baseline)" in source, f"{rel_path}: missing baseline render"
 
 
-def test_wave46_pages_keep_grouped_controls_read_order_and_full_width_actions():
+def test_wave47_pages_keep_grouped_controls_read_order_and_full_width_actions():
     expected_snippets = {
         "app.py": [
             'with tool_form_panel("home_navigation_controls"):',
@@ -63,8 +63,24 @@ def test_wave46_pages_keep_grouped_controls_read_order_and_full_width_actions():
     for rel_path, snippets in expected_snippets.items():
         source = (PROJECT_ROOT / rel_path).read_text(encoding="utf-8")
         for snippet in snippets:
-            assert snippet in source, f"{rel_path}: missing wave-46 shell/mobile snippet {snippet!r}"
+            assert snippet in source, f"{rel_path}: missing wave-47 shell/mobile snippet {snippet!r}"
 
-    for rel_path in WAVE46_PAGES[1:]:
+    for rel_path in WAVE47_PAGES[1:]:
         source = (PROJECT_ROOT / rel_path).read_text(encoding="utf-8")
         assert "st.columns(2)" not in source, f"{rel_path}: should avoid fixed two-column form layouts on small screens"
+
+
+def test_wave47_placeholder_aliases_map_to_current_tool_slugs():
+    source = (PROJECT_ROOT / "utils" / "ui.py").read_text(encoding="utf-8")
+    expected_aliases = (
+        '"187_tool_slug_pending_roadmap": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg"',
+        '"188_tool_slug_pending_roadmap": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg"',
+        '"187_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg"',
+        '"188_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg"',
+        '"187_tool_slug_pending_roadmap": ":material/text_fields:"',
+        '"188_tool_slug_pending_roadmap": ":material/pin:"',
+        '"187_<tool_slug_pending_roadmap>": ":material/text_fields:"',
+        '"188_<tool_slug_pending_roadmap>": ":material/pin:"',
+    )
+    for snippet in expected_aliases:
+        assert snippet in source, f"utils/ui.py: missing wave-47 placeholder alias snippet {snippet!r}"
