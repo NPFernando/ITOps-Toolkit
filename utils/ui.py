@@ -2247,6 +2247,38 @@ _THEME_TOKENS = {
         "green": "#50fa7b",
         "purple": "#c678dd",
         "orange": "#f0ad4e",
+        # Card/panel surfaces on the main content area (not the sidebar,
+        # which is always dark in both modes). Distinct from "panel" above,
+        # which theme-toggle-era code already uses for a couple of other
+        # things -- these back the tool-card / result-panel glass surfaces.
+        "surface": "rgba(30, 34, 40, 0.82)",
+        "surface-strong": "#1e2228",
+        "surface-border": "rgba(53, 90, 102, 0.45)",
+        "text-secondary": "#a9c2ce",
+        "input-bg": "#20242b",
+        "app-gradient-top": "#2a2e36",
+        "app-gradient-bottom": "#1f232a",
+    },
+    "light": {
+        "blue": "#126bff",
+        "blue-dark": "#0a47c9",
+        "ink": "#07142f",
+        "muted": "#52637f",
+        "line": "#d7e2f5",
+        "bg": "#f6f9ff",
+        "panel": "#fbfdff",
+        "sidebar": "#071a33",
+        "sidebar-2": "#0b2748",
+        "green": "#22ba4f",
+        "purple": "#6d55e9",
+        "orange": "#ff6a13",
+        "surface": "rgba(255, 255, 255, 0.84)",
+        "surface-strong": "#ffffff",
+        "surface-border": "#d4e0f2",
+        "text-secondary": "#334765",
+        "input-bg": "#ffffff",
+        "app-gradient-top": "#fbfdff",
+        "app-gradient-bottom": "#eef5ff",
     },
 }
 
@@ -2630,7 +2662,7 @@ def _inject_global_css(mode: str) -> None:
         [data-testid="stTextArea"] textarea,
         [data-testid="stSelectbox"] div[data-baseweb="select"] > div,
         [data-testid="stNumberInput"] input {
-            border-radius: var(--card-radius);
+            border-radius: 8px;
             border: 1px solid var(--itops-surface-border);
             background: var(--itops-input-bg);
             color: var(--itops-ink);
@@ -2666,7 +2698,7 @@ def _inject_global_css(mode: str) -> None:
             align-items: center;
             min-height: 2.45rem;
             padding: 0 1.1rem;
-            border-radius: var(--card-radius);
+            border-radius: 8px;
             color: var(--itops-ink);
             font-size: 0.92rem;
             font-weight: 700;
@@ -3063,7 +3095,7 @@ def _inject_global_css(mode: str) -> None:
             gap: 0;
             margin: 1.6rem 0 1.2rem;
             border: 1px solid var(--itops-surface-border);
-            border-radius: var(--card-radius);
+            border-radius: 8px;
             background: var(--itops-surface);
             overflow: hidden;
         }
@@ -3103,7 +3135,7 @@ def _inject_global_css(mode: str) -> None:
             font-size: 0.74rem;
             font-weight: 900;
             border: 2px solid currentColor;
-            background: #ffffff;
+            background: var(--itops-surface-strong);
             transition: transform 180ms cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
@@ -3122,8 +3154,8 @@ def _inject_global_css(mode: str) -> None:
             align-items: center;
             padding: 1rem 1.15rem;
             border-radius: 8px;
-            border: 1px solid color-mix(in srgb, var(--itops-orange), transparent 30%);
-            background: linear-gradient(135deg, color-mix(in srgb, var(--itops-orange), transparent 87%), var(--itops-surface));
+            border: 1px solid #f0d08a;
+            background: linear-gradient(135deg, rgba(255, 189, 24, 0.13), var(--itops-surface));
         }
 
         .important-notice strong {
@@ -3156,7 +3188,7 @@ def _inject_global_css(mode: str) -> None:
             gap: 1rem;
             padding: 1rem 1.1rem;
             margin-bottom: 1rem;
-            border-radius: var(--card-radius);
+            border-radius: 8px;
             border: 1px solid var(--itops-surface-border);
             background: var(--itops-surface);
             box-shadow: 0 12px 32px rgba(36, 79, 135, 0.05);
@@ -3227,7 +3259,7 @@ def _inject_global_css(mode: str) -> None:
         [class*="st-key-tool_form_panel_"],
         [class*="st-key-tool_result_panel_"] {
             border: 1px solid var(--itops-surface-border);
-            border-radius: var(--card-radius);
+            border-radius: 8px;
             background: var(--itops-surface);
             box-shadow: 0 12px 32px rgba(36, 79, 135, 0.045);
             padding: 1.05rem 1.05rem 1.15rem;
@@ -3300,7 +3332,7 @@ def _inject_global_css(mode: str) -> None:
             gap: 0.9rem;
             align-items: center;
             border: 1px dashed var(--itops-surface-border);
-            border-radius: var(--card-radius);
+            border-radius: 8px;
             background: var(--itops-surface);
             padding: 0.95rem 1rem;
             margin: 1rem 0;
@@ -3408,11 +3440,7 @@ def _inject_global_css(mode: str) -> None:
         .tool-status-note-ai,
         .tool-status-note-info {
             border-color: rgba(18, 107, 255, 0.22);
-            /* Fixed blue, not var(--itops-blue) -- that token is the
-               theme accent (coral/red in dark mode, matching odysseus),
-               not a literal blue, and would clash with the badge icon's
-               hardcoded blue gradient just below. */
-            background: color-mix(in srgb, var(--itops-surface), #126bff 12%);
+            background: linear-gradient(135deg, rgba(231, 240, 255, 0.94), var(--itops-surface));
         }
 
         .tool-status-note-ai .tool-status-mark,
@@ -3425,7 +3453,7 @@ def _inject_global_css(mode: str) -> None:
 
         .tool-status-note-success {
             border-color: rgba(34, 186, 79, 0.24);
-            background: color-mix(in srgb, var(--itops-surface), var(--itops-green) 12%);
+            background: linear-gradient(135deg, rgba(231, 248, 238, 0.9), var(--itops-surface));
         }
 
         .tool-status-note-success .tool-status-mark {
@@ -3437,7 +3465,7 @@ def _inject_global_css(mode: str) -> None:
 
         .tool-status-note-warning {
             border-color: rgba(255, 106, 19, 0.25);
-            background: color-mix(in srgb, var(--itops-surface), var(--itops-orange) 12%);
+            background: linear-gradient(135deg, rgba(255, 240, 231, 0.9), var(--itops-surface));
         }
 
         .tool-status-note-warning .tool-status-mark {
@@ -3460,7 +3488,7 @@ def _inject_global_css(mode: str) -> None:
 
         [class*="st-key-tool_download_panel_"] {
             border: 1px solid var(--itops-surface-border);
-            border-radius: var(--card-radius);
+            border-radius: 8px;
             background: var(--itops-surface);
             padding: 1rem;
             margin-top: 1rem;
@@ -3584,7 +3612,7 @@ def _inject_global_css(mode: str) -> None:
             min-height: 4.2rem;
             padding: 0.85rem 0.95rem;
             border: 1px solid var(--itops-surface-border);
-            border-radius: var(--card-radius);
+            border-radius: 8px;
             background: var(--itops-surface);
         }
 
@@ -3616,7 +3644,7 @@ def _inject_global_css(mode: str) -> None:
 
         .roadmap-notice-warning {
             border-color: rgba(255, 106, 19, 0.28);
-            background: color-mix(in srgb, var(--itops-surface), var(--itops-orange) 12%);
+            background: linear-gradient(135deg, rgba(255, 244, 238, 0.9), var(--itops-surface));
         }
 
         .roadmap-notice-warning .roadmap-notice-mark {
@@ -3627,8 +3655,7 @@ def _inject_global_css(mode: str) -> None:
 
         .roadmap-notice-ai {
             border-color: rgba(18, 107, 255, 0.24);
-            /* Fixed blue, not var(--itops-blue) -- see .tool-status-note-ai. */
-            background: color-mix(in srgb, var(--itops-surface), #126bff 12%);
+            background: linear-gradient(135deg, rgba(232, 241, 255, 0.92), var(--itops-surface));
         }
 
         .roadmap-notice-ai .roadmap-notice-mark {
@@ -3668,7 +3695,7 @@ def _inject_global_css(mode: str) -> None:
             gap: 1rem;
             min-height: 3.15rem;
             padding: 0.8rem 0.95rem;
-            border-radius: var(--card-radius);
+            border-radius: 8px;
             border: 1px solid var(--itops-surface-border);
             background: var(--itops-surface);
             box-shadow: 0 10px 24px rgba(36, 79, 135, 0.04);
@@ -3724,7 +3751,7 @@ def _inject_global_css(mode: str) -> None:
             overflow: hidden;
             padding: 0;
             border: 1px solid var(--itops-surface-border);
-            border-radius: var(--card-radius);
+            border-radius: 8px;
             background: var(--itops-surface);
             box-shadow: 0 12px 30px rgba(36, 79, 135, 0.035);
         }
@@ -3815,13 +3842,11 @@ def _inject_global_css(mode: str) -> None:
             min-height: 2.5rem;
             align-self: start;
             border: 1px solid var(--itops-surface-border);
-            border-radius: var(--card-radius);
+            border-radius: 8px;
             display: grid;
             place-items: center;
             align-content: center;
-            /* #3d4f68 measured 1.68:1 against the dark bg -- far below WCAG AA's
-               4.5:1 minimum for normal text. --itops-muted (4.59:1) clears it. */
-            color: var(--itops-muted);
+            color: #3d4f68;
             background: var(--itops-surface);
             font-size: 0.75rem;
             font-weight: 850;
@@ -3932,7 +3957,7 @@ def _inject_global_css(mode: str) -> None:
             margin: 0.42rem 0 0;
             padding: 0 !important;
             color: var(--itops-text-secondary);
-            font-size: 0.84rem;
+            font-size: 0.8rem;
             line-height: 1.45;
             display: -webkit-box;
             -webkit-line-clamp: 3;
@@ -3957,7 +3982,7 @@ def _inject_global_css(mode: str) -> None:
             margin: 1rem 0;
             padding: 1rem;
             border: 1px dashed var(--itops-surface-border);
-            border-radius: var(--card-radius);
+            border-radius: 8px;
             background: var(--itops-surface);
         }
 
@@ -3982,8 +4007,7 @@ def _inject_global_css(mode: str) -> None:
             padding: 0.85rem 0.95rem;
             border: 1px solid rgba(18, 107, 255, 0.2);
             border-radius: 8px;
-            /* Fixed blue, not var(--itops-blue) -- see .tool-status-note-ai. */
-            background: color-mix(in srgb, var(--itops-surface), #126bff 12%);
+            background: linear-gradient(135deg, rgba(231, 240, 255, 0.94), var(--itops-surface));
         }
 
         .roadmap-footer-note strong {
