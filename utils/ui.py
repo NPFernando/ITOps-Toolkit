@@ -1333,6 +1333,18 @@ TOOLS: tuple[ToolMeta, ...] = (
         category="Security",
         is_new=True,
     ),
+    ToolMeta(
+        title="chmod Calculator",
+        short_title="chmod Calculator",
+        description="Convert between symbolic (rwxr-xr-x) and octal (755) Unix file permission notation.",
+        path="pages/44_Chmod_Calculator.py",
+        icon="CHM",
+        accent="#5c6bc0",
+        slug="chmod_calculator",
+        professions=("Sysadmin / DevOps", "Automation Engineer"),
+        category="Ops & Automation",
+        is_new=True,
+    ),
 )
 
 # Curated, not usage-derived -- this app deliberately has no usage tracking
@@ -1397,13 +1409,11 @@ TOOL_BUNDLES: dict[str, tuple[str, ...]] = {
     "regex_tester": ("text_diff_checker", "json_formatter", "regex_cheat_sheet"),
     "text_diff_checker": ("regex_tester", "case_converter"),
     "case_converter": ("text_diff_checker", "url_encoder_decoder"),
-    "color_converter": ("qr_code_generator", "case_converter"),
-    "timestamp_converter": ("cron_explainer", "business_hours", "log_duration"),
-    "cron_explainer": ("timestamp_converter", "log_troubleshooting", "cron_builder"),
-    "cron_builder": ("cron_explainer", "timestamp_converter"),
-    "log_troubleshooting": ("cron_explainer", "webhook_tester", "windows_event_reference", "pattern_extractor"),
+    "timestamp_converter": ("cron_explainer",),
+    "cron_explainer": ("timestamp_converter", "log_troubleshooting"),
+    "log_troubleshooting": ("cron_explainer", "webhook_tester", "windows_event_reference"),
     "chmod_calculator": ("cron_explainer", "log_troubleshooting"),
-    "webhook_tester": ("http_status", "log_troubleshooting", "curl_builder"),
+    "webhook_tester": ("http_status", "log_troubleshooting"),
     "user_agent_parser": ("http_status", "email_header_analyzer"),
     "ulid_uuid_decoder": ("id_generator", "timestamp_converter"),
     "curl_builder": ("webhook_tester", "url_encoder_decoder"),
@@ -2395,13 +2405,6 @@ def _material_icon_for(slug: str) -> str:
         "ip_geolocation": ":material/location_on:",
         "file_integrity": ":material/verified:",
         "chmod_calculator": ":material/lock_open:",
-        "base_converter": ":material/pin:",
-        "cron_builder": ":material/schedule_send:",
-        "http_status_reference": ":material/http:",
-        "totp_generator": ":material/dialpad:",
-        "keypair_generator": ":material/vpn_key:",
-        "qr_code_generator": ":material/qr_code_2:",
-        "bcrypt_tool": ":material/enhanced_encryption:",
     }
     return icons.get(slug, ":material/build:")
 

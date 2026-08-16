@@ -147,10 +147,40 @@ def test_expected_tools_are_tagged_new():
     new_slugs = {tool.slug for tool in TOOLS if tool.is_new}
 
     assert new_slugs == {
-        "totp_generator",
-        "keypair_generator",
-        "qr_code_generator",
-        "bcrypt_tool",
+        "subnet_calculator",
+        "hash_generator",
+        "mac_address_tool",
+        "email_header_analyzer",
+        "port_reference",
+        "password_generator",
+        "url_encoder_decoder",
+        "regex_tester",
+        "timestamp_converter",
+        "text_diff_checker",
+        "jwt_encoder",
+        "cidr_aggregator",
+        "user_agent_parser",
+        "ipv6_compressor",
+        "case_converter",
+        "color_converter",
+        "whois_lookup",
+        "bulk_domain_health",
+        "webhook_tester",
+        "uptime_trend",
+        "security_headers",
+        "cve_lookup",
+        "dns_propagation",
+        "windows_event_reference",
+        "dkim_lookup",
+        "email_record_builder",
+        "windows_error_reference",
+        "config_format_converter",
+        "m365_sku_decoder",
+        "id_generator",
+        "json_diff",
+        "ip_geolocation",
+        "file_integrity",
+        "chmod_calculator",
     }
 
 
@@ -266,6 +296,8 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "http_status_reference",
             "regex_cheat_sheet",
         ],
+        "Ops & Automation": ["cron_explainer", "log_troubleshooting", "timestamp_converter", "chmod_calculator"],
+        "Reference": ["port_reference", "windows_event_reference", "windows_error_reference", "m365_sku_decoder"],
     }
 
 
