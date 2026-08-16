@@ -46,6 +46,7 @@ Use this template for deployment notes, GitHub releases, or pull request summari
 - QA baseline add-on: Phase 43 wave-36 shell/mobile/visual/a11y QA gates completed
 - QA baseline add-on: Phase 44 wave-37 shell/mobile/visual/a11y QA gates completed
 - QA baseline add-on: Phase 47 wave-40 shell/mobile/visual/a11y QA gates completed
+- QA baseline add-on: Phase 48 wave-41 shell/mobile/visual/a11y QA gates completed
 
 ## User-Facing Changes
 
@@ -235,6 +236,10 @@ curl http://localhost:8502/_stcore/health
 - Wave 40 mobile readability spot check (`<=720px`, Step 1/Step 2 heading hierarchy remains concise/readable, grouped controls keep shared headings, and Home controls + Roadmap filters/AI triage action + wave-40 generate/convert actions stay full-width/tap-friendly with no clipping/overflow):
 - Wave 40 visual mapping spot check (placeholder-to-real alias routing + deterministic slug precedence: `173_tool_slug_pending_roadmap` + `173_<tool_slug_pending_roadmap>` -> wave-40 lorem touchpoint `141_Lorem_Ipsum_Generator.py`/`lorem_ipsum_generator`; `174_tool_slug_pending_roadmap` + `174_<tool_slug_pending_roadmap>` -> wave-40 converter touchpoint `142_Text_to_Binary_Hex_Octal_Converter.py`/`text_to_binary_hex_octal_converter`; slug-first icon lookup remains deterministic with readable text fallback badges):
 - Wave 40 accessibility + deterministic regression-tests spot check (explicit status semantics with `role="status"`/`role="alert"` + `aria-live`, keyboard/focus, deterministic outcomes, and pass results for `tests/test_ui_helpers.py`, `tests/test_wave40_shell_mobile_markers.py`, and `tests/test_wave40_accessibility_guardrails.py`):
+- Wave 41 shell consistency spot check (shared shell + baseline markers `shell-ready`/`content-rendered`/`wave41-shell-mobile` on Home/Roadmap/Lorem Ipsum Generator/Text to Binary Hex Octal Converter):
+- Wave 41 mobile readability spot check (`<=720px`, Step 1/Step 2 heading hierarchy remains concise/readable, grouped controls keep shared headings, and Home controls + Roadmap filters/AI triage action + wave-41 generate/convert actions stay full-width/tap-friendly with no clipping/overflow):
+- Wave 41 visual mapping spot check (placeholder-to-real alias routing + deterministic slug precedence: `175_tool_slug_pending_roadmap` + `175_<tool_slug_pending_roadmap>` -> wave-41 lorem touchpoint `141_Lorem_Ipsum_Generator.py`/`lorem_ipsum_generator`; `176_tool_slug_pending_roadmap` + `176_<tool_slug_pending_roadmap>` -> wave-41 converter touchpoint `142_Text_to_Binary_Hex_Octal_Converter.py`/`text_to_binary_hex_octal_converter`; slug-first icon lookup remains deterministic with readable text fallback badges):
+- Wave 41 accessibility + deterministic regression-tests spot check (explicit status semantics with `role="status"`/`role="alert"` + `aria-live`, keyboard/focus, deterministic outcomes, and pass results for `tests/test_ui_helpers.py`, `tests/test_wave41_shell_mobile_markers.py`, and `tests/test_wave41_accessibility_guardrails.py`):
 - Log Troubleshooting AI unavailable state:
 - Optional Azure AI state, if secrets were available:
 

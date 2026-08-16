@@ -567,6 +567,16 @@ When a roadmap badge asset is unavailable, compact text fallback glyphs are used
 - Include one deterministic regression-test pass confirming wave-40 guardrails in `tests/test_ui_helpers.py`, `tests/test_wave40_shell_mobile_markers.py`, and `tests/test_wave40_accessibility_guardrails.py`.
 - Include one keyboard-only pass to confirm wave-40 explicit status semantics (`role="status"`/`role="alert"` + `aria-live`) and focus visibility remain intact.
 
+### Phase 48 Wave 41 add-on QA focus
+
+- Confirm placeholder-to-real wave-41 slug alias notes remain explicit for diagnostics/release evidence (`175_tool_slug_pending_roadmap` + `175_<tool_slug_pending_roadmap>` -> wave-41 lorem touchpoint `141_Lorem_Ipsum_Generator.py`/`lorem_ipsum_generator`; `176_tool_slug_pending_roadmap` + `176_<tool_slug_pending_roadmap>` -> wave-41 converter touchpoint `142_Text_to_Binary_Hex_Octal_Converter.py`/`text_to_binary_hex_octal_converter`) and keep prior placeholder aliases documented for deterministic continuity.
+- Confirm deterministic slug-first icon lookup still checks tool slugs before category defaults and preserves readable text badge fallback when SVG assets are unavailable.
+- Include one shell pass confirming shared shell + baseline markers (`shell-ready`, `content-rendered`, `wave41-shell-mobile`) remain visible/unchanged on Home, Roadmap, and wave-41 touchpoint pages.
+- Include one `<=720px` viewport pass to confirm Home controls, Roadmap filters/AI triage action, and wave-41 generate/convert actions (with shared control headings) stay full-width/tap-friendly with no clipping/overflow.
+- Include one UX standards pass confirming Step 1/Step 2 heading hierarchy descriptions stay concise/readable with no clipped controls across mapped pages.
+- Include one deterministic regression-test pass confirming wave-41 guardrails in `tests/test_ui_helpers.py`, `tests/test_wave41_shell_mobile_markers.py`, and `tests/test_wave41_accessibility_guardrails.py`.
+- Include one keyboard-only pass to confirm wave-41 explicit status semantics (`role="status"`/`role="alert"` + `aria-live`) and focus visibility remain intact.
+
 ## Docs/release media inventory
 
 ### Posters
