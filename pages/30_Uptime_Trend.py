@@ -64,12 +64,24 @@ with tool_form_panel("uptime_trend"):
         interval_seconds = c2.slider("Delay between checks (seconds)", 0.0, MAX_INTERVAL_SECONDS, 1.0, step=0.5)
         submitted = st.form_submit_button("Run probe")
 
-if not submitted:
+if submitted:
+    # Stored in session_state (not rendered directly here) because the sidebar's
+    # quick-search box, favorite-star buttons, and any other widget outside this
+    # page's st.form trigger reruns of their own -- on those reruns `submitted` is
+    # False again, which would otherwise collapse this whole results section the
+    # instant any of them is touched. `url` is captured alongside the result so the
+    # incident message always matches what was actually probed.
+    with st.spinner(f"Running {checks} checks..."):
+        st.session_state["uptime_trend_result"] = run_latency_trend(url, checks, interval_seconds)
+    st.session_state["uptime_trend_url"] = url
+
+result = st.session_state.get("uptime_trend_result")
+
+if result is None:
     render_empty_state("Ready to run a probe", "A latency trend chart and uptime summary appear here after the probe completes.")
 
-if submitted:
-    with st.spinner(f"Running {checks} checks..."):
-        result = run_latency_trend(url, checks, interval_seconds)
+if result is not None:
+    url = st.session_state["uptime_trend_url"]
     with tool_result_panel("uptime_trend_result", related_to="uptime_trend"):
         render_section_heading("Trend result", eyebrow="Result")
         if not result["ok"]:

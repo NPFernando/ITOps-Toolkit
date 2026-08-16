@@ -43,8 +43,7 @@ result = st.session_state.get("jwt_decoder_result")
 if result is None:
     render_empty_state("Ready to decode a JWT", "Issuer, audience, timestamps, header, and payload appear after decoding.")
 
-if submitted:
-    result = decode_jwt_unverified(token)
+if result is not None:
     with tool_result_panel("jwt_result", related_to="jwt_decoder"):
         render_section_heading("Decoded token", "Unverified header and payload values from the pasted token.")
         if not result["ok"]:

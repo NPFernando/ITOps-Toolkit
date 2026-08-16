@@ -43,12 +43,23 @@ render_page_header(
 with tool_form_panel("case_converter"):
     render_form_intro("Enter text", "Words are detected from spaces, dashes, underscores, and camelCase boundaries.")
     with st.form("case-form"):
-        text_input = st.text_area("Text", max_chars=MAX_INPUT_LENGTH, placeholder="helloWorld_fooBar", height=120)
-        submitted = st.form_submit_button("Convert", use_container_width=True)
-        st.caption("Keyboard tip: focus Convert and press Enter or Space to submit.")
+        text_input = st.text_input("Text", max_chars=MAX_INPUT_LENGTH, placeholder="helloWorld_fooBar")
+        submitted = st.form_submit_button("Convert")
 
 if submitted:
-    result = convert_case(text_input)
+    # Stored in session_state (not rendered directly here) because the sidebar's
+    # quick-search box, favorite-star buttons, and any other widget outside this
+    # page's st.form trigger reruns of their own -- on those reruns `submitted` is
+    # False again, which would otherwise collapse this whole results section the
+    # instant any of them is touched.
+    st.session_state["case_converter_result"] = convert_case(text_input)
+
+result = st.session_state.get("case_converter_result")
+
+if result is None:
+    render_empty_state("Ready to convert", "Every case variant appears here after you submit some text.")
+
+if result is not None:
     with tool_result_panel("case_result", related_to="case_converter"):
         render_section_heading("Converted forms", eyebrow="Result")
         if not result["ok"]:

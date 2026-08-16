@@ -30,11 +30,20 @@ with tool_form_panel("email_header_analyzer"):
         headers_input = st.text_area("Raw email headers", height=260)
         submitted = st.form_submit_button("Analyze headers")
 
-if not submitted:
+if submitted:
+    # Stored in session_state (not rendered directly here) because the sidebar's
+    # quick-search box, favorite-star buttons, and any other widget outside this
+    # page's st.form trigger reruns of their own -- on those reruns `submitted` is
+    # False again, which would otherwise collapse this whole results section the
+    # instant any of them is touched.
+    st.session_state["email_header_analyzer_result"] = parse_email_headers(headers_input)
+
+result = st.session_state.get("email_header_analyzer_result")
+
+if result is None:
     render_empty_state("Ready to analyze headers", "Summary fields, hop chain, and auth results appear here.")
 
-if submitted:
-    result = parse_email_headers(headers_input)
+if result is not None:
     with tool_result_panel("email_header_result", related_to="email_header_analyzer"):
         render_section_heading("Header summary", "Common fields found in the pasted headers.")
         if not result["ok"]:

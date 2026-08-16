@@ -34,38 +34,55 @@ with tool_form_panel("dkim_lookup"):
         selector = selector_col.text_input("Selector", placeholder="google, selector1, default...", max_chars=MAX_SELECTOR_LENGTH)
         submitted = st.form_submit_button("Look up")
 
-if not submitted:
+if submitted:
+    # Stored in session_state (not rendered directly here) because the sidebar's
+    # quick-search box, favorite-star buttons, and any other widget outside this
+    # page's st.form trigger reruns of their own -- on those reruns `submitted` is
+    # False again, which would otherwise collapse this whole results section the
+    # instant any of them is touched.
+    ok_domain, error_domain = validate_length(domain, MAX_DOMAIN_LENGTH, "Domain")
+    ok_selector, error_selector = validate_length(selector, MAX_SELECTOR_LENGTH, "Selector")
+    normalized = normalize_domain(domain)
+    if not ok_domain:
+        st.session_state["dkim_lookup_validation_error"] = error_domain
+        st.session_state["dkim_lookup_result"] = None
+    elif not ok_selector:
+        st.session_state["dkim_lookup_validation_error"] = error_selector
+        st.session_state["dkim_lookup_result"] = None
+    elif not normalized:
+        st.session_state["dkim_lookup_validation_error"] = "Enter a domain name."
+        st.session_state["dkim_lookup_result"] = None
+    else:
+        st.session_state["dkim_lookup_validation_error"] = None
+        st.session_state["dkim_lookup_result"] = lookup_dkim(normalized, selector)
+
+validation_error = st.session_state.get("dkim_lookup_validation_error")
+result = st.session_state.get("dkim_lookup_result")
+
+if validation_error is None and result is None:
     render_empty_state(
         "Ready to look up a DKIM selector",
         "Enter both the domain and the DKIM selector -- the selector isn't guessable from DNS alone, so it must come from mail server config or a Received/DKIM-Signature header.",
     )
 
-if submitted:
-    ok_domain, error_domain = validate_length(domain, MAX_DOMAIN_LENGTH, "Domain")
-    ok_selector, error_selector = validate_length(selector, MAX_SELECTOR_LENGTH, "Selector")
-    normalized = normalize_domain(domain)
-    if not ok_domain:
-        st.error(error_domain)
-    elif not ok_selector:
-        st.error(error_selector)
-    elif not normalized:
-        st.error("Enter a domain name.")
-    else:
-        result = lookup_dkim(normalized, selector)
-        with tool_result_panel("dkim_result", related_to="dkim_lookup"):
-            render_section_heading("DKIM record", f"Queried {result['query_name'] or 'the selector record'}.")
-            if result["status"] == "Healthy":
-                st.success(result["status"])
-            elif result["ok"]:
-                st.warning(result["status"])
-                st.warning(result["error"])
-            else:
-                st.error(result["status"])
-                st.error(result["error"])
+if validation_error is not None:
+    st.error(validation_error)
 
-            if result["ok"]:
-                rows = [{"field": key, "value": value} for key, value in result["fields"].items()]
-                st.dataframe(pd.DataFrame(rows), width="stretch", hide_index=True)
+if result is not None:
+    with tool_result_panel("dkim_result", related_to="dkim_lookup"):
+        render_section_heading("DKIM record", f"Queried {result['query_name'] or 'the selector record'}.")
+        if result["status"] == "Healthy":
+            st.success(result["status"])
+        elif result["ok"]:
+            st.warning(result["status"])
+            st.warning(result["error"])
+        else:
+            st.error(result["status"])
+            st.error(result["error"])
 
-                with st.expander("Raw record"):
-                    st.code(result["raw_value"])
+        if result["ok"]:
+            rows = [{"field": key, "value": value} for key, value in result["fields"].items()]
+            st.dataframe(pd.DataFrame(rows), width="stretch", hide_index=True)
+
+            with st.expander("Raw record"):
+                st.code(result["raw_value"])

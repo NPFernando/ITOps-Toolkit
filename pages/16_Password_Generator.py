@@ -54,23 +54,30 @@ with tool_form_panel("password_generator"):
             passphrase_clicked = st.form_submit_button("Generate passphrase")
 
 if password_clicked:
-    result = generate_password(length, use_upper, use_lower, use_digits, use_symbols, exclude_ambiguous)
+    # Stored in session_state (not rendered directly here) because the sidebar's
+    # quick-search box, favorite-star buttons, and any other widget outside this
+    # page's st.form trigger reruns of their own -- on those reruns the transient
+    # *_clicked flags are False again, which would otherwise collapse this whole
+    # results section the instant any of them is touched.
+    st.session_state["password_generator_password_result"] = generate_password(
+        length, use_upper, use_lower, use_digits, use_symbols, exclude_ambiguous
+    )
+if passphrase_clicked:
+    st.session_state["password_generator_passphrase_result"] = generate_passphrase(word_count, separator, capitalize, include_number)
+
+password_result = st.session_state.get("password_generator_password_result")
+passphrase_result = st.session_state.get("password_generator_passphrase_result")
+
+if password_result is None and passphrase_result is None:
+    render_empty_state("Ready to generate", "A password or passphrase appears here after you generate one.")
+
+if password_result is not None:
     with tool_result_panel("password_result", related_to="password_generator"):
         render_section_heading("Generated password", "Copy this now -- it is not stored or logged.")
-        if not result["ok"]:
-            st.error(result["error"])
+        if not password_result["ok"]:
+            st.error(password_result["error"])
         else:
-            st.text_input("Password", value=result["password"], disabled=True)
-            st.caption(f"~{result['entropy_bits']} bits of entropy from a {result['pool_size']}-character set.")
-
-if passphrase_clicked:
-    result = generate_passphrase(word_count, separator, capitalize, include_number)
-    with tool_result_panel("passphrase_result", related_to="password_generator"):
-        render_section_heading("Generated passphrase", "Copy this now -- it is not stored or logged.")
-        if not result["ok"]:
-            st.error(result["error"])
-        else:
-            st.code(password_result["password"], language=None)
+            st.text_input("Password", value=password_result["password"], disabled=True)
             st.caption(f"~{password_result['entropy_bits']} bits of entropy from a {password_result['pool_size']}-character set.")
 
 if passphrase_result is not None:
@@ -79,5 +86,5 @@ if passphrase_result is not None:
         if not passphrase_result["ok"]:
             st.error(passphrase_result["error"])
         else:
-            st.code(passphrase_result["passphrase"], language=None)
+            st.text_input("Passphrase", value=passphrase_result["passphrase"], disabled=True)
             st.caption(f"~{passphrase_result['entropy_bits']} bits of entropy from a {len(WORDLIST)}-word list.")

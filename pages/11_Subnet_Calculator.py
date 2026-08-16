@@ -29,11 +29,20 @@ with tool_form_panel("subnet_calculator"):
         cidr_input = st.text_input("IP address or CIDR", placeholder="192.168.1.0/24")
         submitted = st.form_submit_button("Calculate")
 
-if not submitted:
+if submitted:
+    # Stored in session_state (not rendered directly here) because the sidebar's
+    # quick-search box, favorite-star buttons, and any other widget outside this
+    # page's st.form trigger reruns of their own -- on those reruns `submitted` is
+    # False again, which would otherwise collapse this whole results section the
+    # instant any of them is touched.
+    st.session_state["subnet_calculator_result"] = calculate_subnet(cidr_input)
+
+result = st.session_state.get("subnet_calculator_result")
+
+if result is None:
     render_empty_state("Ready to calculate a subnet", "Network details appear here after you calculate a CIDR block.")
 
-if submitted:
-    result = calculate_subnet(cidr_input)
+if result is not None:
     with tool_result_panel("subnet_result", related_to="subnet_calculator"):
         render_section_heading("Subnet details", "Computed from the entered address or CIDR block.")
         if not result["ok"]:
