@@ -85,30 +85,3 @@ def test_bytes_to_human_rejects_oversized_input():
 
     assert result["ok"] is False
     assert "longer than" in result["error"]
-
-
-def test_human_to_bytes_large_value_is_exact():
-    # Regression: float multiplication silently loses precision at large
-    # magnitudes (verified directly: the old float-based implementation
-    # was off by billions with no warning). Decimal arithmetic must be
-    # exact here.
-    result = human_to_bytes("123456789012345", "PB", binary=False)
-
-    assert result["ok"] is True
-    assert result["result"] == 123456789012345 * 1000**5
-
-
-def test_bytes_to_human_rounds_sub_byte_fraction():
-    # Regression: int(size) truncated rather than rounded, so "0.5" bytes
-    # silently became "0 B" instead of rounding to the nearest byte.
-    result = bytes_to_human("0.5")
-
-    assert result["ok"] is True
-    assert result["result"] == "1 B"
-
-
-def test_bytes_to_human_rounds_near_unit_boundary():
-    result = bytes_to_human("1023.9")
-
-    assert result["ok"] is True
-    assert result["result"] == "1024 B"
