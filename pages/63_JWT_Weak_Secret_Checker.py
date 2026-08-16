@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import streamlit as st
 
-from utils.jwt_weak_secret import check_weak_secret
+from utils.jwt_weak_secret import MAX_INPUT_LENGTH, check_weak_secret
 from utils.ui import apply_app_shell, render_empty_state, render_form_intro, render_page_header, render_section_heading, render_status_note, tool_form_panel, tool_result_panel
 
 
@@ -25,7 +25,7 @@ render_status_note(
 with tool_form_panel("jwt_weak_secret"):
     render_form_intro("Enter a JWT", "Paste a token to check its signature against common weak secrets.")
     with st.form("jwt-weak-secret-form"):
-        token = st.text_input("JWT", placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...")
+        token = st.text_input("JWT", placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...", max_chars=MAX_INPUT_LENGTH)
         submitted = st.form_submit_button("Check")
 
 if submitted:
@@ -41,7 +41,11 @@ if result is not None:
         render_section_heading("Result", eyebrow="Result")
         if not result["ok"]:
             st.error(result["error"])
-        elif not result["applicable"]:
+        elif result["alg_status"] == "missing":
+            st.warning("This token's header has no usable 'alg' value -- the algorithm can't be determined.")
+        elif result["alg_status"] == "unsigned":
+            st.error("This token uses alg=\"none\" -- it is UNSIGNED and can be trivially forged. If any verifier accepts this token as-is, that is a critical misconfiguration.")
+        elif result["alg_status"] == "asymmetric":
             st.info(f"Algorithm '{result['algorithm']}' is asymmetric -- there's no shared secret to check.")
         elif result["matched_secret"] is not None:
             st.error(f"Weak secret found: '{result['matched_secret']}'. This token's signature can be forged.")

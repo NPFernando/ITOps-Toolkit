@@ -13,7 +13,16 @@ from typing import Any
 
 import jwt
 
+MAX_INPUT_LENGTH = 20_000
 HMAC_ALGORITHMS: tuple[str, ...] = ("HS256", "HS384", "HS512")
+
+# alg_status values:
+#   "hmac"      -- checked against the weak-secret list (see matched_secret)
+#   "unsigned"  -- alg: "none" -- the token is UNSIGNED and trivially forgeable,
+#                  a materially different (and worse) case than "asymmetric"
+#   "asymmetric" -- a genuine asymmetric algorithm (RS*/ES*/PS*/EdDSA); no shared
+#                  secret exists to check
+#   "missing"   -- no usable alg value in the header at all
 
 COMMON_WEAK_SECRETS: tuple[str, ...] = (
     "secret",
@@ -41,11 +50,14 @@ COMMON_WEAK_SECRETS: tuple[str, ...] = (
 
 def check_weak_secret(token: str) -> dict[str, Any]:
     """Check whether ``token``'s signature matches a common weak secret."""
-    result: dict[str, Any] = {"ok": False, "error": None, "algorithm": None, "applicable": False, "matched_secret": None}
+    result: dict[str, Any] = {"ok": False, "error": None, "algorithm": None, "applicable": False, "alg_status": None, "matched_secret": None}
 
     token_value = (token or "").strip()
     if not token_value:
         result["error"] = "Enter a JWT token."
+        return result
+    if len(token_value) > MAX_INPUT_LENGTH:
+        result["error"] = f"Token must be {MAX_INPUT_LENGTH} characters or fewer."
         return result
 
     try:
@@ -58,11 +70,18 @@ def check_weak_secret(token: str) -> dict[str, Any]:
     result["ok"] = True
     result["algorithm"] = algorithm
 
+    if not algorithm:
+        result["alg_status"] = "missing"
+        return result
+    if algorithm == "none":
+        result["alg_status"] = "unsigned"
+        return result
     if algorithm not in HMAC_ALGORITHMS:
-        result["applicable"] = False
+        result["alg_status"] = "asymmetric"
         return result
 
     result["applicable"] = True
+    result["alg_status"] = "hmac"
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
         for candidate in COMMON_WEAK_SECRETS:
