@@ -6,11 +6,9 @@ from utils.keypair_tools import KEY_TYPES, RSA_KEY_SIZES, generate_keypair
 from utils.ui import (
     apply_app_shell,
     render_empty_state,
-    render_failure_note,
     render_form_intro,
     render_page_header,
     render_section_heading,
-    render_status_note,
     tool_form_panel,
     tool_result_panel,
 )

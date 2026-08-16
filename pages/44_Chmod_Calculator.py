@@ -9,7 +9,6 @@ from utils.ui import (
     render_form_intro,
     render_page_header,
     render_section_heading,
-    render_status_note,
     tool_form_panel,
     tool_result_panel,
 )
@@ -45,9 +44,9 @@ with octal_tab:
         render_form_intro("Octal to symbolic", "Enter 3 or 4 octal digits (e.g. 755 or 4755).")
         octal_input = st.text_input("Octal", placeholder="755", key="chmod_octal_input")
     with tool_result_panel("chmod_octal_result", related_to="chmod_calculator"):
-        render_section_heading("Conversion result", "Owner, group, and other permissions.")
+        render_section_heading("Result", "Owner, group, and other permissions.")
         if not octal_input.strip():
-            render_empty_state("Ready to convert octal permissions", "Owner, group, and other permissions appear here as soon as you type.")
+            render_empty_state("Ready for input", "Owner, group, and other permissions appear here as soon as you type.")
         else:
             _render_result(octal_to_symbolic(octal_input))
 
@@ -56,9 +55,9 @@ with symbolic_tab:
         render_form_intro("Symbolic to octal", "Enter 9 permission characters (e.g. rwxr-xr-x).")
         symbolic_input = st.text_input("Symbolic", placeholder="rwxr-xr-x", key="chmod_symbolic_input")
     with tool_result_panel("chmod_symbolic_result", related_to="chmod_calculator"):
-        render_section_heading("Conversion result", "Owner, group, and other permissions.")
+        render_section_heading("Result", "Owner, group, and other permissions.")
         if not symbolic_input.strip():
-            render_empty_state("Ready to convert symbolic permissions", "Owner, group, and other permissions appear here as soon as you type.")
+            render_empty_state("Ready for input", "Owner, group, and other permissions appear here as soon as you type.")
         else:
             _render_result(symbolic_to_octal(symbolic_input))
 
