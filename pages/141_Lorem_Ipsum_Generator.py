@@ -77,6 +77,7 @@ mark_page_baseline(_baseline, "wave44-shell-mobile")
 mark_page_baseline(_baseline, "wave45-shell-mobile")
 mark_page_baseline(_baseline, "wave46-shell-mobile")
 mark_page_baseline(_baseline, "wave47-shell-mobile")
+mark_page_baseline(_baseline, "wave48-shell-mobile")
 
 render_page_header("Lorem Ipsum Generator", "Generate deterministic placeholder text by words, sentences, or paragraphs.")
 
@@ -86,6 +87,7 @@ with tool_form_panel("lorem_ipsum_generator"):
         "Output setup",
         description="Choose unit, count, and optional deterministic seed before generating text.",
         eyebrow="Step 1",
+        heading_level="h3",
     )
     st.caption("For first use: pick Words and a small count, then generate before trying seeded repeats.")
     with st.form("lorem-ipsum-generator-form"):
