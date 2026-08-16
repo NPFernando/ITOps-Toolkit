@@ -147,14 +147,13 @@ def test_expected_tools_are_tagged_new():
     new_slugs = {tool.slug for tool in TOOLS if tool.is_new}
 
     assert new_slugs == {
-        "base_converter",
-        "cron_builder",
-        "http_status_reference",
-        "totp_generator",
-        "keypair_generator",
-        "qr_code_generator",
-        "bcrypt_tool",
         "sql_formatter",
+        "ulid_uuid_decoder",
+        "curl_builder",
+        "regex_cheat_sheet",
+        "env_linter",
+        "tls_scanner",
+        "business_hours",
     }
 
 
@@ -236,6 +235,7 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "totp_generator",
             "keypair_generator",
             "bcrypt_tool",
+            "tls_scanner",
         ],
         "Web & Dev": [
             "http_status",
@@ -257,9 +257,18 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "base_converter",
             "qr_code_generator",
             "sql_formatter",
+            "ulid_uuid_decoder",
+            "env_linter",
         ],
-        "Ops & Automation": ["cron_explainer", "log_troubleshooting", "timestamp_converter", "chmod_calculator", "cron_builder"],
-        "Reference": ["port_reference", "windows_event_reference", "windows_error_reference", "m365_sku_decoder", "http_status_reference"],
+        "Ops & Automation": ["cron_explainer", "log_troubleshooting", "timestamp_converter", "chmod_calculator", "cron_builder", "business_hours"],
+        "Reference": [
+            "port_reference",
+            "windows_event_reference",
+            "windows_error_reference",
+            "m365_sku_decoder",
+            "http_status_reference",
+            "regex_cheat_sheet",
+        ],
     }
 
 

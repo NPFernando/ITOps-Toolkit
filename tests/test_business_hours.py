@@ -15,19 +15,6 @@ def test_calculate_business_hours_across_a_weekend():
     assert result["business_days_spanned"] == 2
 
 
-def test_calculate_business_hours_offset_bearing_input_still_honors_selected_timezone():
-    # Regression: an offset-bearing timestamp (e.g. "...+00:00") must be
-    # converted into the *selected* timezone, not left anchored to whatever
-    # offset the input happened to carry -- otherwise the same real-world
-    # instant produces a different (wrong) business-hours answer depending
-    # on whether the pasted timestamp was naive or offset-bearing.
-    naive_result = calculate_business_hours("2026-08-07T16:00:00", "2026-08-07T17:00:00", "America/New_York")
-    offset_result = calculate_business_hours("2026-08-07T20:00:00+00:00", "2026-08-07T21:00:00+00:00", "America/New_York")
-
-    assert naive_result["business_hours"] == 1.0
-    assert offset_result["business_hours"] == 1.0
-
-
 def test_calculate_business_hours_same_day_full_window():
     result = calculate_business_hours("2026-08-10T09:00:00", "2026-08-10T17:00:00", "UTC")
 

@@ -870,7 +870,6 @@ TOOLS: tuple[ToolMeta, ...] = (
         slug="totp_generator",
         professions=("Security Engineer", "Sysadmin / DevOps", "Support Engineer"),
         category="Security",
-        is_new=True,
     ),
     ToolMeta(
         title="RSA/SSH Key Pair Generator",
@@ -882,7 +881,6 @@ TOOLS: tuple[ToolMeta, ...] = (
         slug="keypair_generator",
         professions=("Sysadmin / DevOps", "Security Engineer", "Automation Engineer"),
         category="Security",
-        is_new=True,
     ),
     ToolMeta(
         title="QR Code Generator",
@@ -894,7 +892,6 @@ TOOLS: tuple[ToolMeta, ...] = (
         slug="qr_code_generator",
         professions=("Support Engineer", "Helpdesk / L1", "Sysadmin / DevOps"),
         category="Data & Text",
-        is_new=True,
     ),
     ToolMeta(
         title="Bcrypt Tool",
@@ -906,7 +903,6 @@ TOOLS: tuple[ToolMeta, ...] = (
         slug="bcrypt_tool",
         professions=("Web Developer", "Security Engineer", "Sysadmin / DevOps"),
         category="Security",
-        is_new=True,
     ),
     ToolMeta(
         title="SQL Formatter",
@@ -918,6 +914,78 @@ TOOLS: tuple[ToolMeta, ...] = (
         slug="sql_formatter",
         professions=("Sysadmin / DevOps", "Web Developer", "Automation Engineer"),
         category="Data & Text",
+        is_new=True,
+    ),
+    ToolMeta(
+        title="ULID/UUID Decoder",
+        short_title="ULID/UUID Decoder",
+        description="Decode a ULID or UUID's embedded creation timestamp -- the reverse of ID Generator.",
+        path="pages/53_ULID_UUID_Decoder.py",
+        icon="UID",
+        accent="#00b4d8",
+        slug="ulid_uuid_decoder",
+        professions=("Web Developer", "Automation Engineer", "Sysadmin / DevOps"),
+        category="Data & Text",
+        is_new=True,
+    ),
+    ToolMeta(
+        title="curl Command Builder",
+        short_title="curl Builder",
+        description="Build a copy-pasteable curl command from a method, URL, headers, and body -- the reverse of Webhook Tester.",
+        path="pages/54_Curl_Command_Builder.py",
+        icon="CURL",
+        accent="#fb8500",
+        slug="curl_builder",
+        professions=("Web Developer", "Automation Engineer", "Sysadmin / DevOps"),
+        category="Web & Dev",
+        is_new=True,
+    ),
+    ToolMeta(
+        title="Regex Cheat Sheet",
+        short_title="Regex Cheat Sheet",
+        description="Common regex patterns to start from -- email, IPv4/IPv6, URL, phone number, UUID, hex color, and more.",
+        path="pages/55_Regex_Cheat_Sheet.py",
+        icon=".*",
+        accent="#0891b2",
+        slug="regex_cheat_sheet",
+        professions=("Automation Engineer", "Web Developer", "Support Engineer"),
+        category="Reference",
+        is_new=True,
+    ),
+    ToolMeta(
+        title=".env File Linter",
+        short_title=".env Linter",
+        description="Flag duplicate keys, unquoted values with spaces, unterminated quotes, and other common .env mistakes.",
+        path="pages/56_Env_File_Linter.py",
+        icon="ENV",
+        accent="#2a9d8f",
+        slug="env_linter",
+        professions=("Sysadmin / DevOps", "Web Developer", "Automation Engineer"),
+        category="Data & Text",
+        is_new=True,
+    ),
+    ToolMeta(
+        title="TLS Protocol Scanner",
+        short_title="TLS Scanner",
+        description="Connect to a host and report which TLS protocol versions it accepts -- a lightweight SSL Labs-style check.",
+        path="pages/57_TLS_Protocol_Scanner.py",
+        icon="TLS",
+        accent="#e63946",
+        slug="tls_scanner",
+        professions=("Security Engineer", "Sysadmin / DevOps", "Network Engineer"),
+        category="Security",
+        is_new=True,
+    ),
+    ToolMeta(
+        title="Business Hours Calculator",
+        short_title="Business Hours",
+        description="Compute elapsed business hours between two timestamps, excluding weekends and holidays -- for SLA and ticket-response math.",
+        path="pages/58_Business_Hours_Calculator.py",
+        icon="SLA",
+        accent="#f4a261",
+        slug="business_hours",
+        professions=("Sysadmin / DevOps", "Support Engineer", "Automation Engineer"),
+        category="Ops & Automation",
         is_new=True,
     ),
 )
@@ -933,6 +1001,90 @@ POPULAR_TOOLS = tuple(_tools_by_slug[slug] for slug in _POPULAR_SLUGS)
 del _tools_by_slug
 TITLE_TO_SLUG: dict[str, str] = {tool.title: tool.slug for tool in TOOLS}
 
+# Curated "what would you naturally run next" pairings for a real troubleshooting
+# flow (e.g. DNS -> SSL -> HTTP), not derived from category -- category groups
+# tools by domain, not by which ones chain together in practice. Intentionally
+# hand-picked rather than exhaustive: a tool with no obvious next step (e.g. a
+# pure text converter with no natural chain) is simply absent, and
+# render_related_tools() renders nothing for an absent slug rather than a
+# forced, meaningless section.
+TOOL_BUNDLES: dict[str, tuple[str, ...]] = {
+    "domain_health": ("dns_records", "ssl_certificate", "whois_lookup", "tls_scanner"),
+    "dns_records": ("domain_health", "whois_lookup", "dns_propagation"),
+    "dns_propagation": ("dns_records", "domain_health"),
+    "ssl_certificate": ("domain_health", "dns_records", "http_status", "tls_scanner"),
+    "http_status": ("domain_health", "ssl_certificate", "uptime_trend", "security_headers"),
+    "http_status_reference": ("http_status", "webhook_tester"),
+    "uptime_trend": ("http_status", "domain_health", "business_hours"),
+    "security_headers": ("http_status", "ssl_certificate"),
+    "cve_lookup": ("security_headers", "ssl_certificate"),
+    "whois_lookup": ("dns_records", "domain_health", "ssl_certificate"),
+    "bulk_domain_health": ("domain_health", "dns_records", "ssl_certificate"),
+    "mac_address_tool": ("subnet_calculator", "cidr_aggregator", "ipv6_compressor"),
+    "ip_geolocation": ("whois_lookup", "dns_records", "http_status"),
+    "subnet_calculator": ("cidr_aggregator", "ipv6_compressor", "mac_address_tool"),
+    "cidr_aggregator": ("subnet_calculator", "ipv6_compressor"),
+    "ipv6_compressor": ("subnet_calculator", "cidr_aggregator"),
+    "port_reference": ("subnet_calculator", "mac_address_tool"),
+    "windows_event_reference": ("log_troubleshooting", "port_reference", "windows_error_reference"),
+    "windows_error_reference": ("windows_event_reference", "log_troubleshooting"),
+    "m365_sku_decoder": ("windows_event_reference", "port_reference"),
+    "email_header_analyzer": ("dns_records", "domain_health", "dkim_lookup"),
+    "dkim_lookup": ("email_header_analyzer", "domain_health", "email_record_builder"),
+    "email_record_builder": ("dkim_lookup", "dns_records"),
+    "password_generator": ("hash_generator",),
+    "hash_generator": ("password_generator", "jwt_decoder", "file_integrity"),
+    "file_integrity": ("hash_generator", "cve_lookup"),
+    "bcrypt_tool": ("hash_generator", "password_generator"),
+    "totp_generator": ("password_generator", "hash_generator"),
+    "keypair_generator": ("password_generator", "hash_generator"),
+    "qr_code_generator": ("url_encoder_decoder", "color_converter"),
+    "jwt_decoder": ("jwt_encoder", "hash_generator"),
+    "jwt_encoder": ("jwt_decoder", "hash_generator"),
+    "json_formatter": ("base64_tool", "config_format_converter", "json_diff"),
+    "id_generator": ("hash_generator", "json_formatter", "ulid_uuid_decoder"),
+    "json_diff": ("json_formatter", "text_diff_checker"),
+    "sql_formatter": ("json_formatter", "config_format_converter"),
+    "base_converter": ("hash_generator", "id_generator"),
+    "config_format_converter": ("json_formatter", "text_diff_checker", "env_linter"),
+    "base64_tool": ("json_formatter", "url_encoder_decoder"),
+    "url_encoder_decoder": ("base64_tool", "json_formatter"),
+    "regex_tester": ("text_diff_checker", "json_formatter", "regex_cheat_sheet"),
+    "text_diff_checker": ("regex_tester", "case_converter"),
+    "case_converter": ("text_diff_checker", "url_encoder_decoder"),
+    "color_converter": ("qr_code_generator", "case_converter"),
+    "timestamp_converter": ("cron_explainer", "business_hours"),
+    "cron_explainer": ("timestamp_converter", "log_troubleshooting", "cron_builder"),
+    "cron_builder": ("cron_explainer", "timestamp_converter"),
+    "log_troubleshooting": ("cron_explainer", "webhook_tester", "windows_event_reference"),
+    "chmod_calculator": ("cron_explainer", "log_troubleshooting"),
+    "webhook_tester": ("http_status", "log_troubleshooting", "curl_builder"),
+    "user_agent_parser": ("http_status", "email_header_analyzer"),
+    "ulid_uuid_decoder": ("id_generator", "timestamp_converter"),
+    "curl_builder": ("webhook_tester", "url_encoder_decoder"),
+    "regex_cheat_sheet": ("regex_tester",),
+    "env_linter": ("config_format_converter",),
+    "tls_scanner": ("ssl_certificate", "domain_health"),
+    "business_hours": ("timestamp_converter", "uptime_trend"),
+}
+
+
+def related_tools(slug: str) -> tuple[ToolMeta, ...]:
+    """Return the curated "next tool" suggestions for a tool slug. Empty if none defined."""
+    return tuple(_resolve_slugs(TOOL_BUNDLES.get(slug, ())))
+
+
+def render_related_tools(slug: str) -> None:
+    """Render a compact "Related tools" row of suggestions, if any are curated for ``slug``."""
+    tools = related_tools(slug)
+    if not tools:
+        return
+    st.markdown('<div class="related-tools-label">Related tools</div>', unsafe_allow_html=True)
+    cols = st.columns(len(tools), gap="small")
+    for col, tool in zip(cols, tools, strict=True):
+        with col:
+            _safe_page_link(tool.path, label=tool.short_title, icon=":material/arrow_forward:", stretch_width=True)
+
 
 def apply_app_shell(active_page: str) -> None:
     """Apply global theme CSS and render the shared sidebar shell."""
@@ -942,6 +1094,7 @@ def apply_app_shell(active_page: str) -> None:
     if slug is not None:
         record_recent_visit(slug)
     _sync_local_storage_mirror(active_page)
+    render_command_palette()
 
 
 def _get_persisted_slugs(param: str) -> list[str]:
@@ -1029,6 +1182,162 @@ def _sync_local_storage_mirror(active_page: str) -> None:
                 var newUrl = window.top.location.pathname + (search ? "?" + search : "") + window.top.location.hash;
                 window.top.location.replace(newUrl);
             }}
+        }})();
+        </script>
+        """,
+        height=1,
+    )
+
+
+def render_command_palette() -> None:
+    """Render a global Ctrl+K / Cmd+K command palette overlay.
+
+    New UI pattern for this codebase (no existing modal/overlay precedent) --
+    built the same way _sync_local_storage_mirror() reaches the top-level
+    document: a same-origin sandboxed st.iframe whose script operates on
+    window.top.document/window.top.location. Because a fresh iframe (and JS
+    realm) is injected on every Streamlit rerun, but window.top.document
+    persists across reruns, both the overlay DOM node and the keydown
+    listener are created exactly once via a dedup guard
+    (window.top.__itopsPaletteReady); every subsequent rerun just refreshes
+    the tool list data on window.top.__itopsPaletteTools and returns.
+
+    NOT verified in a real browser -- this sandboxed dev environment has no
+    browser to visually confirm the overlay renders/filters/navigates
+    correctly. Built by directly reading the installed Streamlit frontend
+    bundle's iframe sandbox attributes and mirroring the one proven
+    same-origin-iframe precedent in this file (_sync_local_storage_mirror
+    above). Manually smoke-test after deploy.
+    """
+    entries = [{"title": tool.title, "description": tool.description, "href": _fallback_href(tool.path)} for tool in TOOLS]
+    st.iframe(
+        f"""
+        <script>
+        (function() {{
+            var TOOLS = {json.dumps(entries)};
+            window.top.__itopsPaletteTools = TOOLS;
+
+            if (window.top.__itopsPaletteReady) {{
+                return;
+            }}
+            window.top.__itopsPaletteReady = true;
+
+            var doc = window.top.document;
+
+            var overlay = doc.createElement("div");
+            overlay.id = "itops-cmdk-overlay";
+            overlay.style.cssText = "position:fixed;inset:0;z-index:99999;display:none;" +
+                "background:rgba(10,12,16,0.6);align-items:flex-start;justify-content:center;padding-top:12vh;";
+
+            var panel = doc.createElement("div");
+            panel.style.cssText = "background:#12161c;border:1px solid rgba(255,255,255,0.14);border-radius:12px;" +
+                "width:min(560px,90vw);max-height:60vh;overflow:hidden;display:flex;flex-direction:column;" +
+                "box-shadow:0 20px 60px rgba(0,0,0,0.5);font-family:inherit;";
+
+            var input = doc.createElement("input");
+            input.type = "text";
+            input.placeholder = "Search tools... (Esc to close)";
+            input.style.cssText = "border:none;outline:none;padding:16px;font-size:16px;background:transparent;" +
+                "color:#e8ecf1;border-bottom:1px solid rgba(255,255,255,0.1);width:100%;box-sizing:border-box;";
+
+            var list = doc.createElement("div");
+            list.style.cssText = "overflow-y:auto;padding:8px;";
+
+            panel.appendChild(input);
+            panel.appendChild(list);
+            overlay.appendChild(panel);
+            doc.body.appendChild(overlay);
+
+            function navigateTo(href) {{
+                window.top.location.href = href;
+            }}
+
+            function matchingTools(query) {{
+                var needle = query.trim().toLowerCase();
+                var tools = window.top.__itopsPaletteTools || [];
+                return tools.filter(function(t) {{
+                    return !needle ||
+                        t.title.toLowerCase().indexOf(needle) !== -1 ||
+                        t.description.toLowerCase().indexOf(needle) !== -1;
+                }}).slice(0, 8);
+            }}
+
+            function renderResults(query) {{
+                var matches = matchingTools(query);
+                list.innerHTML = "";
+                if (matches.length === 0) {{
+                    var empty = doc.createElement("div");
+                    empty.style.cssText = "padding:16px;color:#8b95a3;font-size:14px;";
+                    empty.textContent = "No tools matched.";
+                    list.appendChild(empty);
+                    return;
+                }}
+                matches.forEach(function(tool, index) {{
+                    var row = doc.createElement("div");
+                    row.style.cssText = "padding:10px 12px;border-radius:8px;cursor:pointer;" +
+                        (index === 0 ? "background:rgba(255,255,255,0.08);" : "");
+                    var title = doc.createElement("div");
+                    title.style.cssText = "color:#e8ecf1;font-size:14px;font-weight:600;";
+                    title.textContent = tool.title;
+                    var desc = doc.createElement("div");
+                    desc.style.cssText = "color:#8b95a3;font-size:12px;margin-top:2px;";
+                    desc.textContent = tool.description;
+                    row.appendChild(title);
+                    row.appendChild(desc);
+                    row.addEventListener("mouseenter", function() {{
+                        Array.prototype.forEach.call(list.children, function(child) {{ child.style.background = ""; }});
+                        row.style.background = "rgba(255,255,255,0.08)";
+                    }});
+                    row.addEventListener("click", function() {{ navigateTo(tool.href); }});
+                    list.appendChild(row);
+                }});
+            }}
+
+            function openPalette() {{
+                overlay.style.display = "flex";
+                input.value = "";
+                renderResults("");
+                setTimeout(function() {{ input.focus(); }}, 0);
+            }}
+
+            function closePalette() {{
+                overlay.style.display = "none";
+                input.value = "";
+            }}
+
+            input.addEventListener("input", function() {{ renderResults(input.value); }});
+
+            input.addEventListener("keydown", function(evt) {{
+                if (evt.key === "Escape") {{
+                    evt.preventDefault();
+                    closePalette();
+                }} else if (evt.key === "Enter") {{
+                    evt.preventDefault();
+                    var matches = matchingTools(input.value);
+                    if (matches.length > 0) {{
+                        navigateTo(matches[0].href);
+                    }}
+                }}
+            }});
+
+            overlay.addEventListener("click", function(evt) {{
+                if (evt.target === overlay) {{
+                    closePalette();
+                }}
+            }});
+
+            doc.addEventListener("keydown", function(evt) {{
+                var isMac = navigator.platform.toUpperCase().indexOf("MAC") !== -1;
+                var modifierPressed = isMac ? evt.metaKey : evt.ctrlKey;
+                if (modifierPressed && evt.key.toLowerCase() === "k") {{
+                    evt.preventDefault();
+                    if (overlay.style.display === "flex") {{
+                        closePalette();
+                    }} else {{
+                        openPalette();
+                    }}
+                }}
+            }});
         }})();
         </script>
         """,
@@ -1715,6 +2024,49 @@ def _material_icon_for(slug: str) -> str:
         "mac_address_tool": ":material/settings_ethernet:",
         "email_header_analyzer": ":material/mail:",
         "port_reference": ":material/router:",
+        "password_generator": ":material/password:",
+        "url_encoder_decoder": ":material/link:",
+        "regex_tester": ":material/pattern:",
+        "timestamp_converter": ":material/schedule:",
+        "text_diff_checker": ":material/difference:",
+        "jwt_encoder": ":material/verified_user:",
+        "cidr_aggregator": ":material/merge_type:",
+        "user_agent_parser": ":material/devices:",
+        "ipv6_compressor": ":material/compress:",
+        "case_converter": ":material/text_fields:",
+        "color_converter": ":material/palette:",
+        "whois_lookup": ":material/badge:",
+        "bulk_domain_health": ":material/upload_file:",
+        "webhook_tester": ":material/webhook:",
+        "uptime_trend": ":material/show_chart:",
+        "security_headers": ":material/shield:",
+        "cve_lookup": ":material/bug_report:",
+        "dns_propagation": ":material/travel_explore:",
+        "windows_event_reference": ":material/event_note:",
+        "dkim_lookup": ":material/key:",
+        "email_record_builder": ":material/build:",
+        "windows_error_reference": ":material/error_outline:",
+        "config_format_converter": ":material/sync_alt:",
+        "m365_sku_decoder": ":material/badge:",
+        "id_generator": ":material/fingerprint:",
+        "json_diff": ":material/compare_arrows:",
+        "ip_geolocation": ":material/location_on:",
+        "file_integrity": ":material/verified:",
+        "chmod_calculator": ":material/lock_open:",
+        "base_converter": ":material/pin:",
+        "cron_builder": ":material/schedule_send:",
+        "http_status_reference": ":material/http:",
+        "totp_generator": ":material/dialpad:",
+        "keypair_generator": ":material/vpn_key:",
+        "qr_code_generator": ":material/qr_code_2:",
+        "bcrypt_tool": ":material/enhanced_encryption:",
+        "sql_formatter": ":material/table_chart:",
+        "ulid_uuid_decoder": ":material/fingerprint:",
+        "curl_builder": ":material/terminal:",
+        "regex_cheat_sheet": ":material/pattern:",
+        "env_linter": ":material/rule:",
+        "tls_scanner": ":material/https:",
+        "business_hours": ":material/schedule:",
     }
     return icons.get(slug, ":material/build:")
 
