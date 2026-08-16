@@ -60,7 +60,7 @@ if state is not None:
             st.caption("No run times available for invalid input.")
 
         if result["ok"]:
-            ics_result = cron_ics_export(state["expression"], count=10)
+            ics_result = cron_ics_export(expression, count=10)
             if ics_result["ok"]:
                 with tool_download_panel("cron_ics_export"):
                     render_section_heading(

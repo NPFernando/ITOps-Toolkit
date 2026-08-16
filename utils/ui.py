@@ -1213,18 +1213,6 @@ TOOLS: tuple[ToolMeta, ...] = (
         category="Web & Dev",
         is_new=True,
     ),
-    ToolMeta(
-        title="Color Converter",
-        short_title="Color Converter",
-        description="Convert colors between HEX, RGB, and HSL, with a live swatch preview.",
-        path="pages/26_Color_Converter.py",
-        icon="RGB",
-        accent="#db2777",
-        slug="color_converter",
-        professions=("Web Developer", "Automation Engineer"),
-        category="Web & Dev",
-        is_new=True,
-    ),
 )
 
 # Curated, not usage-derived -- this app deliberately has no usage tracking
@@ -2274,7 +2262,6 @@ def _material_icon_for(slug: str) -> str:
         "user_agent_parser": ":material/devices:",
         "ipv6_compressor": ":material/compress:",
         "case_converter": ":material/text_fields:",
-        "color_converter": ":material/palette:",
     }
     return icons.get(slug, ":material/build:")
 
