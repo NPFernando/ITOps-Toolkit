@@ -4267,24 +4267,33 @@ def _inject_global_css(mode: str) -> None:
             align-items: stretch;
         }
 
-        @media (max-width: 1180px) {
+        /* Use the content container, not the browser viewport: a visible
+           sidebar can make a wide desktop window's tool area quite narrow. */
+        [data-testid="stMainBlockContainer"] {
+            container-type: inline-size;
+            container-name: tool-catalog;
+        }
+
+        @container tool-catalog (max-width: 1180px) {
             [data-testid="stHorizontalBlock"]:has([class*="st-key-tool_card_"]) {
                 flex-wrap: wrap;
             }
 
             [data-testid="stHorizontalBlock"]:has([class*="st-key-tool_card_"]) > [data-testid="stColumn"] {
-                flex: 1 1 calc(33.333% - 1rem) !important;
+                flex: 0 1 calc(33.333% - 1rem) !important;
+                width: calc(33.333% - 1rem) !important;
+                max-width: calc(33.333% - 1rem) !important;
                 min-width: min(17rem, 100%) !important;
             }
         }
 
-        @media (max-width: 860px) {
+        @container tool-catalog (max-width: 860px) {
             [data-testid="stHorizontalBlock"]:has([class*="st-key-tool_card_"]) > [data-testid="stColumn"] {
                 flex-basis: calc(50% - 0.75rem) !important;
             }
         }
 
-        @media (max-width: 560px) {
+        @container tool-catalog (max-width: 560px) {
             [data-testid="stHorizontalBlock"]:has([class*="st-key-tool_card_"]) > [data-testid="stColumn"] {
                 flex-basis: 100% !important;
                 min-width: 0 !important;
