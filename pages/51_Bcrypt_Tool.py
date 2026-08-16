@@ -3,16 +3,7 @@ from __future__ import annotations
 import streamlit as st
 
 from utils.bcrypt_tools import MAX_ROUNDS, MIN_ROUNDS, hash_password, verify_password
-from utils.ui import (
-    apply_app_shell,
-    render_empty_state,
-    render_form_intro,
-    render_page_header,
-    render_section_heading,
-    render_status_note,
-    tool_form_panel,
-    tool_result_panel,
-)
+from utils.ui import apply_app_shell, render_form_intro, render_page_header, render_section_heading, render_status_note, tool_form_panel, tool_result_panel
 
 
 st.set_page_config(page_title="Bcrypt Tool", layout="wide")
@@ -40,10 +31,8 @@ with hash_tab:
             st.session_state["bcrypt_hash_result"] = hash_password(password, rounds)
 
     hash_result = st.session_state.get("bcrypt_hash_result")
-    if hash_result is None:
-        render_empty_state("Ready to hash", "The bcrypt hash appears here after you hash a value.")
     if hash_result is not None:
-        with tool_result_panel("bcrypt_hash_result_panel", related_to="bcrypt_tool"):
+        with tool_result_panel("bcrypt_hash_result_panel"):
             render_section_heading("Result", "Bcrypt hash, including the embedded salt and cost factor.")
             if not hash_result["ok"]:
                 st.error(hash_result["error"])
@@ -62,10 +51,8 @@ with verify_tab:
         st.session_state["bcrypt_verify_result"] = verify_password(verify_password_input, existing_hash)
 
     verify_result = st.session_state.get("bcrypt_verify_result")
-    if verify_result is None:
-        render_empty_state("Ready to verify", "The verification result appears here after you check a value.")
     if verify_result is not None:
-        with tool_result_panel("bcrypt_verify_result_panel", related_to="bcrypt_tool"):
+        with tool_result_panel("bcrypt_verify_result_panel"):
             if not verify_result["ok"]:
                 st.error(verify_result["error"])
             elif verify_result["matches"]:

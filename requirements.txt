@@ -13,6 +13,3 @@ pyotp
 cryptography
 qrcode
 bcrypt
-sqlparse
-markdown
-markdownify

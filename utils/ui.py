@@ -1321,6 +1321,18 @@ TOOLS: tuple[ToolMeta, ...] = (
         category="Reference",
         is_new=True,
     ),
+    ToolMeta(
+        title="Bcrypt Tool",
+        short_title="Bcrypt Tool",
+        description="Hash a value with bcrypt, or verify a value against an existing bcrypt hash.",
+        path="pages/51_Bcrypt_Tool.py",
+        icon="BCR",
+        accent="#023047",
+        slug="bcrypt_tool",
+        professions=("Web Developer", "Security Engineer", "Sysadmin / DevOps"),
+        category="Security",
+        is_new=True,
+    ),
 )
 
 # Curated, not usage-derived -- this app deliberately has no usage tracking
@@ -1365,12 +1377,12 @@ TOOL_BUNDLES: dict[str, tuple[str, ...]] = {
     "email_header_analyzer": ("dns_records", "domain_health", "dkim_lookup"),
     "dkim_lookup": ("email_header_analyzer", "domain_health", "email_record_builder"),
     "email_record_builder": ("dkim_lookup", "dns_records"),
-    "password_generator": ("hash_generator", "password_entropy"),
-    "hash_generator": ("password_generator", "jwt_decoder", "file_integrity", "luhn_validator"),
-    "file_integrity": ("hash_generator", "cve_lookup", "encoding_detector"),
+    "password_generator": ("hash_generator",),
+    "hash_generator": ("password_generator", "jwt_decoder", "file_integrity"),
+    "file_integrity": ("hash_generator", "cve_lookup"),
     "bcrypt_tool": ("hash_generator", "password_generator"),
-    "totp_generator": ("password_generator", "hash_generator", "base32_tools"),
-    "keypair_generator": ("password_generator", "hash_generator", "csr_decoder", "ssh_fingerprint"),
+    "totp_generator": ("password_generator", "hash_generator"),
+    "keypair_generator": ("password_generator", "hash_generator"),
     "qr_code_generator": ("url_encoder_decoder", "color_converter"),
     "jwt_decoder": ("jwt_encoder", "hash_generator"),
     "jwt_encoder": ("jwt_decoder", "hash_generator"),
@@ -2390,10 +2402,6 @@ def _material_icon_for(slug: str) -> str:
         "keypair_generator": ":material/vpn_key:",
         "qr_code_generator": ":material/qr_code_2:",
         "bcrypt_tool": ":material/enhanced_encryption:",
-        "sql_formatter": ":material/table_chart:",
-        "ulid_uuid_decoder": ":material/fingerprint:",
-        "curl_builder": ":material/terminal:",
-        "regex_cheat_sheet": ":material/pattern:",
     }
     return icons.get(slug, ":material/build:")
 

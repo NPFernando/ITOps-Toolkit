@@ -151,10 +151,6 @@ def test_expected_tools_are_tagged_new():
         "keypair_generator",
         "qr_code_generator",
         "bcrypt_tool",
-        "sql_formatter",
-        "ulid_uuid_decoder",
-        "curl_builder",
-        "regex_cheat_sheet",
     }
 
 
@@ -237,13 +233,6 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "totp_generator",
             "keypair_generator",
             "bcrypt_tool",
-            "tls_scanner",
-            "jwt_weak_secret",
-            "csr_decoder",
-            "pem_bundle_splitter",
-            "luhn_validator",
-            "ssh_fingerprint",
-            "password_entropy",
         ],
         "Web & Dev": [
             "http_status",
