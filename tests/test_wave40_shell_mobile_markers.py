@@ -1,0 +1,93 @@
+from pathlib import Path
+
+
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+
+
+WAVE40_PAGES = (
+    "app.py",
+    "pages/10_Roadmap_Feedback.py",
+    "pages/141_Lorem_Ipsum_Generator.py",
+    "pages/142_Text_to_Binary_Hex_Octal_Converter.py",
+)
+
+
+def test_wave40_pages_keep_shell_and_baseline_markers():
+    for rel_path in WAVE40_PAGES:
+        source = (PROJECT_ROOT / rel_path).read_text(encoding="utf-8")
+        assert "apply_app_shell(" in source, f"{rel_path}: missing shared shell"
+        assert 'mark_page_baseline(_baseline, "shell-ready")' in source, f"{rel_path}: missing shell-ready marker"
+        assert 'mark_page_baseline(_baseline, "wave40-shell-mobile")' in source, f"{rel_path}: missing wave-40 marker"
+        assert 'mark_page_baseline(_baseline, "content-rendered")' in source, f"{rel_path}: missing content marker"
+        assert "render_page_baseline(_baseline)" in source, f"{rel_path}: missing baseline render"
+
+
+def test_wave40_pages_keep_grouped_controls_and_mobile_primary_actions():
+    expected_snippets = {
+        "app.py": [
+            'with tool_form_panel("home_navigation_controls"):',
+            '"Browsing setup",',
+            'description="Pick a profession lens and choose quick access or full catalog before running actions.",',
+            'eyebrow="Step 1",',
+            'heading_level="h3",',
+            'with tool_form_panel("home_primary_action"):',
+            '"Catalog visibility",',
+            'description="Run one full-width action to reveal or collapse catalog results after setup is complete.",',
+            'eyebrow="Step 2",',
+            'heading_level="h3",',
+            'st.caption("Read order: review browsing setup, run this full-width action, then verify status notes and tool results.")',
+            'st.button(button_label, icon=button_icon, use_container_width=True)',
+            'st.caption("If you\'re new, begin in favorites/recent before opening the full catalog.")',
+        ],
+        "pages/10_Roadmap_Feedback.py": [
+            'with tool_form_panel("roadmap_filters"):',
+            '"Filter setup",',
+            'description="Set search terms and category scope first so roadmap results are easier to scan.",',
+            'eyebrow="Step 1",',
+            'heading_level="h3",',
+            'render_control_heading("Apply filters")',
+            'st.caption("Read order: set search + category, apply filters, then review status outcomes before scanning cards.")',
+            'st.form_submit_button("Apply filters", use_container_width=True)',
+            '"Roadmap results",',
+            'description="Review status outcomes first, then scan grouped columns for matching roadmap cards.",',
+            'eyebrow="Step 2",',
+            'heading_level="h3",',
+            'st.caption("If you\'re new, begin with Planned and In Progress columns before opening issue links.")',
+            '"Optional triage", eyebrow="Step 2", heading_level="h3"',
+        ],
+        "pages/141_Lorem_Ipsum_Generator.py": [
+            'with tool_form_panel("lorem_ipsum_generator"):',
+            '"Output setup",',
+            'eyebrow="Step 1",',
+            'heading_level="h3",',
+            'render_control_heading("Primary action")',
+            'st.caption("Read order: configure output shape and seed, run generate, then review status guidance and output.")',
+            'submitted = st.form_submit_button("Generate lorem ipsum", use_container_width=True)',
+            'st.caption("New here? Leave seed empty for random text, or add one only when you need repeatable output.")',
+            '"Generated lorem output",',
+            'eyebrow="Step 2",',
+            'heading_level="h3",',
+        ],
+        "pages/142_Text_to_Binary_Hex_Octal_Converter.py": [
+            'with tool_form_panel("text_to_binary_hex_octal_converter"):',
+            '"Input setup",',
+            'eyebrow="Step 1",',
+            'heading_level="h3",',
+            'render_control_heading("Primary action")',
+            'st.caption("Read order: enter source text, run convert, then confirm status and compare all three encoded outputs.")',
+            'submitted = st.form_submit_button("Convert text", use_container_width=True)',
+            'st.caption("If you\'re new, start with a short word first, then compare all three encodings.")',
+            '"Encoded output",',
+            'eyebrow="Step 2",',
+            'heading_level="h3",',
+        ],
+    }
+
+    for rel_path, snippets in expected_snippets.items():
+        source = (PROJECT_ROOT / rel_path).read_text(encoding="utf-8")
+        for snippet in snippets:
+            assert snippet in source, f"{rel_path}: missing wave-40 shell/mobile snippet {snippet!r}"
+
+    for rel_path in WAVE40_PAGES[1:]:
+        source = (PROJECT_ROOT / rel_path).read_text(encoding="utf-8")
+        assert "st.columns(2)" not in source, f"{rel_path}: should avoid fixed two-column form layouts on small screens"

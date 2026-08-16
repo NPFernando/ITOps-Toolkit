@@ -46,6 +46,7 @@ mark_page_baseline(_baseline, "wave36-shell-mobile")
 mark_page_baseline(_baseline, "wave37-shell-mobile")
 mark_page_baseline(_baseline, "wave38-shell-mobile")
 mark_page_baseline(_baseline, "wave39-shell-mobile")
+mark_page_baseline(_baseline, "wave40-shell-mobile")
 
 
 repo_url = github_url()
@@ -187,7 +188,12 @@ else:
         searched = {tool.slug for tool in searched_tools}
         return tuple(tool for tool in matches if tool.slug in searched)
 
-    render_control_heading("Quick access")
+    render_section_heading(
+        "Quick access collections",
+        description="Follow guided workflows first, then scan favorites, recent, shared, and new sections in order.",
+        eyebrow="Step 3",
+        heading_level="h3",
+    )
     render_fragment(
         "home_guided_workflows",
         lambda: render_guided_workflows(query=search_query, profession=profession),
