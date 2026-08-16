@@ -3408,6 +3408,10 @@ def _inject_global_css(mode: str) -> None:
         .tool-status-note-ai,
         .tool-status-note-info {
             border-color: rgba(18, 107, 255, 0.22);
+            /* Fixed blue, not var(--itops-blue) -- that token is the
+               theme accent (coral/red in dark mode, matching odysseus),
+               not a literal blue, and would clash with the badge icon's
+               hardcoded blue gradient just below. */
             background: color-mix(in srgb, var(--itops-surface), #126bff 12%);
         }
 
@@ -3420,7 +3424,7 @@ def _inject_global_css(mode: str) -> None:
         }
 
         .tool-status-note-success {
-            border-color: color-mix(in srgb, var(--itops-green), transparent 76%);
+            border-color: rgba(34, 186, 79, 0.24);
             background: color-mix(in srgb, var(--itops-surface), var(--itops-green) 12%);
         }
 
@@ -3432,7 +3436,7 @@ def _inject_global_css(mode: str) -> None:
         }
 
         .tool-status-note-warning {
-            border-color: color-mix(in srgb, var(--itops-orange), transparent 75%);
+            border-color: rgba(255, 106, 19, 0.25);
             background: color-mix(in srgb, var(--itops-surface), var(--itops-orange) 12%);
         }
 
@@ -3611,7 +3615,7 @@ def _inject_global_css(mode: str) -> None:
         }
 
         .roadmap-notice-warning {
-            border-color: color-mix(in srgb, var(--itops-orange), transparent 72%);
+            border-color: rgba(255, 106, 19, 0.28);
             background: color-mix(in srgb, var(--itops-surface), var(--itops-orange) 12%);
         }
 
@@ -3977,7 +3981,7 @@ def _inject_global_css(mode: str) -> None:
             margin-top: 1rem;
             padding: 0.85rem 0.95rem;
             border: 1px solid rgba(18, 107, 255, 0.2);
-            border-radius: var(--card-radius);
+            border-radius: 8px;
             /* Fixed blue, not var(--itops-blue) -- see .tool-status-note-ai. */
             background: color-mix(in srgb, var(--itops-surface), #126bff 12%);
         }

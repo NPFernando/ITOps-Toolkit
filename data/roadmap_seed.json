@@ -132,31 +132,31 @@
       "status": "Complete",
       "votes": 37,
       "description": "Explore lightweight exports that can be pasted into ticketing systems.",
-      "rationale": "MSP users often need customer-ready notes after troubleshooting. Shipped as a \"PSA / ticket note\" export on Domain Health Checker and Log Troubleshooting Assistant -- plain text with no markdown syntax (# and ** render literally in most PSA ticket note fields, unlike the existing Markdown export), shown via a copy-button st.code block plus a .txt download. Deliberately not a direct ConnectWise Manage/Autotask API integration -- that needs per-tenant API credentials this public, no-storage app has nowhere safe to hold; a copy-paste-ready plain-text note fits the \"lightweight exports\" framing in the description without that scope.",
-      "updated_at": "2026-08-06"
+      "rationale": "MSP users often need customer-ready notes after troubleshooting.",
+      "updated_at": "2026-04-30"
     },
     {
       "title": "Command palette / quick-jump launcher",
       "category": "UX / Design",
-      "status": "Complete",
+      "status": "Planned",
       "votes": 18,
       "description": "A keyboard-triggered launcher to jump straight to any tool, complementing the sidebar quick-search.",
-      "rationale": "Power users on killer-tools-style sites expect a Ctrl+K-style jump; the sidebar search covers most of this need today but isn't reachable by keyboard shortcut. NOT flatly blocked like the PWA item, but not attempted this round either: unlike a real service worker, a global keydown listener + overlay is plausibly buildable via the same same-origin iframe trick this app already uses for the localStorage mirror (the iframe can reach window.top.document, so it could attach a listener and DOM-inject an overlay there). But it's a materially bigger and more fragile JS surface than anything shipped so far -- real DOM manipulation of the top-level page from inside an iframe script, a hand-built filter/keyboard-nav overlay, dark/light theme handling, focus trapping -- and this sandboxed dev environment has no real browser to visually verify any of it before it ships to a live auto-deploying site. Left open rather than built blind; worth a manual-verification pass with browser access, not a routine PR.",
-      "updated_at": "2026-08-08"
+      "rationale": "Power users on killer-tools-style sites expect a Ctrl+K-style jump; the sidebar search covers most of this need today but isn't reachable by keyboard shortcut.",
+      "updated_at": "2026-08-05"
     },
     {
       "title": "Drag-to-reorder favorites",
       "category": "UX / Design",
-      "status": "Complete",
+      "status": "AI Recommended",
       "votes": 9,
-      "description": "Shipped as move-earlier/move-later buttons on each Favorites card, not literal mouse drag. True drag-and-drop needs a bidirectional Streamlit custom component with a JS build step this repo doesn't have; the existing one-way iframe-to-URL trick used elsewhere in the app would mean a full page reload per drag, which is worse UX than buttons. Reorder controls only appear on the visitor's own Favorites grid, never on the read-only Shared Favorites grid.",
+      "description": "Let visitors reorder their favorited tools instead of using favorite-order only.",
       "rationale": "Favorites currently keep insertion order; manual reordering is a small, self-contained UX add-on once favorites are already shipped.",
-      "updated_at": "2026-08-06"
+      "updated_at": "2026-08-05"
     },
     {
       "title": "WHOIS lookup tool",
       "category": "Tools",
-      "status": "Complete",
+      "status": "AI Recommended",
       "votes": 22,
       "description": "Public WHOIS/RDAP registration lookup alongside the existing DNS and SSL checkers.",
       "rationale": "A natural companion to Domain Health and DNS tools for the same troubleshooting workflow.",
@@ -165,16 +165,16 @@
     {
       "title": "Regex tester",
       "category": "Tools",
-      "status": "Complete",
+      "status": "AI Recommended",
       "votes": 19,
-      "description": "Test a pattern against sample text with match positions and groups, guarded by a hard evaluation timeout against catastrophic backtracking.",
+      "description": "Test a pattern against sample text with match highlighting, entirely client-side/public-safe.",
       "rationale": "Common everyday utility that fits the existing text-tools family (JSON, Base64, JWT).",
       "updated_at": "2026-08-05"
     },
     {
       "title": "URL encoder/decoder",
       "category": "Tools",
-      "status": "Complete",
+      "status": "AI Recommended",
       "votes": 15,
       "description": "Encode/decode URL components and query strings, similar to the existing Base64 tool.",
       "rationale": "Frequently needed alongside Base64/JWT when debugging webhooks and API calls.",
@@ -183,7 +183,7 @@
     {
       "title": "Password / passphrase generator",
       "category": "Security",
-      "status": "Complete",
+      "status": "AI Recommended",
       "votes": 24,
       "description": "Generate strong random passwords or diceware-style passphrases locally, never transmitted.",
       "rationale": "High-demand, low-risk addition that fits the public-safe, no-storage positioning well.",
@@ -192,16 +192,16 @@
     {
       "title": "Certificate chain validator",
       "category": "Security",
-      "status": "Complete",
+      "status": "AI Recommended",
       "votes": 17,
-      "description": "Diagnose chain trust issues (missing intermediate, self-signed, expired, hostname mismatch) on the SSL Certificate Checker. Scoped to OpenSSL verify-code diagnosis rather than full leaf-to-root enumeration, since Python's stdlib ssl module can't walk the full chain before 3.13.",
+      "description": "Show the full intermediate/root trust chain and flag missing or expiring intermediates.",
       "rationale": "Extends the existing SSL Certificate Checker beyond leaf-certificate details.",
       "updated_at": "2026-08-05"
     },
     {
       "title": "Bulk Domain Health checks via CSV upload",
       "category": "Reports",
-      "status": "Complete",
+      "status": "AI Recommended",
       "votes": 14,
       "description": "Upload a list of domains and run Domain Health across all of them, exporting one combined report.",
       "rationale": "MSPs managing many client domains currently have to run checks one at a time.",
@@ -210,11 +210,11 @@
     {
       "title": "Shareable favorites link",
       "category": "UX / Design",
-      "status": "Complete",
+      "status": "AI Recommended",
       "votes": 8,
-      "description": "A \"Share favorites\" popover on Home builds a copyable link (a new read-only shared_fav param) that renders the sender's list as a distinct \"Shared Favorites\" section for the recipient. Deliberately NOT built by reusing the existing fav param directly: that would have let opening a shared link silently overwrite the recipient's own saved favorites in localStorage, since the existing persistence mirror writes any fav value present in the URL straight into local storage. shared_fav is excluded from that mirror entirely.",
+      "description": "Turn the current favorites list into a copyable URL so a curated toolkit can be shared or bookmarked.",
       "rationale": "Favorites already live in the URL's query params client-side; surfacing a share/copy action is a small extension of that mechanism.",
-      "updated_at": "2026-08-06"
+      "updated_at": "2026-08-05"
     },
     {
       "title": "Installable PWA / offline app shell",
@@ -222,332 +222,26 @@
       "status": "AI Recommended",
       "votes": 11,
       "description": "Add a web app manifest and service worker so the toolkit can be installed and its shell used offline.",
-      "rationale": "Matches the \"works everywhere\" positioning already in the trust chips and feature strip. BLOCKED as scoped, verified against the installed streamlit==1.61.0 package source, not just platform folklore: Streamlit's only static-file-serving route is server.enableStaticServing, which mounts files at /app/static/{path} (streamlit/web/server/starlette/starlette_routes.py, _ROUTE_APP_STATIC), never at the origin root. A service worker registered from /app/static/sw.js can only control pages under /app/static/ by default (its scope is limited to its own directory unless the server sends a Service-Worker-Allowed header, which Streamlit's static handler has no way to set) -- so it could never actually control the live app pages, making a real installable/offline PWA unreachable through any Streamlit-native mechanism, independent of whatever Streamlit Cloud's proxy additionally restricts.",
-      "updated_at": "2026-08-06"
+      "rationale": "Matches the \"works everywhere\" positioning already in the trust chips and feature strip.",
+      "updated_at": "2026-08-05"
     },
     {
       "title": "Accessibility audit pass",
       "category": "UX / Design",
-      "status": "Complete",
+      "status": "AI Recommended",
       "votes": 13,
-      "description": "Computed WCAG contrast ratios across every theme-token text/background pairing and fixed two real AA failures: dark-theme muted/caption text (3.79:1 -> 4.59:1) and the \"NEW\" badge's white-on-green text (as low as 1.4:1 -> 5.4:1+). Scoped to color contrast, which is objectively verifiable from the CSS tokens without a browser; ARIA labeling and full keyboard-navigation testing need real browser/screen-reader verification this sandboxed environment can't provide, so they're left for a manual pass.",
+      "description": "Review color contrast, ARIA labeling, and keyboard navigation across the tool grid, forms, and sidebar.",
       "rationale": "The site has grown a lot of custom CSS/components this cycle; a dedicated accessibility pass hasn't happened yet.",
-      "updated_at": "2026-08-06"
+      "updated_at": "2026-08-05"
     },
     {
       "title": "Webhook / HTTP request tester",
       "category": "Integrations",
-      "status": "Complete",
-      "votes": 10,
-      "description": "Shipped the outbound half: send a one-off HTTP request with a custom method, headers, and body, and inspect the response. The originally scoped RequestBin-style inbound endpoint (capturing incoming webhook calls at a public URL) is a materially different feature -- it needs a real receiving endpoint and in-memory/session storage for arrivals, not just a request client -- so it's still open as a separate, larger idea rather than folded into this one.",
-      "rationale": "Common need when debugging integrations; fits the toolkit's no-storage, public-safe model if payloads are ephemeral and session-scoped.",
-      "updated_at": "2026-08-06"
-    },
-    {
-      "title": "Timestamp / epoch converter",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 20,
-      "description": "Convert between Unix epoch, ISO 8601, and human-readable timestamps across timezones, plus a live \"now\" reference.",
-      "rationale": "One of the most common everyday IT utilities; surprisingly missing given the toolkit already has a Cron Explainer.",
-      "updated_at": "2026-08-05"
-    },
-    {
-      "title": "Text diff checker",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 16,
-      "description": "Side-by-side or unified diff between two blocks of text, highlighting additions and removals.",
-      "rationale": "Frequently needed alongside JSON/config troubleshooting to spot what changed between two versions.",
-      "updated_at": "2026-08-05"
-    },
-    {
-      "title": "JWT encoder",
-      "category": "Security",
-      "status": "Complete",
-      "votes": 12,
-      "description": "Build and sign a JWT from a JSON payload and secret using an HMAC algorithm, complementing the existing decode-only JWT Decoder.",
-      "rationale": "Decoding already exists; encoding is the natural other half for testing auth flows locally.",
-      "updated_at": "2026-08-05"
-    },
-    {
-      "title": "CIDR / IP range aggregator",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 9,
-      "description": "Summarize a list of IPs or CIDR blocks into the minimal set of covering supernets.",
-      "rationale": "Extends the existing Subnet Calculator for firewall-rule and ACL cleanup work.",
-      "updated_at": "2026-08-05"
-    },
-    {
-      "title": "User-Agent string parser",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 11,
-      "description": "Break a User-Agent header down into browser, OS, and device details.",
-      "rationale": "Common companion lookup alongside HTTP Status Checker and Email Header Analyzer.",
-      "updated_at": "2026-08-05"
-    },
-    {
-      "title": "IPv6 address compressor/expander",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 7,
-      "description": "Convert an IPv6 address between its compressed (::) and fully expanded form.",
-      "rationale": "Small, frequently-needed complement to the Subnet Calculator and CIDR Aggregator.",
-      "updated_at": "2026-08-05"
-    },
-    {
-      "title": "Cron next-run calendar export",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 6,
-      "description": "Export the Cron Explainer's next-run times as a downloadable .ics calendar file.",
-      "rationale": "Lets users drop scheduled job times straight into their calendar instead of re-reading the explainer each time.",
-      "updated_at": "2026-08-05"
-    },
-    {
-      "title": "Slugify / case converter",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 8,
-      "description": "Convert text between slug-case, camelCase, snake_case, kebab-case, and Title Case.",
-      "rationale": "Everyday utility for developers naming files, variables, and URLs.",
-      "updated_at": "2026-08-05"
-    },
-    {
-      "title": "MAC vendor (OUI) lookup",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 10,
-      "description": "Show the registered vendor/manufacturer for a MAC address's OUI prefix.",
-      "rationale": "Natural extension of the existing MAC Address Tool -- the OUI is already parsed out, just not looked up.",
-      "updated_at": "2026-08-05"
-    },
-    {
-      "title": "Color code converter",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 7,
-      "description": "Convert colors between HEX, RGB, and HSL, with a live swatch preview.",
-      "rationale": "Common small utility for anyone touching CSS/UI work alongside the IT-focused tools.",
-      "updated_at": "2026-08-05"
-    },
-    {
-      "title": "RequestBin-style inbound webhook capture",
-      "category": "Integrations",
       "status": "AI Recommended",
       "votes": 10,
-      "description": "A real ephemeral endpoint (e.g. /webhook/<session-id>) that captures incoming HTTP calls from third-party services and displays them live, with no persistent storage.",
-      "rationale": "Split out from the original 'Webhook / HTTP request tester' idea once the outbound request-testing half shipped -- this inbound-capture half needs a real receiving endpoint and session-scoped in-memory storage, a bigger architectural lift than a single Streamlit page. BLOCKED as scoped: Streamlit Community Cloud (this app's deployment target) only runs `streamlit run app.py` behind its own proxy and exposes no way to register a custom HTTP route -- there is no in-app way to actually receive third-party POSTs. A monkey-patch of the underlying Tornado/Starlette handler list would touch the same server layer that caused a real production outage on this app before (the GZipResponder/starlette-version incident), and wouldn't be reachable through Streamlit Cloud's proxy anyway. This becomes buildable only if paired with a small separate receiver service (e.g. FastAPI on the Oracle VM this session runs on, behind nginx) that the Streamlit page reads from -- a new service and public endpoint, i.e. a real infrastructure decision, not a routine PR.",
-      "updated_at": "2026-08-06"
-    },
-    {
-      "title": "Security headers checker",
-      "category": "Security",
-      "status": "Complete",
-      "votes": 9,
-      "description": "Inspect a URL's HTTP response headers (HSTS, CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy) and grade what's missing (A-F), similar to securityheaders.com.",
-      "rationale": "Shipped as its own Security Headers Checker page, reusing the same request pattern as HTTP Status Checker/Webhook Tester. Grading also flags weak (not just missing) HSTS max-age and permissive CSP values, not just presence/absence.",
-      "updated_at": "2026-08-06"
-    },
-    {
-      "title": "DKIM selector lookup",
-      "category": "Security",
-      "status": "Complete",
-      "votes": 7,
-      "description": "Given a domain and a DKIM selector, query and parse the DKIM TXT record (public key, key type, flags) the same way SPF/DMARC are already checked.",
-      "rationale": "Shipped as a dedicated DKIM Selector Lookup page. Since a DKIM record's location depends on a selector that isn't discoverable from DNS alone, the form takes both domain and selector explicitly, then queries <selector>._domainkey.<domain> and parses the v=/k=/p= fields. Reuses dns_tools.get_resolver/txt_to_string (made public alongside record_to_row for this).",
-      "updated_at": "2026-08-06"
-    },
-    {
-      "title": "DNS propagation checker",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 8,
-      "description": "Query the same DNS record type across several public resolvers (Google 8.8.8.8, Cloudflare 1.1.1.1, Quad9 9.9.9.9) side by side to catch propagation lag or mismatched answers after a DNS change.",
-      "rationale": "Shipped as a dedicated DNS Propagation Checker page. Queries Google (8.8.8.8), Cloudflare (1.1.1.1), and Quad9 (9.9.9.9) directly via dnspython's per-resolver nameserver override, and compares the sorted answer sets to flag propagation lag or mismatch. Refactored dns_tools.record_to_row from a private helper to a public one so both DNS Record Checker and this tool share the same record-formatting logic.",
-      "updated_at": "2026-08-06"
-    },
-    {
-      "title": "IP geolocation lookup",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 6,
-      "description": "Resolve an IP address to approximate geography, ASN, and network/ISP info via a public API, mirroring the pattern already used for MAC vendor lookup.",
-      "rationale": "Shipped as a dedicated IP Geolocation Lookup page against the free ip-api.com public API (no key). Chose it over ipapi.co after live testing -- ipapi.co's free tier hit its rate limit on back-to-back sequential test calls, while ip-api.com handled repeated calls cleanly with clear success/fail states (including distinct 'private range' and 'invalid query' messages). Also caught and fixed a real bug during interactive verification: passing mixed-type values (strings and floats) straight into a bare pd.DataFrame triggers a PyArrow serialization warning/auto-fix in Streamlit -- switched to the existing display_rows_frame() helper (utils/ui.py), which already exists specifically for this.",
-      "updated_at": "2026-08-06"
-    },
-    {
-      "title": "File hash / integrity comparator",
-      "category": "Security",
-      "status": "Complete",
-      "votes": 6,
-      "description": "Upload two files (or a file plus an expected hash string) and compare their digests to confirm a download wasn't corrupted or tampered with.",
-      "rationale": "Shipped as a dedicated File Integrity Comparator page. Extends the existing Hash Generator (text-only) to file uploads: compare two uploaded files directly, or check one file against a pasted expected hash (auto-matched across MD5/SHA-1/SHA-256/SHA-512, case-insensitive). Stdlib hashlib only, capped at 100MB per file to avoid memory pressure on Streamlit Cloud.",
-      "updated_at": "2026-08-06"
-    },
-    {
-      "title": "Cron expression builder",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 5,
-      "description": "The reverse of the existing Cron Explainer: pick a schedule via simple minute/hour/day controls and get the resulting cron expression, instead of typing one in to be explained.",
-      "rationale": "Shipped as a dedicated Cron Expression Builder page with per-field Every/Every N/Specific controls. Reuses the existing explain_cron() from utils/text_tools.py (already used by Cron Explainer) to validate the built expression and preview its readable description and next run times, keeping the two pages consistent rather than reimplementing cron semantics. Live-updates, no submit button -- same no-vanishing-risk pattern as chmod Calculator and Integer Base Converter.",
-      "updated_at": "2026-08-07"
-    },
-    {
-      "title": "Incident message formatter for Slack/Teams",
-      "category": "Integrations",
-      "status": "Complete",
-      "votes": 7,
-      "description": "Turn the current Domain Health / Uptime Trend results into a ready-to-paste Slack or Teams incident-update message (their respective mrkdwn/Adaptive-Card-safe plain formatting), the same way the PSA/ticket-note export already avoids raw markdown symbols.",
-      "rationale": "Shipped as new export sections on the existing Domain Health Checker and Uptime Trend pages (not a standalone page, since it turns those pages' own results into a message). Reuses the PSA-note plain-text-summary pattern in utils/reporting.py but produces Slack mrkdwn (single-asterisk bold) or Teams/GFM-style markdown (double-asterisk bold) via tabs -- st.tabs specifically, not a radio/selectbox, because a rerun-triggering widget outside st.form would have hit the same vanishing-results bug fixed in PR #33/#34.",
-      "updated_at": "2026-08-06"
-    },
-    {
-      "title": "QR code generator",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 5,
-      "description": "Generate a QR code for a URL, Wi-Fi credentials, or plain text/contact info, for onboarding handoffs and support materials.",
-      "rationale": "Common small MSP/support utility (e.g. printed Wi-Fi onboarding cards) that fits the existing 'small standalone utility' shape of Color Converter and Case Converter.",
-      "updated_at": "2026-08-06"
-    },
-    {
-      "title": "Windows Event ID reference",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 8,
-      "description": "Searchable reference of common Windows Event Log IDs with description, source, and severity, similar to killertools.net's Windows Event Lookup.",
-      "rationale": "Shipped as a dedicated Windows Event Reference page, same static-dataset + search shape as the existing Port Reference. Curated set of ~38 commonly-triaged event IDs across System/Application/Security/PowerShell logs, each with log, source, severity, summary, and common cause.",
-      "updated_at": "2026-08-06"
-    },
-    {
-      "title": "Windows/Win32 error code lookup",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 7,
-      "description": "Look up a Windows error code (hex or decimal) -- system errors, BSOD stop codes, WMI/RPC/MSI errors -- and get the plain-language meaning.",
-      "rationale": "Shipped as a dedicated Windows Error Reference page, same static-dataset + search shape as Windows Event Reference and Port Reference. Curated set of ~62 codes across Win32, Service Control, RPC, HRESULT, and NTSTATUS/BSOD categories, searchable by decimal code, hex code, category, or keyword.",
-      "updated_at": "2026-08-06"
-    },
-    {
-      "title": "M365 license SKU decoder",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 6,
-      "description": "Convert Microsoft 365 license SKU strings and GUIDs (e.g. SPE_E3, ENTERPRISEPACK) to readable product names.",
-      "rationale": "Shipped as a dedicated M365 SKU Decoder page. All 42 entries were verified directly against Microsoft's official licensing CSV (learn.microsoft.com/entra/identity/users/licensing-service-plan-reference) rather than reconstructed from memory -- an initial memory-based draft and a lossy AI-summarized page fetch both produced several wrong/swapped GUIDs, caught only by cross-checking against the raw authoritative CSV before shipping.",
-      "updated_at": "2026-08-06"
-    },
-    {
-      "title": "CVE lookup",
-      "category": "Security",
-      "status": "Complete",
-      "votes": 9,
-      "description": "Search the NIST National Vulnerability Database by CVE ID or keyword and show severity, description, and affected products.",
-      "rationale": "Shipped as a dedicated CVE Lookup page against the live NIST NVD public API (no API key required for this usage level). Supports exact CVE ID lookup and free-text keyword search, and prefers the newest available CVSS score/severity (v3.1 > v3.0 > v2).",
-      "updated_at": "2026-08-06"
-    },
-    {
-      "title": "SPF/DMARC/DKIM record builder",
-      "category": "Security",
-      "status": "Complete",
-      "votes": 7,
-      "description": "Generate correctly-formatted SPF, DMARC, and DKIM TXT record strings from simple inputs (allowed senders, policy level, reporting address), the reverse of the existing DNS/email-security checks.",
-      "rationale": "Shipped as an Email Record Builder page with SPF/DMARC/DKIM tabs. SPF and DMARC are fully generated from structured inputs with built-in warnings (SPF 10-lookup limit, empty-sender records, DMARC missing rua, full pct=100 reject). DKIM formats an existing pasted public key into the correct TXT record and record name -- it does not generate a key pair (that's the separate RSA/SSH key pair generator roadmap item).",
-      "updated_at": "2026-08-06"
-    },
-    {
-      "title": "Integer base converter",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 5,
-      "description": "Convert a number between binary, octal, decimal, and hexadecimal, with live conversion as you type.",
-      "rationale": "Shipped as a dedicated Integer Base Converter page, stdlib-only (int()/bin()/oct()/hex()). Handles negative numbers and same-base prefixes (0x/0b/0o) if included. Live-updates as you type, same no-submit-button pattern as chmod Calculator -- no results-vanishing risk since nothing is gated on a transient flag.",
-      "updated_at": "2026-08-07"
-    },
-    {
-      "title": "UUID / ULID generator",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 6,
-      "description": "Generate UUIDs (v4) and ULIDs in bulk, with copy-to-clipboard and a CSV export for when a batch of test IDs is needed.",
-      "rationale": "Shipped as a dedicated ID Generator page. UUIDv4 uses Python's stdlib uuid module; ULID has no stdlib equivalent, so it's implemented directly against the spec (48-bit ms timestamp + 80-bit randomness, Crockford Base32, 26 chars) using only stdlib time/secrets -- no new dependency. Also caught and fixed a real bug while building this: st.download_button triggers a script rerun just like any other widget, so a download button inside a block gated on a transient form-submitted flag collapses the whole results section right after the file downloads -- the same bug class as PR #33/#34, now also confirmed present on several older, previously-shipped pages (tracked separately).",
-      "updated_at": "2026-08-06"
-    },
-    {
-      "title": "TOTP/OTP code generator and validator",
-      "category": "Security",
-      "status": "Complete",
-      "votes": 6,
-      "description": "Generate and validate time-based one-time passcodes (TOTP) from a shared secret, for testing MFA setups without needing a phone in hand.",
-      "rationale": "Shipped as a TOTP Generator page with two tabs: generate a current code from a secret (with a 'generate random secret' button for quick testing), and verify a code against a secret with one 30-second window of clock-drift tolerance. Added pyotp as a new dependency (small, well-established, single-purpose library) -- flagged explicitly since this app has a history of dependency-related incidents.",
-      "updated_at": "2026-08-07"
-    },
-    {
-      "title": "Bcrypt hash generator/verifier",
-      "category": "Security",
-      "status": "Complete",
-      "votes": 5,
-      "description": "Hash a value with bcrypt (configurable cost factor) and separately verify a value against an existing bcrypt hash.",
-      "rationale": "Shipped as a Bcrypt Tool page with Hash and Verify tabs. Configurable cost factor (4-15 rounds; capped below bcrypt's full range since round 16+ takes several seconds per hash, a DoS concern on a shared public app). Handles both of bcrypt's real error modes: passwords over the library's hard 72-byte limit, and invalid hash strings on verify. Adds bcrypt as a new dependency, verified installing cleanly with no extra transitive packages beyond itself.",
-      "updated_at": "2026-08-07"
-    },
-    {
-      "title": "RSA/SSH key pair generator",
-      "category": "Security",
-      "status": "Complete",
-      "votes": 6,
-      "description": "Generate an RSA (or ed25519) key pair in the browser for test/throwaway use -- SSH authorized_keys format and PEM private key.",
-      "rationale": "Shipped as an RSA/SSH Key Pair Generator page supporting RSA (2048/3072/4096) and Ed25519, outputting PKCS8 PEM private key + OpenSSH-format public key + SHA256 fingerprint (matches real ssh-keygen -lf output format). Adds cryptography as a new dependency -- widely-used, has prebuilt wheels for standard platforms, no compilation needed. Explicit warning on the page that this is for disposable test credentials only, never anything real, since the app has no way to protect a private key once rendered to the browser.",
-      "updated_at": "2026-08-07"
-    },
-    {
-      "title": "chmod calculator",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 5,
-      "description": "Convert between symbolic (rwxr-xr--) and octal (754) Unix file permission notation, both directions, with a checkbox grid for building permissions visually.",
-      "rationale": "Shipped as a dedicated chmod Calculator page with three tabs: octal-to-symbolic, symbolic-to-octal, and a visual checkbox-grid builder. Correctly handles setuid/setgid/sticky special bits including the S/T (uppercase) forms when the underlying execute bit is absent -- verified against known real-world examples and round-tripped. Stdlib-only (regex), no dependency. Live-updates as you type with no submit button, so there's no results-vanishing risk (nothing is gated on a transient submit flag).",
-      "updated_at": "2026-08-06"
-    },
-    {
-      "title": "Config format converter (YAML / TOML / XML / JSON)",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 7,
-      "description": "Convert a pasted config snippet between YAML, TOML, XML, and JSON, reusing the existing JSON Formatter's validation/error-display pattern.",
-      "rationale": "Shipped as a dedicated Config Format Converter page. JSON/YAML/TOML share the same object model and convert losslessly (modulo TOML's own restrictions -- no top-level list, no null). XML has no standard equivalent, so the tool uses one explicit, disclosed convention (keys become child elements, lists become repeated elements, scalars become element text) rather than pretending it's a universal mapping -- called out directly on the page. Added pyyaml to requirements.txt; toml was already a transitive dependency.",
-      "updated_at": "2026-08-06"
-    },
-    {
-      "title": "JSON diff viewer",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 6,
-      "description": "Structurally diff two JSON documents (key-aware, not line-based) and highlight added/removed/changed fields.",
-      "rationale": "Shipped as a dedicated JSON Diff Viewer page. Structurally diffs by key/path (not by line), so key reordering is not reported as a difference, unlike the existing Text Diff Checker. Walks iteratively with an explicit stack, not recursion, and caps results at 500 -- same defensive pattern already used by json_stats/search_json_paths in utils/text_tools.py for the same reason (a short but deeply-nested JSON string can exceed Python's recursion limit).",
-      "updated_at": "2026-08-06"
-    },
-    {
-      "title": "SQL formatter/prettifier",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 5,
-      "description": "Reformat a pasted SQL query with consistent indentation and keyword casing for readability.",
-      "rationale": "Shipped as a dedicated SQL Formatter page. sqlparse is a lenient tokenizer/formatter, not a validator for a specific SQL dialect -- it never rejects input as 'invalid SQL' and even uppercases recognized keywords inside otherwise-plain text (confirmed directly, not assumed, and stated on the page itself rather than implying validation that doesn't happen). Adds sqlparse as a new dependency, no transitive packages. Live-updates, no submit button -- no results-vanishing risk. This was the final remaining roadmap backlog item.",
-      "updated_at": "2026-08-07"
-    },
-    {
-      "title": "HTTP status code reference",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 4,
-      "description": "Searchable static reference of HTTP status codes with meaning and common causes, standalone from the live HTTP Status Checker.",
-      "rationale": "Shipped as a dedicated HTTP Status Reference page, same static-dataset + search shape as Port Reference and the Windows Event/Error References. Covers 39 commonly-seen 1xx-5xx codes, searchable by code, category, or keyword.",
-      "updated_at": "2026-08-07"
+      "description": "A RequestBin-style ephemeral endpoint to inspect incoming webhook payloads, with no persistent storage.",
+      "rationale": "Common need when debugging integrations; fits the toolkit's no-storage, public-safe model if payloads are ephemeral and session-scoped.",
+      "updated_at": "2026-08-05"
     }
   ]
 }
