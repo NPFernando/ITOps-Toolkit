@@ -48,19 +48,7 @@ with tool_form_panel("case_converter"):
         st.caption("Keyboard tip: focus Convert and press Enter or Space to submit.")
 
 if submitted:
-    # Stored in session_state (not rendered directly here) because the sidebar's
-    # quick-search box, favorite-star buttons, and any other widget outside this
-    # page's st.form trigger reruns of their own -- on those reruns `submitted` is
-    # False again, which would otherwise collapse this whole results section the
-    # instant any of them is touched.
-    st.session_state["case_converter_result"] = convert_case(text_input)
-
-result = st.session_state.get("case_converter_result")
-
-if result is None:
-    render_empty_state("Ready to convert", "Every case variant appears here after you submit some text.")
-
-if result is not None:
+    result = convert_case(text_input)
     with tool_result_panel("case_result", related_to="case_converter"):
         render_section_heading("Converted forms", eyebrow="Result")
         if not result["ok"]:
