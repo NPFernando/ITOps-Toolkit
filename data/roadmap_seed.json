@@ -390,11 +390,11 @@
     {
       "title": "Cron expression builder",
       "category": "Tools",
-      "status": "Planned",
+      "status": "Complete",
       "votes": 5,
       "description": "The reverse of the existing Cron Explainer: pick a schedule via simple minute/hour/day controls and get the resulting cron expression, instead of typing one in to be explained.",
-      "rationale": "Natural companion to Cron Explainer for people who don't already know cron syntax and want to construct rather than decode a schedule.",
-      "updated_at": "2026-08-06"
+      "rationale": "Shipped as a dedicated Cron Expression Builder page with per-field Every/Every N/Specific controls. Reuses the existing explain_cron() from utils/text_tools.py (already used by Cron Explainer) to validate the built expression and preview its readable description and next run times, keeping the two pages consistent rather than reimplementing cron semantics. Live-updates, no submit button -- same no-vanishing-risk pattern as chmod Calculator and Integer Base Converter.",
+      "updated_at": "2026-08-07"
     },
     {
       "title": "Incident message formatter for Slack/Teams",
