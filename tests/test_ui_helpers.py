@@ -101,6 +101,45 @@ def test_filter_tools_matches_on_alias():
     assert all(tool.slug == "base64_tool" for tool in results)
 
 
+def test_filter_tools_matches_on_geoip_alias():
+    # "geoip" is a common industry abbreviation that appears in none of IP
+    # Geolocation Lookup's title/short_title/description/slug.
+    results = filter_tools(query="geoip")
+
+    assert results
+    assert all(tool.slug == "ip_geolocation" for tool in results)
+
+
+# Live-external-lookup pages that should carry a caution warning= on
+# render_page_header (fires a request against private/internal input a
+# visitor might paste without thinking, e.g. an internal hostname or IP).
+LIVE_LOOKUP_PAGES = (
+    "pages/1_Domain_Health_Checker.py",
+    "pages/2_DNS_Record_Checker.py",
+    "pages/3_SSL_Certificate_Checker.py",
+    "pages/4_HTTP_Status_Checker.py",
+    "pages/13_MAC_Address_Tool.py",
+    "pages/27_WHOIS_Lookup.py",
+    "pages/28_Bulk_Domain_Health.py",
+    "pages/29_Webhook_Tester.py",
+    "pages/30_Uptime_Trend.py",
+    "pages/31_Security_Headers_Checker.py",
+    "pages/32_CVE_Lookup.py",
+    "pages/33_DNS_Propagation_Checker.py",
+    "pages/35_DKIM_Selector_Lookup.py",
+    "pages/42_IP_Geolocation_Lookup.py",
+)
+
+
+def test_live_lookup_pages_have_a_caution_warning():
+    # Regression guard: PR #71 added warning= to 9 of these pages, and a
+    # follow-up added the 10th (MAC Address Tool). A silent removal of
+    # warning= on any of them would otherwise go undetected.
+    for rel_path in LIVE_LOOKUP_PAGES:
+        source = Path(rel_path).read_text(encoding="utf-8")
+        assert "warning=" in source, f"{rel_path}: missing warning= on render_page_header"
+
+
 def test_recent_or_popular_tools_falls_back_to_popular_when_empty():
     assert recent_or_popular_tools([]) == POPULAR_TOOLS
 
@@ -343,3 +382,17 @@ def test_every_tool_covered_exactly_once_across_categories():
 
     assert sorted(all_slugs) == sorted(tool.slug for tool in TOOLS)
     assert len(all_slugs) == len(TOOLS)
+
+
+def test_no_sidebar_category_dominates_the_tool_count():
+    # Regression guard: "Web & Dev" grew to 17/51 tools (33%) before being
+    # rebalanced into two categories. The exact-partition test above catches
+    # a *wrong* category on a known tool, but says nothing about a future
+    # addition silently recreating an oversized bucket -- this is a generic
+    # backstop that doesn't need updating every time a tool is added.
+    counts: dict[str, int] = {category: 0 for category in SIDEBAR_CATEGORIES}
+    for tool in TOOLS:
+        counts[tool.category] += 1
+
+    max_share = max(counts.values()) / len(TOOLS)
+    assert max_share <= 0.3, f"a sidebar category holds {max_share:.0%} of all tools: {counts}"

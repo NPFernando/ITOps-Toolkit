@@ -21,6 +21,7 @@ apply_app_shell(active_page="MAC Address Tool")
 render_page_header(
     "MAC Address Tool",
     "Validate a MAC address and view it in colon, hyphen, dot, and bare formats, plus address-class bits.",
+    warning="The optional vendor lookup queries a public OUI database -- do not look up private/internal MAC addresses.",
 )
 
 with tool_form_panel("mac_tool"):
