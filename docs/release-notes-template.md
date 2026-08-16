@@ -49,6 +49,7 @@ Use this template for deployment notes, GitHub releases, or pull request summari
 - QA baseline add-on: Phase 48 wave-41 shell/mobile/visual/a11y QA gates completed
 - QA baseline add-on: Phase 49 wave-42 shell/mobile/visual/a11y QA gates completed
 - QA baseline add-on: Phase 50 wave-43 shell/mobile/visual/a11y QA gates completed
+- QA baseline add-on: Phase 51 wave-44 shell/mobile/visual/a11y QA gates completed
 
 ## User-Facing Changes
 
@@ -251,6 +252,10 @@ curl http://localhost:8502/_stcore/health
 - Wave 43 mobile readability spot check (`<=720px`, Step 1/Step 2 heading hierarchy remains concise/readable, grouped controls keep shared headings, and Home controls + Roadmap filters/AI triage action + wave-43 generate/convert actions stay full-width/tap-friendly with no clipping/overflow):
 - Wave 43 visual mapping spot check (placeholder-to-real alias routing + deterministic slug precedence: `179_tool_slug_pending_roadmap` + `179_<tool_slug_pending_roadmap>` -> wave-43 lorem touchpoint `141_Lorem_Ipsum_Generator.py`/`lorem_ipsum_generator`; `180_tool_slug_pending_roadmap` + `180_<tool_slug_pending_roadmap>` -> wave-43 converter touchpoint `142_Text_to_Binary_Hex_Octal_Converter.py`/`text_to_binary_hex_octal_converter`; slug-first icon lookup remains deterministic with readable text fallback badges):
 - Wave 43 accessibility + deterministic regression-tests spot check (explicit status semantics with `role="status"`/`role="alert"` + `aria-live`, keyboard/focus, deterministic outcomes, and pass results for `tests/test_ui_helpers.py`, `tests/test_wave43_shell_mobile_markers.py`, `tests/test_wave43_visual_icon_markers.py`, and `tests/test_wave43_accessibility_guardrails.py`):
+- Wave 44 shell consistency spot check (shared shell + baseline markers `shell-ready`/`content-rendered`/`wave44-shell-mobile` on Home/Roadmap/Lorem Ipsum Generator/Text to Binary Hex Octal Converter):
+- Wave 44 mobile readability spot check (`<=720px`, Step 1/Step 2 heading hierarchy remains concise/readable, grouped controls keep shared headings, and Home controls + Roadmap filters/AI triage action + wave-44 generate/convert actions stay full-width/tap-friendly with no clipping/overflow):
+- Wave 44 visual mapping spot check (placeholder-to-real alias routing + deterministic slug precedence: `181_tool_slug_pending_roadmap` + `181_<tool_slug_pending_roadmap>` -> wave-44 lorem touchpoint `141_Lorem_Ipsum_Generator.py`/`lorem_ipsum_generator`; `182_tool_slug_pending_roadmap` + `182_<tool_slug_pending_roadmap>` -> wave-44 converter touchpoint `142_Text_to_Binary_Hex_Octal_Converter.py`/`text_to_binary_hex_octal_converter`; slug-first icon lookup remains deterministic with readable text fallback badges):
+- Wave 44 accessibility + deterministic regression-tests spot check (explicit status semantics with `role="status"`/`role="alert"` + `aria-live`, keyboard/focus, deterministic outcomes, and pass results for `tests/test_ui_helpers.py`, `tests/test_wave44_shell_mobile_markers.py`, `tests/test_wave44_visual_icon_markers.py`, and `tests/test_wave44_accessibility_guardrails.py`):
 - Log Troubleshooting AI unavailable state:
 - Optional Azure AI state, if secrets were available:
 
