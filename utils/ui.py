@@ -2,14 +2,12 @@
 
 from __future__ import annotations
 
-import base64
 import json
 from contextlib import contextmanager
 from dataclasses import dataclass
 from functools import lru_cache
 from html import escape
-from pathlib import Path
-from typing import Any, Callable, Iterable
+from typing import Any, Iterable
 from urllib.parse import urlencode
 
 import pandas as pd
@@ -26,289 +24,6 @@ PERSISTED_LIST_PARAMS: tuple[str, ...] = ("recent", "fav")
 # persisted favorites -- that would silently overwrite a visitor's saved
 # favorites just from opening a link someone sent them.
 SHARED_FAVORITES_PARAM = "shared_fav"
-ASSETS_ROOT = Path(__file__).resolve().parents[1] / "docs" / "assets"
-
-HOME_HERO_ILLUSTRATION = "illustrations/exported/illustration-home-hero-ops-flow-light-1600x900-v01.svg"
-TOOL_CARD_ICON_ASSETS: dict[str, str] = {
-    "domain_health": "icons/exported/icon-workflow-dns-lookup-outline-24x24-v01.svg",
-    "dns_records": "icons/exported/icon-workflow-dns-lookup-outline-24x24-v01.svg",
-    "ssl_certificate": "icons/exported/icon-workflow-ssl-check-outline-24x24-v01.svg",
-    "http_status": "icons/exported/icon-workflow-http-probe-outline-24x24-v01.svg",
-    "webhook_tester": "icons/exported/icon-workflow-http-probe-outline-24x24-v01.svg",
-    "uptime_trend": "icons/exported/icon-workflow-uptime-monitor-outline-24x24-v01.svg",
-    "security_headers": "icons/exported/icon-workflow-incident-response-outline-24x24-v01.svg",
-    "cve_lookup": "icons/exported/icon-workflow-incident-response-outline-24x24-v01.svg",
-    "jwt_decoder": "icons/exported/icon-workflow-jwt-inspect-outline-24x24-v01.svg",
-    "jwt_encoder": "icons/exported/icon-workflow-jwt-inspect-outline-24x24-v01.svg",
-    "jwt_weak_secret": "icons/exported/icon-workflow-jwt-inspect-outline-24x24-v01.svg",
-    "jwt_claims_reference": "icons/exported/icon-workflow-jwt-inspect-outline-24x24-v01.svg",
-    "json_formatter": "icons/exported/icon-workflow-json-validate-outline-24x24-v01.svg",
-    "json_diff": "icons/exported/icon-workflow-json-validate-outline-24x24-v01.svg",
-    "json_path_query": "icons/exported/icon-workflow-json-validate-outline-24x24-v01.svg",
-    "json_merge_patch": "icons/exported/icon-workflow-json-merge-patch-outline-24x24-v01.svg",
-    "json_to_typescript": "icons/exported/icon-workflow-json-to-typescript-outline-24x24-v01.svg",
-    "base64_tool": "icons/exported/icon-workflow-encoding-tools-outline-24x24-v01.svg",
-    "base32_tools": "icons/exported/icon-workflow-encoding-tools-outline-24x24-v01.svg",
-    "base58_tool": "icons/exported/icon-workflow-encoding-tools-outline-24x24-v01.svg",
-    "base62_tool": "icons/exported/icon-workflow-base62-encoder-decoder-outline-24x24-v01.svg",
-    "base62_encoder_decoder": "icons/exported/icon-workflow-base62-encoder-decoder-outline-24x24-v01.svg",
-    "base_converter": "icons/exported/icon-workflow-encoding-tools-outline-24x24-v01.svg",
-    "unified_diff_generator": "icons/exported/icon-workflow-unified-diff-generator-outline-24x24-v01.svg",
-    "jwk_pem_converter": "icons/exported/icon-workflow-jwk-pem-converter-outline-24x24-v01.svg",
-    "cert_chain_validator": "icons/exported/icon-workflow-cert-chain-validator-outline-24x24-v01.svg",
-    "wsl_path_converter": "icons/exported/icon-workflow-wsl-path-converter-outline-24x24-v01.svg",
-    "markdown_link_extractor": "icons/exported/icon-workflow-markdown-link-extractor-outline-24x24-v01.svg",
-    "health_diagnostics": "icons/exported/icon-workflow-health-diagnostics-outline-24x24-v01.svg",
-    "regex_tester": "icons/exported/icon-workflow-regex-match-outline-24x24-v01.svg",
-    "regex_replace": "icons/exported/icon-workflow-regex-match-outline-24x24-v01.svg",
-    "regex_cheat_sheet": "icons/exported/icon-workflow-regex-match-outline-24x24-v01.svg",
-    "pattern_extractor": "icons/exported/icon-workflow-regex-match-outline-24x24-v01.svg",
-    "cron_explainer": "icons/exported/icon-workflow-cron-schedule-outline-24x24-v01.svg",
-    "cron_builder": "icons/exported/icon-workflow-cron-schedule-outline-24x24-v01.svg",
-    "cron_overlap": "icons/exported/icon-workflow-cron-schedule-outline-24x24-v01.svg",
-    "cron_overlap_checker": "icons/exported/icon-workflow-cron-schedule-outline-24x24-v01.svg",
-    "hash_generator": "icons/exported/icon-workflow-hash-digest-outline-24x24-v01.svg",
-    "file_integrity": "icons/exported/icon-workflow-hash-digest-outline-24x24-v01.svg",
-    "bcrypt_tool": "icons/exported/icon-workflow-hash-digest-outline-24x24-v01.svg",
-    "port_reference": "icons/exported/icon-workflow-port-scan-outline-24x24-v01.svg",
-    "tls_scanner": "icons/exported/icon-workflow-port-scan-outline-24x24-v01.svg",
-    "env_linter": "icons/exported/icon-workflow-env-guard-outline-24x24-v01.svg",
-    "env_diff": "icons/exported/icon-workflow-env-guard-outline-24x24-v01.svg",
-    "env_file_diff": "icons/exported/icon-workflow-env-guard-outline-24x24-v01.svg",
-    "test_data_generator": "icons/exported/icon-workflow-test-data-fixture-outline-24x24-v01.svg",
-    "markdown_toc_generator": "icons/exported/icon-workflow-markdown-toc-generator-outline-24x24-v01.svg",
-    "markdown_table_formatter": "icons/exported/icon-workflow-markdown-table-formatter-outline-24x24-v01.svg",
-    "id_generator": "icons/exported/icon-workflow-id-sequence-outline-24x24-v01.svg",
-    "ulid_uuid_decoder": "icons/exported/icon-workflow-id-sequence-outline-24x24-v01.svg",
-    "deterministic_uuid": "icons/exported/icon-workflow-id-sequence-outline-24x24-v01.svg",
-    "csp_builder": "icons/exported/icon-workflow-csp-header-builder-outline-24x24-v01.svg",
-    "csp_header_builder": "icons/exported/icon-workflow-csp-header-builder-outline-24x24-v01.svg",
-    "robots_meta_builder": "icons/exported/icon-workflow-robots-meta-tag-builder-outline-24x24-v01.svg",
-    "robots_meta_tag_builder": "icons/exported/icon-workflow-robots-meta-tag-builder-outline-24x24-v01.svg",
-    "cache_control_tool": "icons/exported/icon-workflow-cache-control-tool-outline-24x24-v01.svg",
-    "robots_validator": "icons/exported/icon-workflow-policy-controls-outline-24x24-v01.svg",
-    "basic_auth_tool": "icons/exported/icon-workflow-auth-controls-outline-24x24-v01.svg",
-    "keypair_generator": "icons/exported/icon-workflow-auth-controls-outline-24x24-v01.svg",
-    "password_policy_checker": "icons/exported/icon-workflow-password-policy-outline-24x24-v01.svg",
-    "password_entropy": "icons/exported/icon-workflow-auth-controls-outline-24x24-v01.svg",
-    "business_hours": "icons/exported/icon-workflow-time-operations-outline-24x24-v01.svg",
-    "world_clock": "icons/exported/icon-workflow-time-operations-outline-24x24-v01.svg",
-    "log_duration": "icons/exported/icon-workflow-time-operations-outline-24x24-v01.svg",
-    "date_calculator": "icons/exported/icon-workflow-time-operations-outline-24x24-v01.svg",
-    "pii_redactor": "icons/exported/icon-workflow-data-sanitization-outline-24x24-v01.svg",
-    "csv_cleaner": "icons/exported/icon-workflow-data-sanitization-outline-24x24-v01.svg",
-    "whitespace_visualizer": "icons/exported/icon-workflow-data-sanitization-outline-24x24-v01.svg",
-    "windows_event_reference": "icons/exported/icon-workflow-api-reference-outline-24x24-v01.svg",
-    "windows_error_reference": "icons/exported/icon-workflow-api-reference-outline-24x24-v01.svg",
-    "exit_code_reference": "icons/exported/icon-workflow-api-reference-outline-24x24-v01.svg",
-    "timezone_abbreviation_reference": "icons/exported/icon-workflow-api-reference-outline-24x24-v01.svg",
-    "http_methods_reference": "icons/exported/icon-workflow-http-methods-reference-outline-24x24-v01.svg",
-    "sql_formatter": "icons/exported/icon-workflow-query-format-outline-24x24-v01.svg",
-    "curl_builder": "icons/exported/icon-workflow-request-builder-outline-24x24-v01.svg",
-    "encoding_detector": "icons/exported/icon-workflow-encoding-detect-outline-24x24-v01.svg",
-    "url_parser": "icons/exported/icon-workflow-url-parse-outline-24x24-v01.svg",
-    "gitignore_tester": "icons/exported/icon-workflow-gitignore-match-outline-24x24-v01.svg",
-    "password_generator": "icons/exported/icon-workflow-password-generator-outline-24x24-v01.svg",
-    "url_encoder_decoder": "icons/exported/icon-workflow-url-encoding-outline-24x24-v01.svg",
-    "timestamp_converter": "icons/exported/icon-workflow-timestamp-convert-outline-24x24-v01.svg",
-    "user_agent_parser": "icons/exported/icon-workflow-user-agent-parse-outline-24x24-v01.svg",
-    "cidr_overlap": "icons/exported/icon-workflow-cidr-overlap-outline-24x24-v01.svg",
-    "m365_sku_decoder": "icons/exported/icon-workflow-m365-sku-lookup-outline-24x24-v01.svg",
-    "chmod_calculator": "icons/exported/icon-workflow-permission-bits-outline-24x24-v01.svg",
-    "semver_tools": "icons/exported/icon-workflow-semver-compare-outline-24x24-v01.svg",
-    "iso8601_duration": "icons/exported/icon-workflow-iso8601-duration-outline-24x24-v01.svg",
-    "ssh_config_validator": "icons/exported/icon-workflow-ssh-config-validator-outline-24x24-v01.svg",
-    "subnet_calculator": "icons/exported/icon-workflow-subnet-planning-outline-24x24-v01.svg",
-    "ip_geolocation": "icons/exported/icon-workflow-ip-geolocation-outline-24x24-v01.svg",
-    "totp_generator": "icons/exported/icon-workflow-totp-token-outline-24x24-v01.svg",
-    "http_header_parser": "icons/exported/icon-workflow-http-header-parse-outline-24x24-v01.svg",
-    "byte_size_converter": "icons/exported/icon-workflow-byte-size-convert-outline-24x24-v01.svg",
-    "number_to_words": "icons/exported/icon-workflow-number-to-words-outline-24x24-v01.svg",
-    "mac_address_tool": "icons/exported/icon-workflow-mac-address-outline-24x24-v01.svg",
-    "email_header_analyzer": "icons/exported/icon-workflow-email-header-trace-outline-24x24-v01.svg",
-    "text_diff_checker": "icons/exported/icon-workflow-text-diff-outline-24x24-v01.svg",
-    "cidr_aggregator": "icons/exported/icon-workflow-cidr-aggregate-outline-24x24-v01.svg",
-    "ipv6_compressor": "icons/exported/icon-workflow-ipv6-compress-outline-24x24-v01.svg",
-    "outlook_safelinks_decoder": "icons/exported/icon-workflow-safe-link-unwrap-outline-24x24-v01.svg",
-    "safelinks_decoder": "icons/exported/icon-workflow-safe-link-unwrap-outline-24x24-v01.svg",
-    "m365_safelinks_decoder": "icons/exported/icon-workflow-safe-link-unwrap-outline-24x24-v01.svg",
-    "docker_run_compose_converter": "icons/exported/icon-workflow-container-compose-outline-24x24-v01.svg",
-    "docker_run_to_compose": "icons/exported/icon-workflow-container-compose-outline-24x24-v01.svg",
-    "docker_compose_converter": "icons/exported/icon-workflow-container-compose-outline-24x24-v01.svg",
-    "nato_phonetic_converter": "icons/exported/icon-workflow-phonetic-spellout-outline-24x24-v01.svg",
-    "nato_alphabet_converter": "icons/exported/icon-workflow-phonetic-spellout-outline-24x24-v01.svg",
-    "wifi_qr_generator": "icons/exported/icon-workflow-wifi-qr-share-outline-24x24-v01.svg",
-    "wifi_qr_code_generator": "icons/exported/icon-workflow-wifi-qr-share-outline-24x24-v01.svg",
-    "hmac_generator": "icons/exported/icon-workflow-hash-digest-outline-24x24-v01.svg",
-    "ipv6_ula_generator": "icons/exported/icon-workflow-ipv6-compress-outline-24x24-v01.svg",
-    "random_mac_generator": "icons/exported/icon-workflow-mac-address-outline-24x24-v01.svg",
-    "random_mac_address_generator": "icons/exported/icon-workflow-mac-address-outline-24x24-v01.svg",
-    "list_converter": "icons/exported/icon-workflow-list-transform-outline-24x24-v01.svg",
-    "email_normalizer": "icons/exported/icon-workflow-email-normalize-outline-24x24-v01.svg",
-    "email_address_normalizer": "icons/exported/icon-workflow-email-normalize-outline-24x24-v01.svg",
-    "ipv4_format_converter": "icons/exported/icon-workflow-ipv4-format-outline-24x24-v01.svg",
-    "ipv4_address_format_converter": "icons/exported/icon-workflow-ipv4-format-outline-24x24-v01.svg",
-    "ipv4_range_expander": "icons/exported/icon-workflow-subnet-planning-outline-24x24-v01.svg",
-    # Phase 37 / wave-30 target slugs with explicit per-tool artwork.
-    "csr_generator": "icons/exported/icon-workflow-csr-generator-outline-24x24-v01.svg",
-    "caa_record_builder": "icons/exported/icon-workflow-caa-record-builder-outline-24x24-v01.svg",
-    "git_command_cheat_sheet": "icons/exported/icon-workflow-git-command-cheat-sheet-outline-24x24-v01.svg",
-    "bip39_mnemonic_generator_validator": "icons/exported/icon-workflow-bip39-mnemonic-generator-validator-outline-24x24-v01.svg",
-    # Phase 38 / wave-31 target slugs with explicit per-tool artwork.
-    "lorem_ipsum_generator": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
-    "text_to_binary_hex_octal_converter": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    # Backward-compatible aliases for earlier provisional/page-level slug names.
-    "bip39_mnemonic_validator": "icons/exported/icon-workflow-bip39-mnemonic-generator-validator-outline-24x24-v01.svg",
-    "bip39_mnemonic": "icons/exported/icon-workflow-bip39-mnemonic-generator-validator-outline-24x24-v01.svg",
-    "text_radix_converter": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    # Phase 39/40/41/42/43/44/45/46/47/48/49/50 placeholder slug aliases mapped to current real tool pages.
-    "157_tool_slug_pending_roadmap": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
-    "158_tool_slug_pending_roadmap": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    "157_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
-    "158_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    "159_tool_slug_pending_roadmap": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
-    "160_tool_slug_pending_roadmap": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    "159_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
-    "160_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    "165_tool_slug_pending_roadmap": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
-    "166_tool_slug_pending_roadmap": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    "165_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
-    "166_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    "167_tool_slug_pending_roadmap": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
-    "168_tool_slug_pending_roadmap": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    "167_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
-    "168_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    "169_tool_slug_pending_roadmap": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
-    "170_tool_slug_pending_roadmap": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    "169_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
-    "170_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    "171_tool_slug_pending_roadmap": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
-    "172_tool_slug_pending_roadmap": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    "171_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
-    "172_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    "173_tool_slug_pending_roadmap": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
-    "174_tool_slug_pending_roadmap": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    "173_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
-    "174_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    "175_tool_slug_pending_roadmap": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
-    "176_tool_slug_pending_roadmap": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    "175_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
-    "176_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    "177_tool_slug_pending_roadmap": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
-    "178_tool_slug_pending_roadmap": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    "177_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
-    "178_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    "179_tool_slug_pending_roadmap": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
-    "180_tool_slug_pending_roadmap": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    "179_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
-    "180_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    "181_tool_slug_pending_roadmap": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
-    "182_tool_slug_pending_roadmap": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    "181_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
-    "182_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    "183_tool_slug_pending_roadmap": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
-    "184_tool_slug_pending_roadmap": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    "183_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
-    "184_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    "185_tool_slug_pending_roadmap": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
-    "186_tool_slug_pending_roadmap": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    "185_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
-    "186_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    "187_tool_slug_pending_roadmap": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
-    "188_tool_slug_pending_roadmap": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    "187_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
-    "188_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    "189_tool_slug_pending_roadmap": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
-    "190_tool_slug_pending_roadmap": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    "189_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
-    "190_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    "191_tool_slug_pending_roadmap": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
-    "192_tool_slug_pending_roadmap": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    "191_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
-    "192_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    "193_tool_slug_pending_roadmap": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
-    "194_tool_slug_pending_roadmap": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    "193_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-lorem-ipsum-generator-outline-24x24-v01.svg",
-    "194_<tool_slug_pending_roadmap>": "icons/exported/icon-workflow-text-to-binary-hex-octal-converter-outline-24x24-v01.svg",
-    "csv_column_selector": "icons/exported/icon-workflow-csv-column-selector-outline-24x24-v01.svg",
-    "line_numberer": "icons/exported/icon-workflow-line-numberer-outline-24x24-v01.svg",
-    "column_aligner": "icons/exported/icon-workflow-column-aligner-outline-24x24-v01.svg",
-    "css_gradient_generator": "icons/exported/icon-workflow-css-gradient-generator-outline-24x24-v01.svg",
-}
-CATEGORY_TOOL_CARD_ICON_ASSETS: dict[str, str] = {
-    "Network": "icons/exported/icon-workflow-dns-lookup-outline-24x24-v01.svg",
-    "Security": "icons/exported/icon-workflow-incident-response-outline-24x24-v01.svg",
-    "Web & Dev": "icons/exported/icon-workflow-http-probe-outline-24x24-v01.svg",
-    "Data & Text": "icons/exported/icon-workflow-json-validate-outline-24x24-v01.svg",
-    "Ops & Automation": "icons/exported/icon-workflow-automation-runbook-outline-24x24-v01.svg",
-    "Reference": "icons/exported/icon-workflow-reference-catalog-outline-24x24-v01.svg",
-}
-TOOL_HEADER_ILLUSTRATION_BY_CATEGORY: dict[str, str] = {
-    "Network": "illustrations/exported/illustration-tool-network-header-flow-light-1600x900-v01.svg",
-    "Security": "illustrations/exported/illustration-tool-security-header-shield-light-1600x900-v01.svg",
-    "Web & Dev": "illustrations/exported/illustration-tool-web-dev-header-http-light-1600x900-v01.svg",
-    "Data & Text": "illustrations/exported/illustration-tool-data-text-header-parse-light-1600x900-v01.svg",
-    "Ops & Automation": "illustrations/exported/illustration-tool-ops-automation-header-pipeline-light-1600x900-v01.svg",
-    "Reference": "illustrations/exported/illustration-tool-reference-header-catalog-light-1600x900-v01.svg",
-}
-EMPTY_STATE_ILLUSTRATIONS: dict[str, str] = {
-    "ready": "illustrations/exported/illustration-empty-state-ready-checklist-light-1200x675-v01.svg",
-    "network": "illustrations/exported/illustration-empty-state-ready-network-light-1200x675-v01.svg",
-    "security": "illustrations/exported/illustration-empty-state-ready-shield-light-1200x675-v01.svg",
-}
-ROADMAP_BADGE_ICONS: dict[str, str] = {
-    "status_planned": "icons/exported/icon-roadmap-planned-badge-24x24-v01.svg",
-    "status_progress": "icons/exported/icon-roadmap-progress-badge-24x24-v01.svg",
-    "status_done": "icons/exported/icon-roadmap-done-badge-24x24-v01.svg",
-    "status_ai": "icons/exported/icon-roadmap-ai-badge-24x24-v01.svg",
-    "source_seed": "icons/exported/icon-roadmap-seed-badge-24x24-v01.svg",
-    "source_github": "icons/exported/icon-roadmap-github-badge-24x24-v01.svg",
-}
-TRANSIENT_FAILURE_HINTS: tuple[str, ...] = (
-    "timeout",
-    "timed out",
-    "temporar",
-    "unavailable",
-    "rate limit",
-    "429",
-    "503",
-    "502",
-    "connection",
-    "refused",
-    "reset",
-    "dns lookup timed out",
-    "nameserver",
-    "eai_again",
-)
-PERSISTENT_FAILURE_HINTS: tuple[str, ...] = (
-    "invalid",
-    "does not exist",
-    "nxdomain",
-    "no answer",
-    "expired",
-    "hostname mismatch",
-    "port must be",
-    "certificate verification failed",
-)
-
-
-@lru_cache(maxsize=256)
-def _svg_data_uri(relative_path: str) -> str | None:
-    asset_path = ASSETS_ROOT / relative_path
-    if not asset_path.exists() or asset_path.suffix.lower() != ".svg":
-        return None
-    return "data:image/svg+xml;base64," + base64.b64encode(asset_path.read_bytes()).decode("ascii")
-
-
-def _svg_img_html(relative_path: str, alt: str, class_name: str, decorative: bool = False) -> str | None:
-    uri = _svg_data_uri(relative_path)
-    if not uri:
-        return None
-    alt_text = "" if decorative else escape(alt)
-    decorative_attrs = ' aria-hidden="true" role="presentation"' if decorative else ""
-    return (
-        f'<img class="{escape(class_name)}" src="{uri}" alt="{alt_text}"{decorative_attrs} loading="lazy" decoding="async">'
-    )
 
 
 @dataclass(frozen=True)
@@ -324,14 +39,6 @@ class ToolMeta:
     category: str
     is_new: bool = False
     aliases: tuple[str, ...] = ()
-
-
-@dataclass(frozen=True)
-class GuidedWorkflow:
-    title: str
-    description: str
-    slugs: tuple[str, ...]
-    badge: str
 
 
 def _icon_text_color(accent: str) -> str:
@@ -1028,6 +735,7 @@ TOOLS: tuple[ToolMeta, ...] = (
         slug="csv_diff",
         professions=("Automation Engineer", "Web Developer", "Sysadmin / DevOps"),
         category="Data & Text",
+        is_new=True,
     ),
     ToolMeta(
         title="Markdown/HTML Converter",
@@ -1039,6 +747,7 @@ TOOLS: tuple[ToolMeta, ...] = (
         slug="markdown_converter",
         professions=("Web Developer", "Automation Engineer", "Support Engineer"),
         category="Data & Text",
+        is_new=True,
     ),
     ToolMeta(
         title="Text Encoding Detector",
@@ -1050,6 +759,7 @@ TOOLS: tuple[ToolMeta, ...] = (
         slug="encoding_detector",
         professions=("Sysadmin / DevOps", "Web Developer", "Automation Engineer"),
         category="Data & Text",
+        is_new=True,
     ),
     ToolMeta(
         title="robots.txt / Sitemap Validator",
@@ -1061,6 +771,7 @@ TOOLS: tuple[ToolMeta, ...] = (
         slug="robots_validator",
         professions=("Web Developer", "Sysadmin / DevOps", "Automation Engineer"),
         category="Web & Dev",
+        is_new=True,
     ),
     ToolMeta(
         title="JWT Weak-Secret Checker",
@@ -1072,6 +783,7 @@ TOOLS: tuple[ToolMeta, ...] = (
         slug="jwt_weak_secret",
         professions=("Security Engineer", "Web Developer", "Sysadmin / DevOps"),
         category="Security",
+        is_new=True,
     ),
     ToolMeta(
         title="Log Timestamp Duration Calculator",
@@ -1259,7 +971,7 @@ TOOLS: tuple[ToolMeta, ...] = (
         slug="yaml_formatter",
         professions=("Sysadmin / DevOps", "Web Developer", "Automation Engineer"),
         category="Data & Text",
-        is_new=False,
+        is_new=True,
     ),
     ToolMeta(
         title="Byte Size Converter",
@@ -1271,7 +983,7 @@ TOOLS: tuple[ToolMeta, ...] = (
         slug="byte_size_converter",
         professions=("Sysadmin / DevOps", "Cloud Engineer", "Support Engineer"),
         category="Ops & Automation",
-        is_new=False,
+        is_new=True,
     ),
     ToolMeta(
         title="Line Ending Converter",
@@ -1283,7 +995,7 @@ TOOLS: tuple[ToolMeta, ...] = (
         slug="line_ending_converter",
         professions=("Web Developer", "Sysadmin / DevOps", "Automation Engineer"),
         category="Web & Dev",
-        is_new=False,
+        is_new=True,
     ),
     ToolMeta(
         title="Regex Find & Replace",
@@ -1295,7 +1007,7 @@ TOOLS: tuple[ToolMeta, ...] = (
         slug="regex_replace",
         professions=("Automation Engineer", "Web Developer", "Sysadmin / DevOps"),
         category="Data & Text",
-        is_new=False,
+        is_new=True,
     ),
     ToolMeta(
         title="Password Strength Checker",
@@ -1307,7 +1019,7 @@ TOOLS: tuple[ToolMeta, ...] = (
         slug="password_entropy",
         professions=("Security Engineer", "Support Engineer", "Sysadmin / DevOps"),
         category="Security",
-        is_new=False,
+        is_new=True,
     ),
     ToolMeta(
         title="Text Pattern Extractor",
@@ -1319,691 +1031,343 @@ TOOLS: tuple[ToolMeta, ...] = (
         slug="pattern_extractor",
         professions=("Automation Engineer", "Sysadmin / DevOps", "Support Engineer"),
         category="Ops & Automation",
-        is_new=False,
+        is_new=True,
     ),
     ToolMeta(
-        title="CSV / JSON Converter",
-        short_title="CSV / JSON",
-        description="Convert CSV/TSV (with a header row) to a JSON array of objects, or the reverse.",
-        path="pages/86_CSV_JSON_Converter.py",
-        icon="C/J",
-        accent="#5390d9",
-        slug="csv_json_converter",
-        professions=("Sysadmin / DevOps", "Web Developer", "Automation Engineer"),
-        category="Data & Text",
-        is_new=False,
-    ),
-    ToolMeta(
-        title="Sort & Dedupe Lines",
-        short_title="Sort & Dedupe",
-        description="Sort pasted text's lines, remove duplicates, and/or drop blank lines -- like sort -u over pasted text.",
-        path="pages/87_Sort_Dedupe_Lines.py",
-        icon="A-Z",
-        accent="#ff9f1c",
-        slug="line_sorter",
-        professions=("Sysadmin / DevOps", "Automation Engineer", "Support Engineer"),
-        category="Ops & Automation",
-        is_new=False,
-    ),
-    ToolMeta(
-        title="User-Agent Builder",
-        short_title="UA Builder",
-        description="Build a User-Agent string for a chosen OS, browser, and version -- the reverse of User Agent Parser.",
-        path="pages/88_User_Agent_Builder.py",
-        icon="UA",
-        accent="#f28482",
-        slug="user_agent_builder",
-        professions=("Web Developer", "Support Engineer", "Automation Engineer"),
-        category="Web & Dev",
-        is_new=False,
-    ),
-    ToolMeta(
-        title="SemVer Comparator",
-        short_title="SemVer Comparator",
-        description="Compare two Semantic Versioning 2.0.0 version strings, or sort a whole list by precedence.",
-        path="pages/89_SemVer_Comparator.py",
-        icon="SEM",
-        accent="#52b788",
-        slug="semver_tools",
-        professions=("Sysadmin / DevOps", "Web Developer", "Automation Engineer"),
-        category="Ops & Automation",
-        is_new=False,
-    ),
-    ToolMeta(
-        title="World Clock",
-        short_title="World Clock",
-        description="See one date/time across major world timezones -- useful for planning a meeting or a maintenance window.",
-        path="pages/90_World_Clock.py",
-        icon="WC",
-        accent="#e5989b",
-        slug="world_clock",
-        professions=("Sysadmin / DevOps", "Support Engineer", "Automation Engineer"),
-        category="Ops & Automation",
-        is_new=False,
-    ),
-    ToolMeta(
-        title="CSV/TSV Cleaner",
-        short_title="CSV/TSV Cleaner",
-        description="Paste messy CSV/TSV and trim cell whitespace, drop empty rows, and/or remove duplicate rows.",
-        path="pages/91_CSV_TSV_Cleaner.py",
-        icon="CLN",
-        accent="#80ed99",
-        slug="csv_cleaner",
-        professions=("Sysadmin / DevOps", "Automation Engineer", "Support Engineer"),
-        category="Ops & Automation",
-        is_new=False,
-    ),
-    ToolMeta(
-        title="JSON Path Query",
-        short_title="JSON Path Query",
-        description="Extract a value from JSON with a simple dotted path, e.g. user.addresses[0].city.",
-        path="pages/92_JSON_Path_Query.py",
-        icon="JPQ",
-        accent="#4cc9f0",
-        slug="json_path_query",
-        professions=("Web Developer", "Sysadmin / DevOps", "Automation Engineer"),
-        category="Data & Text",
-        is_new=False,
-    ),
-    ToolMeta(
-        title="IBAN Validator",
-        short_title="IBAN Validator",
-        description="Check an IBAN's structure (country-specific length) and mod-97 checksum.",
-        path="pages/93_IBAN_Validator.py",
-        icon="IBAN",
-        accent="#c9184a",
-        slug="iban_validator",
-        professions=("Support Engineer", "Security Engineer", "Automation Engineer"),
-        category="Security",
-        is_new=False,
-    ),
-    ToolMeta(
-        title="Base58 Encoder/Decoder",
-        short_title="Base58 Tool",
-        description="Encode or decode text using the Bitcoin/IPFS Base58 alphabet (excludes 0, O, I, l).",
-        path="pages/94_Base58_Encoder_Decoder.py",
-        icon="B58",
-        accent="#8ecae6",
-        slug="base58_tool",
-        professions=("Web Developer", "Sysadmin / DevOps", "Automation Engineer"),
-        category="Data & Text",
-        is_new=False,
-    ),
-    ToolMeta(
-        title="Exit Code Reference",
-        short_title="Exit Code Reference",
-        description="Look up Linux/Bash process exit codes -- a quick lookup when a script or CI job fails with an unfamiliar code.",
-        path="pages/95_Exit_Code_Reference.py",
-        icon="EXIT",
-        accent="#ffca3a",
-        slug="exit_code_reference",
-        professions=("Sysadmin / DevOps", "Automation Engineer", "Support Engineer"),
-        category="Reference",
-        is_new=False,
-    ),
-    ToolMeta(
-        title="Timezone Abbreviation Reference",
-        short_title="TZ Abbreviations",
-        description="Look up timezone abbreviations (EST, IST, CST...) and their UTC offset.",
-        path="pages/96_Timezone_Abbreviation_Reference.py",
-        icon="TZ",
-        accent="#7bdff2",
-        slug="timezone_abbreviation_reference",
-        professions=("Sysadmin / DevOps", "Support Engineer", "Automation Engineer"),
-        category="Reference",
-        is_new=False,
-    ),
-    ToolMeta(
-        title="Basic Auth Header Tool",
-        short_title="Basic Auth Header",
-        description="Build or parse an HTTP Authorization: Basic header (RFC 7617).",
-        path="pages/97_Basic_Auth_Header_Tool.py",
-        icon="BA",
-        accent="#f77fbe",
-        slug="basic_auth_tool",
-        professions=("Web Developer", "Sysadmin / DevOps", "Support Engineer"),
-        category="Web & Dev",
-        is_new=False,
-    ),
-    ToolMeta(
-        title=".gitignore Pattern Tester",
-        short_title="gitignore Tester",
-        description="Paste .gitignore content and test whether specific paths would be ignored.",
-        path="pages/98_Gitignore_Pattern_Tester.py",
-        icon="GIT",
-        accent="#9b5de5",
-        slug="gitignore_tester",
-        professions=("Sysadmin / DevOps", "Automation Engineer", "Web Developer"),
-        category="Ops & Automation",
-        is_new=False,
-    ),
-    ToolMeta(
-        title="Markdown TOC Generator",
-        short_title="Markdown TOC",
-        description="Paste Markdown and get a linked table of contents built from its headings.",
-        path="pages/99_Markdown_TOC_Generator.py",
-        icon="TOC",
-        accent="#00f5d4",
-        slug="markdown_toc_generator",
-        professions=("Web Developer", "Sysadmin / DevOps", "Automation Engineer"),
-        category="Data & Text",
-        is_new=False,
-    ),
-    ToolMeta(
-        title="Number to Words",
-        short_title="Number to Words",
-        description="Spell out an integer in English words, e.g. 1042 -> one thousand forty-two.",
-        path="pages/100_Number_to_Words.py",
-        icon="123",
-        accent="#6a994e",
-        slug="number_to_words",
-        professions=("Support Engineer", "Automation Engineer", "Sysadmin / DevOps"),
-        category="Data & Text",
-        is_new=False,
-    ),
-    ToolMeta(
-        title="JSON to TypeScript",
-        short_title="JSON to TS",
-        description="Infer a TypeScript interface from a JSON document, with nested objects broken out into their own interfaces.",
-        path="pages/101_JSON_to_TypeScript.py",
-        icon="TS",
-        accent="#3d348b",
-        slug="json_to_typescript",
+        title="ULID/UUID Decoder",
+        short_title="ULID/UUID Decoder",
+        description="Decode a ULID or UUID's embedded creation timestamp -- the reverse of ID Generator.",
+        path="pages/53_ULID_UUID_Decoder.py",
+        icon="UID",
+        accent="#00b4d8",
+        slug="ulid_uuid_decoder",
         professions=("Web Developer", "Automation Engineer", "Sysadmin / DevOps"),
-        category="Web & Dev",
-        is_new=False,
-    ),
-    ToolMeta(
-        title="CSS Gradient Generator",
-        short_title="CSS Gradient",
-        description="Build a linear-gradient() or radial-gradient() CSS declaration from a list of hex color stops.",
-        path="pages/102_CSS_Gradient_Generator.py",
-        icon="GRAD",
-        accent="#ee6c4d",
-        slug="css_gradient_generator",
-        professions=("Web Developer", "Automation Engineer", "Support Engineer"),
-        category="Web & Dev",
-        is_new=False,
-    ),
-    ToolMeta(
-        title="JWT Claims Reference",
-        short_title="JWT Claims",
-        description="Look up what a JWT claim name means -- registered (RFC 7519) claims plus common OAuth 2.0/OpenID Connect conventions.",
-        path="pages/103_JWT_Claims_Reference.py",
-        icon="JWT",
-        accent="#ffa600",
-        slug="jwt_claims_reference",
-        professions=("Security Engineer", "Web Developer", "Sysadmin / DevOps"),
-        category="Reference",
-        is_new=False,
-    ),
-    ToolMeta(
-        title="CSP Header Builder",
-        short_title="CSP Builder",
-        description="Build a Content-Security-Policy header value from directives and source lists, entirely locally.",
-        path="pages/104_CSP_Header_Builder.py",
-        icon="CSP",
-        accent="#457b39",
-        slug="csp_builder",
-        professions=("Security Engineer", "Web Developer", "Sysadmin / DevOps"),
-        category="Security",
-        is_new=False,
-    ),
-    ToolMeta(
-        title="Robots Meta Tag Builder",
-        short_title="Robots Meta Tag",
-        description='Build a <meta name="robots" content="..."> tag -- distinct from robots.txt, which applies site-wide.',
-        path="pages/105_Robots_Meta_Tag_Builder.py",
-        icon="ROB",
-        accent="#e07a1f",
-        slug="robots_meta_builder",
-        professions=("Web Developer", "Automation Engineer", "Sysadmin / DevOps"),
-        category="Web & Dev",
-        is_new=False,
-    ),
-    ToolMeta(
-        title="Cache-Control Tool",
-        short_title="Cache-Control Tool",
-        description="Build a Cache-Control header from directives, or paste one to see each directive explained.",
-        path="pages/106_Cache_Control_Tool.py",
-        icon="C-C",
-        accent="#5f0f40",
-        slug="cache_control_tool",
-        professions=("Web Developer", "Sysadmin / DevOps", "Automation Engineer"),
-        category="Web & Dev",
-        is_new=False,
-    ),
-    ToolMeta(
-        title="Markdown Table Formatter",
-        short_title="Table Formatter",
-        description="Paste a Markdown table with ragged/misaligned columns and get it re-aligned to consistent, padded widths.",
-        path="pages/107_Markdown_Table_Formatter.py",
-        icon="TBL",
-        accent="#2b9348",
-        slug="markdown_table_formatter",
-        professions=("Web Developer", "Sysadmin / DevOps", "Automation Engineer"),
-        category="Data & Text",
-        is_new=False,
-    ),
-    ToolMeta(
-        title="CSV Column Selector",
-        short_title="CSV Column Selector",
-        description="Extract and reorder specific columns from CSV/TSV by header name.",
-        path="pages/108_CSV_Column_Selector.py",
-        icon="COL",
-        accent="#2176ae",
-        slug="csv_column_selector",
-        professions=("Sysadmin / DevOps", "Automation Engineer", "Support Engineer"),
-        category="Data & Text",
-        is_new=False,
-    ),
-    ToolMeta(
-        title="HTTP Methods Reference",
-        short_title="HTTP Methods",
-        description="Look up HTTP methods and their safe/idempotent/cacheable properties per RFC 9110.",
-        path="pages/109_HTTP_Methods_Reference.py",
-        icon="MTH",
-        accent="#bc4749",
-        slug="http_methods_reference",
-        professions=("Web Developer", "Sysadmin / DevOps", "Automation Engineer"),
-        category="Reference",
-        is_new=False,
-    ),
-    ToolMeta(
-        title="Line Numberer",
-        short_title="Line Numberer",
-        description="Add line numbers to pasted text -- handy for referencing a specific line in a review or bug report.",
-        path="pages/110_Line_Numberer.py",
-        icon="1.2.3",
-        accent="#4c956c",
-        slug="line_numberer",
-        professions=("Web Developer", "Sysadmin / DevOps", "Automation Engineer"),
-        category="Data & Text",
-        is_new=False,
-    ),
-    ToolMeta(
-        title="PII Redactor",
-        short_title="PII Redactor",
-        description="Redact common sensitive-looking patterns from pasted text before sharing it in a ticket, log, or chat.",
-        path="pages/111_PII_Redactor.py",
-        icon="PII",
-        accent="#9a031e",
-        slug="pii_redactor",
-        professions=("Support Engineer", "Security Engineer", "Sysadmin / DevOps"),
-        category="Security",
-        is_new=False,
-    ),
-    ToolMeta(
-        title=".env File Diff",
-        short_title="env File Diff",
-        description="Compare two .env files and see which keys were added, removed, or changed.",
-        path="pages/112_Env_File_Diff.py",
-        icon="ENV",
-        accent="#6d6875",
-        slug="env_diff",
-        professions=("Sysadmin / DevOps", "Automation Engineer", "Web Developer"),
-        category="Ops & Automation",
-        is_new=False,
-    ),
-    ToolMeta(
-        title="Cron Overlap Checker",
-        short_title="Cron Overlap",
-        description="Check whether two cron schedules ever fire in the same minute -- useful for spotting jobs that might contend for the same resource.",
-        path="pages/113_Cron_Overlap_Checker.py",
-        icon="C+C",
-        accent="#fb5607",
-        slug="cron_overlap",
-        professions=("Sysadmin / DevOps", "Automation Engineer", "Cloud Engineer"),
-        category="Ops & Automation",
-        is_new=False,
-    ),
-    ToolMeta(
-        title="Test Data Generator",
-        short_title="Test Data Gen",
-        description="Generate fake names, emails, usernames, and phone numbers for filling in forms and test fixtures.",
-        path="pages/114_Test_Data_Generator.py",
-        icon="GEN",
-        accent="#3f88c5",
-        slug="test_data_generator",
-        professions=("Web Developer", "Automation Engineer", "Support Engineer"),
-        category="Data & Text",
-        is_new=False,
-    ),
-    ToolMeta(
-        title="Password Policy Checker",
-        short_title="Password Policy",
-        description="Check a password against a configurable complexity policy -- pass/fail per rule, not an entropy estimate.",
-        path="pages/115_Password_Policy_Checker.py",
-        icon="POL",
-        accent="#d81159",
-        slug="password_policy_checker",
-        professions=("Security Engineer", "Support Engineer", "Sysadmin / DevOps"),
-        category="Security",
-        is_new=False,
-    ),
-    ToolMeta(
-        title="ISO 8601 Duration Tool",
-        short_title="ISO 8601 Duration",
-        description="Parse an ISO 8601 duration (e.g. P3Y6M4DT12H30M5S) into plain English, or build one from individual units.",
-        path="pages/116_ISO8601_Duration_Tool.py",
-        icon="DUR",
-        accent="#a44a3f",
-        slug="iso8601_duration",
-        professions=("Sysadmin / DevOps", "Automation Engineer", "Web Developer"),
-        category="Ops & Automation",
-        is_new=False,
-    ),
-    ToolMeta(
-        title="JSON Merge Patch",
-        short_title="JSON Merge Patch",
-        description="Merge two JSON documents per RFC 7396 -- useful for layering an environment-specific override onto a base config.",
-        path="pages/117_JSON_Merge_Patch.py",
-        icon="MRG",
-        accent="#2d3142",
-        slug="json_merge_patch",
-        professions=("Sysadmin / DevOps", "Automation Engineer", "Web Developer"),
-        category="Data & Text",
-        is_new=False,
-    ),
-    ToolMeta(
-        title="Column Aligner",
-        short_title="Column Aligner",
-        description="Align whitespace-separated columns of plain text -- like the Unix column -t command.",
-        path="pages/118_Column_Aligner.py",
-        icon="COL",
-        accent="#ef8354",
-        slug="column_aligner",
-        professions=("Sysadmin / DevOps", "Automation Engineer", "Support Engineer"),
-        category="Ops & Automation",
-        is_new=False,
-    ),
-    ToolMeta(
-        title="SSH Config Validator",
-        short_title="SSH Config Validator",
-        description="Lint ~/.ssh/config content for structural mistakes -- directives before any Host block, empty Host blocks, duplicate Host patterns.",
-        path="pages/119_SSH_Config_Validator.py",
-        icon="SSH",
-        accent="#4f5d75",
-        slug="ssh_config_validator",
-        professions=("Sysadmin / DevOps", "Cloud Engineer", "Automation Engineer"),
-        category="Security",
-        is_new=False,
-    ),
-    ToolMeta(
-        title="CSR Generator",
-        short_title="CSR Generator",
-        description="Generate a new RSA key pair and a Certificate Signing Request from subject fields -- the reverse of CSR Decoder.",
-        path="pages/120_CSR_Generator.py",
-        icon="CSR",
-        accent="#6b9080",
-        slug="csr_generator",
-        professions=("Security Engineer", "Sysadmin / DevOps", "Cloud Engineer"),
-        category="Security",
-        is_new=False,
-    ),
-    ToolMeta(
-        title="CAA Record Builder",
-        short_title="CAA Record",
-        description="Build a DNS CAA (Certification Authority Authorization) record, restricting which CAs may issue certificates for a domain.",
-        path="pages/121_CAA_Record_Builder.py",
-        icon="CAA",
-        accent="#c9ada7",
-        slug="caa_record_builder",
-        professions=("Security Engineer", "Sysadmin / DevOps", "Cloud Engineer"),
-        category="Network",
-        is_new=False,
-    ),
-    ToolMeta(
-        title="Base62 Encoder/Decoder",
-        short_title="Base62 Tool",
-        description="Encode a non-negative integer to Base62 (0-9, A-Z, a-z), or decode one back -- commonly used for URL-safe short IDs.",
-        path="pages/122_Base62_Encoder_Decoder.py",
-        icon="B62",
-        accent="#006d77",
-        slug="base62_tool",
-        professions=("Web Developer", "Sysadmin / DevOps", "Automation Engineer"),
         category="Data & Text",
         is_new=True,
     ),
     ToolMeta(
-        title="Unified Diff Generator",
-        short_title="Unified Diff",
-        description="Generate a real unified diff (patch) from two texts -- applicable with the patch or git apply command.",
-        path="pages/123_Unified_Diff_Generator.py",
-        icon="DIFF",
-        accent="#f07167",
-        slug="unified_diff_generator",
-        professions=("Sysadmin / DevOps", "Web Developer", "Automation Engineer"),
-        category="Web & Dev",
-        is_new=True,
-    ),
-    ToolMeta(
-        title="JWK / PEM Converter",
-        short_title="JWK / PEM",
-        description="Convert an RSA public key between JWK (JSON Web Key) and PEM format -- useful when working with a JWKS endpoint.",
-        path="pages/124_JWK_PEM_Converter.py",
-        icon="JWK",
-        accent="#00afb9",
-        slug="jwk_pem_converter",
-        professions=("Security Engineer", "Web Developer", "Sysadmin / DevOps"),
-        category="Security",
-        is_new=True,
-    ),
-    ToolMeta(
-        title="Certificate Chain Validator",
-        short_title="Chain Validator",
-        description="Check that a pasted PEM certificate bundle is a correctly ordered, cryptographically linked chain.",
-        path="pages/125_Certificate_Chain_Validator.py",
-        icon="CHN",
-        accent="#fdca40",
-        slug="cert_chain_validator",
-        professions=("Security Engineer", "Sysadmin / DevOps", "Cloud Engineer"),
-        category="Security",
-        is_new=True,
-    ),
-    ToolMeta(
-        title="WSL Path Converter",
-        short_title="WSL Path",
-        description="Convert a filesystem path between Windows, WSL, and Git Bash forms.",
-        path="pages/126_WSL_Path_Converter.py",
-        icon="WSL",
-        accent="#5e548e",
-        slug="wsl_path_converter",
-        professions=("Sysadmin / DevOps", "Web Developer", "Automation Engineer"),
-        category="Ops & Automation",
-        is_new=True,
-    ),
-    ToolMeta(
-        title="Markdown Link Extractor",
-        short_title="Link Extractor",
-        description="Extract every link from Markdown text -- inline links, reference-style links, and bare autolinks.",
-        path="pages/127_Markdown_Link_Extractor.py",
-        icon="LNK",
-        accent="#1b998b",
-        slug="markdown_link_extractor",
+        title="curl Command Builder",
+        short_title="curl Builder",
+        description="Build a copy-pasteable curl command from a method, URL, headers, and body -- the reverse of Webhook Tester.",
+        path="pages/54_Curl_Command_Builder.py",
+        icon="CURL",
+        accent="#fb8500",
+        slug="curl_builder",
         professions=("Web Developer", "Automation Engineer", "Sysadmin / DevOps"),
         category="Web & Dev",
         is_new=True,
     ),
     ToolMeta(
-        title="Health Diagnostics",
-        short_title="Health Diagnostics",
-        description="Public-safe runtime health snapshot for shell, optional integrations, feature flags, and smoke checks.",
-        path="pages/128_Health_Diagnostics.py",
-        icon="HLTH",
-        accent="#2a9d8f",
-        slug="health_diagnostics",
-        professions=("Sysadmin / DevOps", "Support Engineer", "Automation Engineer"),
-        category="Ops & Automation",
-        is_new=False,
-    ),
-    ToolMeta(
-        title="Docker Run to Compose",
-        short_title="Run→Compose",
-        description="Convert a docker run command into a docker-compose service definition.",
-        path="pages/129_Docker_Run_to_Compose.py",
-        icon="CMP",
-        accent="#457b9d",
-        slug="docker_run_to_compose",
-        professions=("Sysadmin / DevOps", "Web Developer", "Automation Engineer"),
-        category="Ops & Automation",
-        is_new=False,
-    ),
-    ToolMeta(
-        title="NATO Phonetic Converter",
-        short_title="NATO Phonetic",
-        description="Convert text into NATO phonetic words for clear voice handoff and readback.",
-        path="pages/130_NATO_Phonetic_Converter.py",
-        icon="NATO",
-        accent="#1d3557",
-        slug="nato_phonetic_converter",
-        professions=("Support Engineer", "Sysadmin / DevOps", "Automation Engineer"),
-        category="Reference",
-        is_new=False,
-    ),
-    ToolMeta(
-        title="WiFi QR Code Generator",
-        short_title="WiFi QR",
-        description="Generate WiFi onboarding QR payloads for SSID and authentication settings.",
-        path="pages/131_WiFi_QR_Code_Generator.py",
-        icon="WIFI",
-        accent="#2a9d8f",
-        slug="wifi_qr_code_generator",
-        professions=("Sysadmin / DevOps", "Support Engineer", "Web Developer"),
-        category="Ops & Automation",
-        is_new=False,
-    ),
-    ToolMeta(
-        title="HMAC Generator",
-        short_title="HMAC",
-        description="Generate keyed HMAC digests with deterministic output formatting.",
-        path="pages/132_HMAC_Generator.py",
-        icon="HMAC",
-        accent="#8d99ae",
-        slug="hmac_generator",
-        professions=("Security Engineer", "Sysadmin / DevOps", "Web Developer"),
-        category="Security",
-        is_new=False,
-    ),
-    ToolMeta(
-        title="IPv6 ULA Generator",
-        short_title="IPv6 ULA",
-        description="Create RFC 4193 unique local IPv6 prefixes for private network planning.",
-        path="pages/133_IPv6_ULA_Generator.py",
-        icon="ULA",
-        accent="#3a86ff",
-        slug="ipv6_ula_generator",
-        professions=("Network Engineer", "Sysadmin / DevOps", "Automation Engineer"),
-        category="Network",
-        is_new=False,
-    ),
-    ToolMeta(
-        title="Random MAC Address Generator",
-        short_title="Random MAC",
-        description="Generate randomized MAC addresses for lab, testing, and inventory workflows.",
-        path="pages/134_Random_MAC_Address_Generator.py",
-        icon="MAC",
-        accent="#06d6a0",
-        slug="random_mac_address_generator",
-        professions=("Network Engineer", "Sysadmin / DevOps", "Support Engineer"),
-        category="Network",
-        is_new=False,
-    ),
-    ToolMeta(
-        title="List Converter",
-        short_title="List Converter",
-        description="Transform pasted line lists with dedupe, trim, and normalization controls.",
-        path="pages/135_List_Converter.py",
-        icon="LIST",
-        accent="#8338ec",
-        slug="list_converter",
-        professions=("Automation Engineer", "Support Engineer", "Web Developer"),
-        category="Data & Text",
-        is_new=False,
-    ),
-    ToolMeta(
-        title="Email Address Normalizer",
-        short_title="Email Normalize",
-        description="Normalize email addresses into canonical forms for safe downstream matching.",
-        path="pages/136_Email_Address_Normalizer.py",
-        icon="MAIL",
-        accent="#ef476f",
-        slug="email_address_normalizer",
-        professions=("Support Engineer", "Automation Engineer", "Security Engineer"),
-        category="Data & Text",
-        is_new=False,
-    ),
-    ToolMeta(
-        title="IPv4 Address Format Converter",
-        short_title="IPv4 Format",
-        description="Convert IPv4 addresses between dotted, integer, hex, and binary representations.",
-        path="pages/137_IPv4_Address_Format_Converter.py",
-        icon="IPV4",
-        accent="#118ab2",
-        slug="ipv4_address_format_converter",
-        professions=("Network Engineer", "Sysadmin / DevOps", "Support Engineer"),
-        category="Network",
-        is_new=False,
-    ),
-    ToolMeta(
-        title="IPv4 Range Expander",
-        short_title="IPv4 Range",
-        description="Expand CIDR ranges into explicit host lists for deterministic validation.",
-        path="pages/138_IPv4_Range_Expander.py",
-        icon="RNG",
-        accent="#4d908e",
-        slug="ipv4_range_expander",
-        professions=("Network Engineer", "Sysadmin / DevOps", "Automation Engineer"),
-        category="Network",
-        is_new=False,
-    ),
-    ToolMeta(
-        title="Git Command Cheat Sheet",
-        short_title="Git Cheat Sheet",
-        description="Search and filter practical Git commands by intent and workflow category.",
-        path="pages/139_Git_Command_Cheat_Sheet.py",
-        icon="GIT",
-        accent="#f9844a",
-        slug="git_command_cheat_sheet",
-        professions=("Web Developer", "Sysadmin / DevOps", "Automation Engineer"),
-        category="Web & Dev",
-        is_new=False,
-    ),
-    ToolMeta(
-        title="BIP39 Mnemonic Generator & Validator",
-        short_title="BIP39 Mnemonic",
-        description="Generate and validate BIP39 mnemonic phrases with clear result states.",
-        path="pages/140_BIP39_Mnemonic_Generator_Validator.py",
-        icon="BIP39",
-        accent="#7b2cbf",
-        slug="bip39_mnemonic_generator_validator",
-        professions=("Security Engineer", "Sysadmin / DevOps", "Automation Engineer"),
-        category="Security",
-        is_new=False,
-    ),
-    ToolMeta(
-        title="Lorem Ipsum Generator",
-        short_title="Lorem Ipsum",
-        description="Generate deterministic placeholder text by words, sentences, or paragraphs.",
-        path="pages/141_Lorem_Ipsum_Generator.py",
-        icon="LORM",
-        accent="#6c757d",
-        slug="lorem_ipsum_generator",
-        professions=("Web Developer", "Support Engineer", "Automation Engineer"),
-        category="Data & Text",
-        is_new=False,
-    ),
-    ToolMeta(
-        title="Text to Binary/Hex/Octal Converter",
-        short_title="Text Radix",
-        description="Convert text input into binary, hexadecimal, and octal byte representations.",
-        path="pages/142_Text_to_Binary_Hex_Octal_Converter.py",
-        icon="BIN",
-        accent="#577590",
-        slug="text_to_binary_hex_octal_converter",
+        title="Regex Cheat Sheet",
+        short_title="Regex Cheat Sheet",
+        description="Common regex patterns to start from -- email, IPv4/IPv6, URL, phone number, UUID, hex color, and more.",
+        path="pages/55_Regex_Cheat_Sheet.py",
+        icon=".*",
+        accent="#0891b2",
+        slug="regex_cheat_sheet",
         professions=("Automation Engineer", "Web Developer", "Support Engineer"),
-        category="Data & Text",
-        is_new=False,
+        category="Reference",
+        is_new=True,
+    ),
+    ToolMeta(
+        title="Bcrypt Tool",
+        short_title="Bcrypt Tool",
+        description="Hash a value with bcrypt, or verify a value against an existing bcrypt hash.",
+        path="pages/51_Bcrypt_Tool.py",
+        icon="BCR",
+        accent="#023047",
+        slug="bcrypt_tool",
+        professions=("Web Developer", "Security Engineer", "Sysadmin / DevOps"),
+        category="Security",
+        is_new=True,
+    ),
+    ToolMeta(
+        title="chmod Calculator",
+        short_title="chmod Calculator",
+        description="Convert between symbolic (rwxr-xr-x) and octal (755) Unix file permission notation.",
+        path="pages/44_Chmod_Calculator.py",
+        icon="CHM",
+        accent="#5c6bc0",
+        slug="chmod_calculator",
+        professions=("Sysadmin / DevOps", "Automation Engineer"),
+        category="Ops & Automation",
+        is_new=True,
+    ),
+    ToolMeta(
+        title="Config Format Converter",
+        short_title="Config Converter",
+        description="Convert a config snippet between JSON, YAML, TOML, and XML.",
+        path="pages/38_Config_Format_Converter.py",
+        icon="CFC",
+        accent="#457b9d",
+        slug="config_format_converter",
+        professions=("Sysadmin / DevOps", "Web Developer", "Automation Engineer"),
+        category="Web & Dev",
+        is_new=True,
+    ),
+    ToolMeta(
+        title="Cron Expression Builder",
+        short_title="Cron Builder",
+        description="Build a 5-field cron expression from simple controls -- the reverse of Cron Explainer.",
+        path="pages/46_Cron_Expression_Builder.py",
+        icon="CRB",
+        accent="#0e9f6e",
+        slug="cron_builder",
+        professions=("Sysadmin / DevOps", "Automation Engineer"),
+        category="Ops & Automation",
+        is_new=True,
+    ),
+    ToolMeta(
+        title="CVE Lookup",
+        short_title="CVE Lookup",
+        description="Search the NIST National Vulnerability Database by CVE ID or keyword.",
+        path="pages/32_CVE_Lookup.py",
+        icon="CVE",
+        accent="#c1121f",
+        slug="cve_lookup",
+        professions=("Security Engineer", "Sysadmin / DevOps", "Support Engineer"),
+        category="Security",
+        is_new=True,
+    ),
+    ToolMeta(
+        title="DNS Propagation Checker",
+        short_title="DNS Propagation",
+        description="Query the same DNS record across several public resolvers to catch propagation lag or mismatches.",
+        path="pages/33_DNS_Propagation_Checker.py",
+        icon="DPC",
+        accent="#0077b6",
+        slug="dns_propagation",
+        professions=("Sysadmin / DevOps", "Network Engineer", "Support Engineer"),
+        category="Network",
+        is_new=True,
+    ),
+    ToolMeta(
+        title="Windows Event Reference",
+        short_title="Windows Events",
+        description="Look up common Windows Event Log IDs by number, log, source, severity, or keyword.",
+        path="pages/34_Windows_Event_Reference.py",
+        icon="WEV",
+        accent="#5c6bc0",
+        slug="windows_event_reference",
+        professions=("Sysadmin / DevOps", "Support Engineer", "Helpdesk / L1"),
+        category="Reference",
+        is_new=True,
+    ),
+    ToolMeta(
+        title="Bulk Domain Health",
+        short_title="Bulk Domain Health",
+        description="Run the Domain Health Checker's core checks across a list of public domains at once.",
+        path="pages/28_Bulk_Domain_Health.py",
+        icon="CSV",
+        accent="#1668f4",
+        slug="bulk_domain_health",
+        professions=("Network Engineer", "Security Engineer", "Sysadmin / DevOps", "Web Developer"),
+        category="Network",
+        is_new=True,
+    ),
+    ToolMeta(
+        title="CIDR Aggregator",
+        short_title="CIDR Aggregator",
+        description="Summarize a list of IPs or CIDR blocks into the minimal set of covering supernets.",
+        path="pages/22_CIDR_Aggregator.py",
+        icon="AGG",
+        accent="#0e7490",
+        slug="cidr_aggregator",
+        professions=("Network Engineer", "Sysadmin / DevOps", "Cloud Engineer"),
+        category="Network",
+        is_new=True,
+    ),
+    ToolMeta(
+        title="User-Agent Parser",
+        short_title="User-Agent Parser",
+        description="Break a User-Agent header down into likely browser, OS, and device details.",
+        path="pages/23_User_Agent_Parser.py",
+        icon="UAP",
+        accent="#c026d3",
+        slug="user_agent_parser",
+        professions=("Support Engineer", "Web Developer", "Helpdesk / L1"),
+        category="Web & Dev",
+        is_new=True,
+    ),
+    ToolMeta(
+        title="IPv6 Compressor",
+        short_title="IPv6 Compressor",
+        description="Convert an IPv6 address between its compressed (::) and fully expanded form.",
+        path="pages/24_IPv6_Compressor.py",
+        icon="V6",
+        accent="#0369a1",
+        slug="ipv6_compressor",
+        professions=("Network Engineer", "Sysadmin / DevOps"),
+        category="Network",
+        is_new=True,
+    ),
+    ToolMeta(
+        title="Case Converter",
+        short_title="Case Converter",
+        description="Convert text between slug-case, snake_case, camelCase, PascalCase, and Title Case.",
+        path="pages/25_Case_Converter.py",
+        icon="Aa",
+        accent="#ca8a04",
+        slug="case_converter",
+        professions=("Web Developer", "Automation Engineer"),
+        category="Web & Dev",
+        is_new=True,
+    ),
+    ToolMeta(
+        title="JWT Encoder",
+        short_title="JWT Encoder",
+        description="Build and sign a JWT from a JSON payload, secret, and HMAC algorithm.",
+        path="pages/21_JWT_Encoder.py",
+        icon="JWT+",
+        accent="#4338ca",
+        slug="jwt_encoder",
+        professions=("Web Developer", "Security Engineer", "Automation Engineer"),
+        category="Security",
+        is_new=True,
+    ),
+    ToolMeta(
+        title="Password Generator",
+        short_title="Password Generator",
+        description="Generate a strong random password or a diceware-style passphrase.",
+        path="pages/16_Password_Generator.py",
+        icon="PWD",
+        accent="#be123c",
+        slug="password_generator",
+        professions=("Security Engineer", "Support Engineer", "Helpdesk / L1", "Sysadmin / DevOps"),
+        category="Security",
+        is_new=True,
+    ),
+    ToolMeta(
+        title="URL Encoder/Decoder",
+        short_title="URL Encoder/Decoder",
+        description="Percent-encode or decode URL components and query strings.",
+        path="pages/17_URL_Encoder_Decoder.py",
+        icon="URL",
+        accent="#0284c7",
+        slug="url_encoder_decoder",
+        professions=("Web Developer", "Automation Engineer", "Support Engineer"),
+        category="Web & Dev",
+        is_new=True,
+    ),
+    ToolMeta(
+        title="Regex Tester",
+        short_title="Regex Tester",
+        description="Test a regular expression against sample text with match positions and groups.",
+        path="pages/18_Regex_Tester.py",
+        icon="RGX",
+        accent="#65a30d",
+        slug="regex_tester",
+        professions=("Automation Engineer", "Web Developer", "Support Engineer"),
+        category="Web & Dev",
+        is_new=True,
+    ),
+    ToolMeta(
+        title="Timestamp Converter",
+        short_title="Timestamp Converter",
+        description="Convert between Unix epoch, ISO 8601, and human-readable timestamps across timezones.",
+        path="pages/19_Timestamp_Converter.py",
+        icon="EPO",
+        accent="#0d9488",
+        slug="timestamp_converter",
+        professions=("Automation Engineer", "Sysadmin / DevOps", "Support Engineer", "Cloud Engineer"),
+        category="Ops & Automation",
+        is_new=True,
+    ),
+    ToolMeta(
+        title="Text Diff Checker",
+        short_title="Text Diff Checker",
+        description="Compare two blocks of text and see exactly what changed, line by line.",
+        path="pages/20_Text_Diff_Checker.py",
+        icon="DIF",
+        accent="#7c3aed",
+        slug="text_diff_checker",
+        professions=("Automation Engineer", "Web Developer", "Support Engineer"),
+        category="Web & Dev",
+        is_new=True,
+    ),
+    ToolMeta(
+        title="JWT Encoder",
+        short_title="JWT Encoder",
+        description="Build and sign a JWT from a JSON payload, secret, and HMAC algorithm.",
+        path="pages/21_JWT_Encoder.py",
+        icon="JWT+",
+        accent="#4338ca",
+        slug="jwt_encoder",
+        professions=("Web Developer", "Security Engineer", "Automation Engineer"),
+        category="Security",
+        is_new=True,
+    ),
+    ToolMeta(
+        title="CIDR Aggregator",
+        short_title="CIDR Aggregator",
+        description="Summarize a list of IPs or CIDR blocks into the minimal set of covering supernets.",
+        path="pages/22_CIDR_Aggregator.py",
+        icon="AGG",
+        accent="#0e7490",
+        slug="cidr_aggregator",
+        professions=("Network Engineer", "Sysadmin / DevOps", "Cloud Engineer"),
+        category="Network",
+        is_new=True,
+    ),
+    ToolMeta(
+        title="User-Agent Parser",
+        short_title="User-Agent Parser",
+        description="Break a User-Agent header down into likely browser, OS, and device details.",
+        path="pages/23_User_Agent_Parser.py",
+        icon="UAP",
+        accent="#c026d3",
+        slug="user_agent_parser",
+        professions=("Support Engineer", "Web Developer", "Helpdesk / L1"),
+        category="Web & Dev",
+        is_new=True,
+    ),
+    ToolMeta(
+        title="IPv6 Compressor",
+        short_title="IPv6 Compressor",
+        description="Convert an IPv6 address between its compressed (::) and fully expanded form.",
+        path="pages/24_IPv6_Compressor.py",
+        icon="V6",
+        accent="#0369a1",
+        slug="ipv6_compressor",
+        professions=("Network Engineer", "Sysadmin / DevOps"),
+        category="Network",
+        is_new=True,
+    ),
+    ToolMeta(
+        title="Case Converter",
+        short_title="Case Converter",
+        description="Convert text between slug-case, snake_case, camelCase, PascalCase, and Title Case.",
+        path="pages/25_Case_Converter.py",
+        icon="Aa",
+        accent="#ca8a04",
+        slug="case_converter",
+        professions=("Web Developer", "Automation Engineer"),
+        category="Web & Dev",
+        is_new=True,
+    ),
+    ToolMeta(
+        title="Color Converter",
+        short_title="Color Converter",
+        description="Convert colors between HEX, RGB, and HSL, with a live swatch preview.",
+        path="pages/26_Color_Converter.py",
+        icon="RGB",
+        accent="#db2777",
+        slug="color_converter",
+        professions=("Web Developer", "Automation Engineer"),
+        category="Web & Dev",
+        is_new=True,
+    ),
+    ToolMeta(
+        title="WHOIS Lookup",
+        short_title="WHOIS Lookup",
+        description="Look up domain registration details (registrar, key dates, name servers) via RDAP.",
+        path="pages/27_WHOIS_Lookup.py",
+        icon="WHO",
+        accent="#0d9488",
+        slug="whois_lookup",
+        professions=("Network Engineer", "Security Engineer", "Sysadmin / DevOps", "Web Developer"),
+        category="Network",
+        is_new=True,
     ),
 )
 
@@ -2018,27 +1382,6 @@ POPULAR_TOOLS = tuple(_tools_by_slug[slug] for slug in _POPULAR_SLUGS)
 del _tools_by_slug
 TITLE_TO_SLUG: dict[str, str] = {tool.title: tool.slug for tool in TOOLS}
 
-GUIDED_WORKFLOWS: tuple[GuidedWorkflow, ...] = (
-    GuidedWorkflow(
-        title="Domain incident triage",
-        description="Check DNS, certificate, and HTTP posture in a guided sequence.",
-        slugs=("domain_health", "dns_records", "ssl_certificate", "http_status"),
-        badge="Network",
-    ),
-    GuidedWorkflow(
-        title="Public endpoint debugging",
-        description="Validate HTTP behavior, headers, and webhook responses quickly.",
-        slugs=("http_status", "security_headers", "webhook_tester", "log_troubleshooting"),
-        badge="Web & Dev",
-    ),
-    GuidedWorkflow(
-        title="Token and auth troubleshooting",
-        description="Inspect JWT payloads, claims, and related encodings safely.",
-        slugs=("jwt_decoder", "jwt_claims_reference", "base64_tool"),
-        badge="Security",
-    ),
-)
-
 # Curated "what would you naturally run next" pairings for a real troubleshooting
 # flow (e.g. DNS -> SSL -> HTTP), not derived from category -- category groups
 # tools by domain, not by which ones chain together in practice. Intentionally
@@ -2047,208 +1390,44 @@ GUIDED_WORKFLOWS: tuple[GuidedWorkflow, ...] = (
 # render_related_tools() renders nothing for an absent slug rather than a
 # forced, meaningless section.
 TOOL_BUNDLES: dict[str, tuple[str, ...]] = {
-    "domain_health": ("dns_records", "ssl_certificate", "whois_lookup", "tls_scanner"),
-    "dns_records": ("domain_health", "whois_lookup", "dns_propagation"),
-    "dns_propagation": ("dns_records", "domain_health"),
-    "ssl_certificate": ("domain_health", "dns_records", "http_status", "tls_scanner", "csr_decoder", "pem_bundle_splitter", "cert_chain_validator"),
-    "http_status": ("domain_health", "ssl_certificate", "uptime_trend", "security_headers", "robots_validator", "http_header_parser"),
-    "http_status_reference": ("http_status", "webhook_tester", "exit_code_reference", "http_methods_reference"),
-    "uptime_trend": ("http_status", "domain_health", "business_hours"),
-    "security_headers": ("http_status", "ssl_certificate", "robots_validator", "http_header_parser", "csp_builder"),
-    "cve_lookup": ("security_headers", "ssl_certificate"),
+    "domain_health": ("dns_records", "ssl_certificate", "whois_lookup"),
+    "dns_records": ("domain_health", "whois_lookup", "ssl_certificate"),
+    "ssl_certificate": ("domain_health", "dns_records", "http_status"),
+    "http_status": ("domain_health", "ssl_certificate", "uptime_trend"),
+    "uptime_trend": ("http_status", "domain_health"),
     "whois_lookup": ("dns_records", "domain_health", "ssl_certificate"),
     "bulk_domain_health": ("domain_health", "dns_records", "ssl_certificate"),
     "mac_address_tool": ("subnet_calculator", "cidr_aggregator", "ipv6_compressor"),
-    "ip_geolocation": ("whois_lookup", "dns_records", "http_status"),
-    "subnet_calculator": ("cidr_aggregator", "ipv6_compressor", "mac_address_tool", "cidr_overlap"),
-    "cidr_aggregator": ("subnet_calculator", "ipv6_compressor", "cidr_overlap"),
+    "subnet_calculator": ("cidr_aggregator", "ipv6_compressor", "mac_address_tool"),
+    "cidr_aggregator": ("subnet_calculator", "ipv6_compressor"),
     "ipv6_compressor": ("subnet_calculator", "cidr_aggregator"),
     "port_reference": ("subnet_calculator", "mac_address_tool"),
-    "windows_event_reference": ("log_troubleshooting", "port_reference", "windows_error_reference"),
-    "windows_error_reference": ("windows_event_reference", "log_troubleshooting"),
-    "m365_sku_decoder": ("windows_event_reference", "port_reference"),
-    "email_header_analyzer": ("dns_records", "domain_health", "dkim_lookup"),
-    "dkim_lookup": ("email_header_analyzer", "domain_health", "email_record_builder"),
-    "email_record_builder": ("dkim_lookup", "dns_records", "caa_record_builder"),
-    "password_generator": ("hash_generator", "password_entropy", "password_policy_checker"),
-    "hash_generator": ("password_generator", "jwt_decoder", "file_integrity", "luhn_validator"),
-    "file_integrity": ("hash_generator", "cve_lookup", "encoding_detector"),
-    "bcrypt_tool": ("hash_generator", "password_generator"),
-    "totp_generator": ("password_generator", "hash_generator", "base32_tools"),
-    "keypair_generator": ("password_generator", "hash_generator", "csr_decoder", "ssh_fingerprint", "csr_generator"),
-    "qr_code_generator": ("url_encoder_decoder", "color_converter"),
-    "jwt_decoder": ("jwt_encoder", "hash_generator", "jwt_weak_secret", "jwt_claims_reference"),
-    "jwt_encoder": ("jwt_decoder", "hash_generator", "jwt_weak_secret"),
-    "json_formatter": ("base64_tool", "config_format_converter", "json_diff", "xml_formatter", "yaml_formatter", "json_path_query", "json_to_typescript", "json_merge_patch"),
-    "id_generator": ("hash_generator", "json_formatter", "ulid_uuid_decoder", "deterministic_uuid"),
-    "json_diff": ("json_formatter", "text_diff_checker", "csv_diff"),
-    "sql_formatter": ("json_formatter", "config_format_converter"),
-    "base_converter": ("hash_generator", "id_generator", "byte_size_converter", "number_to_words", "base62_tool"),
-    "config_format_converter": ("json_formatter", "text_diff_checker", "env_linter", "markdown_converter", "xml_formatter", "yaml_formatter"),
-    "base64_tool": ("json_formatter", "url_encoder_decoder", "base32_tools", "html_entity_tools", "base58_tool"),
-    "url_encoder_decoder": ("base64_tool", "json_formatter", "url_parser", "html_entity_tools"),
-    "regex_tester": ("text_diff_checker", "json_formatter", "regex_cheat_sheet", "regex_replace", "pattern_extractor"),
-    "text_diff_checker": ("regex_tester", "case_converter", "csv_diff", "whitespace_visualizer", "text_stats", "line_ending_converter", "unified_diff_generator"),
-    "case_converter": ("text_diff_checker", "url_encoder_decoder", "text_stats"),
-    "color_converter": ("qr_code_generator", "case_converter", "css_gradient_generator"),
-    "timestamp_converter": ("cron_explainer", "business_hours", "log_duration", "date_calculator", "world_clock", "iso8601_duration"),
-    "cron_explainer": ("timestamp_converter", "log_troubleshooting", "cron_builder", "cron_overlap"),
-    "cron_builder": ("cron_explainer", "timestamp_converter", "cron_overlap"),
-    "log_troubleshooting": ("cron_explainer", "webhook_tester", "windows_event_reference", "pattern_extractor"),
-    "chmod_calculator": ("cron_explainer", "log_troubleshooting"),
-    "webhook_tester": ("http_status", "log_troubleshooting", "curl_builder"),
-    "user_agent_parser": ("http_status", "email_header_analyzer", "user_agent_builder"),
-    "ulid_uuid_decoder": ("id_generator", "timestamp_converter", "deterministic_uuid"),
-    "curl_builder": ("webhook_tester", "url_encoder_decoder", "url_parser"),
-    "regex_cheat_sheet": ("regex_tester",),
-    "env_linter": ("config_format_converter", "env_diff"),
-    "tls_scanner": ("ssl_certificate", "domain_health"),
-    "business_hours": ("timestamp_converter", "uptime_trend", "log_duration", "date_calculator"),
-    "csv_diff": ("json_diff", "text_diff_checker", "csv_to_markdown", "csv_cleaner"),
-    "markdown_converter": ("config_format_converter", "csv_to_markdown", "markdown_toc_generator"),
-    "encoding_detector": ("file_integrity", "pii_redactor"),
-    "robots_validator": ("security_headers", "http_status", "robots_meta_builder"),
-    "jwt_weak_secret": ("jwt_decoder", "jwt_encoder"),
-    "log_duration": ("timestamp_converter", "business_hours"),
-    "url_parser": ("url_encoder_decoder", "curl_builder"),
-    "base32_tools": ("base64_tool", "totp_generator"),
-    "http_header_parser": ("security_headers", "http_status", "basic_auth_tool", "cache_control_tool"),
-    "cidr_overlap": ("cidr_aggregator", "subnet_calculator"),
-    "csr_decoder": ("ssl_certificate", "keypair_generator", "ssh_fingerprint", "csr_generator"),
-    "pem_bundle_splitter": ("ssl_certificate", "cert_chain_validator"),
-    "whitespace_visualizer": ("text_diff_checker", "line_ending_converter"),
-    "date_calculator": ("timestamp_converter", "business_hours"),
-    "xml_formatter": ("json_formatter", "config_format_converter", "yaml_formatter"),
-    "html_entity_tools": ("url_encoder_decoder", "base64_tool"),
-    "deterministic_uuid": ("id_generator", "ulid_uuid_decoder"),
-    "luhn_validator": ("hash_generator", "iban_validator"),
-    "text_stats": ("text_diff_checker", "case_converter"),
-    "csv_to_markdown": ("csv_diff", "markdown_converter", "csv_json_converter", "csv_cleaner", "csv_column_selector"),
-    "ssh_fingerprint": ("keypair_generator", "csr_decoder"),
-    "yaml_formatter": ("config_format_converter", "json_formatter", "xml_formatter"),
-    "byte_size_converter": ("base_converter",),
-    "line_ending_converter": ("text_diff_checker", "whitespace_visualizer"),
-    "regex_replace": ("regex_tester",),
-    "password_entropy": ("password_generator", "password_policy_checker"),
-    "pattern_extractor": ("regex_tester", "log_troubleshooting", "gitignore_tester"),
-    "csv_json_converter": ("config_format_converter", "csv_to_markdown", "csv_diff"),
-    "line_sorter": ("text_diff_checker", "case_converter", "csv_cleaner"),
-    "user_agent_builder": ("user_agent_parser", "http_status"),
-    "semver_tools": ("cve_lookup", "config_format_converter"),
-    "world_clock": ("timestamp_converter", "business_hours", "date_calculator", "timezone_abbreviation_reference"),
-    "csv_cleaner": ("csv_diff", "csv_to_markdown", "line_sorter", "csv_column_selector"),
-    "json_path_query": ("json_formatter", "json_diff"),
-    "iban_validator": ("luhn_validator",),
-    "base58_tool": ("base64_tool", "base32_tools", "base62_tool"),
-    "exit_code_reference": ("http_status_reference", "windows_error_reference"),
-    "timezone_abbreviation_reference": ("world_clock", "timestamp_converter"),
-    "basic_auth_tool": ("base64_tool", "http_header_parser"),
-    "gitignore_tester": ("pattern_extractor", "regex_tester"),
-    "markdown_toc_generator": ("markdown_converter", "csv_to_markdown", "markdown_link_extractor"),
-    "number_to_words": ("base_converter", "byte_size_converter"),
-    "json_to_typescript": ("json_formatter", "json_path_query", "config_format_converter"),
-    "css_gradient_generator": ("color_converter", "qr_code_generator"),
-    "jwt_claims_reference": ("jwt_decoder", "jwt_encoder", "jwt_weak_secret", "jwk_pem_converter"),
-    "csp_builder": ("security_headers", "http_header_parser"),
-    "robots_meta_builder": ("robots_validator", "security_headers"),
-    "cache_control_tool": ("http_header_parser", "security_headers"),
-    "markdown_table_formatter": ("csv_to_markdown", "markdown_toc_generator"),
-    "csv_column_selector": ("csv_cleaner", "csv_to_markdown", "csv_json_converter", "column_aligner"),
-    "http_methods_reference": ("http_status_reference", "http_header_parser"),
-    "line_numberer": ("text_stats", "whitespace_visualizer"),
-    "pii_redactor": ("encoding_detector", "text_diff_checker"),
-    "env_diff": ("env_linter", "csv_diff", "json_diff"),
-    "cron_overlap": ("cron_explainer", "cron_builder"),
-    "test_data_generator": ("id_generator", "deterministic_uuid"),
-    "password_policy_checker": ("password_entropy", "password_generator"),
-    "iso8601_duration": ("timestamp_converter", "cron_explainer"),
-    "json_merge_patch": ("json_formatter", "json_diff", "config_format_converter"),
-    "column_aligner": ("csv_column_selector", "markdown_table_formatter"),
-    "ssh_config_validator": ("ssh_fingerprint", "keypair_generator"),
-    "csr_generator": ("csr_decoder", "keypair_generator", "ssh_fingerprint"),
-    "caa_record_builder": ("email_record_builder", "dns_records"),
-    "base62_tool": ("base58_tool", "base_converter"),
-    "unified_diff_generator": ("text_diff_checker", "gitignore_tester"),
-    "jwk_pem_converter": ("jwt_claims_reference", "keypair_generator", "csr_decoder"),
-    "cert_chain_validator": ("pem_bundle_splitter", "ssl_certificate", "csr_decoder"),
-    "wsl_path_converter": ("column_aligner", "gitignore_tester"),
-    "markdown_link_extractor": ("markdown_toc_generator", "pattern_extractor"),
+    "windows_event_reference": ("log_troubleshooting", "port_reference"),
+    "email_header_analyzer": ("dns_records", "domain_health"),
+    "password_generator": ("hash_generator",),
+    "hash_generator": ("password_generator", "jwt_decoder", "file_integrity"),
+    "file_integrity": ("hash_generator", "cve_lookup"),
+    "totp_generator": ("password_generator", "hash_generator"),
+    "jwt_decoder": ("jwt_encoder", "hash_generator"),
+    "jwt_encoder": ("jwt_decoder", "hash_generator"),
+    "json_formatter": ("base64_tool", "regex_tester"),
+    "base64_tool": ("json_formatter", "url_encoder_decoder"),
+    "url_encoder_decoder": ("base64_tool", "json_formatter"),
+    "regex_tester": ("text_diff_checker", "json_formatter"),
+    "text_diff_checker": ("regex_tester", "case_converter"),
+    "case_converter": ("text_diff_checker", "url_encoder_decoder"),
+    "color_converter": ("qr_code_generator", "case_converter"),
+    "timestamp_converter": ("cron_explainer",),
+    "cron_explainer": ("timestamp_converter", "log_troubleshooting"),
+    "log_troubleshooting": ("cron_explainer", "webhook_tester", "windows_event_reference"),
+    "webhook_tester": ("http_status", "log_troubleshooting"),
+    "user_agent_parser": ("http_status", "email_header_analyzer"),
 }
 
 
 def related_tools(slug: str) -> tuple[ToolMeta, ...]:
     """Return the curated "next tool" suggestions for a tool slug. Empty if none defined."""
     return tuple(_resolve_slugs(TOOL_BUNDLES.get(slug, ())))
-
-
-def guided_workflows(query: str = "", profession: str = "All") -> tuple[GuidedWorkflow, ...]:
-    """Return guided workflow cards filtered by optional search/profession context."""
-    normalized_query = query.strip().lower()
-    profession_filter = profession if profession in PROFESSIONS else "All"
-    selected: list[GuidedWorkflow] = []
-    for workflow in GUIDED_WORKFLOWS:
-        tools = tuple(_resolve_slugs(workflow.slugs))
-        if not tools:
-            continue
-        if profession_filter != "All" and not any(profession_filter in tool.professions for tool in tools):
-            continue
-        if normalized_query:
-            haystack = " ".join(
-                (
-                    workflow.title,
-                    workflow.description,
-                    *[tool.title for tool in tools],
-                    *[tool.short_title for tool in tools],
-                )
-            ).lower()
-            if normalized_query not in haystack:
-                continue
-        selected.append(workflow)
-    return tuple(selected)
-
-
-def render_guided_workflows(query: str = "", profession: str = "All") -> None:
-    workflows = guided_workflows(query=query, profession=profession)
-    st.markdown(
-        """
-        <div class="section-heading">
-            <div><span class="section-bolt">IT</span><h2>Start Here Workflows</h2></div>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-    if not workflows:
-        render_status_note(
-            "No workflow matches",
-            "Try a different search or profession filter to reveal guided troubleshooting paths.",
-            tone="neutral",
-        )
-        return
-
-    cols = st.columns(min(len(workflows), 3), gap="large")
-    for index, workflow in enumerate(workflows):
-        tools = tuple(_resolve_slugs(workflow.slugs))
-        if not tools:
-            continue
-        with cols[index % len(cols)]:
-            with st.container(key=f"guided_workflow_{_key_slug(workflow.title)}"):
-                st.markdown(
-                    f"""
-                    <div class="tool-card-shell workflow-card-shell">
-                        <p class="tool-card-category">{escape(workflow.badge)}</p>
-                        <h3>{escape(workflow.title)}</h3>
-                        <p>{escape(workflow.description)}</p>
-                    </div>
-                    """,
-                    unsafe_allow_html=True,
-                )
-                for step_index, tool in enumerate(tools, start=1):
-                    _safe_page_link(
-                        tool.path,
-                        label=f"{step_index}. {tool.short_title}",
-                        icon=_material_icon_for(tool.slug),
-                        stretch_width=True,
-                    )
 
 
 def render_related_tools(slug: str) -> None:
@@ -2264,16 +1443,9 @@ def render_related_tools(slug: str) -> None:
 
 
 def apply_app_shell(active_page: str) -> None:
-    """Apply global theme CSS and render the shared sidebar shell.
-
-    CSS injects first, sidebar renders second -- otherwise the sidebar's
-    custom-styled HTML (branding, nav links, cards) reaches the browser as
-    its own delta before the stylesheet that styles it exists, producing a
-    brief flash of unstyled/default-look content on page load and
-    navigation.
-    """
-    _inject_global_css("dark")
+    """Apply global theme CSS and render the shared sidebar shell."""
     render_sidebar(active_page)
+    _inject_global_css("dark")
     slug = TITLE_TO_SLUG.get(active_page)
     if slug is not None:
         record_recent_visit(slug)
@@ -2283,45 +1455,20 @@ def apply_app_shell(active_page: str) -> None:
 
 def _get_persisted_slugs(param: str) -> list[str]:
     """Read a comma-separated slug list from the URL query params."""
-    max_items = MAX_RECENT_TOOLS if param == "recent" else None
-    return _normalize_slug_list(st.query_params.get(param, "").split(","), max_items=max_items)
+    return [slug for slug in st.query_params.get(param, "").split(",") if slug]
 
 
 def _set_persisted_slugs(param: str, slugs: list[str]) -> None:
-    """Write a slug list back into URL query params, skipping no-op writes."""
-    max_items = MAX_RECENT_TOOLS if param == "recent" else None
-    normalized = _normalize_slug_list(slugs, max_items=max_items)
-    current = st.query_params.get(param, "")
-    updated = ",".join(normalized)
-    if updated:
-        if updated != current:
-            st.query_params[param] = updated
-    elif param in st.query_params:
+    """Write a slug list back into the URL query params (removing the key when empty)."""
+    if slugs:
+        st.query_params[param] = ",".join(slugs)
+    else:
         st.query_params.pop(param, None)
-
-
-def _normalize_slug_list(slugs: Iterable[str], max_items: int | None = None) -> list[str]:
-    """Trim, de-dupe, and preserve order for persisted query-param slug lists."""
-    normalized: list[str] = []
-    seen: set[str] = set()
-    for value in slugs:
-        slug = value.strip()
-        if not slug or slug in seen:
-            continue
-        normalized.append(slug)
-        seen.add(slug)
-        if max_items is not None and len(normalized) >= max_items:
-            break
-    return normalized
 
 
 def record_recent_visit(slug: str) -> None:
     """Prepend ``slug`` to the recents list (deduped, capped) and persist it."""
-    if not slug:
-        return
     stored = _get_persisted_slugs("recent")
-    if stored and stored[0] == slug:
-        return
     stored = [slug, *(s for s in stored if s != slug)][:MAX_RECENT_TOOLS]
     _set_persisted_slugs("recent", stored)
 
@@ -2452,9 +1599,6 @@ def render_command_palette() -> None:
 
             var overlay = doc.createElement("div");
             overlay.id = "itops-cmdk-overlay";
-            overlay.setAttribute("role", "dialog");
-            overlay.setAttribute("aria-modal", "true");
-            overlay.setAttribute("aria-label", "ITOps command palette");
             overlay.style.cssText = "position:fixed;inset:0;z-index:99999;display:none;" +
                 "background:rgba(10,12,16,0.6);align-items:flex-start;justify-content:center;padding-top:12vh;";
 
@@ -2466,12 +1610,10 @@ def render_command_palette() -> None:
             var input = doc.createElement("input");
             input.type = "text";
             input.placeholder = "Search tools... (Esc to close)";
-            input.setAttribute("aria-label", "Search tools");
             input.style.cssText = "border:none;outline:none;padding:16px;font-size:16px;background:transparent;" +
                 "color:#e8ecf1;border-bottom:1px solid rgba(255,255,255,0.1);width:100%;box-sizing:border-box;";
 
             var list = doc.createElement("div");
-            list.setAttribute("role", "listbox");
             list.style.cssText = "overflow-y:auto;padding:8px;";
 
             panel.appendChild(input);
@@ -2505,7 +1647,6 @@ def render_command_palette() -> None:
                 }}
                 matches.forEach(function(tool, index) {{
                     var row = doc.createElement("div");
-                    row.setAttribute("role", "option");
                     row.style.cssText = "padding:10px 12px;border-radius:8px;cursor:pointer;" +
                         (index === 0 ? "background:rgba(255,255,255,0.08);" : "");
                     var title = doc.createElement("div");
@@ -2664,30 +1805,6 @@ def render_home_hero() -> str:
     return query
 
 
-def render_fragment(name: str, body: Callable[[], None]) -> None:
-    """Render ``body`` inside ``st.fragment`` when available, else run inline."""
-    fragment = getattr(st, "fragment", None)
-    if fragment is None:
-        body()
-        return
-
-    @fragment
-    def _run_fragment() -> None:
-        body()
-
-    _run_fragment()
-
-
-def _request_rerun(prefer_fragment_rerun: bool = False) -> None:
-    if prefer_fragment_rerun:
-        try:
-            st.rerun(scope="fragment")
-            return
-        except Exception:
-            pass
-    st.rerun()
-
-
 def render_tool_section(
     tools: Iterable[ToolMeta],
     query: str = "",
@@ -2695,7 +1812,6 @@ def render_tool_section(
     section_id: str | None = "all-tools",
     key_prefix: str = "tools",
     show_reorder: bool = False,
-    prefer_fragment_rerun: bool = False,
 ) -> None:
     """Render a home page tool card grid.
 
@@ -2708,10 +1824,7 @@ def render_tool_section(
     tools) and Streamlit container keys must be unique. ``show_reorder``
     adds move-earlier/move-later buttons -- pass True only for the
     visitor's own Favorites grid, never for a read-only grid like Shared
-    Favorites or Recently Used. ``prefer_fragment_rerun`` uses
-    ``st.rerun(scope="fragment")`` where available, which keeps favorite
-    interactions scoped to the current fragment instead of rerunning the
-    full app shell.
+    Favorites or Recently Used.
     """
     tools = tuple(tools)
     section_label = heading if heading is not None else ("Matching Tools" if query.strip() else "Popular Tools")
@@ -2743,24 +1856,24 @@ def render_tool_section(
                     back_col, link_col, fwd_col, fav_col = st.columns([1, 4, 1, 1])
                     with back_col:
                         if st.button(
-                            "Earlier",
+                            "",
                             icon=":material/arrow_back:",
                             key=f"fav_move_back_{key_prefix}_{tool.slug}",
                             help="Move earlier",
                             disabled=index == 0,
                         ):
                             move_favorite(tool.slug, -1)
-                            _request_rerun(prefer_fragment_rerun)
+                            st.rerun()
                     with fwd_col:
                         if st.button(
-                            "Later",
+                            "",
                             icon=":material/arrow_forward_ios:",
                             key=f"fav_move_fwd_{key_prefix}_{tool.slug}",
                             help="Move later",
                             disabled=index == len(tools) - 1,
                         ):
                             move_favorite(tool.slug, 1)
-                            _request_rerun(prefer_fragment_rerun)
+                            st.rerun()
                 else:
                     link_col, fav_col = st.columns([5, 1])
                 with link_col:
@@ -2769,10 +1882,9 @@ def render_tool_section(
                     is_fav = tool.slug in favorite_slugs
                     fav_icon = ":material/star:" if is_fav else ":material/star_border:"
                     fav_help = "Remove from favorites" if is_fav else "Add to favorites"
-                    fav_label = "Favorited" if is_fav else "Favorite"
-                    if st.button(fav_label, icon=fav_icon, key=f"fav_toggle_{key_prefix}_{tool.slug}", help=fav_help):
+                    if st.button("", icon=fav_icon, key=f"fav_toggle_{key_prefix}_{tool.slug}", help=fav_help):
                         toggle_favorite(tool.slug)
-                        _request_rerun(prefer_fragment_rerun)
+                        st.rerun()
 
 
 def render_feature_strip() -> None:
@@ -2812,40 +1924,14 @@ def render_page_header(
     tool = tool_by_title(title)
     icon = tool.icon if tool else "IT"
     accent = tool.accent if tool else "#1668f4"
-    overline = f"{tool.category} Tool" if tool else "Tool"
     icon_text = _icon_text_color(accent)
-    illustration_path = (
-        TOOL_HEADER_ILLUSTRATION_BY_CATEGORY.get(illustration, illustration)
-        if illustration
-        else (TOOL_HEADER_ILLUSTRATION_BY_CATEGORY.get(tool.category) if tool else None)
-    )
-    illustration_html = (
-        _svg_img_html(
-            illustration_path,
-            f"{tool.category if tool else 'Tool'} illustration",
-            "tool-page-header-illustration-image",
-            decorative=True,
-        )
-        if illustration_path
-        else None
-    )
-    layout_class = " tool-page-header-with-illustration" if illustration_html else ""
-    header_id = f"tool-page-title-{_key_slug(title)}"
-    illustration_slot = (
-        f'<div class="tool-page-header-illustration" aria-hidden="true">{illustration_html}</div>'
-        if illustration_html
-        else ""
-    )
     st.markdown(
         f"""
-        <section class="tool-page-header{layout_class}" style="--tool-accent: {accent}; --tool-icon-text: {icon_text};" aria-labelledby="{header_id}">
-            <div class="tool-page-header-main">
-                <div class="tool-page-icon">{escape(icon)}</div>
-                <div>
-                    <p class="tool-page-overline">{escape(overline)}</p>
-                    <h1 id="{header_id}">{escape(title)}</h1>
-                    <p>{escape(description)}</p>
-                </div>
+        <section class="tool-page-header" style="--tool-accent: {accent}; --tool-icon-text: {icon_text};">
+            <div class="tool-page-icon">{escape(icon)}</div>
+            <div>
+                <h1>{escape(title)}</h1>
+                <p>{escape(description)}</p>
             </div>
             {illustration_slot}
         </section>
@@ -2907,16 +1993,7 @@ def render_form_intro(title: str, description: str) -> None:
     )
 
 
-def render_control_heading(label: str) -> None:
-    st.markdown(f'<div class="tool-panel-eyebrow">{escape(label)}</div>', unsafe_allow_html=True)
-
-
-def render_section_heading(
-    title: str,
-    description: str | None = None,
-    eyebrow: str = "Results",
-    heading_level: str = "h2",
-) -> None:
+def render_section_heading(title: str, description: str | None = None, eyebrow: str = "Results") -> None:
     # description_html sits on the same line as </h2> above, not alone on its
     # own line, because when it's "" (no description) a whitespace-only line
     # there is a blank line per CommonMark -- which ends this raw HTML block
@@ -2930,7 +2007,7 @@ def render_section_heading(
         f"""
         <div class="tool-section-heading {heading_class}" data-heading-level="{heading_level_value}">
             <div class="tool-panel-eyebrow">{escape(eyebrow)}</div>
-            <{heading_tag}>{escape(title)}</{heading_tag}>{description_html}
+            <h2>{escape(title)}</h2>{description_html}
         </div>
         """,
         unsafe_allow_html=True,
@@ -3036,90 +2113,86 @@ def render_status_note(title: str, description: str, tone: str = "info") -> None
     )
 
 
-def classify_failure_mode(message: str | None) -> str:
-    text = (message or "").strip().lower()
-    if not text:
-        return "persistent"
-    if any(hint in text for hint in PERSISTENT_FAILURE_HINTS):
-        return "persistent"
-    if any(hint in text for hint in TRANSIENT_FAILURE_HINTS):
-        return "transient"
-    return "persistent"
-
-
-def summarize_failure_reason(message: str | None) -> str:
-    text = (message or "").strip().lower()
-    if not text:
-        return "The check did not return a stable response."
-    if "timeout" in text:
-        return "The request timed out before a response was received."
-    if "rate limit" in text or "429" in text:
-        return "The upstream service is rate-limiting requests."
-    if "connection" in text or "refused" in text or "reset" in text:
-        return "The endpoint could not be reached from this environment."
-    if "certificate" in text or "tls" in text or "ssl" in text:
-        return "TLS/certificate validation did not pass."
-    if "nxdomain" in text or "does not exist" in text:
-        return "The domain name could not be resolved."
-    if "no answer" in text:
-        return "No matching records were returned for this query."
-    if "invalid" in text:
-        return "The current input format is invalid."
-    return "The check failed and did not produce a reliable result."
-
-
-def render_failure_note(
-    context: str,
-    message: str | None,
-    *,
-    remediation: str,
-    mode: str | None = None,
-) -> None:
-    normalized_mode = mode if mode in {"transient", "persistent"} else classify_failure_mode(message)
-    title = (
-        f"{context} temporarily unavailable"
-        if normalized_mode == "transient"
-        else f"{context} needs attention"
-    )
-    reason = summarize_failure_reason(message)
-    intro = (
-        "This looks temporary."
-        if normalized_mode == "transient"
-        else "This appears persistent."
-    )
-    render_status_note(
-        title,
-        f"{intro} {reason} Next step: {remediation}",
-        tone="warning",
-    )
-
-
 def filter_tools(query: str = "", profession: str = "All") -> tuple[ToolMeta, ...]:
     """Return every tool matching both the search text and the profession filter."""
     value = query.strip().lower()
-    normalized_profession = profession if profession in PROFESSIONS else "All"
-    return _filter_tools_cached(value, normalized_profession)
-
-
-@lru_cache(maxsize=512)
-def _filter_tools_cached(value: str, profession: str) -> tuple[ToolMeta, ...]:
-    matches_profession = (
-        (lambda tool: True) if profession == "All" else (lambda tool: profession in tool.professions)
-    )
-    if not value:
-        return tuple(tool for tool in TOOLS if matches_profession(tool))
-    return tuple(
-        tool
-        for tool in TOOLS
-        if matches_profession(tool)
-        and (
-            value in tool.title.lower()
+    matches_query = (
+        (lambda tool: True)
+        if not value
+        else (
+            lambda tool: value in tool.title.lower()
             or value in tool.short_title.lower()
             or value in tool.description.lower()
             or value in tool.slug.replace("_", " ")
             or any(value in alias.lower() for alias in tool.aliases)
         )
     )
+    matches_profession = (
+        (lambda tool: True) if profession not in PROFESSIONS else (lambda tool: profession in tool.professions)
+    )
+    return tuple(tool for tool in TOOLS if matches_query(tool) and matches_profession(tool))
+
+
+def _resolve_slugs(slugs: Iterable[str]) -> list[ToolMeta]:
+    """Map slugs to ToolMeta, in order, skipping unknown/stale slugs and duplicates."""
+    by_slug = {tool.slug: tool for tool in TOOLS}
+    resolved: list[ToolMeta] = []
+    seen: set[str] = set()
+    for slug in slugs:
+        tool = by_slug.get(slug)
+        if tool is None or tool.slug in seen:
+            continue
+        resolved.append(tool)
+        seen.add(tool.slug)
+    return resolved
+
+
+def recent_or_popular_tools(recent_slugs: Iterable[str]) -> tuple[ToolMeta, ...]:
+    """Map recently-visited tool slugs (most-recent-first) to ToolMeta, padded with POPULAR_TOOLS.
+
+    Unknown/stale slugs are skipped silently. Falls back entirely to
+    POPULAR_TOOLS for a visitor with no recorded recents yet.
+    """
+    resolved = _resolve_slugs(recent_slugs)[:MAX_RECENT_TOOLS]
+    seen = {tool.slug for tool in resolved}
+
+    if len(resolved) < MAX_RECENT_TOOLS:
+        for tool in POPULAR_TOOLS:
+            if tool.slug in seen:
+                continue
+            resolved.append(tool)
+            seen.add(tool.slug)
+            if len(resolved) >= MAX_RECENT_TOOLS:
+                break
+
+    return tuple(resolved)
+
+
+def favorite_tools() -> tuple[ToolMeta, ...]:
+    """Return the visitor's favorited tools, in the order they were favorited. No padding."""
+    return tuple(_resolve_slugs(_get_persisted_slugs("fav")))
+
+
+def favorites_share_link(tools: Iterable[ToolMeta]) -> str:
+    """Build an absolute, read-only link that opens someone else's favorites as a shared list."""
+    slugs = ",".join(tool.slug for tool in tools)
+    query = urlencode({SHARED_FAVORITES_PARAM: slugs})
+    return f"{app_base_url()}/?{query}"
+
+
+def shared_favorite_tools() -> tuple[ToolMeta, ...]:
+    """Return the tools named by a visited ``shared_fav`` link, in order. Read-only, view-only."""
+    raw = st.query_params.get(SHARED_FAVORITES_PARAM, "")
+    return tuple(_resolve_slugs(slug for slug in raw.split(",") if slug))
+
+
+def sort_tools(tools: tuple[ToolMeta, ...], mode: str) -> tuple[ToolMeta, ...]:
+    """Sort a tool grid. "az"/"za" sort by title; anything else keeps declared order."""
+    if mode == "az":
+        return tuple(sorted(tools, key=lambda tool: tool.title.lower()))
+    if mode == "za":
+        return tuple(sorted(tools, key=lambda tool: tool.title.lower(), reverse=True))
+    return tools
 
 
 def _resolve_slugs(slugs: Iterable[str]) -> list[ToolMeta]:
@@ -3263,15 +2336,6 @@ def _fallback_href(path: str) -> str:
     return f"/{page_name}"
 
 
-def _tool_card_icon_asset(tool: ToolMeta) -> str | None:
-    if tool.slug in TOOL_CARD_ICON_ASSETS:
-        return TOOL_CARD_ICON_ASSETS[tool.slug]
-    normalized_slug = _key_slug(tool.slug)
-    if normalized_slug and normalized_slug in TOOL_CARD_ICON_ASSETS:
-        return TOOL_CARD_ICON_ASSETS[normalized_slug]
-    return CATEGORY_TOOL_CARD_ICON_ASSETS.get(tool.category)
-
-
 def _tool_card_html(tool: ToolMeta, delay_ms: int = 0) -> str:
     # NOTE: new_badge must not sit alone on its own line below. When it's ""
     # (not a new tool), a whitespace-only line there is a blank line per
@@ -3281,17 +2345,9 @@ def _tool_card_html(tool: ToolMeta, delay_ms: int = 0) -> str:
     # line as the opening tag means that line is never blank.
     new_badge = '<span class="tool-card-badge-new">NEW</span>' if tool.is_new else ""
     icon_text = _icon_text_color(tool.accent)
-    icon_asset = _tool_card_icon_asset(tool)
-    icon_asset_html = (
-        _svg_img_html(icon_asset, f"{tool.short_title} icon", "tool-card-icon-image", decorative=True)
-        if icon_asset
-        else None
-    )
-    icon_content = icon_asset_html if icon_asset_html else escape(tool.icon)
     return f"""
     <div class="tool-card-shell" style="--tool-accent: {tool.accent}; --tool-icon-text: {icon_text}; animation-delay: {delay_ms}ms;">{new_badge}
-        <div class="tool-card-icon">{icon_content}</div>
-        <p class="tool-card-category">{escape(tool.category)}</p>
+        <div class="tool-card-icon">{escape(tool.icon)}</div>
         <h3>{escape(tool.title)}</h3>
         <p>{escape(tool.description)}</p>
     </div>
@@ -3364,175 +2420,6 @@ def _material_icon_for(slug: str) -> str:
         "case_converter": ":material/text_fields:",
         "color_converter": ":material/palette:",
         "whois_lookup": ":material/badge:",
-        "bulk_domain_health": ":material/upload_file:",
-        "webhook_tester": ":material/webhook:",
-        "uptime_trend": ":material/show_chart:",
-        "security_headers": ":material/shield:",
-        "cve_lookup": ":material/bug_report:",
-        "dns_propagation": ":material/travel_explore:",
-        "windows_event_reference": ":material/event_note:",
-        "dkim_lookup": ":material/key:",
-        "email_record_builder": ":material/build:",
-        "windows_error_reference": ":material/error_outline:",
-        "config_format_converter": ":material/sync_alt:",
-        "m365_sku_decoder": ":material/badge:",
-        "id_generator": ":material/fingerprint:",
-        "json_diff": ":material/compare_arrows:",
-        "ip_geolocation": ":material/location_on:",
-        "file_integrity": ":material/verified:",
-        "chmod_calculator": ":material/lock_open:",
-        "base_converter": ":material/pin:",
-        "cron_builder": ":material/schedule_send:",
-        "http_status_reference": ":material/http:",
-        "totp_generator": ":material/dialpad:",
-        "keypair_generator": ":material/vpn_key:",
-        "qr_code_generator": ":material/qr_code_2:",
-        "bcrypt_tool": ":material/enhanced_encryption:",
-        "sql_formatter": ":material/table_chart:",
-        "ulid_uuid_decoder": ":material/fingerprint:",
-        "curl_builder": ":material/terminal:",
-        "regex_cheat_sheet": ":material/pattern:",
-        "env_linter": ":material/rule:",
-        "tls_scanner": ":material/https:",
-        "business_hours": ":material/schedule:",
-        "csv_diff": ":material/table_rows:",
-        "markdown_converter": ":material/description:",
-        "encoding_detector": ":material/text_fields:",
-        "robots_validator": ":material/smart_toy:",
-        "jwt_weak_secret": ":material/key_off:",
-        "log_duration": ":material/history:",
-        "url_parser": ":material/link:",
-        "base32_tools": ":material/looks_6:",
-        "http_header_parser": ":material/list_alt:",
-        "cidr_overlap": ":material/error_outline:",
-        "csr_decoder": ":material/assignment:",
-        "pem_bundle_splitter": ":material/call_split:",
-        "whitespace_visualizer": ":material/visibility:",
-        "date_calculator": ":material/event:",
-        "xml_formatter": ":material/code:",
-        "html_entity_tools": ":material/html:",
-        "deterministic_uuid": ":material/tag:",
-        "luhn_validator": ":material/credit_card:",
-        "text_stats": ":material/analytics:",
-        "csv_to_markdown": ":material/table_chart:",
-        "ssh_fingerprint": ":material/fingerprint:",
-        "yaml_formatter": ":material/data_object:",
-        "byte_size_converter": ":material/storage:",
-        "line_ending_converter": ":material/keyboard_return:",
-        "regex_replace": ":material/find_replace:",
-        "password_entropy": ":material/password:",
-        "pattern_extractor": ":material/manage_search:",
-        "csv_json_converter": ":material/sync_alt:",
-        "line_sorter": ":material/sort_by_alpha:",
-        "user_agent_builder": ":material/devices:",
-        "semver_tools": ":material/numbers:",
-        "world_clock": ":material/public:",
-        "csv_cleaner": ":material/cleaning_services:",
-        "json_path_query": ":material/search:",
-        "iban_validator": ":material/account_balance:",
-        "base58_tool": ":material/currency_bitcoin:",
-        "exit_code_reference": ":material/terminal:",
-        "timezone_abbreviation_reference": ":material/language:",
-        "basic_auth_tool": ":material/key:",
-        "gitignore_tester": ":material/rule:",
-        "markdown_toc_generator": ":material/toc:",
-        "number_to_words": ":material/spellcheck:",
-        "json_to_typescript": ":material/code:",
-        "css_gradient_generator": ":material/gradient:",
-        "jwt_claims_reference": ":material/verified_user:",
-        "csp_builder": ":material/policy:",
-        "robots_meta_builder": ":material/smart_toy:",
-        "cache_control_tool": ":material/cached:",
-        "markdown_table_formatter": ":material/table_chart:",
-        "csv_column_selector": ":material/view_column:",
-        "http_methods_reference": ":material/http:",
-        "line_numberer": ":material/format_list_numbered:",
-        "pii_redactor": ":material/visibility_off:",
-        "env_diff": ":material/difference:",
-        "cron_overlap": ":material/schedule:",
-        "env_file_diff": ":material/difference:",
-        "cron_overlap_checker": ":material/schedule:",
-        "test_data_generator": ":material/auto_awesome:",
-        "password_policy_checker": ":material/policy:",
-        "iso8601_duration": ":material/timer:",
-        "json_merge_patch": ":material/merge:",
-        "column_aligner": ":material/view_column:",
-        "ssh_config_validator": ":material/terminal:",
-        "csr_generator": ":material/badge:",
-        "caa_record_builder": ":material/verified:",
-        "base62_tool": ":material/tag:",
-        "base62_encoder_decoder": ":material/tag:",
-        "unified_diff_generator": ":material/difference:",
-        "jwk_pem_converter": ":material/key:",
-        "cert_chain_validator": ":material/link:",
-        "wsl_path_converter": ":material/drive_file_move:",
-        "markdown_link_extractor": ":material/insert_link:",
-        "health_diagnostics": ":material/health_and_safety:",
-        "git_command_cheat_sheet": ":material/menu_book:",
-        "bip39_mnemonic_validator": ":material/vpn_key:",
-        "bip39_mnemonic": ":material/vpn_key:",
-        "bip39_mnemonic_generator_validator": ":material/vpn_key:",
-        "lorem_ipsum_generator": ":material/text_fields:",
-        "text_radix_converter": ":material/pin:",
-        "text_to_binary_hex_octal_converter": ":material/pin:",
-        "157_tool_slug_pending_roadmap": ":material/text_fields:",
-        "158_tool_slug_pending_roadmap": ":material/pin:",
-        "159_tool_slug_pending_roadmap": ":material/text_fields:",
-        "160_tool_slug_pending_roadmap": ":material/pin:",
-        "165_tool_slug_pending_roadmap": ":material/text_fields:",
-        "166_tool_slug_pending_roadmap": ":material/pin:",
-        "167_tool_slug_pending_roadmap": ":material/text_fields:",
-        "168_tool_slug_pending_roadmap": ":material/pin:",
-        "169_tool_slug_pending_roadmap": ":material/text_fields:",
-        "170_tool_slug_pending_roadmap": ":material/pin:",
-        "171_tool_slug_pending_roadmap": ":material/text_fields:",
-        "172_tool_slug_pending_roadmap": ":material/pin:",
-        "171_<tool_slug_pending_roadmap>": ":material/text_fields:",
-        "172_<tool_slug_pending_roadmap>": ":material/pin:",
-        "173_tool_slug_pending_roadmap": ":material/text_fields:",
-        "174_tool_slug_pending_roadmap": ":material/pin:",
-        "173_<tool_slug_pending_roadmap>": ":material/text_fields:",
-        "174_<tool_slug_pending_roadmap>": ":material/pin:",
-        "175_tool_slug_pending_roadmap": ":material/text_fields:",
-        "176_tool_slug_pending_roadmap": ":material/pin:",
-        "175_<tool_slug_pending_roadmap>": ":material/text_fields:",
-        "176_<tool_slug_pending_roadmap>": ":material/pin:",
-        "177_tool_slug_pending_roadmap": ":material/text_fields:",
-        "178_tool_slug_pending_roadmap": ":material/pin:",
-        "177_<tool_slug_pending_roadmap>": ":material/text_fields:",
-        "178_<tool_slug_pending_roadmap>": ":material/pin:",
-        "179_tool_slug_pending_roadmap": ":material/text_fields:",
-        "180_tool_slug_pending_roadmap": ":material/pin:",
-        "179_<tool_slug_pending_roadmap>": ":material/text_fields:",
-        "180_<tool_slug_pending_roadmap>": ":material/pin:",
-        "181_tool_slug_pending_roadmap": ":material/text_fields:",
-        "182_tool_slug_pending_roadmap": ":material/pin:",
-        "181_<tool_slug_pending_roadmap>": ":material/text_fields:",
-        "182_<tool_slug_pending_roadmap>": ":material/pin:",
-        "183_tool_slug_pending_roadmap": ":material/text_fields:",
-        "184_tool_slug_pending_roadmap": ":material/pin:",
-        "183_<tool_slug_pending_roadmap>": ":material/text_fields:",
-        "184_<tool_slug_pending_roadmap>": ":material/pin:",
-        "185_tool_slug_pending_roadmap": ":material/text_fields:",
-        "186_tool_slug_pending_roadmap": ":material/pin:",
-        "185_<tool_slug_pending_roadmap>": ":material/text_fields:",
-        "186_<tool_slug_pending_roadmap>": ":material/pin:",
-        "187_tool_slug_pending_roadmap": ":material/text_fields:",
-        "188_tool_slug_pending_roadmap": ":material/pin:",
-        "187_<tool_slug_pending_roadmap>": ":material/text_fields:",
-        "188_<tool_slug_pending_roadmap>": ":material/pin:",
-        "189_tool_slug_pending_roadmap": ":material/text_fields:",
-        "190_tool_slug_pending_roadmap": ":material/pin:",
-        "189_<tool_slug_pending_roadmap>": ":material/text_fields:",
-        "190_<tool_slug_pending_roadmap>": ":material/pin:",
-        "191_tool_slug_pending_roadmap": ":material/text_fields:",
-        "192_tool_slug_pending_roadmap": ":material/pin:",
-        "191_<tool_slug_pending_roadmap>": ":material/text_fields:",
-        "192_<tool_slug_pending_roadmap>": ":material/pin:",
-        "193_tool_slug_pending_roadmap": ":material/text_fields:",
-        "194_tool_slug_pending_roadmap": ":material/pin:",
-        "193_<tool_slug_pending_roadmap>": ":material/text_fields:",
-        "194_<tool_slug_pending_roadmap>": ":material/pin:",
     }
     return icons.get(slug, ":material/build:")
 
@@ -3581,7 +2468,58 @@ _THEME_TOKENS = {
         "app-gradient-top": "#2a2e36",
         "app-gradient-bottom": "#1f232a",
     },
+    "light": {
+        "blue": "#126bff",
+        "blue-dark": "#0a47c9",
+        "ink": "#07142f",
+        "muted": "#52637f",
+        "line": "#d7e2f5",
+        "bg": "#f6f9ff",
+        "panel": "#fbfdff",
+        "sidebar": "#071a33",
+        "sidebar-2": "#0b2748",
+        "green": "#22ba4f",
+        "purple": "#6d55e9",
+        "orange": "#ff6a13",
+        "surface": "rgba(255, 255, 255, 0.84)",
+        "surface-strong": "#ffffff",
+        "surface-border": "#d4e0f2",
+        "text-secondary": "#334765",
+        "input-bg": "#ffffff",
+        "app-gradient-top": "#fbfdff",
+        "app-gradient-bottom": "#eef5ff",
+    },
 }
+
+
+def current_theme_mode() -> str:
+    """Return the active theme mode, defaulting to dark.
+
+    Reads the theme toggle widget's own session_state entry directly --
+    deliberately not a separate mirrored key. An earlier version kept
+    THEME_MODE_KEY as a second, manually-written copy of the widget's
+    selection; the two could drift out of sync (this was suspected as a
+    contributing factor in a real "toggle shows Dark but the app renders
+    light" report), so there's now exactly one place this value lives.
+    """
+    selection = st.session_state.get(THEME_MODE_KEY, "Dark")
+    return "dark" if selection == "Dark" else "light"
+
+
+def _render_theme_toggle() -> None:
+    """Sidebar control letting visitors switch between the dark (default) and light palette."""
+    st.segmented_control(
+        "Theme",
+        options=["Dark", "Light"],
+        default=current_label,
+        required=True,  # without this, clicking the already-selected pill deselects it to
+        # None (documented segmented_control behavior with required=False), which the
+        # ternary below silently maps to "light" -- a real bug: one click on "Dark" while
+        # it's already selected would flip the whole app to light mode and that choice
+        # then persists in session_state indefinitely (survives reloads).
+        label_visibility="collapsed",
+        key=THEME_MODE_KEY,
+    )
 
 
 def _inject_global_css(mode: str) -> None:
@@ -3591,20 +2529,7 @@ def _inject_global_css(mode: str) -> None:
     # literal `{`/`}` CSS rule braces that would otherwise need escaping.
     tokens = _THEME_TOKENS[mode]
     root_vars = "\n            ".join(f"--itops-{name}: {value};" for name, value in tokens.items())
-    # The font <link> tags are rendered via a separate st.markdown() call
-    # (not st.html()) because st.html()'s sanitizer strips <link> tags.
-    st.markdown(
-        """
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-        """,
-        unsafe_allow_html=True,
-    )
     css = """
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
         <style>
 
         :root {
@@ -3625,15 +2550,24 @@ def _inject_global_css(mode: str) -> None:
             }
         }
 
-        /* Keep keyboard focus highly visible across links/buttons/inputs,
-           including custom role=button elements used by Streamlit widgets. */
+        /* Nothing in this stylesheet suppresses the browser's default focus
+           ring, but several links (fallback-page-link, roadmap-submit-link,
+           roadmap-secondary-link) sit on colored/gradient backgrounds where a
+           default outline can be low-contrast. This gives every link and
+           button in the app a consistent, visible keyboard-focus outline. */
         .stApp a:focus-visible,
-        .stApp button:focus-visible,
-        .stApp input:focus-visible,
-        .stApp textarea:focus-visible,
-        .stApp [role="button"]:focus-visible {
+        .stApp button:focus-visible {
             outline: 2px solid var(--itops-blue);
             outline-offset: 2px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
         }
 
         html,
@@ -3742,7 +2676,7 @@ def _inject_global_css(mode: str) -> None:
         [data-testid="stSkeleton"],
         [data-testid="stSkeleton"] > div,
         [class*="Skeleton"] {
-            border-radius: var(--card-radius) !important;
+            border-radius: 8px !important;
             background-color: var(--itops-surface-strong) !important;
             background-image: linear-gradient(
                 90deg,
@@ -3937,7 +2871,7 @@ def _inject_global_css(mode: str) -> None:
         [data-testid="stTextArea"] textarea,
         [data-testid="stSelectbox"] div[data-baseweb="select"] > div,
         [data-testid="stNumberInput"] input {
-            border-radius: var(--card-radius);
+            border-radius: 8px;
             border: 1px solid var(--itops-surface-border);
             background: var(--itops-input-bg);
             color: var(--itops-ink);
@@ -3973,7 +2907,7 @@ def _inject_global_css(mode: str) -> None:
             align-items: center;
             min-height: 2.45rem;
             padding: 0 1.1rem;
-            border-radius: var(--card-radius);
+            border-radius: 8px;
             color: var(--itops-ink);
             font-size: 0.92rem;
             font-weight: 700;
@@ -4262,24 +3196,9 @@ def _inject_global_css(mode: str) -> None:
         .tool-card-shell {
             position: relative;
             min-height: 15.1rem;
-            animation: itops-fade-up 0.38s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+            animation: itops-fade-up 0.45s cubic-bezier(0.22, 0.61, 0.36, 1) both;
         }
 
-        .workflow-card-shell {
-            min-height: 10rem;
-            margin-bottom: 0.75rem;
-            border: 1px solid var(--itops-line);
-            border-radius: var(--card-radius);
-            padding: 0.85rem 0.95rem;
-            background: linear-gradient(160deg, #ffffff, #f6fbff);
-        }
-
-        /* Deliberately a different visual language from .roadmap-status-badge /
-           .roadmap-source-badge below: this is a promotional ribbon meant to
-           grab attention on a tool card (solid gradient pill), while the
-           roadmap badges are inline metadata tags meant to blend with body
-           text (flat tint, rounded-rect). Different UI roles, not an
-           inconsistency to fix. */
         .tool-card-badge-new {
             position: absolute;
             top: 0.75rem;
@@ -4385,7 +3304,7 @@ def _inject_global_css(mode: str) -> None:
             gap: 0;
             margin: 1.6rem 0 1.2rem;
             border: 1px solid var(--itops-surface-border);
-            border-radius: var(--card-radius);
+            border-radius: 8px;
             background: var(--itops-surface);
             overflow: hidden;
         }
@@ -4443,9 +3362,9 @@ def _inject_global_css(mode: str) -> None:
             gap: 1rem;
             align-items: center;
             padding: 1rem 1.15rem;
-            border-radius: var(--card-radius);
-            border: 1px solid color-mix(in srgb, var(--itops-orange), transparent 30%);
-            background: linear-gradient(135deg, color-mix(in srgb, var(--itops-orange), transparent 87%), var(--itops-surface));
+            border-radius: 8px;
+            border: 1px solid #f0d08a;
+            background: linear-gradient(135deg, rgba(255, 189, 24, 0.13), var(--itops-surface));
         }
 
         .important-notice strong {
@@ -4468,19 +3387,17 @@ def _inject_global_css(mode: str) -> None:
             display: grid;
             place-items: center;
             background: var(--itops-orange);
-            /* White text measured 1.95:1 against --itops-orange -- below
-               WCAG AA's 4.5:1. Dark ink clears it (9.75:1). */
-            color: #0c1116;
+            color: #ffffff;
             font-weight: 900;
         }
 
         .tool-page-header {
             display: flex;
             align-items: center;
-            gap: var(--shell-gap-md);
-            padding: 1.05rem 1.1rem;
-            margin-bottom: 1.1rem;
-            border-radius: var(--card-radius);
+            gap: 1rem;
+            padding: 1rem 1.1rem;
+            margin-bottom: 1rem;
+            border-radius: 8px;
             border: 1px solid var(--itops-surface-border);
             background: var(--itops-surface);
             box-shadow: 0 12px 32px rgba(36, 79, 135, 0.05);
@@ -4551,7 +3468,7 @@ def _inject_global_css(mode: str) -> None:
         [class*="st-key-tool_form_panel_"],
         [class*="st-key-tool_result_panel_"] {
             border: 1px solid var(--itops-surface-border);
-            border-radius: var(--card-radius);
+            border-radius: 8px;
             background: var(--itops-surface);
             box-shadow: 0 12px 32px rgba(36, 79, 135, 0.045);
             padding: 1.05rem 1.05rem 1.15rem;
@@ -4624,7 +3541,7 @@ def _inject_global_css(mode: str) -> None:
             gap: 0.9rem;
             align-items: center;
             border: 1px dashed var(--itops-surface-border);
-            border-radius: var(--card-radius);
+            border-radius: 8px;
             background: var(--itops-surface);
             padding: 0.95rem 1rem;
             margin: 1rem 0;
@@ -4654,16 +3571,10 @@ def _inject_global_css(mode: str) -> None:
             display: grid;
             place-items: center;
             border-radius: var(--card-radius);
-            /* White text measured 3.05:1/4.23:1 against this gradient's two
-               stops -- below WCAG AA's 4.5:1. Dark ink clears the lighter
-               stop (6.23:1); the darker stop is nudged 2% lighter locally
-               (not the shared --itops-blue-dark token, which backs several
-               icon-only buttons elsewhere with no text needing this check)
-               so dark ink clears it too (was 4.49:1, just under). */
-            color: #0c1116;
+            color: #ffffff;
             font-size: 0.72rem;
             font-weight: 900;
-            background: linear-gradient(145deg, var(--itops-blue), color-mix(in srgb, var(--itops-blue-dark), white 2%));
+            background: linear-gradient(145deg, var(--itops-blue), var(--itops-blue-dark));
         }
 
         .tool-empty-state strong,
@@ -4682,7 +3593,7 @@ def _inject_global_css(mode: str) -> None:
 
         .tool-safe-note {
             border: 1px solid color-mix(in srgb, var(--itops-green), transparent 72%);
-            border-radius: var(--card-radius);
+            border-radius: 8px;
             background: color-mix(in srgb, var(--itops-green), transparent 92%);
             padding: 0.85rem 1rem;
             margin: 0.8rem 0;
@@ -4738,7 +3649,7 @@ def _inject_global_css(mode: str) -> None:
         .tool-status-note-ai,
         .tool-status-note-info {
             border-color: rgba(18, 107, 255, 0.22);
-            background: color-mix(in srgb, var(--itops-surface), #126bff 12%);
+            background: linear-gradient(135deg, rgba(231, 240, 255, 0.94), var(--itops-surface));
         }
 
         .tool-status-note-ai .tool-status-mark,
@@ -4750,8 +3661,8 @@ def _inject_global_css(mode: str) -> None:
         }
 
         .tool-status-note-success {
-            border-color: color-mix(in srgb, var(--itops-green), transparent 76%);
-            background: color-mix(in srgb, var(--itops-surface), var(--itops-green) 12%);
+            border-color: rgba(34, 186, 79, 0.24);
+            background: linear-gradient(135deg, rgba(231, 248, 238, 0.9), var(--itops-surface));
         }
 
         .tool-status-note-success .tool-status-mark {
@@ -4762,8 +3673,8 @@ def _inject_global_css(mode: str) -> None:
         }
 
         .tool-status-note-warning {
-            border-color: color-mix(in srgb, var(--itops-orange), transparent 75%);
-            background: color-mix(in srgb, var(--itops-surface), var(--itops-orange) 12%);
+            border-color: rgba(255, 106, 19, 0.25);
+            background: linear-gradient(135deg, rgba(255, 240, 231, 0.9), var(--itops-surface));
         }
 
         .tool-status-note-warning .tool-status-mark {
@@ -4780,16 +3691,13 @@ def _inject_global_css(mode: str) -> None:
 
         .tool-status-note-neutral .tool-status-mark {
             /* No neutral theme token exists -- this is its own fixed
-               gray-blue, not derived from any var(--itops-*) accent. White
-               text measured 3.39:1 against it -- below WCAG AA's 4.5:1;
-               dark ink clears it (5.60:1). */
-            color: #0c1116;
+               gray-blue, not derived from any var(--itops-*) accent. */
             background: #7a8da8;
         }
 
         [class*="st-key-tool_download_panel_"] {
             border: 1px solid var(--itops-surface-border);
-            border-radius: var(--card-radius);
+            border-radius: 8px;
             background: var(--itops-surface);
             padding: 1rem;
             margin-top: 1rem;
@@ -4913,7 +3821,7 @@ def _inject_global_css(mode: str) -> None:
             min-height: 4.2rem;
             padding: 0.85rem 0.95rem;
             border: 1px solid var(--itops-surface-border);
-            border-radius: var(--card-radius);
+            border-radius: 8px;
             background: var(--itops-surface);
         }
 
@@ -4944,8 +3852,8 @@ def _inject_global_css(mode: str) -> None:
         }
 
         .roadmap-notice-warning {
-            border-color: color-mix(in srgb, var(--itops-orange), transparent 72%);
-            background: color-mix(in srgb, var(--itops-surface), var(--itops-orange) 12%);
+            border-color: rgba(255, 106, 19, 0.28);
+            background: linear-gradient(135deg, rgba(255, 244, 238, 0.9), var(--itops-surface));
         }
 
         .roadmap-notice-warning .roadmap-notice-mark {
@@ -4956,8 +3864,7 @@ def _inject_global_css(mode: str) -> None:
 
         .roadmap-notice-ai {
             border-color: rgba(18, 107, 255, 0.24);
-            /* Fixed blue, not var(--itops-blue) -- see .tool-status-note-ai. */
-            background: color-mix(in srgb, var(--itops-surface), #126bff 12%);
+            background: linear-gradient(135deg, rgba(232, 241, 255, 0.92), var(--itops-surface));
         }
 
         .roadmap-notice-ai .roadmap-notice-mark {
@@ -4973,7 +3880,6 @@ def _inject_global_css(mode: str) -> None:
 
         .roadmap-notice-neutral .roadmap-notice-mark {
             /* No neutral theme token exists -- see .tool-status-note-neutral. */
-            color: #0c1116;
             background: #7a8da8;
         }
 
@@ -4998,7 +3904,7 @@ def _inject_global_css(mode: str) -> None:
             gap: 1rem;
             min-height: 3.15rem;
             padding: 0.8rem 0.95rem;
-            border-radius: var(--card-radius);
+            border-radius: 8px;
             border: 1px solid var(--itops-surface-border);
             background: var(--itops-surface);
             box-shadow: 0 10px 24px rgba(36, 79, 135, 0.04);
@@ -5054,7 +3960,7 @@ def _inject_global_css(mode: str) -> None:
             overflow: hidden;
             padding: 0;
             border: 1px solid var(--itops-surface-border);
-            border-radius: var(--card-radius);
+            border-radius: 8px;
             background: var(--itops-surface);
             box-shadow: 0 12px 30px rgba(36, 79, 135, 0.035);
         }
@@ -5145,13 +4051,11 @@ def _inject_global_css(mode: str) -> None:
             min-height: 2.5rem;
             align-self: start;
             border: 1px solid var(--itops-surface-border);
-            border-radius: var(--card-radius);
+            border-radius: 8px;
             display: grid;
             place-items: center;
             align-content: center;
-            /* #3d4f68 measured 1.68:1 against the dark bg -- far below WCAG AA's
-               4.5:1 minimum for normal text. --itops-muted (4.59:1) clears it. */
-            color: var(--itops-muted);
+            color: #3d4f68;
             background: var(--itops-surface);
             font-size: 0.75rem;
             font-weight: 850;
@@ -5262,7 +4166,7 @@ def _inject_global_css(mode: str) -> None:
             margin: 0.42rem 0 0;
             padding: 0 !important;
             color: var(--itops-text-secondary);
-            font-size: 0.84rem;
+            font-size: 0.8rem;
             line-height: 1.45;
             display: -webkit-box;
             -webkit-line-clamp: 3;
@@ -5275,7 +4179,7 @@ def _inject_global_css(mode: str) -> None:
             /* #64758e measured 2.98:1 against the dark bg -- below WCAG AA's
                4.5:1 minimum for normal text. --itops-muted (4.59:1) clears it. */
             color: var(--itops-muted);
-            font-size: 0.75rem;
+            font-size: 0.72rem;
             line-height: 1.4;
             display: -webkit-box;
             -webkit-line-clamp: 2;
@@ -5287,7 +4191,7 @@ def _inject_global_css(mode: str) -> None:
             margin: 1rem 0;
             padding: 1rem;
             border: 1px dashed var(--itops-surface-border);
-            border-radius: var(--card-radius);
+            border-radius: 8px;
             background: var(--itops-surface);
         }
 
@@ -5311,9 +4215,8 @@ def _inject_global_css(mode: str) -> None:
             margin-top: 1rem;
             padding: 0.85rem 0.95rem;
             border: 1px solid rgba(18, 107, 255, 0.2);
-            border-radius: var(--card-radius);
-            /* Fixed blue, not var(--itops-blue) -- see .tool-status-note-ai. */
-            background: color-mix(in srgb, var(--itops-surface), #126bff 12%);
+            border-radius: 8px;
+            background: linear-gradient(135deg, rgba(231, 240, 255, 0.94), var(--itops-surface));
         }
 
         .roadmap-footer-note strong {
@@ -5468,11 +4371,6 @@ def _inject_global_css(mode: str) -> None:
                 margin: 0.35rem 0 0.8rem;
             }
 
-            .stDownloadButton button,
-            .stFormSubmitButton button {
-                width: 100%;
-            }
-
             /* Multi-metric rows (4-6 st.metric columns) rely entirely on
                Streamlit's native column-stacking below this breakpoint --
                without this, a stacked 4-6-metric row reads as an ungrouped
@@ -5488,8 +4386,4 @@ def _inject_global_css(mode: str) -> None:
         </style>
         """
     css = css.replace("__ITOPS_ROOT_VARS__", root_vars)
-    # st.html() renders raw HTML/CSS without going through Streamlit's
-    # markdown/CommonMark parser, which was misparsing blank lines inside
-    # this large <style> block as paragraph breaks and leaking the CSS
-    # source as visible page text (see PR description for repro details).
-    st.html(css)
+    st.markdown(css, unsafe_allow_html=True)

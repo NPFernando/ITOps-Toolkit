@@ -13,9 +13,7 @@ from utils.ui import (
     render_form_intro,
     render_page_header,
     render_section_heading,
-    render_status_note,
     run_validated_lookup,
-    tool_download_panel,
     tool_form_panel,
     tool_result_panel,
 )
@@ -51,36 +49,37 @@ with tool_form_panel("dns_records"):
     with st.form("dns-form"):
         domain = st.text_input("Domain", placeholder="example.com", max_chars=MAX_DOMAIN_LENGTH)
         record_type = st.selectbox("Record type", list(EXPLANATIONS.keys()))
-        submitted = st.form_submit_button("Look up records")
+        submitted = st.form_submit_button("Lookup records")
 
 if submitted:
-    def _validate() -> str | None:
-        ok, error = validate_length(domain, MAX_DOMAIN_LENGTH, "Domain")
-        if not ok:
-            return error
-        if not normalize_domain(domain):
-            return "Enter a domain name."
-        return None
-
-    run_validated_lookup(
-        "dns_records",
-        _validate,
-        lambda: {"record_type": record_type, "data": resolve_records(normalize_domain(domain), record_type)},
-        spinner_text="Querying DNS...",
-    )
+    # Stored in session_state (not rendered directly here) because the sidebar's
+    # quick-search box, favorite-star buttons, and any other widget outside this
+    # page's st.form trigger reruns of their own -- on those reruns `submitted` is
+    # False again, which would otherwise collapse this whole results section the
+    # instant any of them is touched.
+    ok, error = validate_length(domain, MAX_DOMAIN_LENGTH, "Domain")
+    normalized = normalize_domain(domain)
+    if not ok:
+        st.session_state["dns_records_validation_error"] = error
+        st.session_state["dns_records_result"] = None
+    elif not normalized:
+        st.session_state["dns_records_validation_error"] = "Enter a domain name."
+        st.session_state["dns_records_result"] = None
+    else:
+        st.session_state["dns_records_validation_error"] = None
+        st.session_state["dns_records_result"] = {
+            "record_type": record_type,
+            "data": resolve_records(normalized, record_type),
+        }
 
 validation_error = st.session_state.get("dns_records_validation_error")
 stored = st.session_state.get("dns_records_result")
 
 if validation_error is None and stored is None:
-    render_empty_state(
-        "Ready to query DNS",
-        "Record results, raw values, and the queried name appear after lookup.",
-        illustration="network",
-    )
+    render_empty_state("Ready to query DNS", "Record results, raw values, and the queried name appear after lookup.")
 
 if validation_error is not None:
-    render_failure_note("DNS input", validation_error, remediation="Provide a valid public domain and retry the lookup.")
+    st.error(validation_error)
 
 if stored is not None:
     result = stored["data"]
@@ -88,15 +87,11 @@ if stored is not None:
         render_section_heading(f"{stored['record_type']} records", EXPLANATIONS[stored["record_type"]])
 
         if result["ok"]:
-            render_status_note("DNS lookup completed", "Public DNS records were returned.", tone="success")
+            st.success(result["status"])
             st.dataframe(pd.DataFrame(result["records"]), width="stretch", hide_index=True)
         else:
-            render_status_note(f"DNS status: {result['status']}", "DNS records were not returned for this query.", tone="warning")
-            render_failure_note(
-                "DNS lookup",
-                result.get("error"),
-                remediation="Confirm the record type and domain delegation, then retry after DNS propagation.",
-            )
+            st.warning(result["status"])
+            st.error(result["error"])
 
         with st.expander("Raw values"):
             if result["raw_values"]:
@@ -105,24 +100,3 @@ if stored is not None:
                 st.caption("No raw values returned.")
 
         st.caption(f"Queried name: {result['query_name']}")
-
-    records_csv = pd.DataFrame(result["records"]).to_csv(index=False).encode("utf-8")
-    raw_values = "\n".join(result["raw_values"]) if result["raw_values"] else "No raw values returned."
-    with tool_download_panel("dns_downloads", related_to="dns_records"):
-        render_section_heading("Export", "Download current in-memory lookup output.", eyebrow="Downloads")
-        col_a, col_b = st.columns(2)
-        col_a.download_button(
-            "Download records as CSV",
-            records_csv,
-            file_name=f"dns-{stored['record_type'].lower()}-records.csv",
-            mime="text/csv",
-        )
-        col_b.download_button(
-            "Download raw values (.txt)",
-            raw_values,
-            file_name=f"dns-{stored['record_type'].lower()}-raw-values.txt",
-            mime="text/plain",
-        )
-
-mark_page_baseline(_baseline, "content-rendered")
-render_page_baseline(_baseline)

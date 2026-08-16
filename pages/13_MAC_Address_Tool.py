@@ -30,20 +30,11 @@ with tool_form_panel("mac_tool"):
         mac_input = st.text_input("MAC address", placeholder="00:1A:2B:3C:4D:5E")
         submitted = st.form_submit_button("Analyze")
 
-if submitted:
-    # Stored in session_state (not a local `result` gated on `submitted`) because the
-    # "Look up vendor" button below lives outside `st.form` -- clicking it triggers a
-    # rerun where `submitted` is False again, which would otherwise make the whole
-    # results section (button included) disappear the instant it's clicked.
-    st.session_state["mac_tool_result"] = analyze_mac(mac_input)
-    st.session_state.pop("mac_tool_vendor_result", None)
-
-result = st.session_state.get("mac_tool_result")
-
-if result is None:
+if not submitted:
     render_empty_state("Ready to analyze a MAC address", "Formatted addresses and address-class bits appear here.")
 
-if result is not None:
+if submitted:
+    result = analyze_mac(mac_input)
     with tool_result_panel("mac_result", related_to="mac_address_tool"):
         render_section_heading("MAC address details", "Canonical formats and address-class bits.")
         if not result["ok"]:
@@ -65,10 +56,7 @@ if result is not None:
 
             if st.button("Look up vendor", key="mac_vendor_lookup_button"):
                 with st.spinner("Looking up vendor..."):
-                    st.session_state["mac_tool_vendor_result"] = lookup_vendor(result["oui"])
-
-            vendor_result = st.session_state.get("mac_tool_vendor_result")
-            if vendor_result is not None:
+                    vendor_result = lookup_vendor(result["oui"])
                 if not vendor_result["ok"]:
                     st.warning(vendor_result["error"])
                 else:

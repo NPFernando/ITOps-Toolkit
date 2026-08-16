@@ -63,8 +63,7 @@ if hash_result is not None:
             st.error(hash_result["error"])
         else:
             for algorithm, digest in hash_result["digests"].items():
-                st.caption(algorithm.upper())
-                st.code(digest, language=None)
+                st.text_input(algorithm.upper(), value=digest, disabled=True)
 
 if hmac_result is not None:
     used_algorithm = st.session_state["hash_generator_hmac_algorithm"]
@@ -73,4 +72,4 @@ if hmac_result is not None:
         if not hmac_result["ok"]:
             st.error(hmac_result["error"])
         else:
-            st.code(hmac_result["digest"], language=None)
+            st.text_input("HMAC digest", value=hmac_result["digest"], disabled=True)

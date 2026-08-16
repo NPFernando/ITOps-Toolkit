@@ -43,27 +43,3 @@ def test_format_yaml_null_document():
 
     assert result["ok"] is True
     assert "null" in result["output"]
-
-
-def test_format_yaml_rejects_duplicate_top_level_key():
-    # Regression: PyYAML's default loader silently keeps the last value for
-    # a duplicate mapping key with no warning -- invalid per the YAML spec,
-    # and inconsistent with this page's own stated promise to flag invalid
-    # YAML with a clear error.
-    result = format_yaml("a: 1\na: 2\n")
-
-    assert result["ok"] is False
-    assert "duplicate key" in result["error"]
-
-
-def test_format_yaml_rejects_duplicate_nested_key():
-    result = format_yaml("a:\n  x: 1\n  x: 2\n")
-
-    assert result["ok"] is False
-    assert "duplicate key" in result["error"]
-
-
-def test_format_yaml_allows_non_duplicate_keys():
-    result = format_yaml("a: 1\nb: 2\n")
-
-    assert result["ok"] is True

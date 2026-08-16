@@ -17,15 +17,12 @@ def test_parse_shows_components_and_query_table():
     app.button[0].click().run()
     assert not app.exception
 
-    summary = app.dataframe[0].value.to_dict("records")
-    summary_by_component = {row["Component"]: row["Value"] for row in summary}
-    assert summary_by_component["Scheme"] == "https"
-    assert summary_by_component["Host"] == "example.com"
-    assert summary_by_component["Port"] == "8443"
-    assert len(app.dataframe) == 2
-    markdown = " ".join(block.value for block in app.markdown)
-    assert "URL parsed" in markdown
-    assert "tool-status-note-success" in markdown
+    metrics = {m.label: m.value for m in app.metric}
+    assert metrics["Scheme"] == "https"
+    assert metrics["Host"] == "example.com"
+    assert metrics["Port"] == "8443"
+    tables = app.table
+    assert len(tables) == 1
 
 
 def test_empty_input_shows_error():
@@ -35,9 +32,7 @@ def test_empty_input_shows_error():
     app.text_input[0].set_value("")
     app.button[0].click().run()
     assert not app.exception
-    markdown = " ".join(block.value for block in app.markdown)
-    assert "URL input needs attention" in markdown
-    assert "tool-status-note-warning" in markdown
+    assert any("Enter a URL" in e.value for e in app.error)
 
 
 def test_empty_state_shown_before_submit():
@@ -55,25 +50,10 @@ def test_results_persist_after_sidebar_interaction():
     app.text_input[0].set_value("https://example.com:8443/path?a=1")
     app.button[0].click().run()
     assert not app.exception
-    before = len(app.dataframe)
+    before = len(app.metric)
     assert before > 0
 
     search = next(t for t in app.text_input if t.key == "sidebar_quick_search")
     search.set_value("test").run()
     assert not app.exception
-    assert len(app.dataframe) == before
-
-
-def test_parse_without_query_or_fragment_shows_explicit_state_cues():
-    app = AppTest.from_file(PAGE, default_timeout=30)
-    app.run()
-    assert not app.exception
-
-    app.text_input[0].set_value("https://example.com/path")
-    app.button[0].click().run()
-    assert not app.exception
-
-    markdown = " ".join(block.value for block in app.markdown)
-    assert "No fragment" in markdown
-    assert "No query parameters" in markdown
-    assert markdown.count("tool-status-note-neutral") >= 2
+    assert len(app.metric) == before

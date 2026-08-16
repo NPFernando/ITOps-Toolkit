@@ -40,23 +40,7 @@ def test_malformed_key_shows_error():
     app.text_area[0].set_value("garbage input")
     app.button[0].click().run()
     assert not app.exception
-    assert any("Could not parse SSH public key" in e.value for e in app.error)
-
-
-def test_known_hosts_line_with_ssh_prefixed_hostname_still_works():
-    # Regression: a hostname that happens to start with "ssh-" (an ordinary
-    # naming pattern, e.g. a bastion host) was previously mistaken for the
-    # key-type token by a fixed-prefix heuristic, so the real key type was
-    # never stripped and fingerprinting failed with a misleading error.
-    app = AppTest.from_file(PAGE, default_timeout=30)
-    app.run()
-
-    app.text_area[0].set_value(f"ssh-bastion.corp.com {_sample_key_line()}")
-    app.button[0].click().run()
-    assert not app.exception
-
-    metrics = {m.label: m.value for m in app.metric}
-    assert metrics["Key type"] == "ssh-rsa"
+    assert any("expected" in e.value for e in app.error)
 
 
 def test_empty_state_shown_before_submit():

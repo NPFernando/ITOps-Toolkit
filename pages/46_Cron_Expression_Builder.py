@@ -17,10 +17,6 @@ render_page_header(
 )
 
 WEEKDAY_LABELS = {0: "Sun", 1: "Mon", 2: "Tue", 3: "Wed", 4: "Thu", 5: "Fri", 6: "Sat"}
-MONTH_LABELS = {
-    1: "Jan", 2: "Feb", 3: "Mar", 4: "Apr", 5: "May", 6: "Jun",
-    7: "Jul", 8: "Aug", 9: "Sep", 10: "Oct", 11: "Nov", 12: "Dec",
-}
 
 
 def _field_controls(label: str, key: str, low: int, high: int, value_labels: dict[int, str] | None = None):
@@ -46,7 +42,7 @@ with tool_form_panel("cron_builder"):
     with col3:
         day_mode, day_step, day_values = _field_controls("Day of month", "day", 1, 31)
     with col4:
-        month_mode, month_step, month_values = _field_controls("Month", "month", 1, 12, MONTH_LABELS)
+        month_mode, month_step, month_values = _field_controls("Month", "month", 1, 12)
     with col5:
         weekday_mode, weekday_step, weekday_values = _field_controls("Weekday", "weekday", 0, 6, WEEKDAY_LABELS)
 

@@ -21,28 +21,15 @@ def test_css_injects_before_sidebar_and_has_no_blocking_import():
     at = AppTest.from_file(APP_PAGE, default_timeout=30).run()
     assert not at.exception, at.exception
 
-    # The font <link> tags are injected via st.markdown() and the stylesheet
-    # via st.html() (a separate call, since st.html()'s sanitizer strips
-    # <link> tags). The font links are the very first markdown element
-    # emitted, confirming they still render before the rest of the page.
     md_values = [m.value for m in at.markdown]
-    assert md_values, "no markdown output found"
-    assert 'rel="stylesheet"' in md_values[0], "font <link> is no longer the first thing rendered"
-    assert any('class="important-notice"' in value and 'role="note"' in value for value in md_values)
-
-    html_bodies = [getattr(h.proto, "body", "") for h in at.get("html")]
-    css_block = next((v for v in html_bodies if "<style>" in v), None)
-    assert css_block is not None, "no <style> block found in st.html output"
+    css_block = next((v for v in md_values if "<style>" in v), None)
+    assert css_block is not None, "no <style> block found in markdown output"
 
     assert "@import" not in css_block, "blocking @import reintroduced"
-    assert ".stApp input:focus-visible" in css_block
-    assert '[data-testid="stPills"] [role="radio"]' in css_block
-    assert ".stDownloadButton button" in css_block
-    assert "@media (prefers-reduced-motion: reduce)" in css_block
-    assert "@media (max-width: 720px)" in css_block
-    assert ".tool-page-header-with-illustration" in css_block
-    assert '[data-testid="stHorizontalBlock"]:has([data-testid="stMetric"])' in css_block
-    assert ".stFormSubmitButton button" in css_block
+    link_idx = css_block.find('rel="stylesheet"')
+    style_idx = css_block.find("<style>")
+    assert link_idx != -1, "no <link rel=stylesheet> found"
+    assert link_idx < style_idx, "font <link> no longer precedes <style>"
 
 
 def test_home_pills_are_required_and_cannot_deselect_to_none():
@@ -58,10 +45,8 @@ def test_home_pills_are_required_and_cannot_deselect_to_none():
     assert not at.exception, at.exception
 
     profession_pill = next(p for p in at.pills if p.key == "home_profession_filter")
-    navigation_pill = next(p for p in at.pills if p.key == "home_navigation_mode")
     sort_pill = next(p for p in at.pills if p.key == "home_sort_mode")
     assert profession_pill.proto.required is True
-    assert navigation_pill.proto.required is True
     assert sort_pill.proto.required is True
 
 
@@ -97,20 +82,4 @@ def test_hide_all_tools_button_reflects_combined_show_all_state():
     profession_pill2 = next(p for p in at.pills if p.key == "home_profession_filter")
     profession_pill2.set_value("All").run(timeout=30)
     assert not at.exception, at.exception
-    assert "Show all tools" in [b.label for b in at.button]
-
-
-def test_hide_all_tools_from_all_tools_navigation_returns_to_quick_access():
-    at = AppTest.from_file(APP_PAGE, default_timeout=30).run()
-    assert not at.exception, at.exception
-
-    navigation_pill = next(p for p in at.pills if p.key == "home_navigation_mode")
-    navigation_pill.set_value("All tools").run(timeout=30)
-    assert not at.exception, at.exception
-    assert "Hide all tools" in [b.label for b in at.button]
-
-    next(b for b in at.button if b.label == "Hide all tools").click().run(timeout=30)
-    assert not at.exception, at.exception
-    nav_mode = at.session_state["home_navigation_mode"] if "home_navigation_mode" in at.session_state else None
-    assert nav_mode == "Quick access"
     assert "Show all tools" in [b.label for b in at.button]

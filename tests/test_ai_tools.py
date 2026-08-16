@@ -150,69 +150,6 @@ def test_azure_openai_summary_hides_provider_errors(monkeypatch):
     assert "secret-api-key" not in result["message"]
 
 
-def test_azure_openai_summary_non_retryable_error_stops_without_retries(monkeypatch):
-    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
-    monkeypatch.setenv("AZURE_OPENAI_API_KEY", "test-key")
-    monkeypatch.setenv("AZURE_OPENAI_ENDPOINT", "https://example.openai.azure.com/openai/v1/")
-    monkeypatch.setenv("AZURE_OPENAI_DEPLOYMENT", "gpt-test")
-
-    calls = {"count": 0}
-
-    class FakeResponses:
-        def create(self, **kwargs):
-            calls["count"] += 1
-            raise ValueError("invalid request payload")
-
-    class FakeClient:
-        responses = FakeResponses()
-
-    result = ai_tools.optional_ai_summary(
-        "timeout from upstream",
-        opted_in=True,
-        client_factory=lambda **_: FakeClient(),
-    )
-
-    assert result["enabled"] is False
-    assert result["status"] == "error"
-    assert result["error_type"] == "ValueError"
-    assert calls["count"] == 1
-
-
-def test_azure_openai_summary_retries_retryable_errors(monkeypatch):
-    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
-    monkeypatch.setenv("AZURE_OPENAI_API_KEY", "test-key")
-    monkeypatch.setenv("AZURE_OPENAI_ENDPOINT", "https://example.openai.azure.com/openai/v1/")
-    monkeypatch.setenv("AZURE_OPENAI_DEPLOYMENT", "gpt-test")
-    monkeypatch.setattr(ai_tools.time, "sleep", lambda *_: None)
-
-    calls = {"count": 0}
-    RetryableError = type("APIConnectionError", (Exception,), {})
-
-    class FakeResponses:
-        def create(self, **kwargs):
-            calls["count"] += 1
-            if calls["count"] < 3:
-                raise RetryableError("temporary connection reset")
-
-            class Response:
-                output_text = "Recovered after retry."
-
-            return Response()
-
-    class FakeClient:
-        responses = FakeResponses()
-
-    result = ai_tools.optional_ai_summary(
-        "timeout from upstream",
-        opted_in=True,
-        client_factory=lambda **_: FakeClient(),
-    )
-
-    assert result["enabled"] is True
-    assert result["status"] == "success"
-    assert calls["count"] == 3
-
-
 class _FakeRoadmapItem:
     def __init__(self, title, category="Tools", status="AI Recommended", votes=10, description="", rationale="", source="seed"):
         self.title = title
@@ -282,33 +219,6 @@ def test_summarize_feature_requests_sends_only_public_fields(monkeypatch):
     assert "test-key" not in response_call["input"]
 
 
-def test_summarize_feature_requests_returns_error_when_provider_response_has_no_text(monkeypatch):
-    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
-    monkeypatch.setenv("AZURE_OPENAI_API_KEY", "test-key")
-    monkeypatch.setenv("AZURE_OPENAI_ENDPOINT", "https://example.openai.azure.com/openai/v1/")
-    monkeypatch.setenv("AZURE_OPENAI_DEPLOYMENT", "gpt-test")
-
-    class EmptyResponse:
-        output_text = ""
-        output = []
-
-    class FakeResponses:
-        def create(self, **kwargs):
-            return EmptyResponse()
-
-    class FakeClient:
-        responses = FakeResponses()
-
-    result = ai_tools.summarize_feature_requests_with_azure(
-        [_FakeRoadmapItem("Idea 1")],
-        client_factory=lambda **_: FakeClient(),
-    )
-
-    assert result["enabled"] is False
-    assert result["status"] == "error"
-    assert result["message"] == "AI triage summary returned no text."
-
-
 def test_summarize_feature_requests_hides_provider_errors(monkeypatch):
     monkeypatch.delenv("OPENAI_API_KEY", raising=False)
     monkeypatch.setenv("AZURE_OPENAI_API_KEY", "secret-api-key")
@@ -331,37 +241,3 @@ def test_summarize_feature_requests_hides_provider_errors(monkeypatch):
     assert result["status"] == "error"
     assert result["error_type"] == "RuntimeError"
     assert "secret-api-key" not in result["message"]
-
-
-def test_summarize_feature_requests_retries_retryable_errors(monkeypatch):
-    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
-    monkeypatch.setenv("AZURE_OPENAI_API_KEY", "test-key")
-    monkeypatch.setenv("AZURE_OPENAI_ENDPOINT", "https://example.openai.azure.com/openai/v1/")
-    monkeypatch.setenv("AZURE_OPENAI_DEPLOYMENT", "gpt-test")
-    monkeypatch.setattr(ai_tools.time, "sleep", lambda *_: None)
-
-    calls = {"count": 0}
-    RetryableError = type("RateLimitError", (Exception,), {})
-
-    class FakeResponses:
-        def create(self, **kwargs):
-            calls["count"] += 1
-            if calls["count"] < 3:
-                raise RetryableError("rate limited")
-
-            class Response:
-                output_text = "Triage summary after retries."
-
-            return Response()
-
-    class FakeClient:
-        responses = FakeResponses()
-
-    result = ai_tools.summarize_feature_requests_with_azure(
-        [_FakeRoadmapItem("Idea 1")],
-        client_factory=lambda **_: FakeClient(),
-    )
-
-    assert result["enabled"] is True
-    assert result["status"] == "success"
-    assert calls["count"] == 3

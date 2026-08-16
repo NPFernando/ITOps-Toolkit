@@ -10,25 +10,6 @@ st.set_page_config(page_title="M365 SKU Decoder", layout="wide")
 apply_app_shell(active_page="M365 SKU Decoder")
 
 
-st.markdown(
-    """
-    <style>
-    @media (max-width: 768px) {
-      div[data-testid="stTextInput"] input {
-        font-size: 1rem;
-      }
-      div[data-testid="stTable"] table th,
-      div[data-testid="stTable"] table td {
-        white-space: normal !important;
-        word-break: break-word;
-      }
-    }
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
-
-
 render_page_header(
     "M365 SKU Decoder",
     "Convert Microsoft 365 license SKU strings and GUIDs to readable product names.",
@@ -42,13 +23,11 @@ results = search_skus(query)
 with tool_result_panel("m365_sku_decoder_result", related_to="m365_sku_decoder"):
     render_section_heading("SKUs", f"{len(results)} matching SKU(s).")
     if results:
-        st.dataframe(
+        st.table(
             [
                 {"SKU string": entry.sku_string, "GUID": entry.guid, "Product name": entry.product_name}
                 for entry in results
-            ],
-            width="stretch",
-            hide_index=True,
+            ]
         )
     else:
         st.info("No SKUs matched that search.")

@@ -3,17 +3,7 @@ from __future__ import annotations
 import streamlit as st
 
 from utils.keypair_tools import KEY_TYPES, RSA_KEY_SIZES, generate_keypair
-from utils.ui import (
-    apply_app_shell,
-    render_empty_state,
-    render_failure_note,
-    render_form_intro,
-    render_page_header,
-    render_section_heading,
-    render_status_note,
-    tool_form_panel,
-    tool_result_panel,
-)
+from utils.ui import apply_app_shell, render_form_intro, render_page_header, render_section_heading, tool_form_panel, tool_result_panel
 
 
 st.set_page_config(page_title="RSA/SSH Key Pair Generator", layout="wide")
@@ -38,16 +28,12 @@ if generate_clicked:
 
 result = st.session_state.get("keypair_result")
 
-if result is None:
-    render_empty_state("Ready to generate", "A key pair and fingerprint appear here after you generate one.")
-
 if result is not None:
     with tool_result_panel("keypair_result_panel", related_to="keypair_generator"):
         render_section_heading("Result", "Private key (PEM), public key (OpenSSH authorized_keys format), and fingerprint.")
         if not result["ok"]:
-            render_failure_note("Key generation", result["error"], remediation="Choose a supported key type and retry.")
+            st.error(result["error"])
         else:
-            render_status_note("Key pair generated", "Disposable key pair created successfully.", tone="success")
             st.caption(f"Fingerprint: {result['fingerprint']}")
             st.text_area("Public key (OpenSSH / authorized_keys)", result["public_key_openssh"], height=100)
             st.text_area("Private key (PEM)", result["private_key_pem"], height=280)

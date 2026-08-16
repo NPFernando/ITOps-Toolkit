@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import os
 from pathlib import Path
 
 import pytest
@@ -18,16 +17,20 @@ ROADMAP_PAGE_TIMEOUT = 60
 
 
 @pytest.fixture(autouse=True)
-def _clear_roadmap_cache(monkeypatch):
+def _clear_roadmap_cache():
     """Clear st.cache_data before each test in this file.
 
-    The roadmap page now scopes its board-cache key with PYTEST_CURRENT_TEST
-    for test isolation, but this file still clears process-global
-    st.cache_data between tests to keep each scenario explicit and avoid
-    accidental coupling from unrelated cached calls.
+    pages/10_Roadmap_Feedback.py busts its cache on a monkeypatched
+    load_roadmap_board by keying on id(roadmap.load_roadmap_board). That's
+    reliable in production (the loader is never monkeypatched, so the id
+    never changes), but not across tests in one process: each test defines
+    its own short-lived local `fake_board` closure, and CPython can reuse a
+    garbage-collected function's id for the next one. When that happens,
+    st.cache_data (a process-global cache, not reset between separate
+    AppTest runs) serves a *different* test's cached RoadmapBoard, and this
+    test fails on stale content instead of what it just monkeypatched in.
     """
     st.cache_data.clear()
-    monkeypatch.setenv("ITOPS_CACHE_SCOPE", os.getenv("PYTEST_CURRENT_TEST", "runtime"))
 
 
 def _page_text(app: AppTest) -> str:
@@ -85,9 +88,9 @@ def test_roadmap_feedback_page_renders_hybrid_board_and_links(monkeypatch):
 
     assert "Roadmap & Feedback" in text
     assert "Submit idea" in text
-    assert "Outcome: public feedback safety reminder" in text
-    assert "Outcome: AI Recommended label clarified" in text
-    assert "static curated tag, not generated AI output" in text
+    assert "Public-safe feedback only" in text
+    assert "AI Recommended is curated" in text
+    assert "static, curated tag, not AI output" in text
     assert "Streamlit does not store feedback" in text
     assert "Outcome: roadmap cache checked" in text
     assert "Outcome: roadmap sync complete" in text
@@ -215,6 +218,64 @@ def test_roadmap_feedback_page_ai_triage_click_reuses_cache(monkeypatch):
     assert calls["count"] == 1
     assert "Outcome: AI triage cache checked" in _page_text(app)
     assert "Cached summary." in _page_text(app)
+
+
+def test_roadmap_feedback_page_ai_triage_unavailable_without_config(monkeypatch):
+    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+    monkeypatch.delenv("AZURE_OPENAI_API_KEY", raising=False)
+    monkeypatch.setattr(roadmap, "load_roadmap_board", lambda repo_url=None: roadmap.RoadmapBoard(roadmap.ROADMAP_ITEMS))
+
+    app = AppTest.from_file(ROADMAP_PAGE, default_timeout=ROADMAP_PAGE_TIMEOUT)
+    app.run()
+
+    assert not app.exception
+    text = _page_text(app)
+    assert "AI-assisted triage" in text
+    assert "AI triage unavailable" in text
+    assert not any(b.label.startswith("Summarize") for b in app.button)
+
+
+def test_roadmap_feedback_page_ai_triage_runs_when_configured_and_clicked(monkeypatch):
+    from utils import ai_tools
+
+    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+    monkeypatch.setenv("AZURE_OPENAI_API_KEY", "test-key")
+    monkeypatch.setenv("AZURE_OPENAI_ENDPOINT", "https://example.openai.azure.com/")
+    monkeypatch.setenv("AZURE_OPENAI_DEPLOYMENT", "gpt-test")
+    monkeypatch.setattr(
+        roadmap,
+        "load_roadmap_board",
+        lambda repo_url=None: roadmap.RoadmapBoard(
+            (
+                roadmap.RoadmapItem(
+                    title="Command palette",
+                    category="UX / Design",
+                    status="Planned",
+                    votes=18,
+                    description="Ctrl+K launcher",
+                    rationale="Power users expect it",
+                    source="seed",
+                ),
+            )
+        ),
+    )
+
+    def fake_summarize(items, client_factory=None):
+        return {"enabled": True, "provider": "azure_openai", "status": "success", "summary": "Prioritize the command palette."}
+
+    monkeypatch.setattr(ai_tools, "summarize_feature_requests_with_azure", fake_summarize)
+
+    app = AppTest.from_file(ROADMAP_PAGE, default_timeout=ROADMAP_PAGE_TIMEOUT)
+    app.run()
+    assert not app.exception
+
+    triage_button = next(b for b in app.button if b.label.startswith("Summarize"))
+    triage_button.click().run()
+    assert not app.exception
+
+    text = _page_text(app)
+    assert "AI triage summary" in text
+    assert "Prioritize the command palette." in text
 
 
 def test_roadmap_feedback_page_renders_github_fallback_note(monkeypatch):

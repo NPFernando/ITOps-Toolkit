@@ -3,17 +3,7 @@ from __future__ import annotations
 import streamlit as st
 
 from utils.ip_geolocation import lookup_ip_geolocation
-from utils.ui import (
-    apply_app_shell,
-    display_rows_frame,
-    render_empty_state,
-    render_failure_note,
-    render_form_intro,
-    render_page_header,
-    render_section_heading,
-    tool_form_panel,
-    tool_result_panel,
-)
+from utils.ui import apply_app_shell, display_rows_frame, render_empty_state, render_form_intro, render_page_header, render_section_heading, tool_form_panel, tool_result_panel
 
 
 st.set_page_config(page_title="IP Geolocation Lookup", layout="wide")
@@ -23,33 +13,27 @@ apply_app_shell(active_page="IP Geolocation Lookup")
 render_page_header(
     "IP Geolocation Lookup",
     "Resolve an IP address to approximate geography, ASN, and ISP/org info.",
-    warning="Do not enter private or internal-only IP addresses.",
 )
 
 with tool_form_panel("ip_geolocation"):
-    render_form_intro("Look up IP geolocation", "Enter a public IPv4 or IPv6 address.")
+    render_form_intro("Look up an IP", "Enter a public IPv4 or IPv6 address.")
     with st.form("ip-geolocation-form"):
         ip = st.text_input("IP address", placeholder="8.8.8.8")
-        submitted = st.form_submit_button("Look up IP")
+        submitted = st.form_submit_button("Look up")
 
 if submitted:
-    with st.spinner("Looking up IP..."):
-        st.session_state["ip_geolocation_result"] = lookup_ip_geolocation(ip)
+    st.session_state["ip_geolocation_result"] = lookup_ip_geolocation(ip)
 
 result = st.session_state.get("ip_geolocation_result")
 
 if result is None:
-    render_empty_state("Ready to look up IP geolocation", "Location, ASN, and ISP/organization details appear here after lookup.")
+    render_empty_state("Ready to look up an IP", "Approximate location, ASN, and ISP/org info appear here after the lookup.")
 
 if result is not None:
     with tool_result_panel("ip_geolocation_result_panel", related_to="ip_geolocation"):
-        render_section_heading("Lookup result", "Approximate location and network ownership details.")
+        render_section_heading("Result", "Approximate location and network ownership.")
         if not result["ok"]:
-            render_failure_note(
-                "IP geolocation lookup",
-                result["error"],
-                remediation="Check the IP format and retry with a public IP address.",
-            )
+            st.error(result["error"])
         else:
             c1, c2, c3 = st.columns(3)
             c1.metric("Country", result["country"] or "Unknown")
