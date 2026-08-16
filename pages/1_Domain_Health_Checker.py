@@ -218,167 +218,26 @@ if state is None:
         illustration="network",
     )
 
-if state is not None:
-    normalized = state["normalized"]
-    dns_summary = state["dns_summary"]
-    ssl_result = state["ssl_result"]
-    http_result = state["http_result"]
-    risk = state["risk"]
-    include_dmarc = state["include_dmarc"]
+            render_section_heading(
+                "PSA / ticket note",
+                "Plain text, no markdown symbols -- ready to paste into a ConnectWise, Autotask, or Halo ticket note.",
+                eyebrow="MSP export",
+            )
+            st.code(psa_note, language=None)
+            st.download_button(
+                "Download PSA note (.txt)",
+                psa_note,
+                file_name=f"{normalized}-health-ticket-note.txt",
+                mime="text/plain",
+            )
 
-    with tool_result_panel("domain_summary"):
-        render_section_heading("Summary", "Overall reachability, TLS, DNS, email security, and risk score.")
-        m1, m2, m3, m4, m5, m6 = st.columns(6)
-        m1.metric("HTTP status", http_result["status_code"] or "Failed")
-        m2.metric("Response time", f"{http_result['response_time_ms']} ms" if http_result["response_time_ms"] else "Unknown")
-        m3.metric("SSL days", ssl_result["days_remaining"] if ssl_result["days_remaining"] is not None else "Unknown")
-        m4.metric("DNS status", dns_summary["status"])
-        m5.metric("Email security", dns_summary["email_status"])
-        m6.metric("Risk score", risk["score"], risk["status"])
-
-        gauge_col, status_col = st.columns([1, 2])
-        with gauge_col:
-            st.plotly_chart(_score_gauge(risk["score"], risk["status"]), width="stretch")
-        with status_col:
-            st.markdown("**Overall status**")
-            _display_status(risk["status"])
-            if risk["deductions"]:
-                st.dataframe(pd.DataFrame(risk["deductions"]), width="stretch", hide_index=True)
-            else:
-                st.caption("No score deductions.")
-
-    render_section_heading("DNS", "Resolved address, mail, text, SPF, and DMARC records.")
-    lookups = dns_summary["lookups"]
-    _display_status(dns_summary["status"])
-    _records_frame("A records", lookups["A"]["records"])
-    _records_frame("AAAA records", lookups["AAAA"]["records"])
-    _records_frame("MX records", lookups["MX"]["records"])
-    _records_frame("TXT records", lookups["TXT"]["records"])
-    col_spf, col_dmarc = st.columns(2)
-    col_spf.metric("SPF record", "Found" if dns_summary["spf_found"] else "Missing")
-    col_dmarc.metric(
-        "DMARC record",
-        "Found" if dns_summary["dmarc_found"] else "Missing" if include_dmarc else "Not checked",
-    )
-
-    posture = dns_summary.get("email_security_posture", {"rows": [], "recommendations": [], "status": "Unknown"})
-    render_section_heading(
-        "Email Security Posture",
-        "DNS-only checks for DNSSEC, SPF, DMARC, MTA-STS, and SMTP TLS reporting.",
-    )
-    _display_status(posture["status"])
-    if posture["rows"]:
-        st.dataframe(pd.DataFrame(posture["rows"]), width="stretch", hide_index=True)
-    else:
-        st.caption("No email security posture rows were generated.")
-    if posture["recommendations"]:
-        for item in posture["recommendations"]:
-            st.warning(item)
-    else:
-        st.success("No email security posture recommendations from the current DNS checks.")
-
-    render_section_heading("SSL", "Certificate validity, issuer, subject, and expiration state.")
-    _display_status(ssl_result["tls_status"])
-    if ssl_result["error"]:
-        render_failure_note(
-            "SSL check",
-            ssl_result["error"],
-            remediation="Confirm the hostname, TLS port, and certificate chain, then retry.",
-        )
-    cert_rows = [
-        {"field": "Subject", "value": ssl_result["subject"].get("commonName", "Unknown")},
-        {"field": "Issuer", "value": ssl_result["issuer"].get("commonName", "Unknown")},
-        {"field": "Valid from", "value": _format_dt(ssl_result["valid_from"])},
-        {"field": "Valid until", "value": _format_dt(ssl_result["valid_until"])},
-        {"field": "Days remaining", "value": ssl_result["days_remaining"] if ssl_result["days_remaining"] is not None else "Unknown"},
-    ]
-    st.dataframe(display_rows_frame(cert_rows), width="stretch", hide_index=True)
-    if ssl_result["days_remaining"] is not None and ssl_result["days_remaining"] < 30:
-        st.warning("SSL certificate expires in less than 30 days.")
-
-    render_section_heading("HTTP", "Final URL, response status, timing, and redirect information.")
-    if http_result["error"]:
-        render_failure_note(
-            "HTTP check",
-            http_result["error"],
-            remediation="Verify DNS resolution, firewall/proxy access, and web service availability, then retry.",
-        )
-    http_rows = [
-        {"field": "Final URL", "value": http_result["final_url"] or "Unknown"},
-        {"field": "Status code", "value": http_result["status_code"] or "Unknown"},
-        {"field": "Reason", "value": http_result["reason"] or "Unknown"},
-        {"field": "Response time", "value": f"{http_result['response_time_ms']} ms" if http_result["response_time_ms"] else "Unknown"},
-    ]
-    st.dataframe(display_rows_frame(http_rows), width="stretch", hide_index=True)
-    if http_result["redirect_chain"]:
-        with st.expander("Redirect chain"):
-            st.dataframe(pd.DataFrame(http_result["redirect_chain"]), width="stretch", hide_index=True)
-
-    www_result = state.get("www_result")
-    if www_result is not None:
-        with st.expander("www subdomain check"):
-            st.metric("www DNS status", www_result["dns"]["status"])
-            st.metric("www HTTP status", www_result["http"]["status_code"] or "Failed")
-            if www_result["http"]["error"]:
-                render_failure_note(
-                    "www subdomain HTTP check",
-                    www_result["http"]["error"],
-                    remediation="Verify the www record and web endpoint configuration before retrying.",
-                )
-
-    render_section_heading("Recommendations", "Prioritized fixes from the current checks.", eyebrow="Actions")
-    combined_recommendations = list(dict.fromkeys(risk["recommendations"] + http_result["recommendations"] + posture["recommendations"]))
-    if combined_recommendations:
-        for item in combined_recommendations:
-            st.warning(item)
-    else:
-        st.success("No major recommendations from the current checks.")
-
-    rows = _csv_rows(dns_summary, ssl_result, http_result, risk)
-    csv_data = pd.DataFrame(rows).to_csv(index=False).encode("utf-8")
-    markdown_data = _markdown_summary(normalized, dns_summary, ssl_result, http_result, risk)
-    html_data = build_domain_health_html_report(normalized, dns_summary, ssl_result, http_result, risk, rows)
-    psa_note = build_domain_health_psa_note(normalized, dns_summary, ssl_result, http_result, risk)
-    with tool_download_panel("domain_exports", related_to="domain_health"):
-        render_section_heading("Export", "Download the current in-memory results.", eyebrow="Downloads")
-        export_col_a, export_col_b, export_col_c = st.columns(3)
-        export_col_a.download_button("Download results as CSV", csv_data, file_name=f"{normalized}-health.csv", mime="text/csv")
-        export_col_b.download_button(
-            "Download summary as Markdown",
-            markdown_data,
-            file_name=f"{normalized}-health.md",
-            mime="text/markdown",
-        )
-        export_col_c.download_button(
-            "Download HTML report",
-            html_data,
-            file_name=f"{normalized}-health-report.html",
-            mime="text/html",
-        )
-
-        render_section_heading(
-            "PSA / ticket note",
-            "Plain text, no markdown symbols -- ready to paste into a ConnectWise, Autotask, or Halo ticket note.",
-            eyebrow="MSP export",
-        )
-        st.code(psa_note, language=None)
-        st.download_button(
-            "Download PSA note (.txt)",
-            psa_note,
-            file_name=f"{normalized}-health-ticket-note.txt",
-            mime="text/plain",
-        )
-
-        render_section_heading(
-            "Incident message",
-            "Ready to paste into a Slack or Teams channel for a live incident update.",
-            eyebrow="Chat export",
-        )
-        incident_tabs = st.tabs([target.title() for target in INCIDENT_MESSAGE_TARGETS])
-        for tab, target in zip(incident_tabs, INCIDENT_MESSAGE_TARGETS, strict=True):
-            with tab:
-                incident_message = build_domain_health_incident_message(normalized, dns_summary, ssl_result, http_result, risk, target)
-                st.code(incident_message["message"], language=None)
-
-mark_page_baseline(_baseline, "content-rendered")
-render_page_baseline(_baseline)
+            render_section_heading(
+                "Incident message",
+                "Ready to paste into a Slack or Teams channel for a live incident update.",
+                eyebrow="Chat export",
+            )
+            incident_tabs = st.tabs([target.title() for target in INCIDENT_MESSAGE_TARGETS])
+            for tab, target in zip(incident_tabs, INCIDENT_MESSAGE_TARGETS, strict=True):
+                with tab:
+                    incident_message = build_domain_health_incident_message(normalized, dns_summary, ssl_result, http_result, risk, target)
+                    st.code(incident_message["message"], language=None)

@@ -133,7 +133,7 @@ if result is not None:
                 )
 
             render_section_heading(
-                "Incident update message",
+                "Incident message",
                 "Ready to paste into a Slack or Teams channel for a live incident update.",
                 eyebrow="Chat export",
             )
