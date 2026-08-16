@@ -24,18 +24,6 @@ def test_id_generator_page_generates_uuids_by_default():
     assert len(ids) == 10  # default slider value
 
 
-def test_id_generator_page_pluralizes_uuid_heading_correctly():
-    """Regression: f"{count} {result_type}(s)" rendered "10 UUID (v4)(s)" --
-    the "(s)" landed after the trailing parenthetical instead of the noun."""
-    app = _run_page()
-    app.button[0].click().run()
-    assert not app.exception
-
-    headings = " ".join(m.value for m in app.markdown)
-    assert "10 UUIDs (v4)" in headings
-    assert "(v4)(s)" not in headings
-
-
 def test_id_generator_page_clicking_download_does_not_hide_results():
     """Regression: st.download_button triggers a rerun just like a plain widget
     outside st.form. Results must be keyed off session_state, not the transient

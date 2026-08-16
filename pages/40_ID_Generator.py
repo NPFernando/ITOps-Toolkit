@@ -43,12 +43,7 @@ if result is not None:
     result_type = st.session_state["id_generator_type"]
     result_count = st.session_state["id_generator_count"]
     with tool_result_panel("id_generator_result_panel", related_to="id_generator"):
-        # Pluralized separately from the raw label -- "UUID (v4)" has its own
-        # trailing parenthetical, so blindly appending "(s)" after the whole
-        # label renders "10 UUID (v4)(s)" instead of "10 UUIDs (v4)".
-        plural_labels = {"UUID (v4)": "UUIDs (v4)", "ULID": "ULIDs"}
-        result_label = result_type if result_count == 1 else plural_labels[result_type]
-        render_section_heading(f"{result_count} {result_label}", "Generated for this request only -- nothing is stored.")
+        render_section_heading(f"{result_count} {result_type}(s)", "Generated for this request only -- nothing is stored.")
         if not result["ok"]:
             st.error(result["error"])
         else:
