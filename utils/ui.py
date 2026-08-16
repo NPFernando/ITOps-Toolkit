@@ -1249,6 +1249,18 @@ TOOLS: tuple[ToolMeta, ...] = (
         category="Web & Dev",
         is_new=True,
     ),
+    ToolMeta(
+        title="Regex Tester",
+        short_title="Regex Tester",
+        description="Test a regular expression against sample text with match positions and groups.",
+        path="pages/18_Regex_Tester.py",
+        icon="RGX",
+        accent="#65a30d",
+        slug="regex_tester",
+        professions=("Automation Engineer", "Web Developer", "Support Engineer"),
+        category="Web & Dev",
+        is_new=True,
+    ),
 )
 
 # Curated, not usage-derived -- this app deliberately has no usage tracking
@@ -2290,6 +2302,7 @@ def _material_icon_for(slug: str) -> str:
         "port_reference": ":material/router:",
         "password_generator": ":material/password:",
         "url_encoder_decoder": ":material/link:",
+        "regex_tester": ":material/pattern:",
     }
     return icons.get(slug, ":material/build:")
 
