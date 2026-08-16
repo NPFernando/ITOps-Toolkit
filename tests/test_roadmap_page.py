@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import os
 from pathlib import Path
 
 import pytest
@@ -18,16 +17,20 @@ ROADMAP_PAGE_TIMEOUT = 60
 
 
 @pytest.fixture(autouse=True)
-def _clear_roadmap_cache(monkeypatch):
+def _clear_roadmap_cache():
     """Clear st.cache_data before each test in this file.
 
-    The roadmap page now scopes its board-cache key with PYTEST_CURRENT_TEST
-    for test isolation, but this file still clears process-global
-    st.cache_data between tests to keep each scenario explicit and avoid
-    accidental coupling from unrelated cached calls.
+    pages/10_Roadmap_Feedback.py busts its cache on a monkeypatched
+    load_roadmap_board by keying on id(roadmap.load_roadmap_board). That's
+    reliable in production (the loader is never monkeypatched, so the id
+    never changes), but not across tests in one process: each test defines
+    its own short-lived local `fake_board` closure, and CPython can reuse a
+    garbage-collected function's id for the next one. When that happens,
+    st.cache_data (a process-global cache, not reset between separate
+    AppTest runs) serves a *different* test's cached RoadmapBoard, and this
+    test fails on stale content instead of what it just monkeypatched in.
     """
     st.cache_data.clear()
-    monkeypatch.setenv("ITOPS_CACHE_SCOPE", os.getenv("PYTEST_CURRENT_TEST", "runtime"))
 
 
 def _page_text(app: AppTest) -> str:
