@@ -57,6 +57,30 @@ def test_test_regex_truncates_at_max_matches():
     assert result["truncated"] is True
 
 
+def test_test_regex_handles_large_result_payload_without_deadlocking():
+    # Regression test for a real bug found while building the companion
+    # diff tool: process.join() before queue.get() can deadlock once a
+    # fast-finishing child's result is large enough to fill the pipe's OS
+    # buffer (the child blocks in queue.put(), the parent blocks in
+    # join() waiting for an exit that can't happen until put() returns).
+    # Near-MAX_MATCHES matches, each with real content, reproduced this
+    # reliably before the fix (~MATCH_TIMEOUT_SECONDS-long "hang" that
+    # looked identical to a real timeout).
+    chunk = "abcdefghijklmnopqrstuvwxyz0123456789 " * 2 + "\n"
+    text = chunk * (regex_tools.MAX_MATCHES + 5)
+
+    start = time.time()
+    result = regex_tools.test_regex(r"[a-z0-9 ]+", text)
+    elapsed = time.time() - start
+
+    assert result["ok"] is True
+    assert result["match_count"] == regex_tools.MAX_MATCHES
+    # Generous margin for full-suite/CI load, same reasoning as the
+    # catastrophic-backtracking test below -- the invariant that matters is
+    # "didn't hang for the timeout", not a tight speed assertion.
+    assert elapsed < regex_tools.MATCH_TIMEOUT_SECONDS
+
+
 def test_test_regex_kills_catastrophic_backtracking_within_timeout():
     start = time.time()
     result = regex_tools.test_regex(r"(a+)+$", "a" * 30 + "!")

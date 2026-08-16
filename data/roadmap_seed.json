@@ -165,16 +165,16 @@
     {
       "title": "Regex tester",
       "category": "Tools",
-      "status": "AI Recommended",
+      "status": "Complete",
       "votes": 19,
-      "description": "Test a pattern against sample text with match highlighting, entirely client-side/public-safe.",
+      "description": "Test a pattern against sample text with match positions and groups, guarded by a hard evaluation timeout against catastrophic backtracking.",
       "rationale": "Common everyday utility that fits the existing text-tools family (JSON, Base64, JWT).",
       "updated_at": "2026-08-05"
     },
     {
       "title": "URL encoder/decoder",
       "category": "Tools",
-      "status": "AI Recommended",
+      "status": "Complete",
       "votes": 15,
       "description": "Encode/decode URL components and query strings, similar to the existing Base64 tool.",
       "rationale": "Frequently needed alongside Base64/JWT when debugging webhooks and API calls.",
@@ -183,7 +183,7 @@
     {
       "title": "Password / passphrase generator",
       "category": "Security",
-      "status": "AI Recommended",
+      "status": "Complete",
       "votes": 24,
       "description": "Generate strong random passwords or diceware-style passphrases locally, never transmitted.",
       "rationale": "High-demand, low-risk addition that fits the public-safe, no-storage positioning well.",
@@ -246,7 +246,7 @@
     {
       "title": "Timestamp / epoch converter",
       "category": "Tools",
-      "status": "Complete",
+      "status": "In Progress",
       "votes": 20,
       "description": "Convert between Unix epoch, ISO 8601, and human-readable timestamps across timezones, plus a live \"now\" reference.",
       "rationale": "One of the most common everyday IT utilities; surprisingly missing given the toolkit already has a Cron Explainer.",
@@ -255,7 +255,7 @@
     {
       "title": "Text diff checker",
       "category": "Tools",
-      "status": "Complete",
+      "status": "In Progress",
       "votes": 16,
       "description": "Side-by-side or unified diff between two blocks of text, highlighting additions and removals.",
       "rationale": "Frequently needed alongside JSON/config troubleshooting to spot what changed between two versions.",
@@ -264,16 +264,16 @@
     {
       "title": "JWT encoder",
       "category": "Security",
-      "status": "Complete",
+      "status": "AI Recommended",
       "votes": 12,
-      "description": "Build and sign a JWT from a JSON payload and secret using an HMAC algorithm, complementing the existing decode-only JWT Decoder.",
+      "description": "Build and sign a JWT from a header/payload/secret, complementing the existing decode-only JWT Decoder.",
       "rationale": "Decoding already exists; encoding is the natural other half for testing auth flows locally.",
       "updated_at": "2026-08-05"
     },
     {
       "title": "CIDR / IP range aggregator",
       "category": "Tools",
-      "status": "Complete",
+      "status": "AI Recommended",
       "votes": 9,
       "description": "Summarize a list of IPs or CIDR blocks into the minimal set of covering supernets.",
       "rationale": "Extends the existing Subnet Calculator for firewall-rule and ACL cleanup work.",
@@ -282,55 +282,10 @@
     {
       "title": "User-Agent string parser",
       "category": "Tools",
-      "status": "Complete",
+      "status": "AI Recommended",
       "votes": 11,
       "description": "Break a User-Agent header down into browser, OS, and device details.",
       "rationale": "Common companion lookup alongside HTTP Status Checker and Email Header Analyzer.",
-      "updated_at": "2026-08-05"
-    },
-    {
-      "title": "IPv6 address compressor/expander",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 7,
-      "description": "Convert an IPv6 address between its compressed (::) and fully expanded form.",
-      "rationale": "Small, frequently-needed complement to the Subnet Calculator and CIDR Aggregator.",
-      "updated_at": "2026-08-05"
-    },
-    {
-      "title": "Cron next-run calendar export",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 6,
-      "description": "Export the Cron Explainer's next-run times as a downloadable .ics calendar file.",
-      "rationale": "Lets users drop scheduled job times straight into their calendar instead of re-reading the explainer each time.",
-      "updated_at": "2026-08-05"
-    },
-    {
-      "title": "Slugify / case converter",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 8,
-      "description": "Convert text between slug-case, camelCase, snake_case, kebab-case, and Title Case.",
-      "rationale": "Everyday utility for developers naming files, variables, and URLs.",
-      "updated_at": "2026-08-05"
-    },
-    {
-      "title": "MAC vendor (OUI) lookup",
-      "category": "Tools",
-      "status": "AI Recommended",
-      "votes": 10,
-      "description": "Show the registered vendor/manufacturer for a MAC address's OUI prefix.",
-      "rationale": "Natural extension of the existing MAC Address Tool -- the OUI is already parsed out, just not looked up.",
-      "updated_at": "2026-08-05"
-    },
-    {
-      "title": "Color code converter",
-      "category": "Tools",
-      "status": "AI Recommended",
-      "votes": 7,
-      "description": "Convert colors between HEX, RGB, and HSL, with a live swatch preview.",
-      "rationale": "Common small utility for anyone touching CSS/UI work alongside the IT-focused tools.",
       "updated_at": "2026-08-05"
     }
   ]

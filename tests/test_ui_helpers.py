@@ -216,6 +216,8 @@ def test_expected_tools_are_tagged_new():
         "password_generator",
         "url_encoder_decoder",
         "regex_tester",
+        "timestamp_converter",
+        "text_diff_checker",
     }
 
 
@@ -341,8 +343,8 @@ def test_sidebar_category_partition_matches_expected_grouping():
     assert by_category == {
         "Network": ["domain_health", "dns_records", "subnet_calculator", "mac_address_tool"],
         "Security": ["ssl_certificate", "jwt_decoder", "hash_generator", "email_header_analyzer", "password_generator"],
-        "Web & Dev": ["http_status", "json_formatter", "base64_tool", "url_encoder_decoder", "regex_tester"],
-        "Ops & Automation": ["cron_explainer", "log_troubleshooting"],
+        "Web & Dev": ["http_status", "json_formatter", "base64_tool", "url_encoder_decoder", "regex_tester", "text_diff_checker"],
+        "Ops & Automation": ["cron_explainer", "log_troubleshooting", "timestamp_converter"],
         "Reference": ["port_reference"],
     }
 

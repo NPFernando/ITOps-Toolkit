@@ -1261,6 +1261,30 @@ TOOLS: tuple[ToolMeta, ...] = (
         category="Web & Dev",
         is_new=True,
     ),
+    ToolMeta(
+        title="Timestamp Converter",
+        short_title="Timestamp Converter",
+        description="Convert between Unix epoch, ISO 8601, and human-readable timestamps across timezones.",
+        path="pages/19_Timestamp_Converter.py",
+        icon="EPO",
+        accent="#0d9488",
+        slug="timestamp_converter",
+        professions=("Automation Engineer", "Sysadmin / DevOps", "Support Engineer", "Cloud Engineer"),
+        category="Ops & Automation",
+        is_new=True,
+    ),
+    ToolMeta(
+        title="Text Diff Checker",
+        short_title="Text Diff Checker",
+        description="Compare two blocks of text and see exactly what changed, line by line.",
+        path="pages/20_Text_Diff_Checker.py",
+        icon="DIF",
+        accent="#7c3aed",
+        slug="text_diff_checker",
+        professions=("Automation Engineer", "Web Developer", "Support Engineer"),
+        category="Web & Dev",
+        is_new=True,
+    ),
 )
 
 # Curated, not usage-derived -- this app deliberately has no usage tracking
@@ -2303,6 +2327,8 @@ def _material_icon_for(slug: str) -> str:
         "password_generator": ":material/password:",
         "url_encoder_decoder": ":material/link:",
         "regex_tester": ":material/pattern:",
+        "timestamp_converter": ":material/schedule:",
+        "text_diff_checker": ":material/difference:",
     }
     return icons.get(slug, ":material/build:")
 
