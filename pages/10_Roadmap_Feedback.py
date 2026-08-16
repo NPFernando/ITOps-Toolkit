@@ -52,6 +52,7 @@ mark_page_baseline(_baseline, "wave44-shell-mobile")
 mark_page_baseline(_baseline, "wave45-shell-mobile")
 mark_page_baseline(_baseline, "wave46-shell-mobile")
 mark_page_baseline(_baseline, "wave47-shell-mobile")
+mark_page_baseline(_baseline, "wave48-shell-mobile")
 
 
 def _status_tone(status: str) -> str:

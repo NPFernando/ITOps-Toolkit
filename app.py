@@ -54,6 +54,7 @@ mark_page_baseline(_baseline, "wave44-shell-mobile")
 mark_page_baseline(_baseline, "wave45-shell-mobile")
 mark_page_baseline(_baseline, "wave46-shell-mobile")
 mark_page_baseline(_baseline, "wave47-shell-mobile")
+mark_page_baseline(_baseline, "wave48-shell-mobile")
 
 
 repo_url = github_url()
