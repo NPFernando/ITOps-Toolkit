@@ -50,6 +50,7 @@ mark_page_baseline(_baseline, "wave42-shell-mobile")
 mark_page_baseline(_baseline, "wave43-shell-mobile")
 mark_page_baseline(_baseline, "wave44-shell-mobile")
 mark_page_baseline(_baseline, "wave45-shell-mobile")
+mark_page_baseline(_baseline, "wave46-shell-mobile")
 
 
 def _status_tone(status: str) -> str:
@@ -273,6 +274,7 @@ render_section_heading(
     "Roadmap results",
     description="Review status outcomes first, then scan grouped columns for matching roadmap cards.",
     eyebrow="Step 2",
+    heading_level="h3",
 )
 st.caption("If you're new, begin with Planned and In Progress columns before opening issue links.")
 

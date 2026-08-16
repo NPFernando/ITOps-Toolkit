@@ -75,6 +75,7 @@ mark_page_baseline(_baseline, "wave42-shell-mobile")
 mark_page_baseline(_baseline, "wave43-shell-mobile")
 mark_page_baseline(_baseline, "wave44-shell-mobile")
 mark_page_baseline(_baseline, "wave45-shell-mobile")
+mark_page_baseline(_baseline, "wave46-shell-mobile")
 
 render_page_header("Lorem Ipsum Generator", "Generate deterministic placeholder text by words, sentences, or paragraphs.")
 
@@ -110,6 +111,7 @@ with tool_result_panel("lorem_ipsum_result", related_to="lorem_ipsum_generator")
         "Generated lorem output",
         description="Review and copy output. Reuse the same seed to reproduce identical text.",
         eyebrow="Step 2",
+        heading_level="h3",
     )
     if result is None:
         render_empty_state("Ready to generate", "Generated lorem ipsum text appears here after submission.")
