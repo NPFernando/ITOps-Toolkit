@@ -242,6 +242,78 @@
       "description": "A RequestBin-style ephemeral endpoint to inspect incoming webhook payloads, with no persistent storage.",
       "rationale": "Common need when debugging integrations; fits the toolkit's no-storage, public-safe model if payloads are ephemeral and session-scoped.",
       "updated_at": "2026-08-05"
+    },
+    {
+      "title": "Timestamp / epoch converter",
+      "category": "Tools",
+      "status": "Complete",
+      "votes": 20,
+      "description": "Convert between Unix epoch, ISO 8601, and human-readable timestamps across timezones, plus a live \"now\" reference.",
+      "rationale": "One of the most common everyday IT utilities; surprisingly missing given the toolkit already has a Cron Explainer.",
+      "updated_at": "2026-08-05"
+    },
+    {
+      "title": "Text diff checker",
+      "category": "Tools",
+      "status": "Complete",
+      "votes": 16,
+      "description": "Side-by-side or unified diff between two blocks of text, highlighting additions and removals.",
+      "rationale": "Frequently needed alongside JSON/config troubleshooting to spot what changed between two versions.",
+      "updated_at": "2026-08-05"
+    },
+    {
+      "title": "JWT encoder",
+      "category": "Security",
+      "status": "Complete",
+      "votes": 12,
+      "description": "Build and sign a JWT from a JSON payload and secret using an HMAC algorithm, complementing the existing decode-only JWT Decoder.",
+      "rationale": "Decoding already exists; encoding is the natural other half for testing auth flows locally.",
+      "updated_at": "2026-08-05"
+    },
+    {
+      "title": "CIDR / IP range aggregator",
+      "category": "Tools",
+      "status": "Complete",
+      "votes": 9,
+      "description": "Summarize a list of IPs or CIDR blocks into the minimal set of covering supernets.",
+      "rationale": "Extends the existing Subnet Calculator for firewall-rule and ACL cleanup work.",
+      "updated_at": "2026-08-05"
+    },
+    {
+      "title": "User-Agent string parser",
+      "category": "Tools",
+      "status": "Complete",
+      "votes": 11,
+      "description": "Break a User-Agent header down into browser, OS, and device details.",
+      "rationale": "Common companion lookup alongside HTTP Status Checker and Email Header Analyzer.",
+      "updated_at": "2026-08-05"
+    },
+    {
+      "title": "IPv6 address compressor/expander",
+      "category": "Tools",
+      "status": "AI Recommended",
+      "votes": 7,
+      "description": "Convert an IPv6 address between its compressed (::) and fully expanded form.",
+      "rationale": "Small, frequently-needed complement to the Subnet Calculator and CIDR Aggregator.",
+      "updated_at": "2026-08-05"
+    },
+    {
+      "title": "Cron next-run calendar export",
+      "category": "Tools",
+      "status": "AI Recommended",
+      "votes": 6,
+      "description": "Export the Cron Explainer's next-run times as a downloadable .ics calendar file.",
+      "rationale": "Lets users drop scheduled job times straight into their calendar instead of re-reading the explainer each time.",
+      "updated_at": "2026-08-05"
+    },
+    {
+      "title": "Slugify / case converter",
+      "category": "Tools",
+      "status": "AI Recommended",
+      "votes": 8,
+      "description": "Convert text between slug-case, camelCase, snake_case, kebab-case, and Title Case.",
+      "rationale": "Everyday utility for developers naming files, variables, and URLs.",
+      "updated_at": "2026-08-05"
     }
   ]
 }
