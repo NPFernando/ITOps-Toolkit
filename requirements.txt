@@ -11,4 +11,3 @@ tzdata
 pyyaml
 pyotp
 cryptography
-qrcode

@@ -187,7 +187,6 @@ def test_expected_tools_are_tagged_new():
         "http_status_reference",
         "totp_generator",
         "keypair_generator",
-        "qr_code_generator",
     }
 
 
@@ -296,6 +295,8 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "security_headers",
             "cve_lookup",
             "file_integrity",
+            "totp_generator",
+            "keypair_generator",
         ],
         "Web & Dev": [
             "http_status",
