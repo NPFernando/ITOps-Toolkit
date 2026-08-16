@@ -587,6 +587,17 @@ When a roadmap badge asset is unavailable, compact text fallback glyphs are used
 - Include one deterministic regression-test pass confirming wave-42 guardrails in `tests/test_ui_helpers.py`, `tests/test_wave42_shell_mobile_markers.py`, and `tests/test_wave42_accessibility_guardrails.py`.
 - Include one keyboard-only pass to confirm wave-42 explicit status semantics (`role="status"`/`role="alert"` + `aria-live`) and focus visibility remain intact.
 
+
+### Phase 50 Wave 43 add-on QA focus
+
+- Confirm placeholder-to-real wave-43 slug alias notes remain explicit for diagnostics/release evidence (`179_tool_slug_pending_roadmap` + `179_<tool_slug_pending_roadmap>` -> wave-43 lorem touchpoint `141_Lorem_Ipsum_Generator.py`/`lorem_ipsum_generator`; `180_tool_slug_pending_roadmap` + `180_<tool_slug_pending_roadmap>` -> wave-43 converter touchpoint `142_Text_to_Binary_Hex_Octal_Converter.py`/`text_to_binary_hex_octal_converter`) and keep prior placeholder aliases documented for deterministic continuity.
+- Confirm deterministic slug-first icon lookup still checks tool slugs before category defaults and preserves readable text badge fallback when SVG assets are unavailable.
+- Include one shell pass confirming shared shell + baseline markers (`shell-ready`, `content-rendered`, `wave43-shell-mobile`) remain visible/unchanged on Home, Roadmap, and wave-43 touchpoint pages.
+- Include one `<=720px` viewport pass to confirm Home controls, Roadmap filters/AI triage action, and wave-43 generate/convert actions (with shared control headings) stay full-width/tap-friendly with no clipping/overflow.
+- Include one UX standards pass confirming Step 1/Step 2 heading hierarchy descriptions stay concise/readable with no clipped controls across mapped pages.
+- Include one deterministic regression-test pass confirming wave-43 guardrails in `tests/test_ui_helpers.py`, `tests/test_wave43_shell_mobile_markers.py`, `tests/test_wave43_visual_icon_markers.py`, and `tests/test_wave43_accessibility_guardrails.py`.
+- Include one keyboard-only pass to confirm wave-43 explicit status semantics (`role="status"`/`role="alert"` + `aria-live`) and focus visibility remain intact.
+
 ## Docs/release media inventory
 
 ### Posters
