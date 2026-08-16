@@ -95,14 +95,6 @@ if state is not None:
                     # Always checked against File A only -- named explicitly so this
                     # isn't misread as confirming File B when both are supplied.
                     if state["matched_algorithm"]:
-                        render_status_note(
-                            "Integrity status: File A verified",
-                            f"File A matches the expected hash ({state['matched_algorithm'].upper()}).",
-                            tone="success",
-                        )
+                        st.success(f"File A matches the expected hash ({state['matched_algorithm'].upper()}).")
                     else:
-                        render_status_note(
-                            "Integrity status: File A mismatch",
-                            "File A does not match the expected hash against any computed algorithm.",
-                            tone="warning",
-                        )
+                        st.error("File A does not match the expected hash against any computed algorithm.")

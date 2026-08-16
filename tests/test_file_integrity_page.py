@@ -68,10 +68,7 @@ def test_file_integrity_page_matches_expected_hash():
 
     app.button[0].click().run()
     assert not app.exception
-    markdown = " ".join(block.value for block in app.markdown)
-    assert "Integrity status: File A verified" in markdown
-    assert "File A matches the expected hash (SHA256)." in markdown
-    assert "tool-status-note-success" in markdown
+    assert any("File A matches the expected hash (SHA256)" in s.body for s in app.success)
 
 
 def test_file_integrity_page_wrong_expected_hash_does_not_match():
@@ -85,7 +82,4 @@ def test_file_integrity_page_wrong_expected_hash_does_not_match():
 
     app.button[0].click().run()
     assert not app.exception
-    markdown = " ".join(block.value for block in app.markdown)
-    assert "Integrity status: File A mismatch" in markdown
-    assert "File A does not match the expected hash against any computed algorithm." in markdown
-    assert "tool-status-note-warning" in markdown
+    assert any("File A does not match" in e.value for e in app.error)
