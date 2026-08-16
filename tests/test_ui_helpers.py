@@ -177,8 +177,6 @@ def test_expected_tools_are_tagged_new():
         "windows_error_reference",
         "config_format_converter",
         "m365_sku_decoder",
-        "id_generator",
-        "json_diff",
     }
 
 
@@ -298,32 +296,8 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "id_generator",
             "json_diff",
         ],
-        "Data & Text": [
-            "json_formatter",
-            "base64_tool",
-            "regex_tester",
-            "text_diff_checker",
-            "case_converter",
-            "color_converter",
-            "config_format_converter",
-            "id_generator",
-            "json_diff",
-            "base_converter",
-            "qr_code_generator",
-            "sql_formatter",
-            "ulid_uuid_decoder",
-        ],
-        "Ops & Automation": ["cron_explainer", "log_troubleshooting", "timestamp_converter", "chmod_calculator", "cron_builder"],
-        "Reference": [
-            "port_reference",
-            "windows_event_reference",
-            "windows_error_reference",
-            "m365_sku_decoder",
-            "http_status_reference",
-            "regex_cheat_sheet",
-        ],
-        "Ops & Automation": ["cron_explainer", "log_troubleshooting", "timestamp_converter", "chmod_calculator", "cron_builder"],
-        "Reference": ["port_reference", "windows_event_reference", "windows_error_reference", "m365_sku_decoder", "http_status_reference"],
+        "Ops & Automation": ["cron_explainer", "log_troubleshooting", "timestamp_converter"],
+        "Reference": ["port_reference", "windows_event_reference", "windows_error_reference", "m365_sku_decoder"],
     }
 
 

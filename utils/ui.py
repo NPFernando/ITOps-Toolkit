@@ -1465,30 +1465,6 @@ TOOLS: tuple[ToolMeta, ...] = (
         category="Reference",
         is_new=True,
     ),
-    ToolMeta(
-        title="ID Generator",
-        short_title="ID Generator",
-        description="Generate UUIDs (v4) or ULIDs in bulk.",
-        path="pages/40_ID_Generator.py",
-        icon="UID",
-        accent="#6d597a",
-        slug="id_generator",
-        professions=("Web Developer", "Automation Engineer", "Sysadmin / DevOps"),
-        category="Web & Dev",
-        is_new=True,
-    ),
-    ToolMeta(
-        title="JSON Diff Viewer",
-        short_title="JSON Diff",
-        description="Structurally compare two JSON documents by key/path, not by line.",
-        path="pages/41_JSON_Diff_Viewer.py",
-        icon="JDF",
-        accent="#118ab2",
-        slug="json_diff",
-        professions=("Web Developer", "Automation Engineer", "Sysadmin / DevOps"),
-        category="Web & Dev",
-        is_new=True,
-    ),
 )
 
 # Curated, not usage-derived -- this app deliberately has no usage tracking
@@ -1527,7 +1503,9 @@ TOOL_BUNDLES: dict[str, tuple[str, ...]] = {
     "cidr_aggregator": ("subnet_calculator", "ipv6_compressor"),
     "ipv6_compressor": ("subnet_calculator", "cidr_aggregator"),
     "port_reference": ("subnet_calculator", "mac_address_tool"),
-    "windows_event_reference": ("log_troubleshooting", "port_reference"),
+    "windows_event_reference": ("log_troubleshooting", "port_reference", "windows_error_reference"),
+    "windows_error_reference": ("windows_event_reference", "log_troubleshooting"),
+    "m365_sku_decoder": ("windows_event_reference", "port_reference"),
     "email_header_analyzer": ("dns_records", "domain_health", "dkim_lookup"),
     "dkim_lookup": ("email_header_analyzer", "domain_health", "email_record_builder"),
     "email_record_builder": ("dkim_lookup", "dns_records"),
@@ -2581,8 +2559,6 @@ def _material_icon_for(slug: str) -> str:
         "windows_error_reference": ":material/error_outline:",
         "config_format_converter": ":material/sync_alt:",
         "m365_sku_decoder": ":material/badge:",
-        "id_generator": ":material/fingerprint:",
-        "json_diff": ":material/compare_arrows:",
     }
     return icons.get(slug, ":material/build:")
 
