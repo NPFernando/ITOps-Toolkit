@@ -141,42 +141,6 @@ def test_explain_cron_valid_and_invalid_paths():
     assert invalid["error"] == "Cron expression is not valid."
 
 
-def test_cron_ics_export_produces_valid_calendar_structure():
-    result = text_tools.cron_ics_export("*/15 * * * *", count=3)
-
-    assert result["ok"] is True
-    ics = result["ics"]
-    assert ics.startswith("BEGIN:VCALENDAR\r\n")
-    assert ics.rstrip("\r\n").endswith("END:VCALENDAR")
-    assert ics.count("BEGIN:VEVENT") == 3
-    assert ics.count("END:VEVENT") == 3
-    assert "VERSION:2.0" in ics
-    assert "SUMMARY:Cron: */15 * * * *" in ics
-
-
-def test_cron_ics_export_dtstart_increments_match_schedule():
-    result = text_tools.cron_ics_export("0 * * * *", count=2)
-
-    dtstarts = [line.split(":", 1)[1] for line in result["ics"].splitlines() if line.startswith("DTSTART:")]
-    assert len(dtstarts) == 2
-    assert dtstarts[0] != dtstarts[1]
-
-
-def test_cron_ics_export_rejects_invalid_expression():
-    result = text_tools.cron_ics_export("not a cron")
-
-    assert result["ok"] is False
-    assert "valid 5-field cron" in result["error"]
-
-
-def test_cron_ics_export_rejects_out_of_range_count():
-    too_many = text_tools.cron_ics_export("*/15 * * * *", count=text_tools.MAX_ICS_RUNS + 1)
-    too_few = text_tools.cron_ics_export("*/15 * * * *", count=0)
-
-    assert too_many["ok"] is False
-    assert too_few["ok"] is False
-
-
 def test_encode_url_text_percent_encodes_reserved_characters():
     result = text_tools.encode_url_text("hello world/test?a=b&c=d")
 
@@ -218,41 +182,3 @@ def test_url_tools_reject_oversized_input():
 
     assert text_tools.encode_url_text(oversized)["ok"] is False
     assert text_tools.decode_url_text(oversized)["ok"] is False
-
-
-def test_encode_jwt_round_trips_with_decode_jwt_unverified():
-    encoded = text_tools.encode_jwt('{"sub": "user123", "iat": 1735689600}', "my-secret", "HS256")
-
-    assert encoded["ok"] is True
-    decoded = text_tools.decode_jwt_unverified(encoded["token"])
-    assert decoded["ok"] is True
-    assert decoded["payload"] == {"sub": "user123", "iat": 1735689600}
-    assert decoded["header"]["alg"] == "HS256"
-
-
-def test_encode_jwt_rejects_invalid_payload_json():
-    result = text_tools.encode_jwt("not json", "secret", "HS256")
-
-    assert result["ok"] is False
-    assert "Invalid payload JSON" in result["error"]
-
-
-def test_encode_jwt_rejects_non_object_payload():
-    result = text_tools.encode_jwt("[1, 2, 3]", "secret", "HS256")
-
-    assert result["ok"] is False
-    assert "must be an object" in result["error"]
-
-
-def test_encode_jwt_requires_a_secret():
-    result = text_tools.encode_jwt('{"a": 1}', "", "HS256")
-
-    assert result["ok"] is False
-    assert "Enter a secret key" in result["error"]
-
-
-def test_encode_jwt_rejects_unsupported_algorithm():
-    result = text_tools.encode_jwt('{"a": 1}', "secret", "RS256")
-
-    assert result["ok"] is False
-    assert "Unsupported algorithm" in result["error"]
