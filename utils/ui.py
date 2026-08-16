@@ -1489,18 +1489,6 @@ TOOLS: tuple[ToolMeta, ...] = (
         category="Web & Dev",
         is_new=True,
     ),
-    ToolMeta(
-        title="IP Geolocation Lookup",
-        short_title="IP Geolocation",
-        description="Resolve an IP address to approximate geography, ASN, and ISP/org info.",
-        path="pages/42_IP_Geolocation_Lookup.py",
-        icon="GEO",
-        accent="#2a9d8f",
-        slug="ip_geolocation",
-        professions=("Sysadmin / DevOps", "Security Engineer", "Support Engineer"),
-        category="Network",
-        is_new=True,
-    ),
 )
 
 # Curated, not usage-derived -- this app deliberately has no usage tracking
@@ -1548,10 +1536,9 @@ TOOL_BUNDLES: dict[str, tuple[str, ...]] = {
     "file_integrity": ("hash_generator", "cve_lookup"),
     "jwt_decoder": ("jwt_encoder", "hash_generator"),
     "jwt_encoder": ("jwt_decoder", "hash_generator"),
-    "json_formatter": ("base64_tool", "regex_tester", "config_format_converter"),
+    "json_formatter": ("base64_tool", "config_format_converter", "json_diff"),
     "id_generator": ("hash_generator", "json_formatter"),
     "json_diff": ("json_formatter", "text_diff_checker"),
-    "base_converter": ("hash_generator", "id_generator"),
     "config_format_converter": ("json_formatter", "text_diff_checker"),
     "base64_tool": ("json_formatter", "url_encoder_decoder"),
     "url_encoder_decoder": ("base64_tool", "json_formatter"),
@@ -2596,7 +2583,6 @@ def _material_icon_for(slug: str) -> str:
         "m365_sku_decoder": ":material/badge:",
         "id_generator": ":material/fingerprint:",
         "json_diff": ":material/compare_arrows:",
-        "ip_geolocation": ":material/location_on:",
     }
     return icons.get(slug, ":material/build:")
 

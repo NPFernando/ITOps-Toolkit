@@ -179,7 +179,6 @@ def test_expected_tools_are_tagged_new():
         "m365_sku_decoder",
         "id_generator",
         "json_diff",
-        "ip_geolocation",
     }
 
 
@@ -298,7 +297,6 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "config_format_converter",
             "id_generator",
             "json_diff",
-            "base_converter",
         ],
         "Data & Text": [
             "json_formatter",
