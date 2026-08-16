@@ -2246,6 +2246,35 @@ _THEME_TOKENS = {
 }
 
 
+def current_theme_mode() -> str:
+    """Return the active theme mode, defaulting to dark.
+
+    Reads the theme toggle widget's own session_state entry directly --
+    deliberately not a separate mirrored key. An earlier version kept
+    THEME_MODE_KEY as a second, manually-written copy of the widget's
+    selection; the two could drift out of sync (this was suspected as a
+    contributing factor in a real "toggle shows Dark but the app renders
+    light" report), so there's now exactly one place this value lives.
+    """
+    selection = st.session_state.get(THEME_MODE_KEY, "Dark")
+    return "dark" if selection == "Dark" else "light"
+
+
+def _render_theme_toggle() -> None:
+    """Sidebar control letting visitors switch between the dark (default) and light palette."""
+    st.segmented_control(
+        "Theme",
+        options=["Dark", "Light"],
+        default="Dark",
+        required=True,  # without this, clicking the already-selected pill deselects it to
+        # None (documented segmented_control behavior with required=False), which would
+        # otherwise need a second place to paper over -- a real bug found earlier: one
+        # click on "Dark" while it's already selected flipped the whole app to light mode.
+        label_visibility="collapsed",
+        key=THEME_MODE_KEY,
+    )
+
+
 def _inject_global_css(mode: str) -> None:
     # NOTE: the CSS below is a plain (non f-string) template with a single
     # literal placeholder substituted via str.replace(). It is deliberately
