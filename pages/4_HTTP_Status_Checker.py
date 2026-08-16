@@ -14,9 +14,7 @@ from utils.ui import (
     render_form_intro,
     render_page_header,
     render_section_heading,
-    render_status_note,
     run_validated_lookup,
-    tool_download_panel,
     tool_form_panel,
     tool_result_panel,
 )
@@ -64,15 +62,11 @@ if result is not None:
     with tool_result_panel("http_result", related_to="http_status"):
         render_section_heading("HTTP result", "Status, timing, HTTPS state, and final URL.")
         if result["ok"]:
-            render_status_note("HTTP check completed", "The endpoint returned a successful response.", tone="success")
+            st.success("Healthy")
         elif result["error"]:
-            render_failure_note(
-                "HTTP check",
-                result["error"],
-                remediation="Verify DNS, TLS, firewall/proxy access, and upstream service health before retrying.",
-            )
+            st.error(result["error"])
         else:
-            render_status_note("HTTP check warning", "The endpoint responded but needs follow-up action.", tone="warning")
+            st.warning("Warning")
 
         c1, c2, c3, c4 = st.columns(4)
         c1.metric("Status code", result["status_code"] or "Failed")
@@ -108,33 +102,3 @@ if result is not None:
                 st.warning(item)
         else:
             st.success("No header or HTTPS recommendations from this check.")
-
-    summary_csv = display_rows_frame(rows).to_csv(index=False).encode("utf-8")
-    headers_csv = pd.DataFrame(
-        [{"header": key, "value": value} for key, value in result["headers"].items()]
-    ).to_csv(index=False).encode("utf-8")
-    redirect_csv = pd.DataFrame(result["redirect_chain"]).to_csv(index=False).encode("utf-8")
-    with tool_download_panel("http_downloads", related_to="http_status"):
-        render_section_heading("Export", "Download current in-memory HTTP check output.", eyebrow="Downloads")
-        col_a, col_b, col_c = st.columns(3)
-        col_a.download_button(
-            "Download summary as CSV",
-            summary_csv,
-            file_name="http-status-summary.csv",
-            mime="text/csv",
-        )
-        col_b.download_button(
-            "Download headers as CSV",
-            headers_csv,
-            file_name="http-status-headers.csv",
-            mime="text/csv",
-        )
-        col_c.download_button(
-            "Download redirects as CSV",
-            redirect_csv,
-            file_name="http-status-redirects.csv",
-            mime="text/csv",
-        )
-
-mark_page_baseline(_baseline, "content-rendered")
-render_page_baseline(_baseline)

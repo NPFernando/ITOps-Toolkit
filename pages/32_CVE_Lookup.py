@@ -12,7 +12,6 @@ from utils.ui import (
     render_form_intro,
     render_page_header,
     render_section_heading,
-    render_status_note,
     run_validated_lookup,
     tool_form_panel,
     tool_result_panel,

@@ -14,7 +14,6 @@ from utils.ui import (
     render_form_intro,
     render_page_header,
     render_section_heading,
-    render_status_note,
     run_validated_lookup,
     tool_form_panel,
     tool_result_panel,
@@ -42,9 +41,6 @@ with tool_form_panel("dkim_lookup"):
         submitted = st.form_submit_button("Look up selector", use_container_width=True)
 
 if submitted:
-    normalized_domain = normalize_domain(domain)
-    normalized_selector = selector.strip()
-
     def _validate() -> str | None:
         ok_domain, error_domain = validate_length(domain, MAX_DOMAIN_LENGTH, "Domain")
         if not ok_domain:
@@ -52,16 +48,14 @@ if submitted:
         ok_selector, error_selector = validate_length(selector, MAX_SELECTOR_LENGTH, "Selector")
         if not ok_selector:
             return error_selector
-        if not normalized_domain:
+        if not normalize_domain(domain):
             return "Enter a domain name."
-        if not normalized_selector:
-            return "Enter a DKIM selector."
         return None
 
     run_validated_lookup(
         "dkim_lookup",
         _validate,
-        lambda: lookup_dkim(normalized_domain, normalized_selector),
+        lambda: lookup_dkim(normalize_domain(domain), selector),
         spinner_text="Querying DKIM record...",
     )
 

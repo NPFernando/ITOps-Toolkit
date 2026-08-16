@@ -6,7 +6,6 @@ import json
 from dataclasses import dataclass
 from functools import lru_cache
 from html import escape
-from pathlib import Path
 from typing import Any, Callable, Iterable
 from urllib.parse import urlencode
 
