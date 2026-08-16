@@ -62,3 +62,19 @@ def test_parse_url_rejects_oversized_input():
 
     assert result["ok"] is False
     assert "longer than" in result["error"]
+
+
+def test_parse_url_rejects_out_of_range_port_instead_of_crashing():
+    # Regression: split.port raises ValueError uncaught for a port outside
+    # 0-65535 -- an ordinary typo must not crash the page.
+    result = parse_url("https://example.com:99999/")
+
+    assert result["ok"] is False
+    assert "Invalid port" in result["error"]
+
+
+def test_parse_url_rejects_non_numeric_port_instead_of_crashing():
+    result = parse_url("https://example.com:abc/")
+
+    assert result["ok"] is False
+    assert "Invalid port" in result["error"]

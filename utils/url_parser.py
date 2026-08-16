@@ -34,12 +34,20 @@ def parse_url(url: str) -> dict[str, Any]:
         result["error"] = "Could not parse a valid URL -- check the format."
         return result
 
+    try:
+        # .port raises ValueError for a non-numeric or out-of-range
+        # (0-65535) port -- a malformed/typo'd port shouldn't crash the page.
+        port = split.port
+    except ValueError:
+        result["error"] = "Invalid port -- must be a number between 0 and 65535."
+        return result
+
     result.update(
         {
             "ok": True,
             "scheme": split.scheme,
             "host": split.hostname,
-            "port": split.port,
+            "port": port,
             "path": split.path or "/",
             "query_params": [{"key": key, "value": value} for key, value in parse_qsl(split.query, keep_blank_values=True)],
             "fragment": split.fragment or None,

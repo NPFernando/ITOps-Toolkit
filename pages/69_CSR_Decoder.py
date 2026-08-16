@@ -39,7 +39,7 @@ if result is not None:
             st.caption(f"Subject: {result['subject']}")
             c1, c2, c3 = st.columns(3)
             c1.metric("Public key", result["public_key_algorithm"])
-            c2.metric("Key size", result["public_key_size"])
+            c2.metric("Key size", result["public_key_size"] if result["public_key_size"] is not None else "N/A")
             c3.metric("Signature", "Valid" if result["signature_valid"] else "Invalid")
             st.caption(f"Signature algorithm: {result['signature_algorithm']}")
             if result["san_names"]:
