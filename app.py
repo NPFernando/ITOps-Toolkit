@@ -91,6 +91,10 @@ profession = st.pills(
     "Filter by profession",
     options=("All", *PROFESSIONS),
     default="All",
+    required=True,  # without this, clicking the already-selected pill deselects it to
+    # None (documented st.pills behavior with required=False) -- profession != "All"
+    # then evaluates True for None, so show_all sticks and the heading renders the
+    # literal string "None Tools" instead of "All Tools". Same bug class as PR #63.
     label_visibility="collapsed",
     key="home_profession_filter",
 )
@@ -115,6 +119,9 @@ if show_all:
         "Sort",
         options=("Default", "A-Z", "Z-A"),
         default="Default",
+        required=True,  # without this, clicking the already-selected pill deselects it
+        # to None, which would then KeyError on the dict lookup below and crash the
+        # whole home page. Same bug class as PR #63.
         label_visibility="collapsed",
         key="home_sort_mode",
     )

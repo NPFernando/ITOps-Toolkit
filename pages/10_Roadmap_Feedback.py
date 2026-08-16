@@ -231,19 +231,19 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-render_section_heading(
-    "Browse roadmap items",
-    "Use search and category filters to focus the board view.",
-    eyebrow="Step 1",
-    heading_level="h3",
-)
-with tool_form_panel("roadmap_filters"):
-    render_form_intro("Search and filter roadmap", "Use keyword search and category pills to narrow the board.")
-    render_section_heading(
-        "Filter setup",
-        description="Set search terms and category scope first so roadmap results are easier to scan.",
-        eyebrow="Step 1a",
-        heading_level="h3",
+search_col, filter_col = st.columns([1.4, 1], gap="large")
+with search_col:
+    query = st.text_input("Search roadmap", placeholder="Search features, categories, or ideas...")
+with filter_col:
+    category = st.pills(
+        "Filter category",
+        options=("All", *roadmap.roadmap_categories()),
+        default="All",
+        required=True,  # without this, clicking the already-selected pill deselects it
+        # to None (documented st.pills behavior with required=False). Already safely
+        # coerced by `category or "All"` below, but fixed at the source anyway --
+        # same bug class as PR #63.
+        label_visibility="collapsed",
     )
     st.caption("New here? Keep category on All, apply once, then narrow if needed.")
     with st.form("roadmap-filters-form"):
