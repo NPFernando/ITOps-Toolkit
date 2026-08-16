@@ -49,6 +49,7 @@ mark_page_baseline(_baseline, "wave39-shell-mobile")
 mark_page_baseline(_baseline, "wave40-shell-mobile")
 mark_page_baseline(_baseline, "wave41-shell-mobile")
 mark_page_baseline(_baseline, "wave42-shell-mobile")
+mark_page_baseline(_baseline, "wave43-shell-mobile")
 
 
 repo_url = github_url()
@@ -75,6 +76,7 @@ with tool_form_panel("home_navigation_controls"):
         eyebrow="Step 1",
         heading_level="h3",
     )
+    st.caption("Read order: choose profession and navigation mode first, then run the catalog action below.")
     render_control_heading("Filter by profession")
     profession = st.pills(
         "Filter by profession",

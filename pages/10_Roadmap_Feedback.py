@@ -47,6 +47,7 @@ mark_page_baseline(_baseline, "wave39-shell-mobile")
 mark_page_baseline(_baseline, "wave40-shell-mobile")
 mark_page_baseline(_baseline, "wave41-shell-mobile")
 mark_page_baseline(_baseline, "wave42-shell-mobile")
+mark_page_baseline(_baseline, "wave43-shell-mobile")
 
 
 def _status_tone(status: str) -> str:
@@ -234,6 +235,7 @@ with tool_form_panel("roadmap_filters"):
         eyebrow="Step 1a",
         heading_level="h3",
     )
+    st.caption("If you're new, keep category on All first, apply filters, then narrow category only if needed.")
     with st.form("roadmap-filters-form"):
         render_control_heading("Keyword search")
         query = st.text_input("Search roadmap", placeholder="Search features, categories, or ideas...")
