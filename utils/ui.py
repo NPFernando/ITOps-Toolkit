@@ -3951,11 +3951,6 @@ def _inject_global_css(mode: str) -> None:
                 margin: 0.35rem 0 0.8rem;
             }
 
-            .stDownloadButton button,
-            .stFormSubmitButton button {
-                width: 100%;
-            }
-
             /* Multi-metric rows (4-6 st.metric columns) rely entirely on
                Streamlit's native column-stacking below this breakpoint --
                without this, a stacked 4-6-metric row reads as an ungrouped
