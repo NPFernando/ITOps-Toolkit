@@ -3625,13 +3625,13 @@ def _inject_global_css(mode: str) -> None:
             }
         }
 
-        /* Keep keyboard focus highly visible across links/buttons/inputs,
-           including custom role=button elements used by Streamlit widgets. */
+        /* Nothing in this stylesheet suppresses the browser's default focus
+           ring, but several links (fallback-page-link, roadmap-submit-link,
+           roadmap-secondary-link) sit on colored/gradient backgrounds where a
+           default outline can be low-contrast. This gives every link and
+           button in the app a consistent, visible keyboard-focus outline. */
         .stApp a:focus-visible,
-        .stApp button:focus-visible,
-        .stApp input:focus-visible,
-        .stApp textarea:focus-visible,
-        .stApp [role="button"]:focus-visible {
+        .stApp button:focus-visible {
             outline: 2px solid var(--itops-blue);
             outline-offset: 2px;
         }
@@ -4265,15 +4265,6 @@ def _inject_global_css(mode: str) -> None:
             animation: itops-fade-up 0.38s cubic-bezier(0.22, 0.61, 0.36, 1) both;
         }
 
-        .workflow-card-shell {
-            min-height: 10rem;
-            margin-bottom: 0.75rem;
-            border: 1px solid var(--itops-line);
-            border-radius: var(--card-radius);
-            padding: 0.85rem 0.95rem;
-            background: linear-gradient(160deg, #ffffff, #f6fbff);
-        }
-
         /* Deliberately a different visual language from .roadmap-status-badge /
            .roadmap-source-badge below: this is a promotional ribbon meant to
            grab attention on a tool card (solid gradient pill), while the
@@ -4477,9 +4468,9 @@ def _inject_global_css(mode: str) -> None:
         .tool-page-header {
             display: flex;
             align-items: center;
-            gap: var(--shell-gap-md);
-            padding: 1.05rem 1.1rem;
-            margin-bottom: 1.1rem;
+            gap: 1rem;
+            padding: 1rem 1.1rem;
+            margin-bottom: 1rem;
             border-radius: var(--card-radius);
             border: 1px solid var(--itops-surface-border);
             background: var(--itops-surface);
@@ -4654,13 +4645,7 @@ def _inject_global_css(mode: str) -> None:
             display: grid;
             place-items: center;
             border-radius: var(--card-radius);
-            /* White text measured 3.05:1/4.23:1 against this gradient's two
-               stops -- below WCAG AA's 4.5:1. Dark ink clears the lighter
-               stop (6.23:1); the darker stop is nudged 2% lighter locally
-               (not the shared --itops-blue-dark token, which backs several
-               icon-only buttons elsewhere with no text needing this check)
-               so dark ink clears it too (was 4.49:1, just under). */
-            color: #0c1116;
+            color: #ffffff;
             font-size: 0.72rem;
             font-weight: 900;
             background: linear-gradient(145deg, var(--itops-blue), color-mix(in srgb, var(--itops-blue-dark), white 2%));
