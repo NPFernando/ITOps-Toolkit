@@ -345,217 +345,73 @@
     {
       "title": "Security headers checker",
       "category": "Security",
-      "status": "Complete",
+      "status": "Planned",
       "votes": 9,
-      "description": "Inspect a URL's HTTP response headers (HSTS, CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy) and grade what's missing (A-F), similar to securityheaders.com.",
-      "rationale": "Shipped as its own Security Headers Checker page, reusing the same request pattern as HTTP Status Checker/Webhook Tester. Grading also flags weak (not just missing) HSTS max-age and permissive CSP values, not just presence/absence.",
+      "description": "Inspect a URL's HTTP response headers (CSP, HSTS, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy) and grade what's missing, similar to securityheaders.com.",
+      "rationale": "Reuses the same request/response pattern already proven out by HTTP Status Checker and Webhook Tester -- just reads headers instead of status/body. Common MSP pre-audit check that isn't covered by the existing SSL/DNS/email-security tools.",
       "updated_at": "2026-08-06"
     },
     {
       "title": "DKIM selector lookup",
       "category": "Security",
-      "status": "Complete",
+      "status": "Planned",
       "votes": 7,
       "description": "Given a domain and a DKIM selector, query and parse the DKIM TXT record (public key, key type, flags) the same way SPF/DMARC are already checked.",
-      "rationale": "Shipped as a dedicated DKIM Selector Lookup page. Since a DKIM record's location depends on a selector that isn't discoverable from DNS alone, the form takes both domain and selector explicitly, then queries <selector>._domainkey.<domain> and parses the v=/k=/p= fields. Reuses dns_tools.get_resolver/txt_to_string (made public alongside record_to_row for this).",
+      "rationale": "Completes the email-authentication trio (SPF, DMARC, DKIM) started by the existing Email Security Posture checks. DKIM needs a selector, which SPF/DMARC don't, so it's a distinct lookup rather than a free addition to the existing DNS summary.",
       "updated_at": "2026-08-06"
     },
     {
       "title": "DNS propagation checker",
       "category": "Tools",
-      "status": "Complete",
+      "status": "Planned",
       "votes": 8,
       "description": "Query the same DNS record type across several public resolvers (Google 8.8.8.8, Cloudflare 1.1.1.1, Quad9 9.9.9.9) side by side to catch propagation lag or mismatched answers after a DNS change.",
-      "rationale": "Shipped as a dedicated DNS Propagation Checker page. Queries Google (8.8.8.8), Cloudflare (1.1.1.1), and Quad9 (9.9.9.9) directly via dnspython's per-resolver nameserver override, and compares the sorted answer sets to flag propagation lag or mismatch. Refactored dns_tools.record_to_row from a private helper to a public one so both DNS Record Checker and this tool share the same record-formatting logic.",
+      "rationale": "Common post-cutover MSP task ('did the change propagate everywhere yet?') that the existing single-resolver DNS Record Checker doesn't answer. Buildable with dnspython's per-query nameserver override, same library already in use.",
       "updated_at": "2026-08-06"
     },
     {
       "title": "IP geolocation lookup",
       "category": "Tools",
-      "status": "Complete",
+      "status": "Planned",
       "votes": 6,
       "description": "Resolve an IP address to approximate geography, ASN, and network/ISP info via a public API, mirroring the pattern already used for MAC vendor lookup.",
-      "rationale": "Shipped as a dedicated IP Geolocation Lookup page against the free ip-api.com public API (no key). Chose it over ipapi.co after live testing -- ipapi.co's free tier hit its rate limit on back-to-back sequential test calls, while ip-api.com handled repeated calls cleanly with clear success/fail states (including distinct 'private range' and 'invalid query' messages). Also caught and fixed a real bug during interactive verification: passing mixed-type values (strings and floats) straight into a bare pd.DataFrame triggers a PyArrow serialization warning/auto-fix in Streamlit -- switched to the existing display_rows_frame() helper (utils/ui.py), which already exists specifically for this.",
+      "rationale": "Frequently useful alongside DNS/HTTP checks when triaging an unfamiliar IP in logs or access lists. Same 'optional live lookup against a free public API' shape as MAC vendor lookup, so the risk profile is already validated.",
       "updated_at": "2026-08-06"
     },
     {
       "title": "File hash / integrity comparator",
       "category": "Security",
-      "status": "Complete",
+      "status": "Planned",
       "votes": 6,
       "description": "Upload two files (or a file plus an expected hash string) and compare their digests to confirm a download wasn't corrupted or tampered with.",
-      "rationale": "Shipped as a dedicated File Integrity Comparator page. Extends the existing Hash Generator (text-only) to file uploads: compare two uploaded files directly, or check one file against a pasted expected hash (auto-matched across MD5/SHA-1/SHA-256/SHA-512, case-insensitive). Stdlib hashlib only, capped at 100MB per file to avoid memory pressure on Streamlit Cloud.",
+      "rationale": "Extends the existing Hash Generator (which only hashes typed/pasted text) to file uploads, a distinct and common verification workflow for downloaded installers/patches.",
       "updated_at": "2026-08-06"
     },
     {
       "title": "Cron expression builder",
       "category": "Tools",
-      "status": "Complete",
+      "status": "Planned",
       "votes": 5,
       "description": "The reverse of the existing Cron Explainer: pick a schedule via simple minute/hour/day controls and get the resulting cron expression, instead of typing one in to be explained.",
-      "rationale": "Shipped as a dedicated Cron Expression Builder page with per-field Every/Every N/Specific controls. Reuses the existing explain_cron() from utils/text_tools.py (already used by Cron Explainer) to validate the built expression and preview its readable description and next run times, keeping the two pages consistent rather than reimplementing cron semantics. Live-updates, no submit button -- same no-vanishing-risk pattern as chmod Calculator and Integer Base Converter.",
-      "updated_at": "2026-08-07"
+      "rationale": "Natural companion to Cron Explainer for people who don't already know cron syntax and want to construct rather than decode a schedule.",
+      "updated_at": "2026-08-06"
     },
     {
       "title": "Incident message formatter for Slack/Teams",
       "category": "Integrations",
-      "status": "Complete",
+      "status": "Planned",
       "votes": 7,
       "description": "Turn the current Domain Health / Uptime Trend results into a ready-to-paste Slack or Teams incident-update message (their respective mrkdwn/Adaptive-Card-safe plain formatting), the same way the PSA/ticket-note export already avoids raw markdown symbols.",
-      "rationale": "Shipped as new export sections on the existing Domain Health Checker and Uptime Trend pages (not a standalone page, since it turns those pages' own results into a message). Reuses the PSA-note plain-text-summary pattern in utils/reporting.py but produces Slack mrkdwn (single-asterisk bold) or Teams/GFM-style markdown (double-asterisk bold) via tabs -- st.tabs specifically, not a radio/selectbox, because a rerun-triggering widget outside st.form would have hit the same vanishing-results bug fixed in PR #33/#34.",
+      "rationale": "Directly reuses the PSA-note pattern (plain-text, no markdown symbols that would render literally) shipped this session, just targeted at chat tools instead of ticketing systems -- a genuinely different MSP workflow (real-time incident comms vs. after-the-fact ticket notes).",
       "updated_at": "2026-08-06"
     },
     {
       "title": "QR code generator",
       "category": "Tools",
-      "status": "Complete",
+      "status": "Planned",
       "votes": 5,
       "description": "Generate a QR code for a URL, Wi-Fi credentials, or plain text/contact info, for onboarding handoffs and support materials.",
-      "rationale": "Shipped as a QR Code Generator page with two tabs: plain text/URL, and Wi-Fi credentials (WIFI: payload format most phone cameras recognize directly, with proper backslash-escaping of special characters in SSID/password per the format spec). Adds qrcode as a new dependency; Pillow was already a transitive dependency (streamlit itself needs it for st.image), so this only adds the one package. Live-updates, no submit button -- no results-vanishing risk.",
-      "updated_at": "2026-08-07"
-    },
-    {
-      "title": "Windows Event ID reference",
-      "category": "Tools",
-      "status": "Complete",
-      "votes": 8,
-      "description": "Searchable reference of common Windows Event Log IDs with description, source, and severity, similar to killertools.net's Windows Event Lookup.",
-      "rationale": "Shipped as a dedicated Windows Event Reference page, same static-dataset + search shape as the existing Port Reference. Curated set of ~38 commonly-triaged event IDs across System/Application/Security/PowerShell logs, each with log, source, severity, summary, and common cause.",
-      "updated_at": "2026-08-06"
-    },
-    {
-      "title": "Windows Event ID reference",
-      "category": "Tools",
-      "status": "Planned",
-      "votes": 8,
-      "description": "Searchable reference of common Windows Event Log IDs with description, source, and severity, similar to killertools.net's Windows Event Lookup.",
-      "rationale": "Inspired by a comparison against killertools.net (a competing MSP/sysadmin toolkit). Same 'curated static dataset + search box' shape already proven out by the existing Port Reference page -- no external API needed, just a maintained data table.",
-      "updated_at": "2026-08-06"
-    },
-    {
-      "title": "Windows/Win32 error code lookup",
-      "category": "Tools",
-      "status": "Planned",
-      "votes": 7,
-      "description": "Look up a Windows error code (hex or decimal) -- system errors, BSOD stop codes, WMI/RPC/MSI errors -- and get the plain-language meaning.",
-      "rationale": "Inspired by killertools.net's Windows Error Code Lookup. Same reference-table pattern as Port Reference; complements the existing Log Troubleshooting Assistant for techs triaging Windows-side incidents.",
-      "updated_at": "2026-08-06"
-    },
-    {
-      "title": "M365 license SKU decoder",
-      "category": "Tools",
-      "status": "Planned",
-      "votes": 6,
-      "description": "Convert Microsoft 365 license SKU strings and GUIDs (e.g. SPE_E3, ENTERPRISEPACK) to readable product names.",
-      "rationale": "Inspired by killertools.net's M365 SKU Decoder. High-value for MSPs auditing tenant licensing; a static lookup table, same shape as Port Reference.",
-      "updated_at": "2026-08-06"
-    },
-    {
-      "title": "CVE lookup",
-      "category": "Security",
-      "status": "Planned",
-      "votes": 9,
-      "description": "Search the NIST National Vulnerability Database by CVE ID or keyword and show severity, description, and affected products.",
-      "rationale": "Inspired by killertools.net's CVE Lookup. NVD has a public, keyless API for basic queries, so this follows the same 'optional live external lookup' pattern already validated by WHOIS/MAC-vendor/DNS work -- genuinely useful for MSP security triage, not currently covered by anything in this toolkit.",
-      "updated_at": "2026-08-06"
-    },
-    {
-      "title": "SPF/DMARC/DKIM record builder",
-      "category": "Security",
-      "status": "Planned",
-      "votes": 7,
-      "description": "Generate correctly-formatted SPF, DMARC, and DKIM TXT record strings from simple inputs (allowed senders, policy level, reporting address), the reverse of the existing DNS/email-security checks.",
-      "rationale": "Inspired by killertools.net's Email Record Generator. Directly complements the existing Domain Health Checker / DKIM selector lookup roadmap item -- checking is covered, building the record isn't yet.",
-      "updated_at": "2026-08-06"
-    },
-    {
-      "title": "Integer base converter",
-      "category": "Tools",
-      "status": "Planned",
-      "votes": 5,
-      "description": "Convert a number between binary, octal, decimal, and hexadecimal, with live conversion as you type.",
-      "rationale": "Inspired by killertools.net's Integer Base Converter. Small, stdlib-only, universally useful dev/IT utility not currently in this toolkit.",
-      "updated_at": "2026-08-06"
-    },
-    {
-      "title": "UUID / ULID generator",
-      "category": "Tools",
-      "status": "Planned",
-      "votes": 6,
-      "description": "Generate UUIDs (v4) and ULIDs in bulk, with copy-to-clipboard and a CSV export for when a batch of test IDs is needed.",
-      "rationale": "Inspired by killertools.net's UUID/ULID generators. Extremely common dev/ops need not currently covered by this toolkit; stdlib `uuid` covers UUIDv4 with no new dependency.",
-      "updated_at": "2026-08-06"
-    },
-    {
-      "title": "TOTP/OTP code generator and validator",
-      "category": "Security",
-      "status": "Planned",
-      "votes": 6,
-      "description": "Generate and validate time-based one-time passcodes (TOTP) from a shared secret, for testing MFA setups without needing a phone in hand.",
-      "rationale": "Inspired by killertools.net's OTP tool. Useful for techs testing MFA enrollment/troubleshooting; buildable with the small, well-audited `pyotp` package (a new dependency, worth calling out at build time given this app's history with dependency-related outages).",
-      "updated_at": "2026-08-06"
-    },
-    {
-      "title": "Bcrypt hash generator/verifier",
-      "category": "Security",
-      "status": "Planned",
-      "votes": 5,
-      "description": "Hash a value with bcrypt (configurable cost factor) and separately verify a value against an existing bcrypt hash.",
-      "rationale": "Inspired by killertools.net's bcrypt tool. Complements the existing Hash Generator, which only covers fixed-digest algorithms (MD5/SHA family), not bcrypt's salted/adaptive scheme -- useful when testing an app's auth/password storage.",
-      "updated_at": "2026-08-06"
-    },
-    {
-      "title": "RSA/SSH key pair generator",
-      "category": "Security",
-      "status": "Planned",
-      "votes": 6,
-      "description": "Generate an RSA (or ed25519) key pair in the browser for test/throwaway use -- SSH authorized_keys format and PEM private key.",
-      "rationale": "Inspired by killertools.net's RSA Key Pair Generator. Useful for spinning up disposable test credentials during troubleshooting; buildable with Python's `cryptography` package (a new dependency).",
-      "updated_at": "2026-08-06"
-    },
-    {
-      "title": "chmod calculator",
-      "category": "Tools",
-      "status": "Planned",
-      "votes": 5,
-      "description": "Convert between symbolic (rwxr-xr--) and octal (754) Unix file permission notation, both directions, with a checkbox grid for building permissions visually.",
-      "rationale": "Inspired by killertools.net's chmod calculator. Small, stdlib-only sysadmin staple, no external dependency needed.",
-      "updated_at": "2026-08-06"
-    },
-    {
-      "title": "Config format converter (YAML / TOML / XML / JSON)",
-      "category": "Tools",
-      "status": "Planned",
-      "votes": 7,
-      "description": "Convert a pasted config snippet between YAML, TOML, XML, and JSON, reusing the existing JSON Formatter's validation/error-display pattern.",
-      "rationale": "Inspired by killertools.net's YAML/TOML/XML converters. Common ops task when moving config between tools (e.g. Ansible YAML to a JSON API payload); would need `PyYAML` and `toml`/`tomllib` (stdlib in 3.11+) as dependencies.",
-      "updated_at": "2026-08-06"
-    },
-    {
-      "title": "JSON diff viewer",
-      "category": "Tools",
-      "status": "Planned",
-      "votes": 6,
-      "description": "Structurally diff two JSON documents (key-aware, not line-based) and highlight added/removed/changed fields.",
-      "rationale": "Inspired by killertools.net's JSON diff tool. Complements the existing Text Diff Checker (line-based) and JSON Formatter -- useful for comparing API responses or config exports where line-based diffing produces noisy results from key reordering.",
-      "updated_at": "2026-08-06"
-    },
-    {
-      "title": "SQL formatter/prettifier",
-      "category": "Tools",
-      "status": "Planned",
-      "votes": 5,
-      "description": "Reformat a pasted SQL query with consistent indentation and keyword casing for readability.",
-      "rationale": "Inspired by killertools.net's SQL Prettify tool. Useful for sysadmins/DBAs pasting minified or exported queries; buildable with the small `sqlparse` package (a new dependency).",
-      "updated_at": "2026-08-06"
-    },
-    {
-      "title": "HTTP status code reference",
-      "category": "Tools",
-      "status": "Planned",
-      "votes": 4,
-      "description": "Searchable static reference of HTTP status codes with meaning and common causes, standalone from the live HTTP Status Checker.",
-      "rationale": "Inspired by killertools.net's HTTP Status Codes reference. Same static-lookup pattern as Port Reference; useful as a quick lookup when a code shows up in a log rather than from a live check.",
+      "rationale": "Common small MSP/support utility (e.g. printed Wi-Fi onboarding cards) that fits the existing 'small standalone utility' shape of Color Converter and Case Converter.",
       "updated_at": "2026-08-06"
     }
   ]
