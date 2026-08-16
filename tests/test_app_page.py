@@ -7,6 +7,7 @@ from streamlit.testing.v1 import AppTest
 # file that calls it (this test file's directory), not the working
 # directory -- an absolute path avoids that resolution entirely.
 APP_PAGE = str(Path(__file__).resolve().parent.parent / "app.py")
+UI_MODULE = Path(__file__).resolve().parent.parent / "utils" / "ui.py"
 
 
 def test_css_injects_before_sidebar_and_has_no_blocking_import():
@@ -21,15 +22,15 @@ def test_css_injects_before_sidebar_and_has_no_blocking_import():
     at = AppTest.from_file(APP_PAGE, default_timeout=30).run()
     assert not at.exception, at.exception
 
-    md_values = [m.value for m in at.markdown]
-    css_block = next((v for v in md_values if "<style>" in v), None)
-    assert css_block is not None, "no <style> block found in markdown output"
-
-    assert "@import" not in css_block, "blocking @import reintroduced"
-    link_idx = css_block.find('rel="stylesheet"')
-    style_idx = css_block.find("<style>")
-    assert link_idx != -1, "no <link rel=stylesheet> found"
-    assert link_idx < style_idx, "font <link> no longer precedes <style>"
+    # CSS is intentionally rendered through st.html(), not st.markdown():
+    # CommonMark can expose a large multi-line <style> block as visible text.
+    # Assert the implementation contract directly while AppTest verifies page
+    # startup did not raise.
+    ui_source = UI_MODULE.read_text(encoding="utf-8")
+    assert "@import" not in ui_source, "blocking @import reintroduced"
+    assert 'rel="stylesheet"' in ui_source, "no font stylesheet link found"
+    assert "st.html(css)" in ui_source, "CSS should use raw HTML rendering"
+    assert ui_source.index("_inject_global_css(\"dark\")") < ui_source.index("render_sidebar(active_page)")
 
 
 def test_home_pills_are_required_and_cannot_deselect_to_none():

@@ -296,13 +296,28 @@ def summarize_feature_requests_with_azure(
             api_key=config["AZURE_OPENAI_API_KEY"],
             base_url=_azure_openai_base_url(config["AZURE_OPENAI_ENDPOINT"]),
         )
-        response = client.responses.create(
-            model=config["AZURE_OPENAI_DEPLOYMENT"],
-            instructions=FEATURE_TRIAGE_SYSTEM_INSTRUCTIONS,
-            input=input_text,
-            max_output_tokens=500,
-        )
-        summary = _response_output_text(response)
+        summary = ""
+        for attempt in range(1, DEFAULT_AZURE_RETRY_ATTEMPTS + 1):
+            try:
+                response = client.responses.create(
+                    model=config["AZURE_OPENAI_DEPLOYMENT"],
+                    instructions=FEATURE_TRIAGE_SYSTEM_INSTRUCTIONS,
+                    input=input_text,
+                    max_output_tokens=500,
+                )
+                summary = _response_output_text(response)
+                break
+            except Exception as exc:
+                if attempt < DEFAULT_AZURE_RETRY_ATTEMPTS and _is_retryable_ai_exception(exc):
+                    time.sleep(AZURE_RETRY_BACKOFF_SECONDS * attempt)
+                    continue
+                return {
+                    "enabled": False,
+                    "provider": "azure_openai",
+                    "status": "error",
+                    "message": "AI triage summary could not be generated.",
+                    "error_type": type(exc).__name__,
+                }
     except Exception as exc:
         return {
             "enabled": False,

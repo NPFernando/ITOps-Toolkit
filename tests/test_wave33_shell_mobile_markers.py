@@ -41,7 +41,7 @@ def test_wave33_pages_keep_grouped_controls_and_mobile_primary_actions():
             'with st.form("roadmap-filters-form"):',
             'st.form_submit_button("Apply filters", use_container_width=True)',
             'with tool_form_panel("roadmap_ai_triage_action"):',
-            'render_section_heading("Optional triage", eyebrow="Step 2")',
+            'render_section_heading("Optional triage", eyebrow="Step 3a", heading_level="h3")',
             'st.button(f"Summarize {len(open_items)} open items with AI", icon=":material/auto_awesome:", use_container_width=True)',
         ],
         "pages/141_Lorem_Ipsum_Generator.py": [

@@ -19,6 +19,24 @@ st.set_page_config(page_title="CIDR Aggregator", layout="wide")
 apply_app_shell(active_page="CIDR Aggregator")
 
 
+st.markdown(
+    """
+    <style>
+    @media (max-width: 768px) {
+      div[data-testid="stFormSubmitButton"] > button {
+        min-height: 2.75rem;
+        font-size: 1rem;
+      }
+      div[data-testid="stTextArea"] textarea {
+        font-size: 1rem;
+      }
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+
 render_page_header(
     "CIDR Aggregator",
     "Summarize a list of IPs or CIDR blocks into the minimal set of covering supernets.",
@@ -32,24 +50,34 @@ with tool_form_panel("cidr_aggregator"):
             height=220,
             max_chars=MAX_INPUT_LENGTH,
             placeholder="192.168.0.0/24\n192.168.1.0/24\n10.0.0.0/8",
+            help="Enter one IP address or CIDR block per line.",
         )
-        submitted = st.form_submit_button("Aggregate")
-
-if not submitted:
-    render_empty_state("Ready to aggregate", "The minimal covering set of networks appears here after you submit.")
+        submitted = st.form_submit_button("Aggregate", use_container_width=True)
 
 if submitted:
-    result = aggregate_cidrs(cidr_input)
-    with tool_result_panel("cidr_result"):
+    # Stored in session_state (not rendered directly here) because the sidebar's
+    # quick-search box, favorite-star buttons, and any other widget outside this
+    # page's st.form trigger reruns of their own -- on those reruns `submitted` is
+    # False again, which would otherwise collapse this whole results section the
+    # instant any of them is touched.
+    st.session_state["cidr_aggregator_result"] = aggregate_cidrs(cidr_input)
+
+result = st.session_state.get("cidr_aggregator_result")
+
+if result is None:
+    render_empty_state("Ready to aggregate", "The minimal covering set of networks appears here after you submit.")
+
+if result is not None:
+    with tool_result_panel("cidr_result", related_to="cidr_aggregator"):
         render_section_heading("Aggregated networks", f"{result['input_count']} entries in.")
         if not result["ok"]:
             st.error(result["error"])
         else:
-            c1, c2 = st.columns(2)
-            c1.metric("Input entries", result["input_count"])
-            c2.metric("Output networks", result["output_count"])
+            st.metric("Input entries", result["input_count"])
+            st.metric("Output networks", result["output_count"])
             rows = [
                 {"CIDR": n["cidr"], "Version": f"IPv{n['version']}", "Total addresses": n["total_addresses"]}
                 for n in result["networks"]
             ]
+            st.caption("Aggregated output networks")
             st.dataframe(display_rows_frame(rows), width="stretch", hide_index=True)

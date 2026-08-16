@@ -47,7 +47,7 @@ def test_docs_links_resolve_for_key_operational_docs():
             if not target.exists():
                 missing.append(f"{doc.relative_to(PROJECT_ROOT)} -> {link}")
 
-    assert not missing, f"Broken local doc links:\n" + "\n".join(missing)
+    assert not missing, "Broken local doc links:\n" + "\n".join(missing)
 
 
 def test_asset_index_entries_exist_on_disk():

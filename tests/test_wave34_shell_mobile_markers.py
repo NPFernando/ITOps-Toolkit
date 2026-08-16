@@ -33,7 +33,7 @@ def test_wave34_pages_keep_mobile_primary_actions_and_read_order_guidance():
             '"Catalog visibility",',
             'description="Run one full-width action to reveal or collapse catalog results after setup is complete.",',
             'eyebrow="Step 2",',
-            'st.caption("Read order: review browsing setup, run this full-width action, then verify status notes and tool results.")',
+            'st.caption("Read order: confirm browsing setup, run this full-width action, then review the outcome note before scanning results.")',
             "st.button(button_label, icon=button_icon, use_container_width=True)",
         ],
         "pages/10_Roadmap_Feedback.py": [
@@ -42,7 +42,7 @@ def test_wave34_pages_keep_mobile_primary_actions_and_read_order_guidance():
             'description="Set search terms and category scope first so roadmap results are easier to scan.",',
             'eyebrow="Step 1",',
             'render_control_heading("Apply filters")',
-            'st.caption("Read order: set search + category, apply filters, then review status outcomes before scanning cards.")',
+            'st.caption("Read order: set search + category, apply filters, then check outcome status before scanning cards.")',
             'st.form_submit_button("Apply filters", use_container_width=True)',
             '"Roadmap results",',
             'description="Review status outcomes first, then scan grouped columns for matching roadmap cards.",',
@@ -54,7 +54,7 @@ def test_wave34_pages_keep_mobile_primary_actions_and_read_order_guidance():
             '"Output setup",',
             'eyebrow="Step 1",',
             'render_control_heading("Primary action")',
-            'st.caption("Read order: configure output shape and seed, run generate, then review status guidance and output.")',
+            'st.caption("Read order: choose output shape and seed, run generate, then review the outcome note and output.")',
             'submitted = st.form_submit_button("Generate lorem ipsum", use_container_width=True)',
         ],
         "pages/142_Text_to_Binary_Hex_Octal_Converter.py": [
@@ -62,7 +62,7 @@ def test_wave34_pages_keep_mobile_primary_actions_and_read_order_guidance():
             '"Input setup",',
             'eyebrow="Step 1",',
             'render_control_heading("Primary action")',
-            'st.caption("Read order: enter source text, run convert, then confirm status and compare all three encoded outputs.")',
+            'st.caption("Read order: enter source text, run convert, then check status and compare all three encoded outputs.")',
             'submitted = st.form_submit_button("Convert text", use_container_width=True)',
         ],
     }

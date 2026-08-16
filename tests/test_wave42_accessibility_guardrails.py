@@ -132,10 +132,10 @@ def test_wave42_lorem_and_text_converter_keep_deterministic_a11y_states():
 
 def test_wave42_read_order_guardrails_for_mapped_pages():
     expected_read_order = {
-        "app.py": 'st.caption("Read order: review browsing setup, run this full-width action, then verify status notes and tool results.")',
-        "pages/10_Roadmap_Feedback.py": 'st.caption("Read order: set search + category, apply filters, then review status outcomes before scanning cards.")',
-        "pages/141_Lorem_Ipsum_Generator.py": 'st.caption("Read order: configure output shape and seed, run generate, then review status guidance and output.")',
-        "pages/142_Text_to_Binary_Hex_Octal_Converter.py": 'st.caption("Read order: enter source text, run convert, then confirm status and compare all three encoded outputs.")',
+        "app.py": 'st.caption("Read order: confirm browsing setup, run this full-width action, then review the outcome note before scanning results.")',
+        "pages/10_Roadmap_Feedback.py": 'st.caption("Read order: set search + category, apply filters, then check outcome status before scanning cards.")',
+        "pages/141_Lorem_Ipsum_Generator.py": 'st.caption("Read order: choose output shape and seed, run generate, then review the outcome note and output.")',
+        "pages/142_Text_to_Binary_Hex_Octal_Converter.py": 'st.caption("Read order: enter source text, run convert, then check status and compare all three encoded outputs.")',
     }
     for rel_path, snippet in expected_read_order.items():
         source = (PROJECT_ROOT / rel_path).read_text(encoding="utf-8")

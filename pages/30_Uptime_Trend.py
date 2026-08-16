@@ -5,12 +5,15 @@ import streamlit as st
 
 from utils.http_tools import MAX_URL_LENGTH
 from utils.latency_trend import MAX_CHECKS, MAX_INTERVAL_SECONDS, MIN_CHECKS, run_latency_trend
+from utils.reporting import INCIDENT_MESSAGE_TARGETS, build_uptime_incident_message
 from utils.ui import (
     apply_app_shell,
     render_empty_state,
+    render_failure_note,
     render_form_intro,
     render_page_header,
     render_section_heading,
+    render_status_note,
     tool_form_panel,
     tool_result_panel,
 )
@@ -54,15 +57,15 @@ render_page_header(
 
 with tool_form_panel("uptime_trend"):
     render_form_intro(
-        "Run a probe",
-        f"Runs {MIN_CHECKS}-{MAX_CHECKS} sequential checks in-memory, with an optional delay between each. Results disappear when you leave the page.",
+        "Run an uptime probe",
+        f"Runs {MIN_CHECKS}-{MAX_CHECKS} sequential in-memory checks, with an optional delay between each request.",
     )
     with st.form("uptime-trend-form"):
         url = st.text_input("URL", placeholder="https://example.com", max_chars=MAX_URL_LENGTH)
         c1, c2 = st.columns(2)
         checks = c1.slider("Number of checks", MIN_CHECKS, MAX_CHECKS, 8)
         interval_seconds = c2.slider("Delay between checks (seconds)", 0.0, MAX_INTERVAL_SECONDS, 1.0, step=0.5)
-        submitted = st.form_submit_button("Run probe")
+        submitted = st.form_submit_button("Run uptime probe")
 
 if submitted:
     # Stored in session_state (not rendered directly here) because the sidebar's
@@ -78,15 +81,36 @@ if submitted:
 result = st.session_state.get("uptime_trend_result")
 
 if result is None:
-    render_empty_state("Ready to run a probe", "A latency trend chart and uptime summary appear here after the probe completes.")
+    render_empty_state(
+        "Ready to run an uptime probe",
+        "Uptime percentage, latency metrics, and the trend chart appear here after the probe completes.",
+    )
 
 if result is not None:
     url = st.session_state["uptime_trend_url"]
     with tool_result_panel("uptime_trend_result", related_to="uptime_trend"):
-        render_section_heading("Trend result", eyebrow="Result")
+        render_section_heading("Uptime trend result", eyebrow="Result")
         if not result["ok"]:
-            st.error(result["error"])
+            render_failure_note(
+                "Uptime probe",
+                result["error"],
+                remediation="Provide a valid public HTTP(S) URL and rerun the probe.",
+            )
         else:
+            successful_checks = sum(1 for sample in result["samples"] if sample["ok"])
+            total_checks = len(result["samples"])
+            if successful_checks == total_checks:
+                render_status_note(
+                    "Probe completed",
+                    f"All {total_checks} checks succeeded.",
+                    tone="success",
+                )
+            else:
+                render_status_note(
+                    "Probe completed with failed checks",
+                    f"{successful_checks} of {total_checks} checks succeeded. Review failed samples and upstream availability.",
+                    tone="warning",
+                )
             m1, m2, m3, m4 = st.columns(4)
             m1.metric("Uptime", f"{result['uptime_pct']}%")
             m2.metric("Avg latency", f"{result['avg_latency_ms']} ms" if result["avg_latency_ms"] is not None else "N/A")
@@ -107,3 +131,14 @@ if result is not None:
                         for s in result["samples"]
                     ]
                 )
+
+            render_section_heading(
+                "Incident update message",
+                "Ready to paste into a Slack or Teams channel for a live incident update.",
+                eyebrow="Chat export",
+            )
+            incident_tabs = st.tabs([target.title() for target in INCIDENT_MESSAGE_TARGETS])
+            for tab, target in zip(incident_tabs, INCIDENT_MESSAGE_TARGETS, strict=True):
+                with tab:
+                    incident_message = build_uptime_incident_message(url, result, target)
+                    st.code(incident_message["message"], language=None)

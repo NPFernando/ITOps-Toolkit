@@ -17,6 +17,7 @@ from croniter import croniter
 MAX_LOG_LENGTH = 20_000
 MAX_JSON_LENGTH = 100_000
 MAX_URL_LENGTH = 20_000
+JWT_ENCODE_ALGORITHMS = ("HS256", "HS384", "HS512")
 
 
 def validate_length(value: str, max_length: int, label: str) -> tuple[bool, str | None]:

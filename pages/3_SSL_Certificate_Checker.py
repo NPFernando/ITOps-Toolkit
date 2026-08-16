@@ -19,7 +19,9 @@ from utils.ui import (
     render_form_intro,
     render_page_header,
     render_section_heading,
+    render_status_note,
     run_validated_lookup,
+    tool_download_panel,
     tool_form_panel,
     tool_result_panel,
 )
@@ -62,46 +64,20 @@ with tool_form_panel("ssl_certificate"):
         submitted = st.form_submit_button("Check certificate")
 
 if submitted:
-    # Stored in session_state (not rendered directly here) because the sidebar's
-    # quick-search box, favorite-star buttons, and any other widget outside this
-    # page's st.form trigger reruns of their own -- on those reruns `submitted` is
-    # False again, which would otherwise collapse this whole results section the
-    # instant any of them is touched.
-    ok, error = validate_length(domain, MAX_DOMAIN_LENGTH, "Domain")
-    normalized = normalize_domain(domain)
-    if not ok:
-        st.session_state["ssl_certificate_validation_error"] = error
-        st.session_state["ssl_certificate_result"] = None
-    elif not normalized:
-        st.session_state["ssl_certificate_validation_error"] = "Enter a domain name."
-        st.session_state["ssl_certificate_result"] = None
-    else:
-        st.session_state["ssl_certificate_validation_error"] = None
-        st.session_state["ssl_certificate_result"] = get_certificate_info(normalized, int(port))
+    def _validate() -> str | None:
+        ok, error = validate_length(domain, MAX_DOMAIN_LENGTH, "Domain")
+        if not ok:
+            return error
+        if not normalize_domain(domain):
+            return "Enter a domain name."
+        return None
 
-validation_error = st.session_state.get("ssl_certificate_validation_error")
-result = st.session_state.get("ssl_certificate_result")
-
-if validation_error is None and result is None:
-    render_empty_state("Ready to inspect TLS", "Certificate issuer, SANs, validity dates, and expiration status appear after the check.")
-
-if validation_error is not None:
-    st.error(validation_error)
-
-if result is not None:
-    with tool_result_panel("ssl_result", related_to="ssl_certificate"):
-            render_section_heading("Certificate result", "Connection status, expiration, issuer, and subject details.")
-            _status(result["tls_status"])
-            if result["error"]:
-                st.error(result["error"])
-
-            c1, c2, c3, c4 = st.columns(4)
-            c1.metric("TLS connection", "OK" if result["verification_ok"] else "Failed")
-            c2.metric("Days remaining", result["days_remaining"] if result["days_remaining"] is not None else "Unknown")
-            c3.metric("Port", result["port"])
-            c4.metric("Chain status", result["chain_status"])
-            if result["chain_explanation"]:
-                st.caption(result["chain_explanation"])
+    run_validated_lookup(
+        "ssl_certificate",
+        _validate,
+        lambda: get_certificate_info(normalize_domain(domain), int(port)),
+        spinner_text="Connecting...",
+    )
 
 validation_error = st.session_state.get("ssl_certificate_validation_error")
 result = st.session_state.get("ssl_certificate_result")
@@ -121,7 +97,11 @@ if result is not None:
         render_section_heading("Certificate result", "Connection status, expiration, issuer, and subject details.")
         _status(result["tls_status"])
         if result["error"]:
-            st.error(result["error"])
+            render_failure_note(
+                "TLS certificate check",
+                result["error"],
+                remediation="Verify DNS, certificate chain, hostname coverage, and port reachability before retrying.",
+            )
 
         c1, c2, c3, c4 = st.columns(4)
         c1.metric("TLS connection", "OK" if result["verification_ok"] else "Failed")
@@ -151,3 +131,35 @@ if result is not None:
                 st.dataframe(pd.DataFrame({"SAN": result["san_names"]}), width="stretch", hide_index=True)
             else:
                 st.caption("No SAN names available.")
+
+    summary_csv = display_rows_frame(rows).to_csv(index=False).encode("utf-8")
+    san_text = "\n".join(result["san_names"]) if result["san_names"] else "No SAN names available."
+    export_payload = {
+        **result,
+        "valid_from": _format_dt(result["valid_from"]),
+        "valid_until": _format_dt(result["valid_until"]),
+    }
+    with tool_download_panel("ssl_downloads", related_to="ssl_certificate"):
+        render_section_heading("Export", "Download the current in-memory certificate check output.", eyebrow="Downloads")
+        col_a, col_b, col_c = st.columns(3)
+        col_a.download_button(
+            "Download summary as CSV",
+            summary_csv,
+            file_name="ssl-certificate-summary.csv",
+            mime="text/csv",
+        )
+        col_b.download_button(
+            "Download SAN names (.txt)",
+            san_text,
+            file_name="ssl-certificate-san-names.txt",
+            mime="text/plain",
+        )
+        col_c.download_button(
+            "Download full result as JSON",
+            json.dumps(export_payload, indent=2),
+            file_name="ssl-certificate-result.json",
+            mime="application/json",
+        )
+
+mark_page_baseline(_baseline, "content-rendered")
+render_page_baseline(_baseline)

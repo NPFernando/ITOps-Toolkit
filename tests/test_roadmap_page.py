@@ -220,7 +220,7 @@ def test_roadmap_feedback_page_ai_triage_click_reuses_cache(monkeypatch):
     assert "Cached summary." in _page_text(app)
 
 
-def test_roadmap_feedback_page_ai_triage_unavailable_without_config(monkeypatch):
+def test_roadmap_feedback_page_ai_triage_unavailable_without_config_variant(monkeypatch):
     monkeypatch.delenv("OPENAI_API_KEY", raising=False)
     monkeypatch.delenv("AZURE_OPENAI_API_KEY", raising=False)
     monkeypatch.setattr(roadmap, "load_roadmap_board", lambda repo_url=None: roadmap.RoadmapBoard(roadmap.ROADMAP_ITEMS))
@@ -235,7 +235,7 @@ def test_roadmap_feedback_page_ai_triage_unavailable_without_config(monkeypatch)
     assert not any(b.label.startswith("Summarize") for b in app.button)
 
 
-def test_roadmap_feedback_page_ai_triage_runs_when_configured_and_clicked(monkeypatch):
+def test_roadmap_feedback_page_ai_triage_runs_when_configured_and_clicked_variant(monkeypatch):
     from utils import ai_tools
 
     monkeypatch.delenv("OPENAI_API_KEY", raising=False)

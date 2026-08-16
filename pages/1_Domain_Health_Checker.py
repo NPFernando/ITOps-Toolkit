@@ -10,7 +10,12 @@ import streamlit as st
 from utils.dev_baseline import mark_page_baseline, render_page_baseline, start_page_baseline
 from utils.dns_tools import MAX_DOMAIN_LENGTH, get_dns_summary, normalize_domain
 from utils.http_tools import check_http_status
-from utils.reporting import build_domain_health_html_report, build_domain_health_psa_note
+from utils.reporting import (
+    INCIDENT_MESSAGE_TARGETS,
+    build_domain_health_html_report,
+    build_domain_health_incident_message,
+    build_domain_health_psa_note,
+)
 from utils.scoring import calculate_risk_score
 from utils.ssl_tools import get_certificate_info
 from utils.text_tools import validate_length
@@ -150,11 +155,11 @@ with tool_form_panel("domain_health"):
         "Enter a public domain to check DNS, TLS, HTTP reachability, and email security signals.",
     )
     with st.form("domain-health-form"):
-        domain = st.text_input("Domain name", placeholder="example.com", max_chars=MAX_DOMAIN_LENGTH)
-        col_a, col_b = st.columns(2)
-        check_www = col_a.checkbox("Check www subdomain", value=True)
-        include_dmarc = col_b.checkbox("Include DMARC check", value=True)
-        submitted = st.form_submit_button("Run health check")
+        domain_col, options_col = st.columns([1.3, 1], gap="medium")
+        domain = domain_col.text_input("Domain name", placeholder="example.com", max_chars=MAX_DOMAIN_LENGTH)
+        check_www = options_col.checkbox("Check www subdomain", value=True)
+        include_dmarc = options_col.checkbox("Include DMARC check", value=True)
+        submitted = st.form_submit_button("Run health check", use_container_width=True)
 
 if submitted:
     ok, error = validate_length(domain, MAX_DOMAIN_LENGTH, "Domain")
@@ -177,6 +182,18 @@ if submitted:
                 spf_found=bool(dns_summary["spf_found"]),
                 dmarc_found=dmarc_for_score,
             )
+            # Computed once here (not in the render section below) because the
+            # render section runs on every rerun while results are showing --
+            # touching the sidebar search, expanding another section, or
+            # clicking any of the download buttons further down would otherwise
+            # re-fire these two live network calls every single time.
+            www_result = None
+            if check_www and not normalized.startswith("www."):
+                www_domain = f"www.{normalized}"
+                www_result = {
+                    "dns": get_dns_summary(www_domain, include_dmarc=False),
+                    "http": check_http_status(www_domain),
+                }
         # Stored in session_state (not rendered directly here) because the export
         # panel's download buttons and incident-message tabs below trigger reruns
         # of their own -- on those reruns `submitted` is False again, which would
@@ -189,6 +206,7 @@ if submitted:
             "risk": risk,
             "check_www": check_www,
             "include_dmarc": include_dmarc,
+            "www_result": www_result,
         }
 
 state = st.session_state.get("domain_health_state")
@@ -197,6 +215,7 @@ if state is None:
     render_empty_state(
         "Ready for a public domain",
         "Results, recommendations, and exports appear here after the health check completes.",
+        illustration="network",
     )
 
 if state is not None:
@@ -205,7 +224,6 @@ if state is not None:
     ssl_result = state["ssl_result"]
     http_result = state["http_result"]
     risk = state["risk"]
-    check_www = state["check_www"]
     include_dmarc = state["include_dmarc"]
 
     with tool_result_panel("domain_summary"):
@@ -262,7 +280,11 @@ if state is not None:
     render_section_heading("SSL", "Certificate validity, issuer, subject, and expiration state.")
     _display_status(ssl_result["tls_status"])
     if ssl_result["error"]:
-        st.error(ssl_result["error"])
+        render_failure_note(
+            "SSL check",
+            ssl_result["error"],
+            remediation="Confirm the hostname, TLS port, and certificate chain, then retry.",
+        )
     cert_rows = [
         {"field": "Subject", "value": ssl_result["subject"].get("commonName", "Unknown")},
         {"field": "Issuer", "value": ssl_result["issuer"].get("commonName", "Unknown")},
@@ -276,7 +298,11 @@ if state is not None:
 
     render_section_heading("HTTP", "Final URL, response status, timing, and redirect information.")
     if http_result["error"]:
-        st.error(http_result["error"])
+        render_failure_note(
+            "HTTP check",
+            http_result["error"],
+            remediation="Verify DNS resolution, firewall/proxy access, and web service availability, then retry.",
+        )
     http_rows = [
         {"field": "Final URL", "value": http_result["final_url"] or "Unknown"},
         {"field": "Status code", "value": http_result["status_code"] or "Unknown"},
@@ -288,15 +314,17 @@ if state is not None:
         with st.expander("Redirect chain"):
             st.dataframe(pd.DataFrame(http_result["redirect_chain"]), width="stretch", hide_index=True)
 
-    if check_www and not normalized.startswith("www."):
+    www_result = state.get("www_result")
+    if www_result is not None:
         with st.expander("www subdomain check"):
-            www_domain = f"www.{normalized}"
-            www_dns = get_dns_summary(www_domain, include_dmarc=False)
-            www_http = check_http_status(www_domain)
-            st.metric("www DNS status", www_dns["status"])
-            st.metric("www HTTP status", www_http["status_code"] or "Failed")
-            if www_http["error"]:
-                st.warning(www_http["error"])
+            st.metric("www DNS status", www_result["dns"]["status"])
+            st.metric("www HTTP status", www_result["http"]["status_code"] or "Failed")
+            if www_result["http"]["error"]:
+                render_failure_note(
+                    "www subdomain HTTP check",
+                    www_result["http"]["error"],
+                    remediation="Verify the www record and web endpoint configuration before retrying.",
+                )
 
     render_section_heading("Recommendations", "Prioritized fixes from the current checks.", eyebrow="Actions")
     combined_recommendations = list(dict.fromkeys(risk["recommendations"] + http_result["recommendations"] + posture["recommendations"]))
@@ -351,3 +379,6 @@ if state is not None:
             with tab:
                 incident_message = build_domain_health_incident_message(normalized, dns_summary, ssl_result, http_result, risk, target)
                 st.code(incident_message["message"], language=None)
+
+mark_page_baseline(_baseline, "content-rendered")
+render_page_baseline(_baseline)

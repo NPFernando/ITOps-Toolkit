@@ -37,14 +37,23 @@ with tool_form_panel("jwt_encoder"):
             algorithm = st.selectbox("Algorithm", JWT_ENCODE_ALGORITHMS)
         submitted = st.form_submit_button("Generate token")
 
-if not submitted:
+if submitted:
+    # Stored in session_state (not rendered directly here) because the sidebar's
+    # quick-search box, favorite-star buttons, and any other widget outside this
+    # page's st.form trigger reruns of their own -- on those reruns `submitted` is
+    # False again, which would otherwise collapse this whole results section the
+    # instant any of them is touched.
+    st.session_state["jwt_encoder_result"] = encode_jwt(payload_input, secret_input, algorithm)
+
+result = st.session_state.get("jwt_encoder_result")
+
+if result is None:
     render_empty_state("Ready to sign a token", "A signed JWT appears here after you submit a payload and secret.")
 
-if submitted:
-    result = encode_jwt(payload_input, secret_input, algorithm)
-    with tool_result_panel("jwt_encode_result"):
+if result is not None:
+    with tool_result_panel("jwt_encode_result", related_to="jwt_encoder"):
         render_section_heading("Signed token", "Copy this now -- it is not stored or logged.")
         if not result["ok"]:
             st.error(result["error"])
         else:
-            st.text_area("JWT", value=result["token"], height=100)
+            st.code(result["token"], language=None)
