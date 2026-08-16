@@ -178,6 +178,11 @@ def test_expected_tools_are_tagged_new():
         "config_format_converter",
         "m365_sku_decoder",
         "id_generator",
+        "json_diff",
+        "ip_geolocation",
+        "file_integrity",
+        "chmod_calculator",
+        "base_converter",
     }
 
 
@@ -294,6 +299,8 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "uptime_trend",
             "config_format_converter",
             "id_generator",
+            "json_diff",
+            "base_converter",
         ],
         "Data & Text": [
             "json_formatter",
