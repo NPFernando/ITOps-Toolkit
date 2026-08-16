@@ -181,6 +181,10 @@ def test_expected_tools_are_tagged_new():
         "json_diff",
         "ip_geolocation",
         "file_integrity",
+        "chmod_calculator",
+        "base_converter",
+        "cron_builder",
+        "http_status_reference",
     }
 
 
@@ -322,7 +326,7 @@ def test_sidebar_category_partition_matches_expected_grouping():
             "regex_cheat_sheet",
         ],
         "Ops & Automation": ["cron_explainer", "log_troubleshooting", "timestamp_converter", "chmod_calculator", "cron_builder"],
-        "Reference": ["port_reference", "windows_event_reference", "windows_error_reference", "m365_sku_decoder"],
+        "Reference": ["port_reference", "windows_event_reference", "windows_error_reference", "m365_sku_decoder", "http_status_reference"],
     }
 
 
