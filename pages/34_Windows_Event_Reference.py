@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import streamlit as st
 
-from utils.ui import apply_app_shell, render_form_intro, render_page_header, render_section_heading, tool_form_panel, tool_result_panel
+from utils.ui import apply_app_shell, render_empty_state, render_form_intro, render_page_header, render_section_heading, tool_form_panel, tool_result_panel
 from utils.windows_event_reference import search_events
 
 
@@ -62,4 +62,7 @@ with tool_result_panel("windows_event_reference_result", related_to="windows_eve
                 st.markdown(f"**Summary:** {entry.summary}")
                 st.markdown(f"**Common cause:** {entry.common_cause}")
     else:
-        st.info("No events matched that search.")
+        render_empty_state(
+            "No matching events",
+            "Try an event ID, log name, source, severity, or keyword.",
+        )

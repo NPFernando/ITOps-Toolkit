@@ -3,7 +3,7 @@ from __future__ import annotations
 import streamlit as st
 
 from utils.password_entropy import MAX_INPUT_LENGTH, estimate_entropy
-from utils.ui import apply_app_shell, render_empty_state, render_form_intro, render_page_header, render_section_heading, render_status_note, tool_form_panel, tool_result_panel
+from utils.ui import apply_app_shell, render_empty_state, render_failure_note, render_form_intro, render_page_header, render_section_heading, render_status_note, tool_form_panel, tool_result_panel
 
 
 st.set_page_config(page_title="Password Strength Checker", layout="wide")
@@ -40,7 +40,7 @@ if result is not None:
     with tool_result_panel("password_entropy_result_panel", related_to="password_entropy"):
         render_section_heading("Result", eyebrow="Result")
         if not result["ok"]:
-            st.error(result["error"])
+            render_failure_note("Password analysis", result["error"])
         else:
             c1, c2 = st.columns(2)
             c1.metric("Entropy (bits)", result["entropy_bits"])

@@ -5,6 +5,7 @@ import streamlit as st
 from utils.ui import (
     apply_app_shell,
     render_empty_state,
+    render_failure_note,
     render_form_intro,
     render_page_header,
     render_section_heading,
@@ -51,7 +52,7 @@ if result is not None:
     with tool_result_panel("user_agent_result", related_to="user_agent_parser"):
         render_section_heading("Parsed details", eyebrow="Result")
         if not result["ok"]:
-            st.error(result["error"])
+            render_failure_note("User-agent parsing", result["error"])
         elif result["is_bot"]:
             st.info(f"Detected as a bot/automated client: **{result['bot_name']}**")
         else:

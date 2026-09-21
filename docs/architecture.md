@@ -32,9 +32,11 @@ flowchart TD
 
 - Delivery/UI: `app.py` and `pages/`
 - Shared UI system: `utils/ui.py` provides theme CSS, sidebar navigation, command palette, tool metadata, generated-asset hooks (`HOME_HERO_ILLUSTRATION`, `TOOL_CARD_ICON_ASSETS`, `TOOL_HEADER_ILLUSTRATION_BY_CATEGORY`, `EMPTY_STATE_ILLUSTRATIONS`, `ROADMAP_BADGE_ICONS`), page headers, and home dashboard sections
+- PWA shell scaffold: shared shell wiring in `utils/ui.py` injects manifest/theme metadata and registers `/app/static/service-worker.js`; the worker is intentionally limited to offline shell fallback and static-asset caching, and does not persist user-entered diagnostics payloads
 - Home render isolation: selected high-rerun card grids on `app.py` render through `utils/ui.py::render_fragment(...)`, so favorite/reorder clicks can rerun only the local fragment (`st.rerun(scope="fragment")`) where supported instead of rerunning the full shell
 - Dev-only baseline instrumentation: `utils/dev_baseline.py` provides optional render timing for selected high-traffic surfaces, gated by `ITOPS_DEV_BASELINE`
 - Health diagnostics surface: `pages/128_Health_Diagnostics.py` provides public-safe runtime checks (runtime basics, optional integration availability, feature flags, and safe smoke probes) without exposing secrets or user payloads
+- UI/UX audit baseline: `scripts/ui_audit_inventory.py` produces `docs/ui-ux-audit-inventory.json` from all Streamlit pages without importing or executing adapters, making cross-page migration gaps reproducible in CI
 - UI navigation state boundary: recents/favorites/shared favorites are URL-query-param driven with browser localStorage mirroring (`utils/ui.py`); write paths skip no-op query-param rewrites to avoid unnecessary reruns; no server-side persistence
 - Home tool filtering/sorting is metadata-only and memoized (`utils/ui.py::filter_tools` uses a bounded cache) to avoid repeated recomputation during frequent shell-driven reruns
 - Application/core helpers: `utils/scoring.py`, `utils/text_tools.py`, and rule definitions in `utils/ai_tools.py`

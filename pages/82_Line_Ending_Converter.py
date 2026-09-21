@@ -3,7 +3,7 @@ from __future__ import annotations
 import streamlit as st
 
 from utils.line_ending_converter import MAX_INPUT_LENGTH, convert_line_endings
-from utils.ui import apply_app_shell, render_empty_state, render_form_intro, render_page_header, render_section_heading, tool_form_panel, tool_result_panel
+from utils.ui import apply_app_shell, render_empty_state, render_failure_note, render_form_intro, render_page_header, render_section_heading, tool_form_panel, tool_result_panel
 
 
 st.set_page_config(page_title="Line Ending Converter", layout="wide")
@@ -43,7 +43,7 @@ if result is not None:
     with tool_result_panel("line_ending_converter_result_panel", related_to="line_ending_converter"):
         render_section_heading("Converted text", eyebrow="Result")
         if not result["ok"]:
-            st.error(result["error"])
+            render_failure_note("Line-ending conversion", result["error"])
         else:
             st.caption(f"Detected input style: {result['detected_input_style']}")
             st.text_area("Result", value=result["output"], height=220)

@@ -25,7 +25,7 @@ def test_weak_secret_shows_error():
     app.button[0].click().run()
     assert not app.exception
 
-    assert any("Weak secret found" in e.value for e in app.error)
+    assert any("Weak secret found" in m.value for m in app.markdown)
 
 
 def test_strong_secret_shows_success():
@@ -46,8 +46,8 @@ def test_alg_none_shows_unsigned_warning_not_asymmetric_info():
     app.button[0].click().run()
     assert not app.exception
 
-    assert any("UNSIGNED" in e.value for e in app.error)
-    assert not any("asymmetric" in i.value for i in app.info)
+    assert any("UNSIGNED" in m.value for m in app.markdown)
+    assert not any("asymmetric" in m.value for m in app.markdown)
 
 
 def test_empty_state_shown_before_submit():
@@ -65,10 +65,10 @@ def test_results_persist_after_sidebar_interaction():
     app.text_input[0].set_value(_token("secret"))
     app.button[0].click().run()
     assert not app.exception
-    before = len(app.error)
+    before = len([m for m in app.markdown if "Weak secret found" in m.value])
     assert before > 0
 
     search = next(t for t in app.text_input if t.key == "sidebar_quick_search")
     search.set_value("test").run()
     assert not app.exception
-    assert len(app.error) == before
+    assert len([m for m in app.markdown if "Weak secret found" in m.value]) == before

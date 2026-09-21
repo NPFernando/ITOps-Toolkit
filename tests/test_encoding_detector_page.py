@@ -28,7 +28,7 @@ def test_no_upload_shows_error():
 
     app.button[0].click().run()
     assert not app.exception
-    assert any("Upload a file" in e.value for e in app.error)
+    assert any("needs attention" in m.value for m in app.markdown)
 
 
 def test_empty_state_shown_before_submit():

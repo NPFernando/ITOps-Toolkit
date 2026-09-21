@@ -3,7 +3,7 @@ from __future__ import annotations
 import streamlit as st
 
 from utils.markdown_converter import DIRECTIONS, MAX_INPUT_LENGTH, convert_markdown
-from utils.ui import apply_app_shell, render_empty_state, render_form_intro, render_page_header, render_section_heading, tool_form_panel, tool_result_panel
+from utils.ui import apply_app_shell, render_empty_state, render_failure_note, render_form_intro, render_page_header, render_section_heading, tool_form_panel, tool_result_panel
 
 
 st.set_page_config(page_title="Markdown/HTML Converter", layout="wide")
@@ -43,7 +43,7 @@ if state is not None:
     with tool_result_panel("markdown_converter_result", related_to="markdown_converter"):
         render_section_heading(direction, "Converted output.")
         if not result["ok"]:
-            st.error(result["error"])
+            render_failure_note("Markdown/HTML conversion", result["error"])
         else:
             output_language = "html" if direction == "Markdown to HTML" else "markdown"
             output_extension = "html" if direction == "Markdown to HTML" else "md"

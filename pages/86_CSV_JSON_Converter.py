@@ -3,7 +3,7 @@ from __future__ import annotations
 import streamlit as st
 
 from utils.csv_json_converter import MAX_INPUT_LENGTH, csv_to_json, json_to_csv
-from utils.ui import apply_app_shell, render_empty_state, render_form_intro, render_page_header, render_section_heading, tool_form_panel, tool_result_panel
+from utils.ui import apply_app_shell, render_empty_state, render_failure_note, render_form_intro, render_page_header, render_section_heading, tool_form_panel, tool_result_panel
 
 
 st.set_page_config(page_title="CSV / JSON Converter", layout="wide")
@@ -39,7 +39,7 @@ with to_json_tab:
         with tool_result_panel("csv_to_json_result_panel", related_to="csv_json_converter"):
             render_section_heading("JSON", eyebrow="Result")
             if not to_json_result["ok"]:
-                st.error(to_json_result["error"])
+                render_failure_note("CSV to JSON conversion", to_json_result["error"])
             else:
                 st.code(to_json_result["output"], language="json")
                 st.download_button("Download as .json", to_json_result["output"], file_name="data.json", mime="application/json")
@@ -64,7 +64,7 @@ with to_csv_tab:
         with tool_result_panel("json_to_csv_result_panel", related_to="csv_json_converter"):
             render_section_heading("CSV", eyebrow="Result")
             if not to_csv_result["ok"]:
-                st.error(to_csv_result["error"])
+                render_failure_note("JSON to CSV conversion", to_csv_result["error"])
             else:
                 st.code(to_csv_result["output"], language=None)
                 st.download_button("Download as .csv", to_csv_result["output"], file_name="data.csv", mime="text/csv")

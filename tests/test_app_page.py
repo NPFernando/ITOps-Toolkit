@@ -8,6 +8,8 @@ from streamlit.testing.v1 import AppTest
 # directory -- an absolute path avoids that resolution entirely.
 APP_PAGE = str(Path(__file__).resolve().parent.parent / "app.py")
 UI_MODULE = Path(__file__).resolve().parent.parent / "utils" / "ui.py"
+STREAMLIT_CONFIG = Path(__file__).resolve().parent.parent / ".streamlit" / "config.toml"
+PWA_MANIFEST = Path(__file__).resolve().parent.parent / "static" / "manifest.json"
 
 
 def test_css_injects_before_sidebar_and_has_no_blocking_import():
@@ -103,3 +105,22 @@ def test_hide_all_tools_button_reflects_combined_show_all_state():
     profession_pill2.set_value("All").run(timeout=30)
     assert not at.exception, at.exception
     assert "Show all tools" in [b.label for b in at.button]
+
+
+def test_pwa_manifest_scaffold_is_wired_in_shell():
+    """PWA scaffold contract: static serving enabled, manifest exists, and
+    apply_app_shell keeps injecting manifest/theme metadata."""
+    ui_source = UI_MODULE.read_text(encoding="utf-8")
+    config_source = STREAMLIT_CONFIG.read_text(encoding="utf-8")
+    manifest_source = PWA_MANIFEST.read_text(encoding="utf-8")
+
+    assert "enableStaticServing = true" in config_source
+    assert "def _inject_pwa_metadata()" in ui_source
+    assert "_inject_pwa_metadata()" in ui_source
+    assert "/app/static/manifest.json" in ui_source
+    assert 'serviceWorker.register("/app/static/service-worker.js", { scope: "/" })' in ui_source
+    assert '"name": "ITOps Toolkit"' in manifest_source
+    assert '"display": "standalone"' in manifest_source
+    assert PWA_MANIFEST.exists()
+    sw_source = (PWA_MANIFEST.parent / "service-worker.js").read_text(encoding="utf-8")
+    assert 'caches.match(SHELL_FALLBACK)' in sw_source

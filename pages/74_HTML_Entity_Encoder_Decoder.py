@@ -3,7 +3,7 @@ from __future__ import annotations
 import streamlit as st
 
 from utils.html_entity_tools import MAX_INPUT_LENGTH, decode_html_entities, encode_html_entities
-from utils.ui import apply_app_shell, render_empty_state, render_form_intro, render_page_header, render_section_heading, tool_form_panel, tool_result_panel
+from utils.ui import apply_app_shell, render_empty_state, render_failure_note, render_form_intro, render_page_header, render_section_heading, tool_form_panel, tool_result_panel
 
 
 st.set_page_config(page_title="HTML Entity Encoder/Decoder", layout="wide")
@@ -47,4 +47,4 @@ if decoded_result is not None:
         if decoded_result["ok"]:
             st.text_area("Result", value=decoded_result["result"], height=220)
         else:
-            st.error(decoded_result["error"])
+            render_failure_note("HTML entity decoding", decoded_result["error"])

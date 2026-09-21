@@ -40,7 +40,7 @@ def test_invalid_timestamp_shows_error():
     app.text_input[1].set_value("2026-08-10T10:00:00")
     app.button[0].click().run()
     assert not app.exception
-    assert any("valid ISO 8601" in e.value for e in app.error)
+    assert any("needs attention" in m.value for m in app.markdown)
 
 
 def test_results_persist_after_sidebar_interaction():

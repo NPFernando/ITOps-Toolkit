@@ -9,6 +9,7 @@ from utils.text_tools import MAX_LOG_LENGTH
 from utils.ui import (
     apply_app_shell,
     render_empty_state,
+    render_failure_note,
     render_form_intro,
     render_page_header,
     render_section_heading,
@@ -25,11 +26,11 @@ apply_app_shell(active_page="Log Troubleshooting Assistant")
 
 def _status(severity: str) -> None:
     if severity == "Critical":
-        st.error(severity)
+        render_status_note("Severity", severity, tone="warning")
     elif severity == "Warning":
-        st.warning(severity)
+        render_status_note("Severity", severity, tone="warning")
     else:
-        st.info(severity)
+        render_status_note("Severity", severity, tone="neutral")
 
 
 render_page_header(
@@ -85,7 +86,7 @@ if result is not None:
     with tool_result_panel("log_result", related_to="log_troubleshooting"):
         render_section_heading("Log analysis", "Rule-based findings and safe operational next steps.")
         if not result["ok"]:
-            st.error(result["error"])
+            render_failure_note("Log analysis", result["error"])
         else:
             ai_state = st.session_state["log_troubleshooting_ai_state"]
             if ai_state.get("enabled"):

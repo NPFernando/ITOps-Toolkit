@@ -6,6 +6,7 @@ from utils.text_tools import MAX_URL_LENGTH, decode_url_text, encode_url_text
 from utils.ui import (
     apply_app_shell,
     render_empty_state,
+    render_failure_note,
     render_form_intro,
     render_page_header,
     render_section_heading,
@@ -54,7 +55,7 @@ if encoded_result is not None:
     with tool_result_panel("url_encoded", related_to="url_encoder_decoder"):
         render_section_heading("Encoded result", "Percent-encoded output generated from the current input.")
         if not encoded_result["ok"]:
-            st.error(encoded_result["error"])
+            render_failure_note("URL encoding", encoded_result["error"])
         else:
             st.text_area("Result", value=encoded_result["result"], height=180)
 
@@ -62,6 +63,6 @@ if decoded_result is not None:
     with tool_result_panel("url_decoded", related_to="url_encoder_decoder"):
         render_section_heading("Decoded result", "Decoded text from the current input.")
         if not decoded_result["ok"]:
-            st.error(decoded_result["error"])
+            render_failure_note("URL decoding", decoded_result["error"])
         else:
             st.text_area("Result", value=decoded_result["result"], height=180)

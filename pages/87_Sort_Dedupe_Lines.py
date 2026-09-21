@@ -3,7 +3,7 @@ from __future__ import annotations
 import streamlit as st
 
 from utils.line_sorter import MAX_INPUT_LENGTH, SORT_MODES, sort_and_dedupe_lines
-from utils.ui import apply_app_shell, render_empty_state, render_form_intro, render_page_header, render_section_heading, tool_form_panel, tool_result_panel
+from utils.ui import apply_app_shell, render_empty_state, render_failure_note, render_form_intro, render_page_header, render_section_heading, tool_form_panel, tool_result_panel
 
 
 st.set_page_config(page_title="Sort & Dedupe Lines", layout="wide")
@@ -38,7 +38,7 @@ if result is not None:
     with tool_result_panel("line_sorter_result_panel", related_to="line_sorter"):
         render_section_heading("Result", eyebrow="Output")
         if not result["ok"]:
-            st.error(result["error"])
+            render_failure_note("Line sorting", result["error"])
         else:
             c1, c2 = st.columns(2)
             c1.metric("Lines", result["line_count"])

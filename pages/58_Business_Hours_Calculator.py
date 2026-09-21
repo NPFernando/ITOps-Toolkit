@@ -6,6 +6,7 @@ from utils.business_hours import COMMON_TIMEZONES, DEFAULT_BUSINESS_END, DEFAULT
 from utils.ui import (
     apply_app_shell,
     render_empty_state,
+    render_failure_note,
     render_form_intro,
     render_page_header,
     render_section_heading,
@@ -86,7 +87,7 @@ if state is not None:
     with tool_result_panel("business_hours_result", related_to="business_hours"):
         render_section_heading("Elapsed business hours", eyebrow="Result")
         if not state["ok"]:
-            st.error(state["error"])
+            render_failure_note("Business-hours calculation", state["error"])
             render_status_note(
                 "Calculation failed",
                 "Fix the input values and run the calculation again.",

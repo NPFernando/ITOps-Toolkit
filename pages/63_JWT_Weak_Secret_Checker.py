@@ -40,14 +40,30 @@ if result is not None:
     with tool_result_panel("jwt_weak_secret_result_panel", related_to="jwt_weak_secret"):
         render_section_heading("Result", eyebrow="Result")
         if not result["ok"]:
-            st.error(result["error"])
+            render_status_note("Token could not be checked", result["error"], tone="warning")
         elif result["alg_status"] == "missing":
-            st.warning("This token's header has no usable 'alg' value -- the algorithm can't be determined.")
+            render_status_note(
+                "Algorithm is unknown",
+                "This token's header has no usable 'alg' value -- the algorithm can't be determined.",
+                tone="warning",
+            )
         elif result["alg_status"] == "unsigned":
-            st.error("This token uses alg=\"none\" -- it is UNSIGNED and can be trivially forged. If any verifier accepts this token as-is, that is a critical misconfiguration.")
+            render_status_note(
+                "Unsigned token detected",
+                "This token uses alg=\"none\" -- it is UNSIGNED and can be trivially forged. If any verifier accepts this token as-is, that is a critical misconfiguration.",
+                tone="warning",
+            )
         elif result["alg_status"] == "asymmetric":
-            st.info(f"Algorithm '{result['algorithm']}' is asymmetric -- there's no shared secret to check.")
+            render_status_note(
+                "No shared secret to check",
+                f"Algorithm '{result['algorithm']}' is asymmetric -- there's no shared secret to check.",
+                tone="neutral",
+            )
         elif result["matched_secret"] is not None:
-            st.error(f"Weak secret found: '{result['matched_secret']}'. This token's signature can be forged.")
+            render_status_note(
+                "Weak secret detected",
+                f"Weak secret found: '{result['matched_secret']}'. This token's signature can be forged.",
+                tone="warning",
+            )
         else:
             st.success("No match from this small built-in list -- not proof the secret is strong.")

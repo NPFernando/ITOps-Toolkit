@@ -3,7 +3,7 @@ from __future__ import annotations
 import streamlit as st
 
 from utils.encoding_tools import convert_to_utf8, detect_encoding
-from utils.ui import apply_app_shell, render_empty_state, render_form_intro, render_page_header, render_section_heading, tool_form_panel, tool_result_panel
+from utils.ui import apply_app_shell, render_empty_state, render_failure_note, render_form_intro, render_page_header, render_section_heading, tool_form_panel, tool_result_panel
 
 
 st.set_page_config(page_title="Text Encoding Detector", layout="wide")
@@ -41,9 +41,9 @@ if state is not None:
     with tool_result_panel("encoding_detector_result", related_to="encoding_detector"):
         render_section_heading("Detected encoding", eyebrow="Result")
         if state["error"] is not None:
-            st.error(state["error"])
+            render_failure_note("Encoding detection", state["error"])
         elif not state["detected"]["ok"]:
-            st.error(state["detected"]["error"])
+            render_failure_note("Encoding detection", state["detected"]["error"])
         else:
             detected = state["detected"]
             c1, c2 = st.columns(2)

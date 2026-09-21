@@ -6,6 +6,7 @@ from utils.email_header_tools import parse_email_headers
 from utils.ui import (
     apply_app_shell,
     render_empty_state,
+    render_failure_note,
     render_form_intro,
     render_page_header,
     render_section_heading,
@@ -47,12 +48,12 @@ if result is not None:
     with tool_result_panel("email_header_result", related_to="email_header_analyzer"):
         render_section_heading("Header summary", "Common fields found in the pasted headers.")
         if not result["ok"]:
-            st.error(result["error"])
+            render_failure_note("Email header analysis", result["error"])
         else:
             if result["summary"]:
                 st.table([{"Field": field, "Value": value} for field, value in result["summary"].items()])
             else:
-                st.info("No recognized summary fields were found.")
+                render_empty_state("No summary fields", "No recognized summary fields were found.")
 
             render_section_heading("Received hop chain", f"{result['hop_count']} hop(s), oldest first.", eyebrow="Routing")
             if result["received_hops"]:
@@ -69,11 +70,11 @@ if result is not None:
                     ]
                 )
             else:
-                st.info("No Received headers were found.")
+                render_empty_state("No Received headers", "No Received headers were found.")
 
             render_section_heading("Authentication-Results", eyebrow="Authentication")
             if result["authentication_results"]:
                 for entry in result["authentication_results"]:
                     st.code(entry, language=None)
             else:
-                st.info("No Authentication-Results headers were found.")
+                render_empty_state("No authentication results", "No Authentication-Results headers were found.")

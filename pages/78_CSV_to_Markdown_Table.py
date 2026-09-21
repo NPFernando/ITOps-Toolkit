@@ -3,7 +3,7 @@ from __future__ import annotations
 import streamlit as st
 
 from utils.csv_to_markdown import MAX_INPUT_LENGTH, convert_csv_to_markdown
-from utils.ui import apply_app_shell, render_empty_state, render_form_intro, render_page_header, render_section_heading, tool_form_panel, tool_result_panel
+from utils.ui import apply_app_shell, render_empty_state, render_failure_note, render_form_intro, render_page_header, render_section_heading, tool_form_panel, tool_result_panel
 
 
 st.set_page_config(page_title="CSV to Markdown Table", layout="wide")
@@ -36,7 +36,7 @@ if result is not None:
     with tool_result_panel("csv_to_markdown_result_panel", related_to="csv_to_markdown"):
         render_section_heading("Markdown table", eyebrow="Result")
         if not result["ok"]:
-            st.error(result["error"])
+            render_failure_note("CSV conversion", result["error"])
         else:
             st.code(result["output"], language="markdown")
             st.download_button("Download as .md", result["output"], file_name="table.md", mime="text/markdown")

@@ -1,4 +1,4 @@
-.PHONY: help setup install install-dev run test compile qa release-gates pre-merge pre-release clean
+.PHONY: help setup install install-dev run test compile audit-ui qa release-gates pre-merge pre-release clean
 
 PYTHON ?= python3
 VENV ?= .venv
@@ -13,6 +13,7 @@ RELEASE_GATES_TESTS := \
 	tests/test_adapters.py \
 	tests/test_github_issues.py \
 	tests/test_ai_tools.py \
+	tests/test_ui_audit_inventory.py \
 	tests/test_maintenance_consistency.py
 
 help: ## Show available commands
@@ -48,6 +49,9 @@ run: ## Run Streamlit locally
 
 compile: ## Compile Python files
 	$(VENV_PYTHON) -m compileall app.py pages utils
+
+audit-ui: ## Generate the static UI/UX page inventory
+	$(PYTHON) scripts/ui_audit_inventory.py
 
 test: ## Run pytest
 	$(VENV_PYTHON) -m pytest

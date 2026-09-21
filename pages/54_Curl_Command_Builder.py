@@ -7,6 +7,7 @@ from utils.http_tools import MAX_URL_LENGTH
 from utils.ui import (
     apply_app_shell,
     render_empty_state,
+    render_failure_note,
     render_form_intro,
     render_page_header,
     render_section_heading,
@@ -64,7 +65,7 @@ if result is not None:
     with tool_result_panel("curl_builder_result_panel", related_to="curl_builder"):
         render_section_heading("Generated curl command", "Copy this into a terminal, script, or ticket.", eyebrow="Result")
         if not result["ok"]:
-            st.error(result["error"])
+            render_failure_note("cURL command building", result["error"])
             render_status_note(
                 "Command not generated",
                 "Fix the highlighted validation issue, then build the command again.",

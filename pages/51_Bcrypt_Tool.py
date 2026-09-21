@@ -6,6 +6,7 @@ from utils.bcrypt_tools import MAX_ROUNDS, MIN_ROUNDS, hash_password, verify_pas
 from utils.ui import (
     apply_app_shell,
     render_empty_state,
+    render_failure_note,
     render_form_intro,
     render_page_header,
     render_section_heading,
@@ -46,7 +47,7 @@ with hash_tab:
         with tool_result_panel("bcrypt_hash_result_panel", related_to="bcrypt_tool"):
             render_section_heading("Result", "Bcrypt hash, including the embedded salt and cost factor.")
             if not hash_result["ok"]:
-                st.error(hash_result["error"])
+                render_failure_note("Bcrypt hashing", hash_result["error"])
             else:
                 st.code(hash_result["hash"], language=None)
 
@@ -67,7 +68,7 @@ with verify_tab:
     if verify_result is not None:
         with tool_result_panel("bcrypt_verify_result_panel", related_to="bcrypt_tool"):
             if not verify_result["ok"]:
-                st.error(verify_result["error"])
+                render_failure_note("Bcrypt verification", verify_result["error"])
             elif verify_result["matches"]:
                 render_status_note("Match", "The value matches the hash.", tone="success")
             else:

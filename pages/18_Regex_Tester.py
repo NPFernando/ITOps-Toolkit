@@ -10,6 +10,7 @@ from utils.ui import (
     render_form_intro,
     render_page_header,
     render_section_heading,
+    render_status_note,
     tool_form_panel,
     tool_result_panel,
 )
@@ -51,9 +52,9 @@ if result is not None:
     with tool_result_panel("regex_result", related_to="regex_tester"):
         render_section_heading("Matches", f"{result['match_count']} match(es) found.")
         if not result["ok"]:
-            st.error(result["error"])
+            render_status_note("Pattern could not be evaluated", result["error"], tone="warning")
         elif not result["matches"]:
-            st.info("No matches found.")
+            render_empty_state("No matches found", "Try a different pattern, input text, or flag selection.")
         else:
             rows = [
                 {

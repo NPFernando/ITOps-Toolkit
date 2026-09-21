@@ -28,7 +28,7 @@ def test_empty_input_shows_error():
     app.text_input[0].set_value("")
     app.button[0].click().run()
     assert not app.exception
-    assert any("Enter a password" in e.value for e in app.error)
+    assert any("Enter a password" in m.value for m in app.markdown)
 
 
 def test_empty_state_shown_before_submit():

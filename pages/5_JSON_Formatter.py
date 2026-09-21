@@ -6,6 +6,7 @@ from utils.text_tools import MAX_JSON_LENGTH, format_json_text, json_stats, sear
 from utils.ui import (
     apply_app_shell,
     render_empty_state,
+    render_failure_note,
     render_form_intro,
     render_page_header,
     render_section_heading,
@@ -65,7 +66,7 @@ if state is not None:
     with tool_result_panel("json_result", related_to="json_formatter"):
         render_section_heading("JSON result", "Validation status and transformed output.")
         if not result["ok"]:
-            st.error(result["error"])
+            render_failure_note("JSON processing", result["error"])
             error_line = result.get("line")
             if error_line:
                 source_lines = json_input.splitlines()
@@ -107,7 +108,10 @@ if state is not None:
                     if len(matches) >= 200:
                         st.caption("Showing the first 200 matches.")
                 else:
-                    st.info("No keys or values matched that search.")
+                    render_empty_state(
+                        "No matching JSON paths",
+                        "Try a different key or value search term.",
+                    )
 
             if format_clicked or minify_clicked:
                 file_name = "formatted.json" if format_clicked else "minified.json"

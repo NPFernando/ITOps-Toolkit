@@ -3,7 +3,7 @@ from __future__ import annotations
 import streamlit as st
 
 from utils.basic_auth_tool import MAX_INPUT_LENGTH, build_basic_auth_header, parse_basic_auth_header
-from utils.ui import apply_app_shell, render_empty_state, render_form_intro, render_page_header, render_section_heading, tool_form_panel, tool_result_panel
+from utils.ui import apply_app_shell, render_empty_state, render_failure_note, render_form_intro, render_page_header, render_section_heading, tool_form_panel, tool_result_panel
 
 
 st.set_page_config(page_title="Basic Auth Header Tool", layout="wide")
@@ -38,7 +38,7 @@ with build_tab:
         with tool_result_panel("basic_auth_build_result_panel", related_to="basic_auth_tool"):
             render_section_heading("Authorization header", eyebrow="Result")
             if not build_result["ok"]:
-                st.error(build_result["error"])
+                render_failure_note("Header build", build_result["error"])
             else:
                 st.code(build_result["output"], language=None)
 
@@ -61,7 +61,7 @@ with parse_tab:
         with tool_result_panel("basic_auth_parse_result_panel", related_to="basic_auth_tool"):
             render_section_heading("Decoded credentials", eyebrow="Result")
             if not parse_result["ok"]:
-                st.error(parse_result["error"])
+                render_failure_note("Header parsing", parse_result["error"])
             else:
                 c1, c2 = st.columns(2)
                 c1.metric("Username", parse_result["username"])

@@ -3,7 +3,7 @@ from __future__ import annotations
 import streamlit as st
 
 from utils.ssh_fingerprint import MAX_INPUT_LENGTH, compute_fingerprint
-from utils.ui import apply_app_shell, render_empty_state, render_form_intro, render_page_header, render_section_heading, tool_form_panel, tool_result_panel
+from utils.ui import apply_app_shell, render_empty_state, render_failure_note, render_form_intro, render_page_header, render_section_heading, tool_form_panel, tool_result_panel
 
 
 st.set_page_config(page_title="SSH Key Fingerprint", layout="wide")
@@ -33,7 +33,7 @@ if result is not None:
     with tool_result_panel("ssh_fingerprint_result_panel", related_to="ssh_fingerprint"):
         render_section_heading("Fingerprints", eyebrow="Result")
         if not result["ok"]:
-            st.error(result["error"])
+            render_failure_note("Fingerprint generation", result["error"])
         else:
             st.metric("Key type", result["key_type"])
             st.caption("MD5:")

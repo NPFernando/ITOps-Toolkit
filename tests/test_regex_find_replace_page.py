@@ -32,7 +32,7 @@ def test_invalid_pattern_shows_error():
     app.text_area[0].set_value("text")
     app.button[0].click().run()
     assert not app.exception
-    assert any("Invalid pattern" in e.value for e in app.error)
+    assert any("needs attention" in m.value for m in app.markdown)
 
 
 def test_empty_state_shown_before_submit():

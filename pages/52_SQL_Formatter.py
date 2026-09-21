@@ -3,7 +3,7 @@ from __future__ import annotations
 import streamlit as st
 
 from utils.sql_formatter import KEYWORD_CASES, MAX_INPUT_LENGTH, format_sql
-from utils.ui import apply_app_shell, render_form_intro, render_page_header, render_section_heading, render_status_note, tool_form_panel, tool_result_panel
+from utils.ui import apply_app_shell, render_failure_note, render_form_intro, render_page_header, render_section_heading, render_status_note, tool_form_panel, tool_result_panel
 
 
 st.set_page_config(page_title="SQL Formatter", layout="wide")
@@ -32,6 +32,10 @@ result = format_sql(sql_input, keyword_case, indent_width)
 with tool_result_panel("sql_formatter_result", related_to="sql_formatter"):
     render_section_heading("Formatted SQL", "Reindented with consistent keyword casing.")
     if not result["ok"]:
-        st.error(result["error"])
+        render_failure_note(
+            "SQL formatting",
+            result["error"],
+            remediation="Check the input length and try formatting again.",
+        )
     else:
         st.code(result["formatted"], language="sql")

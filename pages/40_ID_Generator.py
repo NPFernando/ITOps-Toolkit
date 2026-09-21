@@ -4,7 +4,7 @@ import pandas as pd
 import streamlit as st
 
 from utils.id_generator import MAX_COUNT, generate_ulids, generate_uuids
-from utils.ui import apply_app_shell, render_empty_state, render_form_intro, render_page_header, render_section_heading, tool_form_panel, tool_result_panel
+from utils.ui import apply_app_shell, render_empty_state, render_failure_note, render_form_intro, render_page_header, render_section_heading, tool_form_panel, tool_result_panel
 
 
 st.set_page_config(page_title="ID Generator", layout="wide")
@@ -50,7 +50,7 @@ if result is not None:
         result_label = result_type if result_count == 1 else plural_labels[result_type]
         render_section_heading(f"{result_count} {result_label}", "Generated for this request only -- nothing is stored.")
         if not result["ok"]:
-            st.error(result["error"])
+            render_failure_note("ID generation", result["error"])
         else:
             ids_text = "\n".join(result["ids"])
             st.code(ids_text, language=None)

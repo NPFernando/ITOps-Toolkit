@@ -3,7 +3,7 @@ from __future__ import annotations
 import streamlit as st
 
 from utils.deterministic_uuid import MAX_INPUT_LENGTH, NAMESPACES, generate_deterministic_uuid
-from utils.ui import apply_app_shell, render_empty_state, render_form_intro, render_page_header, render_section_heading, tool_form_panel, tool_result_panel
+from utils.ui import apply_app_shell, render_empty_state, render_failure_note, render_form_intro, render_page_header, render_section_heading, tool_form_panel, tool_result_panel
 
 
 st.set_page_config(page_title="Deterministic UUID Generator", layout="wide")
@@ -35,6 +35,6 @@ if result is not None:
     with tool_result_panel("deterministic_uuid_result_panel", related_to="deterministic_uuid"):
         render_section_heading("Generated UUID", eyebrow="Result")
         if not result["ok"]:
-            st.error(result["error"])
+            render_failure_note("UUID generation", result["error"])
         else:
             st.code(result["result"], language=None)

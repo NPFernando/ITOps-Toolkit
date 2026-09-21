@@ -31,10 +31,10 @@ def test_regex_cheat_sheet_search_narrows_results():
     assert all("email" in str(name).lower() for name in rows["Name"])
 
 
-def test_regex_cheat_sheet_no_match_shows_info():
+def test_regex_cheat_sheet_no_match_shows_empty_state():
     app = AppTest.from_file(PAGE, default_timeout=30)
     app.run()
 
     next(t for t in app.text_input if t.label == "Search").set_value("not-a-real-pattern-keyword").run()
     assert not app.exception
-    assert any("No patterns matched" in i.value for i in app.info)
+    assert any("No matching patterns" in block.value for block in app.markdown)

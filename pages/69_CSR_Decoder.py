@@ -3,7 +3,7 @@ from __future__ import annotations
 import streamlit as st
 
 from utils.csr_decoder import MAX_INPUT_LENGTH, decode_csr
-from utils.ui import apply_app_shell, render_empty_state, render_form_intro, render_page_header, render_section_heading, tool_form_panel, tool_result_panel
+from utils.ui import apply_app_shell, render_empty_state, render_failure_note, render_form_intro, render_page_header, render_section_heading, tool_form_panel, tool_result_panel
 
 
 st.set_page_config(page_title="CSR Decoder", layout="wide")
@@ -34,7 +34,7 @@ if result is not None:
     with tool_result_panel("csr_decoder_result_panel", related_to="csr_decoder"):
         render_section_heading("Decoded CSR", eyebrow="Result")
         if not result["ok"]:
-            st.error(result["error"])
+            render_failure_note("CSR decoding", result["error"])
         else:
             st.caption(f"Subject: {result['subject']}")
             c1, c2, c3 = st.columns(3)

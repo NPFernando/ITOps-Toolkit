@@ -6,6 +6,7 @@ from utils.base_converter import BASES, convert_base
 from utils.ui import (
     apply_app_shell,
     render_empty_state,
+    render_failure_note,
     render_form_intro,
     render_page_header,
     render_section_heading,
@@ -36,7 +37,7 @@ with tool_result_panel("base_converter_result", related_to="base_converter"):
     else:
         result = convert_base(value, from_base)
         if not result["ok"]:
-            st.error(result["error"])
+            render_failure_note("Base conversion", result["error"])
         else:
             cols = st.columns(4)
             for col, (label, base_value) in zip(cols, result["values"].items(), strict=True):

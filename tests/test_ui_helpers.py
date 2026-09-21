@@ -181,6 +181,19 @@ def test_render_page_header_falls_back_when_illustration_asset_is_missing(monkey
     assert "tool-page-header-with-illustration" not in rendered[0]
 
 
+def test_render_page_header_uses_shared_warning_status_note(monkeypatch):
+    rendered = []
+
+    monkeypatch.setattr(ui.st, "markdown", lambda value, unsafe_allow_html=False: rendered.append(value))
+
+    ui.render_page_header(TOOLS[0].title, "desc", warning="Use synthetic, public-safe input.")
+
+    assert len(rendered) == 2
+    assert "tool-status-note-warning" in rendered[1]
+    assert 'role="alert"' in rendered[1]
+    assert 'aria-live="assertive"' in rendered[1]
+
+
 def test_render_empty_state_supports_optional_illustration(monkeypatch):
     rendered = []
 

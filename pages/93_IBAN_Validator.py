@@ -3,7 +3,7 @@ from __future__ import annotations
 import streamlit as st
 
 from utils.iban_validator import MAX_INPUT_LENGTH, validate_iban
-from utils.ui import apply_app_shell, render_empty_state, render_form_intro, render_page_header, render_section_heading, tool_form_panel, tool_result_panel
+from utils.ui import apply_app_shell, render_empty_state, render_failure_note, render_form_intro, render_page_header, render_section_heading, tool_form_panel, tool_result_panel
 
 
 st.set_page_config(page_title="IBAN Validator", layout="wide")
@@ -33,8 +33,8 @@ if result is not None:
     with tool_result_panel("iban_validator_result_panel", related_to="iban_validator"):
         render_section_heading("Result", eyebrow="Validation")
         if not result["ok"]:
-            st.error(result["error"])
+            render_failure_note("IBAN validation", result["error"])
         elif result["valid"]:
             st.success(f"Valid IBAN -- {result['country']}: {result['formatted']}")
         else:
-            st.error(f"Invalid checksum -- {result['country']}: {result['formatted']}")
+            render_failure_note("IBAN validation", f"Invalid checksum -- {result['country']}: {result['formatted']}")

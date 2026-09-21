@@ -138,20 +138,20 @@
     {
       "title": "Command palette / quick-jump launcher",
       "category": "UX / Design",
-      "status": "Planned",
+      "status": "Complete",
       "votes": 18,
       "description": "A keyboard-triggered launcher to jump straight to any tool, complementing the sidebar quick-search.",
       "rationale": "Power users on killer-tools-style sites expect a Ctrl+K-style jump; the sidebar search covers most of this need today but isn't reachable by keyboard shortcut.",
-      "updated_at": "2026-08-05"
+      "updated_at": "2026-08-25"
     },
     {
       "title": "Drag-to-reorder favorites",
       "category": "UX / Design",
-      "status": "AI Recommended",
+      "status": "Complete",
       "votes": 9,
       "description": "Let visitors reorder their favorited tools instead of using favorite-order only.",
       "rationale": "Favorites currently keep insertion order; manual reordering is a small, self-contained UX add-on once favorites are already shipped.",
-      "updated_at": "2026-08-05"
+      "updated_at": "2026-08-25"
     },
     {
       "title": "WHOIS lookup tool",
@@ -210,29 +210,29 @@
     {
       "title": "Shareable favorites link",
       "category": "UX / Design",
-      "status": "AI Recommended",
+      "status": "Complete",
       "votes": 8,
       "description": "Turn the current favorites list into a copyable URL so a curated toolkit can be shared or bookmarked.",
       "rationale": "Favorites already live in the URL's query params client-side; surfacing a share/copy action is a small extension of that mechanism.",
-      "updated_at": "2026-08-05"
+      "updated_at": "2026-08-25"
     },
     {
       "title": "Installable PWA / offline app shell",
       "category": "UX / Design",
-      "status": "AI Recommended",
+      "status": "Complete",
       "votes": 11,
       "description": "Add a web app manifest and service worker so the toolkit can be installed and its shell used offline.",
-      "rationale": "Matches the \"works everywhere\" positioning already in the trust chips and feature strip.",
-      "updated_at": "2026-08-05"
+      "rationale": "Shipped a repo-native PWA shell scaffold: static serving is enabled, manifest metadata is injected globally, and a same-origin service worker is registered from /app/static/service-worker.js for offline shell fallback and static-asset caching without persisting user-entered diagnostics payloads.",
+      "updated_at": "2026-08-25"
     },
     {
       "title": "Accessibility audit pass",
       "category": "UX / Design",
-      "status": "AI Recommended",
+      "status": "Complete",
       "votes": 13,
       "description": "Review color contrast, ARIA labeling, and keyboard navigation across the tool grid, forms, and sidebar.",
       "rationale": "The site has grown a lot of custom CSS/components this cycle; a dedicated accessibility pass hasn't happened yet.",
-      "updated_at": "2026-08-05"
+      "updated_at": "2026-08-25"
     },
     {
       "title": "Webhook / HTTP request tester",
@@ -246,47 +246,47 @@
     {
       "title": "Timestamp / epoch converter",
       "category": "Tools",
-      "status": "In Progress",
+      "status": "Complete",
       "votes": 20,
       "description": "Convert between Unix epoch, ISO 8601, and human-readable timestamps across timezones, plus a live \"now\" reference.",
       "rationale": "One of the most common everyday IT utilities; surprisingly missing given the toolkit already has a Cron Explainer.",
-      "updated_at": "2026-08-05"
+      "updated_at": "2026-08-25"
     },
     {
       "title": "Text diff checker",
       "category": "Tools",
-      "status": "In Progress",
+      "status": "Complete",
       "votes": 16,
       "description": "Side-by-side or unified diff between two blocks of text, highlighting additions and removals.",
       "rationale": "Frequently needed alongside JSON/config troubleshooting to spot what changed between two versions.",
-      "updated_at": "2026-08-05"
+      "updated_at": "2026-08-25"
     },
     {
       "title": "JWT encoder",
       "category": "Security",
-      "status": "AI Recommended",
+      "status": "Complete",
       "votes": 12,
       "description": "Build and sign a JWT from a header/payload/secret, complementing the existing decode-only JWT Decoder.",
       "rationale": "Decoding already exists; encoding is the natural other half for testing auth flows locally.",
-      "updated_at": "2026-08-05"
+      "updated_at": "2026-08-25"
     },
     {
       "title": "CIDR / IP range aggregator",
       "category": "Tools",
-      "status": "AI Recommended",
+      "status": "Complete",
       "votes": 9,
       "description": "Summarize a list of IPs or CIDR blocks into the minimal set of covering supernets.",
       "rationale": "Extends the existing Subnet Calculator for firewall-rule and ACL cleanup work.",
-      "updated_at": "2026-08-05"
+      "updated_at": "2026-08-25"
     },
     {
       "title": "User-Agent string parser",
       "category": "Tools",
-      "status": "AI Recommended",
+      "status": "Complete",
       "votes": 11,
       "description": "Break a User-Agent header down into browser, OS, and device details.",
       "rationale": "Common companion lookup alongside HTTP Status Checker and Email Header Analyzer.",
-      "updated_at": "2026-08-05"
+      "updated_at": "2026-08-25"
     },
     {
       "title": "IPv6 address compressor/expander",

@@ -13,6 +13,7 @@ from utils.timestamp_tools import (
 from utils.ui import (
     apply_app_shell,
     render_empty_state,
+    render_failure_note,
     render_form_intro,
     render_page_header,
     render_section_heading,
@@ -38,7 +39,7 @@ with tool_result_panel("timestamp_now"):
         c1.metric("Epoch seconds", now["epoch_seconds"])
         c2.metric("ISO 8601", now["display"])
     else:
-        st.error(now["error"] or "Could not read the current UTC timestamp.")
+        render_failure_note("Current UTC timestamp", now["error"] or "Could not read the current UTC timestamp.")
 
 with tool_form_panel("epoch_to_date"):
     render_form_intro("Epoch to date", "Convert a Unix epoch value to a readable date and time.")
@@ -68,7 +69,7 @@ if epoch_result is not None:
     with tool_result_panel("epoch_result", related_to="timestamp_converter"):
         render_section_heading("Converted date", eyebrow="Result")
         if not result["ok"]:
-            st.error(result["error"])
+            render_failure_note("Epoch conversion", result["error"])
         else:
             c1, c2 = st.columns(2)
             c1.text_input("Display", value=result["display"], disabled=True)
@@ -95,7 +96,7 @@ if date_result is not None:
     with tool_result_panel("date_result", related_to="timestamp_converter"):
         render_section_heading("Converted epoch", eyebrow="Result")
         if not result["ok"]:
-            st.error(result["error"])
+            render_failure_note("Date conversion", result["error"])
         else:
             c1, c2 = st.columns(2)
             c1.text_input("Epoch seconds", value=str(result["epoch_seconds"]), disabled=True)
@@ -124,6 +125,6 @@ if timezone_result is not None:
     with tool_result_panel("timezone_result", related_to="timestamp_converter"):
         render_section_heading("Converted time", eyebrow="Result")
         if not result["ok"]:
-            st.error(result["error"])
+            render_failure_note("Timezone conversion", result["error"])
         else:
             st.text_input("Display", value=result["display"], disabled=True)

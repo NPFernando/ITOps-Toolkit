@@ -122,7 +122,7 @@ if result is not None:
 
         if result["days_remaining"] is not None:
             if result["days_remaining"] < 0:
-                st.error("Certificate is expired.")
+                render_failure_note("Certificate validity", "Certificate is expired.")
             elif result["days_remaining"] < 30:
                 st.warning("Certificate expires within 30 days.")
 

@@ -47,4 +47,7 @@ else:
                 ]
             )
         else:
-            st.info("No ports matched that search.")
+                render_empty_state(
+                    "No matching ports",
+                    "Try a port number, protocol, service name, or keyword.",
+                )

@@ -1,0 +1,10 @@
+{
+  "name": "ITOps Toolkit",
+  "short_name": "ITOps Toolkit",
+  "description": "Public-safe troubleshooting and utility tools for IT operations.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#282c34",
+  "theme_color": "#282c34"
+}
