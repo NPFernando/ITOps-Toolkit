@@ -3,7 +3,7 @@ from __future__ import annotations
 import streamlit as st
 
 from utils.log_duration import MAX_INPUT_LENGTH, calculate_log_duration
-from utils.ui import apply_app_shell, render_empty_state, render_form_intro, render_page_header, render_section_heading, tool_form_panel, tool_result_panel
+from utils.ui import apply_app_shell, render_empty_state, render_failure_note, render_form_intro, render_page_header, render_section_heading, tool_form_panel, tool_result_panel
 
 
 st.set_page_config(page_title="Log Timestamp Duration Calculator", layout="wide")
@@ -35,7 +35,7 @@ if state is not None:
     with tool_result_panel("log_duration_result", related_to="log_duration"):
         render_section_heading("Elapsed duration", eyebrow="Result")
         if not state["ok"]:
-            st.error(state["error"])
+            render_failure_note("Timestamp duration", state["error"])
         else:
             st.metric("Duration", state["duration_display"])
             st.caption(f"Start detected as {state['start_format']}. End detected as {state['end_format']}.")

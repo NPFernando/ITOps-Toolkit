@@ -6,6 +6,7 @@ from utils.color_tools import MAX_INPUT_LENGTH, parse_color
 from utils.ui import (
     apply_app_shell,
     render_empty_state,
+    render_failure_note,
     render_form_intro,
     render_page_header,
     render_section_heading,
@@ -46,7 +47,7 @@ if result is not None:
     with tool_result_panel("color_result", related_to="color_converter"):
         render_section_heading("Converted forms", eyebrow="Result")
         if not result["ok"]:
-            st.error(result["error"])
+            render_failure_note("Color conversion", result["error"])
         else:
             swatch, fields = st.columns([1, 3])
             with swatch:

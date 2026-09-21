@@ -7,6 +7,7 @@ from utils.robots_validator import validate_robots_txt
 from utils.ui import (
     apply_app_shell,
     render_empty_state,
+    render_failure_note,
     render_form_intro,
     render_page_header,
     render_section_heading,
@@ -52,13 +53,13 @@ if validation_error is None and stored is None:
     render_empty_state("Ready to validate", "Directive issues and sitemap validity appear here after a check.")
 
 if validation_error is not None:
-    st.error(validation_error)
+    render_failure_note("robots.txt validation", validation_error)
 
 if stored is not None:
     with tool_result_panel("robots_validator_result", related_to="robots_validator"):
         render_section_heading(stored["domain"], eyebrow="Result")
         if not stored["ok"]:
-            st.error(stored["error"])
+            render_failure_note("robots.txt validation", stored["error"])
         else:
             if not stored["issues"]:
                 st.success("No syntax issues found in robots.txt.")
@@ -73,6 +74,6 @@ if stored is not None:
                     if sitemap["ok"]:
                         st.success(f"{sitemap['url']} -- {sitemap['detail']}")
                     else:
-                        st.error(f"{sitemap['url']} -- {sitemap['detail']}")
+                        render_failure_note("Sitemap check", f"{sitemap['url']} -- {sitemap['detail']}")
             else:
                 st.caption("No Sitemap: entries found in robots.txt.")

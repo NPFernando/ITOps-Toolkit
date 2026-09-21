@@ -6,6 +6,7 @@ from utils.hash_tools import HMAC_ALGORITHMS, generate_hashes, generate_hmac
 from utils.ui import (
     apply_app_shell,
     render_empty_state,
+    render_failure_note,
     render_form_intro,
     render_page_header,
     render_section_heading,
@@ -60,7 +61,7 @@ if hash_result is not None:
     with tool_result_panel("hash_result", related_to="hash_generator"):
         render_section_heading("Digests", "Hex-encoded digests for the entered text.")
         if not hash_result["ok"]:
-            st.error(hash_result["error"])
+            render_failure_note("Hash generation", hash_result["error"])
         else:
             for algorithm, digest in hash_result["digests"].items():
                 st.caption(algorithm.upper())
@@ -71,6 +72,6 @@ if hmac_result is not None:
     with tool_result_panel("hmac_result", related_to="hash_generator"):
         render_section_heading("HMAC", f"HMAC-{used_algorithm.upper()} of the entered text.")
         if not hmac_result["ok"]:
-            st.error(hmac_result["error"])
+            render_failure_note("HMAC generation", hmac_result["error"])
         else:
             st.code(hmac_result["digest"], language=None)

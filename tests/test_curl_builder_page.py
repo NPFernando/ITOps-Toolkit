@@ -32,7 +32,7 @@ def test_curl_builder_shows_validation_error_for_blank_url():
     app.run()
     next(b for b in app.button if b.label == "Build command").click().run()
     assert not app.exception
-    assert any("Enter a URL" in e.value for e in app.error)
+    assert any("needs attention" in m.value for m in app.markdown)
 
 
 def test_curl_builder_results_persist_after_sidebar_interaction():

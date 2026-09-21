@@ -6,6 +6,7 @@ from utils.text_tools import decode_jwt_unverified
 from utils.ui import (
     apply_app_shell,
     render_empty_state,
+    render_failure_note,
     render_form_intro,
     render_page_header,
     render_section_heading,
@@ -47,7 +48,7 @@ if result is not None:
     with tool_result_panel("jwt_result", related_to="jwt_decoder"):
         render_section_heading("Decoded token", "Unverified header and payload values from the pasted token.")
         if not result["ok"]:
-            st.error(result["error"])
+            render_failure_note("JWT decoding", result["error"])
         else:
             audience = result["audience"]
             audience_text = ", ".join(audience) if isinstance(audience, list) else audience

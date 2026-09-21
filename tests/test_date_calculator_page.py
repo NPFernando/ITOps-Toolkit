@@ -29,7 +29,7 @@ def test_invalid_date_shows_error():
     app.text_input[0].set_value("not-a-date")
     app.button[0].click().run()
     assert not app.exception
-    assert any("valid date" in e.value for e in app.error)
+    assert any("needs attention" in m.value for m in app.markdown)
 
 
 def test_days_between_tab_shows_result():

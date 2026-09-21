@@ -6,6 +6,7 @@ from utils.json_path_query import MAX_INPUT_LENGTH, query_json_path
 from utils.ui import (
     apply_app_shell,
     render_empty_state,
+    render_failure_note,
     render_form_intro,
     render_page_header,
     render_section_heading,
@@ -50,7 +51,7 @@ if result is not None:
     with tool_result_panel("json_path_query_result_panel", related_to="json_path_query"):
         render_section_heading("Value", eyebrow="Result")
         if not result["ok"]:
-            st.error(result["error"])
+            render_failure_note("JSON path query", result["error"])
             render_status_note("Query failed", "Check the JSON and path syntax, then run the query again.", tone="warning")
         else:
             st.code(result["output"], language="json")

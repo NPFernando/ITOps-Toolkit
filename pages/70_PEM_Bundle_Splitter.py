@@ -4,7 +4,7 @@ import pandas as pd
 import streamlit as st
 
 from utils.pem_bundle_splitter import MAX_INPUT_LENGTH, split_pem_bundle
-from utils.ui import apply_app_shell, render_empty_state, render_form_intro, render_page_header, render_section_heading, tool_form_panel, tool_result_panel
+from utils.ui import apply_app_shell, render_empty_state, render_failure_note, render_form_intro, render_page_header, render_section_heading, tool_form_panel, tool_result_panel
 
 
 st.set_page_config(page_title="PEM Bundle Splitter", layout="wide")
@@ -34,7 +34,7 @@ if result is not None:
     with tool_result_panel("pem_bundle_splitter_result_panel", related_to="pem_bundle_splitter"):
         render_section_heading("Certificates found", eyebrow="Result")
         if not result["ok"]:
-            st.error(result["error"])
+            render_failure_note("PEM bundle splitting", result["error"])
         else:
             st.caption(f"{len(result['certificates'])} certificate(s) found.")
             rows = [

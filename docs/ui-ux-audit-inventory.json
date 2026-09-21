@@ -1,0 +1,5006 @@
+{
+  "generated_from": "pages/*.py",
+  "page_count": 142,
+  "pages": [
+    {
+      "action_intents": [
+        "convert"
+      ],
+      "action_labels": [
+        "Convert"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 67,
+      "page_id": "100_Number_to_Words",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/100_Number_to_Words.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": false,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [
+        "generate"
+      ],
+      "action_labels": [
+        "Generate"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 73,
+      "page_id": "101_JSON_to_TypeScript",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/101_JSON_to_TypeScript.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": false,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [
+        "generate"
+      ],
+      "action_labels": [
+        "Generate"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 69,
+      "page_id": "102_CSS_Gradient_Generator",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/102_CSS_Gradient_Generator.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": false,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 2
+      }
+    },
+    {
+      "action_intents": [
+        "search"
+      ],
+      "action_labels": [
+        "Search claims"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 67,
+      "page_id": "103_JWT_Claims_Reference",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/103_JWT_Claims_Reference.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": false,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [
+        "build"
+      ],
+      "action_labels": [
+        "Build header"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 70,
+      "page_id": "104_CSP_Header_Builder",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/104_CSP_Header_Builder.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": false,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 0
+      }
+    },
+    {
+      "action_intents": [
+        "build"
+      ],
+      "action_labels": [
+        "Build tag"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 72,
+      "page_id": "105_Robots_Meta_Tag_Builder",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/105_Robots_Meta_Tag_Builder.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 0
+      }
+    },
+    {
+      "action_intents": [
+        "build"
+      ],
+      "action_labels": [
+        "Build header",
+        "Explain"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 99,
+      "page_id": "106_Cache_Control_Tool",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/106_Cache_Control_Tool.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [
+        "format"
+      ],
+      "action_labels": [
+        "Format"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 65,
+      "page_id": "107_Markdown_Table_Formatter",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/107_Markdown_Table_Formatter.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [],
+      "action_labels": [
+        "Select columns",
+        "Download as .csv"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 65,
+      "page_id": "108_CSV_Column_Selector",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/108_CSV_Column_Selector.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": true,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 2
+      }
+    },
+    {
+      "action_intents": [
+        "search"
+      ],
+      "action_labels": [
+        "Search methods"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 65,
+      "page_id": "109_HTTP_Methods_Reference",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/109_HTTP_Methods_Reference.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": false,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [],
+      "action_labels": [
+        "Apply filters"
+      ],
+      "custom_css_or_html": true,
+      "direct_notices": [],
+      "lines": 403,
+      "page_id": "10_Roadmap_Feedback",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/10_Roadmap_Feedback.py",
+      "shared_patterns": {
+        "button": true,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": false,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": false,
+        "result_panel": false,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [],
+      "action_labels": [
+        "Add line numbers"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 62,
+      "page_id": "110_Line_Numberer",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/110_Line_Numberer.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [],
+      "action_labels": [
+        "Redact"
+      ],
+      "custom_css_or_html": true,
+      "direct_notices": [],
+      "lines": 74,
+      "page_id": "111_PII_Redactor",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/111_PII_Redactor.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [
+        "compare"
+      ],
+      "action_labels": [
+        "Compare"
+      ],
+      "custom_css_or_html": true,
+      "direct_notices": [],
+      "lines": 80,
+      "page_id": "112_Env_File_Diff",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/112_Env_File_Diff.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 2
+      }
+    },
+    {
+      "action_intents": [
+        "check"
+      ],
+      "action_labels": [
+        "Check for overlaps"
+      ],
+      "custom_css_or_html": true,
+      "direct_notices": [],
+      "lines": 76,
+      "page_id": "113_Cron_Overlap_Checker",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/113_Cron_Overlap_Checker.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 2
+      }
+    },
+    {
+      "action_intents": [
+        "generate"
+      ],
+      "action_labels": [
+        "Generate"
+      ],
+      "custom_css_or_html": true,
+      "direct_notices": [],
+      "lines": 75,
+      "page_id": "114_Test_Data_Generator",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/114_Test_Data_Generator.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 0
+      }
+    },
+    {
+      "action_intents": [
+        "check"
+      ],
+      "action_labels": [
+        "Check"
+      ],
+      "custom_css_or_html": true,
+      "direct_notices": [],
+      "lines": 80,
+      "page_id": "115_Password_Policy_Checker",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/115_Password_Policy_Checker.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 0
+      }
+    },
+    {
+      "action_intents": [
+        "build"
+      ],
+      "action_labels": [
+        "Parse",
+        "Build"
+      ],
+      "custom_css_or_html": true,
+      "direct_notices": [],
+      "lines": 108,
+      "page_id": "116_ISO8601_Duration_Tool",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/116_ISO8601_Duration_Tool.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [],
+      "action_labels": [
+        "Merge"
+      ],
+      "custom_css_or_html": true,
+      "direct_notices": [],
+      "lines": 72,
+      "page_id": "117_JSON_Merge_Patch",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/117_JSON_Merge_Patch.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 2
+      }
+    },
+    {
+      "action_intents": [],
+      "action_labels": [
+        "Align"
+      ],
+      "custom_css_or_html": true,
+      "direct_notices": [],
+      "lines": 71,
+      "page_id": "118_Column_Aligner",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/118_Column_Aligner.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 2
+      }
+    },
+    {
+      "action_intents": [],
+      "action_labels": [
+        "Lint"
+      ],
+      "custom_css_or_html": true,
+      "direct_notices": [],
+      "lines": 76,
+      "page_id": "119_SSH_Config_Validator",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/119_SSH_Config_Validator.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [
+        "calculate"
+      ],
+      "action_labels": [
+        "Calculate subnet"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 77,
+      "page_id": "11_Subnet_Calculator",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/11_Subnet_Calculator.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": false
+      },
+      "source_strings": {
+        "help_count": 1,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [
+        "generate"
+      ],
+      "action_labels": [
+        "Generate CSR"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 88,
+      "page_id": "120_CSR_Generator",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/120_CSR_Generator.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": false,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 5
+      }
+    },
+    {
+      "action_intents": [
+        "build"
+      ],
+      "action_labels": [
+        "Build record"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 71,
+      "page_id": "121_CAA_Record_Builder",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/121_CAA_Record_Builder.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": false,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [
+        "decode",
+        "encode"
+      ],
+      "action_labels": [
+        "Encode",
+        "Decode"
+      ],
+      "custom_css_or_html": true,
+      "direct_notices": [],
+      "lines": 102,
+      "page_id": "122_Base62_Encoder_Decoder",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/122_Base62_Encoder_Decoder.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 2
+      }
+    },
+    {
+      "action_intents": [
+        "generate"
+      ],
+      "action_labels": [
+        "Generate diff",
+        "Download as .patch"
+      ],
+      "custom_css_or_html": true,
+      "direct_notices": [],
+      "lines": 81,
+      "page_id": "123_Unified_Diff_Generator",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/123_Unified_Diff_Generator.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": true,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": false,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 2
+      }
+    },
+    {
+      "action_intents": [
+        "convert"
+      ],
+      "action_labels": [
+        "Convert to PEM",
+        "Convert to JWK"
+      ],
+      "custom_css_or_html": true,
+      "direct_notices": [],
+      "lines": 112,
+      "page_id": "124_JWK_PEM_Converter",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/124_JWK_PEM_Converter.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": false,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 2
+      }
+    },
+    {
+      "action_intents": [
+        "validate"
+      ],
+      "action_labels": [
+        "Validate chain"
+      ],
+      "custom_css_or_html": true,
+      "direct_notices": [],
+      "lines": 91,
+      "page_id": "125_Certificate_Chain_Validator",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/125_Certificate_Chain_Validator.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": false,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [
+        "convert"
+      ],
+      "action_labels": [
+        "Convert"
+      ],
+      "custom_css_or_html": true,
+      "direct_notices": [],
+      "lines": 72,
+      "page_id": "126_WSL_Path_Converter",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/126_WSL_Path_Converter.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": false,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [],
+      "action_labels": [
+        "Extract links"
+      ],
+      "custom_css_or_html": true,
+      "direct_notices": [],
+      "lines": 73,
+      "page_id": "127_Markdown_Link_Extractor",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/127_Markdown_Link_Extractor.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": false,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [],
+      "action_labels": [],
+      "custom_css_or_html": true,
+      "direct_notices": [],
+      "lines": 290,
+      "page_id": "128_Health_Diagnostics",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/128_Health_Diagnostics.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": false,
+        "failure_note": false,
+        "form": false,
+        "form_intro": false,
+        "form_submit": false,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 0
+      }
+    },
+    {
+      "action_intents": [
+        "convert"
+      ],
+      "action_labels": [
+        "Convert to compose"
+      ],
+      "custom_css_or_html": true,
+      "direct_notices": [],
+      "lines": 145,
+      "page_id": "129_Docker_Run_to_Compose",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/129_Docker_Run_to_Compose.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": false,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [
+        "generate"
+      ],
+      "action_labels": [
+        "Generate hashes",
+        "Generate HMAC"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 77,
+      "page_id": "12_Hash_Generator",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/12_Hash_Generator.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": false
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 0
+      }
+    },
+    {
+      "action_intents": [
+        "convert"
+      ],
+      "action_labels": [
+        "Convert to NATO phonetic"
+      ],
+      "custom_css_or_html": true,
+      "direct_notices": [],
+      "lines": 100,
+      "page_id": "130_NATO_Phonetic_Converter",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/130_NATO_Phonetic_Converter.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": false,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [
+        "generate"
+      ],
+      "action_labels": [
+        "Generate WiFi QR code",
+        "Download PNG"
+      ],
+      "custom_css_or_html": true,
+      "direct_notices": [],
+      "lines": 68,
+      "page_id": "131_WiFi_QR_Code_Generator",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/131_WiFi_QR_Code_Generator.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": true,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": false,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 0
+      }
+    },
+    {
+      "action_intents": [
+        "generate"
+      ],
+      "action_labels": [
+        "Generate HMAC digest"
+      ],
+      "custom_css_or_html": true,
+      "direct_notices": [],
+      "lines": 81,
+      "page_id": "132_HMAC_Generator",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/132_HMAC_Generator.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": false,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 0
+      }
+    },
+    {
+      "action_intents": [
+        "generate"
+      ],
+      "action_labels": [
+        "Generate ULA prefix"
+      ],
+      "custom_css_or_html": true,
+      "direct_notices": [],
+      "lines": 91,
+      "page_id": "133_IPv6_ULA_Generator",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/133_IPv6_ULA_Generator.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": false,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [
+        "generate"
+      ],
+      "action_labels": [
+        "Generate MAC address"
+      ],
+      "custom_css_or_html": true,
+      "direct_notices": [],
+      "lines": 84,
+      "page_id": "134_Random_MAC_Address_Generator",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/134_Random_MAC_Address_Generator.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": false,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [
+        "convert"
+      ],
+      "action_labels": [
+        "Convert list"
+      ],
+      "custom_css_or_html": true,
+      "direct_notices": [],
+      "lines": 97,
+      "page_id": "135_List_Converter",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/135_List_Converter.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": false,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [],
+      "action_labels": [
+        "Normalize addresses"
+      ],
+      "custom_css_or_html": true,
+      "direct_notices": [],
+      "lines": 116,
+      "page_id": "136_Email_Address_Normalizer",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/136_Email_Address_Normalizer.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": false,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [
+        "convert"
+      ],
+      "action_labels": [
+        "Convert IPv4 value"
+      ],
+      "custom_css_or_html": true,
+      "direct_notices": [],
+      "lines": 100,
+      "page_id": "137_IPv4_Address_Format_Converter",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/137_IPv4_Address_Format_Converter.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": false,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [],
+      "action_labels": [
+        "Expand IPv4 range"
+      ],
+      "custom_css_or_html": true,
+      "direct_notices": [],
+      "lines": 105,
+      "page_id": "138_IPv4_Range_Expander",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/138_IPv4_Range_Expander.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": false,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 3
+      }
+    },
+    {
+      "action_intents": [],
+      "action_labels": [
+        "Show matching commands"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 99,
+      "page_id": "139_Git_Command_Cheat_Sheet",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/139_Git_Command_Cheat_Sheet.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": false,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [
+        "lookup"
+      ],
+      "action_labels": [
+        "Analyze",
+        "Look up vendor"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [
+        "warning",
+        "success"
+      ],
+      "lines": 76,
+      "page_id": "13_MAC_Address_Tool",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/13_MAC_Address_Tool.py",
+      "shared_patterns": {
+        "button": true,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": false
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [
+        "generate",
+        "validate"
+      ],
+      "action_labels": [
+        "Generate mnemonic",
+        "Validate mnemonic"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 140,
+      "page_id": "140_BIP39_Mnemonic_Generator_Validator",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/140_BIP39_Mnemonic_Generator_Validator.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": false,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 2
+      }
+    },
+    {
+      "action_intents": [
+        "generate"
+      ],
+      "action_labels": [
+        "Generate lorem ipsum"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 139,
+      "page_id": "141_Lorem_Ipsum_Generator",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/141_Lorem_Ipsum_Generator.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": false,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [
+        "convert"
+      ],
+      "action_labels": [
+        "Convert text"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 111,
+      "page_id": "142_Text_to_Binary_Hex_Octal_Converter",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/142_Text_to_Binary_Hex_Octal_Converter.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": false,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [],
+      "action_labels": [
+        "Analyze headers"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 80,
+      "page_id": "14_Email_Header_Analyzer",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/14_Email_Header_Analyzer.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": false
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 0
+      }
+    },
+    {
+      "action_intents": [],
+      "action_labels": [],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 53,
+      "page_id": "15_Port_Reference",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/15_Port_Reference.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": false,
+        "form": false,
+        "form_intro": true,
+        "form_submit": false,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": false
+      },
+      "source_strings": {
+        "help_count": 1,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [
+        "generate"
+      ],
+      "action_labels": [
+        "Generate password",
+        "Generate passphrase"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 91,
+      "page_id": "16_Password_Generator",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/16_Password_Generator.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": false
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 0
+      }
+    },
+    {
+      "action_intents": [
+        "decode",
+        "encode"
+      ],
+      "action_labels": [
+        "Encode",
+        "Decode"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 68,
+      "page_id": "17_URL_Encoder_Decoder",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/17_URL_Encoder_Decoder.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": false
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 0
+      }
+    },
+    {
+      "action_intents": [],
+      "action_labels": [
+        "Test pattern"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 70,
+      "page_id": "18_Regex_Tester",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/18_Regex_Tester.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": false,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [
+        "convert"
+      ],
+      "action_labels": [
+        "Convert epoch",
+        "Convert date/time",
+        "Convert timezones"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 130,
+      "page_id": "19_Timestamp_Converter",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/19_Timestamp_Converter.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": false
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 3
+      }
+    },
+    {
+      "action_intents": [
+        "check",
+        "run"
+      ],
+      "action_labels": [
+        "Run health check",
+        "Download results as CSV",
+        "Download summary as Markdown",
+        "Download HTML report",
+        "Download PSA note (.txt)"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [
+        "warning",
+        "success"
+      ],
+      "lines": 384,
+      "page_id": "1_Domain_Health_Checker",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/1_Domain_Health_Checker.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": true,
+        "download_panel": true,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [
+        "compare"
+      ],
+      "action_labels": [
+        "Compare"
+      ],
+      "custom_css_or_html": true,
+      "direct_notices": [],
+      "lines": 98,
+      "page_id": "20_Text_Diff_Checker",
+      "page_media_queries": true,
+      "parse_error": null,
+      "path": "pages/20_Text_Diff_Checker.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 0
+      }
+    },
+    {
+      "action_intents": [
+        "generate"
+      ],
+      "action_labels": [
+        "Generate token"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 60,
+      "page_id": "21_JWT_Encoder",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/21_JWT_Encoder.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": false
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [],
+      "action_labels": [
+        "Aggregate"
+      ],
+      "custom_css_or_html": true,
+      "direct_notices": [],
+      "lines": 84,
+      "page_id": "22_CIDR_Aggregator",
+      "page_media_queries": true,
+      "parse_error": null,
+      "path": "pages/22_CIDR_Aggregator.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": false
+      },
+      "source_strings": {
+        "help_count": 1,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [],
+      "action_labels": [
+        "Parse"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [
+        "info"
+      ],
+      "lines": 67,
+      "page_id": "23_User_Agent_Parser",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/23_User_Agent_Parser.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": false
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [
+        "convert"
+      ],
+      "action_labels": [
+        "Convert"
+      ],
+      "custom_css_or_html": true,
+      "direct_notices": [],
+      "lines": 82,
+      "page_id": "24_IPv6_Compressor",
+      "page_media_queries": true,
+      "parse_error": null,
+      "path": "pages/24_IPv6_Compressor.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": false
+      },
+      "source_strings": {
+        "help_count": 1,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [
+        "convert"
+      ],
+      "action_labels": [
+        "Convert"
+      ],
+      "custom_css_or_html": true,
+      "direct_notices": [],
+      "lines": 75,
+      "page_id": "25_Case_Converter",
+      "page_media_queries": true,
+      "parse_error": null,
+      "path": "pages/25_Case_Converter.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": false,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [
+        "convert"
+      ],
+      "action_labels": [
+        "Convert"
+      ],
+      "custom_css_or_html": true,
+      "direct_notices": [],
+      "lines": 62,
+      "page_id": "26_Color_Converter",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/26_Color_Converter.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": false
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [
+        "lookup"
+      ],
+      "action_labels": [
+        "Look up"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 105,
+      "page_id": "27_WHOIS_Lookup",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/27_WHOIS_Lookup.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [
+        "run"
+      ],
+      "action_labels": [
+        "Run checks",
+        "Download results as CSV"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 150,
+      "page_id": "28_Bulk_Domain_Health",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/28_Bulk_Domain_Health.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": true,
+        "download_panel": true,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [],
+      "action_labels": [
+        "Send test request"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 106,
+      "page_id": "29_Webhook_Tester",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/29_Webhook_Tester.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 2
+      }
+    },
+    {
+      "action_intents": [
+        "lookup"
+      ],
+      "action_labels": [
+        "Look up records",
+        "Download records as CSV",
+        "Download raw values (.txt)"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 128,
+      "page_id": "2_DNS_Record_Checker",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/2_DNS_Record_Checker.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": true,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [
+        "run"
+      ],
+      "action_labels": [
+        "Run uptime probe"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 144,
+      "page_id": "30_Uptime_Trend",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/30_Uptime_Trend.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [
+        "check"
+      ],
+      "action_labels": [
+        "Check headers"
+      ],
+      "custom_css_or_html": true,
+      "direct_notices": [
+        "warning",
+        "success"
+      ],
+      "lines": 140,
+      "page_id": "31_Security_Headers_Checker",
+      "page_media_queries": true,
+      "parse_error": null,
+      "path": "pages/31_Security_Headers_Checker.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [
+        "search"
+      ],
+      "action_labels": [
+        "Search"
+      ],
+      "custom_css_or_html": true,
+      "direct_notices": [],
+      "lines": 141,
+      "page_id": "32_CVE_Lookup",
+      "page_media_queries": true,
+      "parse_error": null,
+      "path": "pages/32_CVE_Lookup.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [
+        "check"
+      ],
+      "action_labels": [
+        "Check propagation"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 116,
+      "page_id": "33_DNS_Propagation_Checker",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/33_DNS_Propagation_Checker.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [
+        "search"
+      ],
+      "action_labels": [
+        "Search"
+      ],
+      "custom_css_or_html": true,
+      "direct_notices": [],
+      "lines": 68,
+      "page_id": "34_Windows_Event_Reference",
+      "page_media_queries": true,
+      "parse_error": null,
+      "path": "pages/34_Windows_Event_Reference.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": false,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": false
+      },
+      "source_strings": {
+        "help_count": 1,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [
+        "lookup"
+      ],
+      "action_labels": [
+        "Look up selector"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 119,
+      "page_id": "35_DKIM_Selector_Lookup",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/35_DKIM_Selector_Lookup.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 2
+      }
+    },
+    {
+      "action_intents": [
+        "build"
+      ],
+      "action_labels": [
+        "Build SPF",
+        "Build DMARC",
+        "Build DKIM"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 174,
+      "page_id": "36_Email_Record_Builder",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/36_Email_Record_Builder.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 5
+      }
+    },
+    {
+      "action_intents": [
+        "search"
+      ],
+      "action_labels": [
+        "Search reference"
+      ],
+      "custom_css_or_html": true,
+      "direct_notices": [],
+      "lines": 94,
+      "page_id": "37_Windows_Error_Reference",
+      "page_media_queries": true,
+      "parse_error": null,
+      "path": "pages/37_Windows_Error_Reference.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [
+        "convert"
+      ],
+      "action_labels": [
+        "Convert"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 64,
+      "page_id": "38_Config_Format_Converter",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/38_Config_Format_Converter.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": true,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 0
+      }
+    },
+    {
+      "action_intents": [],
+      "action_labels": [],
+      "custom_css_or_html": true,
+      "direct_notices": [],
+      "lines": 57,
+      "page_id": "39_M365_SKU_Decoder",
+      "page_media_queries": true,
+      "parse_error": null,
+      "path": "pages/39_M365_SKU_Decoder.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": false,
+        "form": false,
+        "form_intro": true,
+        "form_submit": false,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": false
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [
+        "check"
+      ],
+      "action_labels": [
+        "Check certificate",
+        "Download summary as CSV",
+        "Download SAN names (.txt)",
+        "Download full result as JSON"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [
+        "warning"
+      ],
+      "lines": 165,
+      "page_id": "3_SSL_Certificate_Checker",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/3_SSL_Certificate_Checker.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": true,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [
+        "generate"
+      ],
+      "action_labels": [
+        "Generate",
+        "Download as .txt"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 63,
+      "page_id": "40_ID_Generator",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/40_ID_Generator.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": true,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": false
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 0
+      }
+    },
+    {
+      "action_intents": [
+        "compare"
+      ],
+      "action_labels": [
+        "Compare"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [
+        "warning",
+        "success"
+      ],
+      "lines": 55,
+      "page_id": "41_JSON_Diff_Viewer",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/41_JSON_Diff_Viewer.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": false
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 2
+      }
+    },
+    {
+      "action_intents": [
+        "lookup"
+      ],
+      "action_labels": [
+        "Look up IP"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 71,
+      "page_id": "42_IP_Geolocation_Lookup",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/42_IP_Geolocation_Lookup.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": false
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [
+        "compare"
+      ],
+      "action_labels": [
+        "Compare"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [
+        "success"
+      ],
+      "lines": 79,
+      "page_id": "43_File_Integrity_Comparator",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/43_File_Integrity_Comparator.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": false
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [],
+      "action_labels": [],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 80,
+      "page_id": "44_Chmod_Calculator",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/44_Chmod_Calculator.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": false,
+        "form": false,
+        "form_intro": true,
+        "form_submit": false,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 2
+      }
+    },
+    {
+      "action_intents": [],
+      "action_labels": [],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 44,
+      "page_id": "45_Integer_Base_Converter",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/45_Integer_Base_Converter.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": false,
+        "form_intro": true,
+        "form_submit": false,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": false
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [],
+      "action_labels": [],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 73,
+      "page_id": "46_Cron_Expression_Builder",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/46_Cron_Expression_Builder.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": false,
+        "failure_note": true,
+        "form": false,
+        "form_intro": true,
+        "form_submit": false,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 0
+      }
+    },
+    {
+      "action_intents": [
+        "search"
+      ],
+      "action_labels": [
+        "Search"
+      ],
+      "custom_css_or_html": true,
+      "direct_notices": [],
+      "lines": 69,
+      "page_id": "47_HTTP_Status_Reference",
+      "page_media_queries": true,
+      "parse_error": null,
+      "path": "pages/47_HTTP_Status_Reference.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": false,
+        "failure_note": false,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [
+        "generate"
+      ],
+      "action_labels": [
+        "Generate a new random secret",
+        "Verify"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 77,
+      "page_id": "48_TOTP_Generator",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/48_TOTP_Generator.py",
+      "shared_patterns": {
+        "button": true,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 2
+      }
+    },
+    {
+      "action_intents": [
+        "generate"
+      ],
+      "action_labels": [
+        "Generate key pair",
+        "Download private key",
+        "Download public key"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 55,
+      "page_id": "49_RSA_SSH_Key_Pair_Generator",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/49_RSA_SSH_Key_Pair_Generator.py",
+      "shared_patterns": {
+        "button": true,
+        "download_button": true,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": false,
+        "form_intro": true,
+        "form_submit": false,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 0
+      }
+    },
+    {
+      "action_intents": [
+        "check"
+      ],
+      "action_labels": [
+        "Check URL",
+        "Download summary as CSV",
+        "Download headers as CSV",
+        "Download redirects as CSV"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [
+        "warning",
+        "success"
+      ],
+      "lines": 140,
+      "page_id": "4_HTTP_Status_Checker",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/4_HTTP_Status_Checker.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": true,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [],
+      "action_labels": [
+        "Download PNG",
+        "Download PNG"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 76,
+      "page_id": "50_QR_Code_Generator",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/50_QR_Code_Generator.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": true,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": false,
+        "form_intro": true,
+        "form_submit": false,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [],
+      "action_labels": [
+        "Hash",
+        "Verify"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 75,
+      "page_id": "51_Bcrypt_Tool",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/51_Bcrypt_Tool.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [],
+      "action_labels": [],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 41,
+      "page_id": "52_SQL_Formatter",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/52_SQL_Formatter.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": false,
+        "failure_note": true,
+        "form": false,
+        "form_intro": true,
+        "form_submit": false,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [],
+      "action_labels": [],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 69,
+      "page_id": "53_ULID_UUID_Decoder",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/53_ULID_UUID_Decoder.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": false,
+        "form": false,
+        "form_intro": true,
+        "form_submit": false,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 2
+      }
+    },
+    {
+      "action_intents": [
+        "build"
+      ],
+      "action_labels": [
+        "Build command"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 80,
+      "page_id": "54_Curl_Command_Builder",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/54_Curl_Command_Builder.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 2
+      }
+    },
+    {
+      "action_intents": [],
+      "action_labels": [],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 36,
+      "page_id": "55_Regex_Cheat_Sheet",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/55_Regex_Cheat_Sheet.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": false,
+        "form": false,
+        "form_intro": true,
+        "form_submit": false,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": false
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [
+        "run"
+      ],
+      "action_labels": [
+        "Run linter"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [
+        "success"
+      ],
+      "lines": 72,
+      "page_id": "56_Env_File_Linter",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/56_Env_File_Linter.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [
+        "scan"
+      ],
+      "action_labels": [
+        "Scan"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 84,
+      "page_id": "57_TLS_Protocol_Scanner",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/57_TLS_Protocol_Scanner.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [
+        "calculate"
+      ],
+      "action_labels": [
+        "Calculate"
+      ],
+      "custom_css_or_html": true,
+      "direct_notices": [],
+      "lines": 105,
+      "page_id": "58_Business_Hours_Calculator",
+      "page_media_queries": true,
+      "parse_error": null,
+      "path": "pages/58_Business_Hours_Calculator.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 3
+      }
+    },
+    {
+      "action_intents": [
+        "compare"
+      ],
+      "action_labels": [
+        "Compare"
+      ],
+      "custom_css_or_html": true,
+      "direct_notices": [
+        "warning",
+        "success"
+      ],
+      "lines": 111,
+      "page_id": "59_CSV_Diff_Viewer",
+      "page_media_queries": true,
+      "parse_error": null,
+      "path": "pages/59_CSV_Diff_Viewer.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 3
+      }
+    },
+    {
+      "action_intents": [
+        "run"
+      ],
+      "action_labels": [
+        "Run JSON action",
+        "Download JSON"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [
+        "success"
+      ],
+      "lines": 125,
+      "page_id": "5_JSON_Formatter",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/5_JSON_Formatter.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": true,
+        "download_panel": true,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": false
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [
+        "convert"
+      ],
+      "action_labels": [
+        "Convert"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 56,
+      "page_id": "60_Markdown_HTML_Converter",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/60_Markdown_HTML_Converter.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": true,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": false
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 0
+      }
+    },
+    {
+      "action_intents": [],
+      "action_labels": [
+        "Detect",
+        "Download as UTF-8"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 62,
+      "page_id": "61_Text_Encoding_Detector",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/61_Text_Encoding_Detector.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": true,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": false
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 0
+      }
+    },
+    {
+      "action_intents": [
+        "validate"
+      ],
+      "action_labels": [
+        "Validate"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [
+        "warning",
+        "success"
+      ],
+      "lines": 79,
+      "page_id": "62_Robots_Sitemap_Validator",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/62_Robots_Sitemap_Validator.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": false
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [
+        "check"
+      ],
+      "action_labels": [
+        "Check"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [
+        "success"
+      ],
+      "lines": 69,
+      "page_id": "63_JWT_Weak_Secret_Checker",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/63_JWT_Weak_Secret_Checker.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": false,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [
+        "calculate"
+      ],
+      "action_labels": [
+        "Calculate"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 43,
+      "page_id": "64_Log_Timestamp_Duration_Calculator",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/64_Log_Timestamp_Duration_Calculator.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": false
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 2
+      }
+    },
+    {
+      "action_intents": [],
+      "action_labels": [
+        "Parse"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 49,
+      "page_id": "65_URL_Parser",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/65_URL_Parser.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": false
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [
+        "decode",
+        "encode"
+      ],
+      "action_labels": [
+        "Encode",
+        "Decode"
+      ],
+      "custom_css_or_html": true,
+      "direct_notices": [],
+      "lines": 77,
+      "page_id": "66_Base32_Encoder_Decoder",
+      "page_media_queries": true,
+      "parse_error": null,
+      "path": "pages/66_Base32_Encoder_Decoder.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 0
+      }
+    },
+    {
+      "action_intents": [],
+      "action_labels": [
+        "Parse"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 45,
+      "page_id": "67_HTTP_Header_Parser",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/67_HTTP_Header_Parser.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": false
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [
+        "check"
+      ],
+      "action_labels": [
+        "Check overlap"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [
+        "warning",
+        "success"
+      ],
+      "lines": 46,
+      "page_id": "68_CIDR_Overlap_Checker",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/68_CIDR_Overlap_Checker.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": false
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [
+        "decode"
+      ],
+      "action_labels": [
+        "Decode"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 48,
+      "page_id": "69_CSR_Decoder",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/69_CSR_Decoder.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": false
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [
+        "decode",
+        "encode"
+      ],
+      "action_labels": [
+        "Encode",
+        "Decode"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 65,
+      "page_id": "6_Base64_Tool",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/6_Base64_Tool.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": false
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 0
+      }
+    },
+    {
+      "action_intents": [],
+      "action_labels": [
+        "Split"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [
+        "warning"
+      ],
+      "lines": 55,
+      "page_id": "70_PEM_Bundle_Splitter",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/70_PEM_Bundle_Splitter.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": false
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [
+        "check"
+      ],
+      "action_labels": [
+        "Check"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [
+        "warning",
+        "success"
+      ],
+      "lines": 43,
+      "page_id": "71_Whitespace_Visualizer",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/71_Whitespace_Visualizer.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": false
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 0
+      }
+    },
+    {
+      "action_intents": [
+        "calculate"
+      ],
+      "action_labels": [
+        "Calculate",
+        "Calculate"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 70,
+      "page_id": "72_Date_Calculator",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/72_Date_Calculator.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": false
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 3
+      }
+    },
+    {
+      "action_intents": [
+        "run"
+      ],
+      "action_labels": [
+        "Run"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [
+        "success"
+      ],
+      "lines": 49,
+      "page_id": "73_XML_Formatter",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/73_XML_Formatter.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": false
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [
+        "decode",
+        "encode"
+      ],
+      "action_labels": [
+        "Encode",
+        "Decode"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 50,
+      "page_id": "74_HTML_Entity_Encoder_Decoder",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/74_HTML_Entity_Encoder_Decoder.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": false
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 0
+      }
+    },
+    {
+      "action_intents": [
+        "generate"
+      ],
+      "action_labels": [
+        "Generate"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 40,
+      "page_id": "75_Deterministic_UUID_Generator",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/75_Deterministic_UUID_Generator.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": false
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [
+        "validate"
+      ],
+      "action_labels": [
+        "Validate"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 41,
+      "page_id": "76_Luhn_Checksum_Validator",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/76_Luhn_Checksum_Validator.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": false
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [],
+      "action_labels": [
+        "Analyze"
+      ],
+      "custom_css_or_html": true,
+      "direct_notices": [],
+      "lines": 86,
+      "page_id": "77_Text_Statistics",
+      "page_media_queries": true,
+      "parse_error": null,
+      "path": "pages/77_Text_Statistics.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 0
+      }
+    },
+    {
+      "action_intents": [
+        "convert"
+      ],
+      "action_labels": [
+        "Convert",
+        "Download as .md"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 42,
+      "page_id": "78_CSV_to_Markdown_Table",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/78_CSV_to_Markdown_Table.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": true,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": false
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [],
+      "action_labels": [
+        "Compute fingerprint"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 44,
+      "page_id": "79_SSH_Key_Fingerprint",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/79_SSH_Key_Fingerprint.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": false
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [
+        "decode"
+      ],
+      "action_labels": [
+        "Decode token"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 67,
+      "page_id": "7_JWT_Decoder",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/7_JWT_Decoder.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": false
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 0
+      }
+    },
+    {
+      "action_intents": [
+        "format"
+      ],
+      "action_labels": [
+        "Format"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 38,
+      "page_id": "80_YAML_Formatter",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/80_YAML_Formatter.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": false
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [
+        "convert"
+      ],
+      "action_labels": [
+        "Convert",
+        "Convert"
+      ],
+      "custom_css_or_html": true,
+      "direct_notices": [],
+      "lines": 110,
+      "page_id": "81_Byte_Size_Converter",
+      "page_media_queries": true,
+      "parse_error": null,
+      "path": "pages/81_Byte_Size_Converter.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 2
+      }
+    },
+    {
+      "action_intents": [
+        "convert"
+      ],
+      "action_labels": [
+        "Convert to CRLF",
+        "Convert to LF",
+        "Convert to CR"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 49,
+      "page_id": "82_Line_Ending_Converter",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/82_Line_Ending_Converter.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": false
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 0
+      }
+    },
+    {
+      "action_intents": [],
+      "action_labels": [
+        "Replace"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 53,
+      "page_id": "83_Regex_Find_Replace",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/83_Regex_Find_Replace.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": false
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 2
+      }
+    },
+    {
+      "action_intents": [
+        "check"
+      ],
+      "action_labels": [
+        "Check"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 48,
+      "page_id": "84_Password_Strength_Checker",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/84_Password_Strength_Checker.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 0
+      }
+    },
+    {
+      "action_intents": [],
+      "action_labels": [
+        "Extract matching lines"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 64,
+      "page_id": "85_Text_Pattern_Extractor",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/85_Text_Pattern_Extractor.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": false,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [
+        "convert"
+      ],
+      "action_labels": [
+        "Convert to JSON",
+        "Convert to CSV",
+        "Download as .json",
+        "Download as .csv"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 70,
+      "page_id": "86_CSV_JSON_Converter",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/86_CSV_JSON_Converter.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": true,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": false
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 2
+      }
+    },
+    {
+      "action_intents": [
+        "process"
+      ],
+      "action_labels": [
+        "Process",
+        "Download as .txt"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 47,
+      "page_id": "87_Sort_Dedupe_Lines",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/87_Sort_Dedupe_Lines.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": true,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": false
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [
+        "build"
+      ],
+      "action_labels": [
+        "Build"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 41,
+      "page_id": "88_User_Agent_Builder",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/88_User_Agent_Builder.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": false
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [
+        "compare"
+      ],
+      "action_labels": [
+        "Compare",
+        "Sort"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [
+        "success"
+      ],
+      "lines": 87,
+      "page_id": "89_SemVer_Comparator",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/89_SemVer_Comparator.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": false
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 3
+      }
+    },
+    {
+      "action_intents": [],
+      "action_labels": [
+        "Explain cron",
+        "Download .ics"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [
+        "success"
+      ],
+      "lines": 76,
+      "page_id": "8_Cron_Explainer",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/8_Cron_Explainer.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": true,
+        "download_panel": true,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [],
+      "action_labels": [
+        "Show world clock"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 55,
+      "page_id": "90_World_Clock",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/90_World_Clock.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": false
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [],
+      "action_labels": [
+        "Clean",
+        "Download as .csv"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 49,
+      "page_id": "91_CSV_TSV_Cleaner",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/91_CSV_TSV_Cleaner.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": true,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": false
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [],
+      "action_labels": [
+        "Query"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 58,
+      "page_id": "92_JSON_Path_Query",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/92_JSON_Path_Query.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 2
+      }
+    },
+    {
+      "action_intents": [
+        "validate"
+      ],
+      "action_labels": [
+        "Validate"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [
+        "success"
+      ],
+      "lines": 40,
+      "page_id": "93_IBAN_Validator",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/93_IBAN_Validator.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": false
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [
+        "decode",
+        "encode"
+      ],
+      "action_labels": [
+        "Encode",
+        "Decode"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 64,
+      "page_id": "94_Base58_Encoder_Decoder",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/94_Base58_Encoder_Decoder.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": false
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 2
+      }
+    },
+    {
+      "action_intents": [],
+      "action_labels": [],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 31,
+      "page_id": "95_Exit_Code_Reference",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/95_Exit_Code_Reference.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": false,
+        "form": false,
+        "form_intro": true,
+        "form_submit": false,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": false
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [],
+      "action_labels": [],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 32,
+      "page_id": "96_Timezone_Abbreviation_Reference",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/96_Timezone_Abbreviation_Reference.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": false,
+        "form": false,
+        "form_intro": true,
+        "form_submit": false,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": false
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [
+        "build"
+      ],
+      "action_labels": [
+        "Build header",
+        "Parse header"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 68,
+      "page_id": "97_Basic_Auth_Header_Tool",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/97_Basic_Auth_Header_Tool.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": false
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [
+        "check"
+      ],
+      "action_labels": [
+        "Check paths"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 55,
+      "page_id": "98_Gitignore_Pattern_Tester",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/98_Gitignore_Pattern_Tester.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": false
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 2
+      }
+    },
+    {
+      "action_intents": [
+        "generate"
+      ],
+      "action_labels": [
+        "Generate TOC"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 75,
+      "page_id": "99_Markdown_TOC_Generator",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/99_Markdown_TOC_Generator.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": false,
+        "download_panel": false,
+        "empty_state": true,
+        "failure_note": false,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 0,
+        "placeholder_count": 1
+      }
+    },
+    {
+      "action_intents": [],
+      "action_labels": [
+        "Analyze logs",
+        "Download PSA note (.txt)"
+      ],
+      "custom_css_or_html": false,
+      "direct_notices": [],
+      "lines": 145,
+      "page_id": "9_Log_Troubleshooting_Assistant",
+      "page_media_queries": false,
+      "parse_error": null,
+      "path": "pages/9_Log_Troubleshooting_Assistant.py",
+      "shared_patterns": {
+        "button": false,
+        "download_button": true,
+        "download_panel": true,
+        "empty_state": true,
+        "failure_note": true,
+        "form": true,
+        "form_intro": true,
+        "form_submit": true,
+        "page_header": true,
+        "result_panel": true,
+        "safe_note": false,
+        "session_state": false,
+        "shared_shell": true,
+        "status_note": true
+      },
+      "source_strings": {
+        "help_count": 1,
+        "placeholder_count": 0
+      }
+    }
+  ],
+  "schema_version": 1,
+  "summary": {
+    "direct_notice_counts": {
+      "info": 1,
+      "success": 17,
+      "warning": 11
+    },
+    "pages_with_custom_css_or_html": 43,
+    "pages_with_parse_errors": 0,
+    "pattern_counts": {
+      "button": 4,
+      "download_button": 18,
+      "download_panel": 8,
+      "empty_state": 137,
+      "failure_note": 100,
+      "form": 129,
+      "form_intro": 141,
+      "form_submit": 129,
+      "page_header": 141,
+      "result_panel": 141,
+      "shared_shell": 142,
+      "status_note": 86
+    }
+  }
+}

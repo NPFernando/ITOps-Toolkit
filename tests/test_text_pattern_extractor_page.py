@@ -29,7 +29,7 @@ def test_no_matches_shows_info():
     app.text_area[0].set_value("hello\nworld\n")
     app.button[0].click().run()
     assert not app.exception
-    assert any("No matching lines" in i.value for i in app.info)
+    assert any("No matching lines" in m.value for m in app.markdown)
 
 
 def test_empty_state_shown_before_submit():

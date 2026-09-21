@@ -3,7 +3,7 @@ from __future__ import annotations
 import streamlit as st
 
 from utils.timezone_abbreviation_reference import search_timezone_abbreviations
-from utils.ui import apply_app_shell, render_form_intro, render_page_header, render_section_heading, tool_form_panel, tool_result_panel
+from utils.ui import apply_app_shell, render_empty_state, render_form_intro, render_page_header, render_section_heading, tool_form_panel, tool_result_panel
 
 
 st.set_page_config(page_title="Timezone Abbreviation Reference", layout="wide")
@@ -26,4 +26,7 @@ with tool_result_panel("timezone_abbreviation_reference_result", related_to="tim
     if results:
         st.table([{"Abbreviation": entry.abbreviation, "UTC offset": entry.utc_offset, "Name": entry.name} for entry in results])
     else:
-        st.info("No timezone abbreviations matched that search.")
+        render_empty_state(
+            "No matching abbreviations",
+            "Try an abbreviation, UTC offset, or full timezone name.",
+        )

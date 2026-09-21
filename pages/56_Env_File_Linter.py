@@ -6,6 +6,7 @@ from utils.env_linter import MAX_INPUT_LENGTH, lint_env
 from utils.ui import (
     apply_app_shell,
     render_empty_state,
+    render_failure_note,
     render_form_intro,
     render_page_header,
     render_section_heading,
@@ -49,7 +50,7 @@ if state is not None:
     with tool_result_panel("env_linter_result", related_to="env_linter"):
         render_section_heading("Lint results", "Detected issues and status for the submitted .env content.", eyebrow="Result")
         if not state["ok"]:
-            st.error(state["error"])
+            render_failure_note("Environment linting", state["error"])
             render_status_note(
                 "Linting could not run",
                 "Resolve the input error and run the linter again.",

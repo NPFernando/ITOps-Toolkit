@@ -6,6 +6,7 @@ from utils.mac_tools import analyze_mac, lookup_vendor
 from utils.ui import (
     apply_app_shell,
     render_empty_state,
+    render_failure_note,
     render_form_intro,
     render_page_header,
     render_section_heading,
@@ -47,7 +48,7 @@ if result is not None:
     with tool_result_panel("mac_result", related_to="mac_address_tool"):
         render_section_heading("MAC address details", "Canonical formats and address-class bits.")
         if not result["ok"]:
-            st.error(result["error"])
+            render_failure_note("MAC analysis", result["error"])
         else:
             c1, c2 = st.columns(2)
             c1.metric("Unicast / Multicast", "Multicast" if result["is_multicast"] else "Unicast")

@@ -6,6 +6,7 @@ from utils.text_tools import decode_base64_text, encode_base64_text
 from utils.ui import (
     apply_app_shell,
     render_empty_state,
+    render_failure_note,
     render_form_intro,
     render_page_header,
     render_section_heading,
@@ -61,4 +62,4 @@ if decoded_result is not None:
         if decoded_result["ok"]:
             st.text_area("Result", value=decoded_result["result"], height=220)
         else:
-            st.error(decoded_result["error"])
+            render_failure_note("Base64 decoding", decoded_result["error"])

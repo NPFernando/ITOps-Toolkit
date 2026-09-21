@@ -6,6 +6,7 @@ from utils.ipv6_tools import MAX_INPUT_LENGTH, convert_ipv6
 from utils.ui import (
     apply_app_shell,
     render_empty_state,
+    render_failure_note,
     render_form_intro,
     render_page_header,
     render_section_heading,
@@ -73,7 +74,7 @@ if result is not None:
     with tool_result_panel("ipv6_result", related_to="ipv6_compressor"):
         render_section_heading("Converted forms", eyebrow="Result")
         if not result["ok"]:
-            st.error(result["error"])
+            render_failure_note("IPv6 conversion", result["error"])
         else:
             st.write("Compressed address")
             st.code(result["compressed"], language="text")

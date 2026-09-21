@@ -7,6 +7,7 @@ from utils.ui import (
     apply_app_shell,
     display_rows_frame,
     render_empty_state,
+    render_failure_note,
     render_form_intro,
     render_page_header,
     render_section_heading,
@@ -71,7 +72,7 @@ if result is not None:
     with tool_result_panel("cidr_result", related_to="cidr_aggregator"):
         render_section_heading("Aggregated networks", f"{result['input_count']} entries in.")
         if not result["ok"]:
-            st.error(result["error"])
+            render_failure_note("CIDR aggregation", result["error"])
         else:
             st.metric("Input entries", result["input_count"])
             st.metric("Output networks", result["output_count"])

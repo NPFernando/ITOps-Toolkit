@@ -4,7 +4,7 @@ import pandas as pd
 import streamlit as st
 
 from utils.gitignore_tester import MAX_INPUT_LENGTH, MAX_PATH_LENGTH, check_paths
-from utils.ui import apply_app_shell, render_empty_state, render_form_intro, render_page_header, render_section_heading, tool_form_panel, tool_result_panel
+from utils.ui import apply_app_shell, render_empty_state, render_failure_note, render_form_intro, render_page_header, render_section_heading, tool_form_panel, tool_result_panel
 
 
 st.set_page_config(page_title=".gitignore Pattern Tester", layout="wide")
@@ -37,7 +37,7 @@ if result is not None:
     with tool_result_panel("gitignore_tester_result_panel", related_to="gitignore_tester"):
         render_section_heading("Results", eyebrow="Per-path status")
         if not result["ok"]:
-            st.error(result["error"])
+            render_failure_note("gitignore matching", result["error"])
         else:
             st.dataframe(
                 pd.DataFrame(

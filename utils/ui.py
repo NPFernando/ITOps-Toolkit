@@ -2278,6 +2278,7 @@ def apply_app_shell(active_page: str) -> None:
     if slug is not None:
         record_recent_visit(slug)
     _sync_local_storage_mirror(active_page)
+    _inject_pwa_metadata()
     render_command_palette()
 
 
@@ -2409,6 +2410,55 @@ def _sync_local_storage_mirror(active_page: str) -> None:
                 window.top.location.replace(newUrl);
             }}
         }})();
+        </script>
+        """,
+        height=1,
+    )
+
+
+def _inject_pwa_metadata() -> None:
+    """Attach manifest/theme metadata and register the shell service worker."""
+    st.iframe(
+        """
+        <script>
+        (function() {
+            var doc = window.top.document;
+            var head = doc && doc.head;
+            if (!head) {
+                return;
+            }
+
+            var manifestHref = "/app/static/manifest.json";
+            var link = head.querySelector('link[rel="manifest"][data-itops-manifest="true"]');
+            if (!link) {
+                link = doc.createElement("link");
+                link.setAttribute("rel", "manifest");
+                link.setAttribute("data-itops-manifest", "true");
+                head.appendChild(link);
+            }
+            if (link.getAttribute("href") !== manifestHref) {
+                link.setAttribute("href", manifestHref);
+            }
+
+            var themeColor = "#282c34";
+            var themeMeta = head.querySelector('meta[name="theme-color"][data-itops-theme-color="true"]');
+            if (!themeMeta) {
+                themeMeta = doc.createElement("meta");
+                themeMeta.setAttribute("name", "theme-color");
+                themeMeta.setAttribute("data-itops-theme-color", "true");
+                head.appendChild(themeMeta);
+            }
+            if (themeMeta.getAttribute("content") !== themeColor) {
+                themeMeta.setAttribute("content", themeColor);
+            }
+
+            var nav = window.top.navigator;
+            if (!nav || !("serviceWorker" in nav) || window.top.__itopsSwRegisterAttempted) {
+                return;
+            }
+            window.top.__itopsSwRegisterAttempted = true;
+            nav.serviceWorker.register("/app/static/service-worker.js", { scope: "/" }).catch(function() {});
+        })();
         </script>
         """,
         height=1,
@@ -2853,7 +2903,7 @@ def render_page_header(
         unsafe_allow_html=True,
     )
     if warning:
-        st.warning(warning)
+        render_status_note("Input safety reminder", warning, tone="warning")
 
 
 def tool_form_panel(key: str):
@@ -3072,7 +3122,7 @@ def render_failure_note(
     context: str,
     message: str | None,
     *,
-    remediation: str,
+    remediation: str = "Review the input and try again.",
     mode: str | None = None,
 ) -> None:
     normalized_mode = mode if mode in {"transient", "persistent"} else classify_failure_mode(message)

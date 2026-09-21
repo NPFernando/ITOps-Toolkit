@@ -3,7 +3,7 @@ from __future__ import annotations
 import streamlit as st
 
 from utils.exit_code_reference import search_exit_codes
-from utils.ui import apply_app_shell, render_form_intro, render_page_header, render_section_heading, tool_form_panel, tool_result_panel
+from utils.ui import apply_app_shell, render_empty_state, render_form_intro, render_page_header, render_section_heading, tool_form_panel, tool_result_panel
 
 
 st.set_page_config(page_title="Exit Code Reference", layout="wide")
@@ -25,4 +25,7 @@ with tool_result_panel("exit_code_reference_result", related_to="exit_code_refer
     if results:
         st.table([{"Code": entry.code, "Meaning": entry.meaning, "Detail": entry.detail} for entry in results])
     else:
-        st.info("No exit codes matched that search.")
+        render_empty_state(
+            "No matching exit codes",
+            "Try a numeric exit code or a keyword such as permission or signal.",
+        )

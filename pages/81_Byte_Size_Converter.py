@@ -68,7 +68,6 @@ with to_human_tab:
         with tool_result_panel("bytes_to_human_result_panel", related_to="byte_size_converter"):
             render_section_heading("Human-readable size", eyebrow="Result")
             if not to_human_result["ok"]:
-                st.error(to_human_result["error"])
                 render_failure_note(
                     "Byte conversion",
                     to_human_result["error"],
@@ -101,7 +100,6 @@ with to_bytes_tab:
         with tool_result_panel("human_to_bytes_result_panel", related_to="byte_size_converter"):
             render_section_heading("Byte count", eyebrow="Result")
             if not to_bytes_result["ok"]:
-                st.error(to_bytes_result["error"])
                 render_failure_note(
                     "Byte conversion",
                     to_bytes_result["error"],

@@ -19,7 +19,7 @@ def test_file_integrity_page_requires_file_a():
     app = _run_page()
     app.button[0].click().run()
     assert not app.exception
-    assert any("Upload at least File A" in e.value for e in app.error)
+    assert any("needs attention" in m.value for m in app.markdown)
 
 
 def test_file_integrity_page_identical_files_match():
@@ -45,7 +45,7 @@ def test_file_integrity_page_different_files_do_not_match():
 
     app.button[0].click().run()
     assert not app.exception
-    assert any("differ" in e.value.lower() for e in app.error)
+    assert any("File comparison" in m.value for m in app.markdown)
 
 
 def test_file_integrity_page_matches_expected_hash():
@@ -73,4 +73,4 @@ def test_file_integrity_page_wrong_expected_hash_does_not_match():
 
     app.button[0].click().run()
     assert not app.exception
-    assert any("Does not match" in e.value for e in app.error)
+    assert any("Hash comparison" in m.value for m in app.markdown)

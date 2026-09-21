@@ -5,7 +5,7 @@ import streamlit as st
 
 from utils.json_diff import diff_json
 from utils.text_tools import MAX_JSON_LENGTH
-from utils.ui import apply_app_shell, render_empty_state, render_form_intro, render_page_header, render_section_heading, tool_form_panel, tool_result_panel
+from utils.ui import apply_app_shell, render_empty_state, render_failure_note, render_form_intro, render_page_header, render_section_heading, tool_form_panel, tool_result_panel
 
 
 st.set_page_config(page_title="JSON Diff Viewer", layout="wide")
@@ -37,7 +37,7 @@ if result is not None:
     with tool_result_panel("json_diff_result_panel", related_to="json_diff"):
         render_section_heading("Differences", "Added, removed, and changed values by JSON path.")
         if not result["ok"]:
-            st.error(result["error"])
+            render_failure_note("JSON comparison", result["error"])
         elif result["identical"]:
             st.success("The two documents are structurally identical.")
         else:

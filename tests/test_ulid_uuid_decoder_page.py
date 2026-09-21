@@ -33,7 +33,7 @@ def test_ulid_tab_shows_empty_state_when_blank():
 
     md = " ".join(m.value for m in app.markdown)
     assert "tool-empty-state" in md
-    assert not app.error
+    assert not app.exception
 
 
 def test_uuid_tab_decodes_v1_and_v4():
@@ -51,8 +51,7 @@ def test_uuid_tab_decodes_v1_and_v4():
     uuid_input2 = next(t for t in app.text_input if t.label == "UUID")
     uuid_input2.set_value(str(uuid.uuid4())).run()
     assert not app.exception
-    infos = [i.value for i in app.info]
-    assert any("does not embed a creation timestamp" in i for i in infos)
+    assert any("does not embed a creation timestamp" in m.value for m in app.markdown)
 
 
 def test_results_persist_after_sidebar_interaction():

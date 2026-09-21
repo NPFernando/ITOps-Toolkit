@@ -21,7 +21,7 @@ def test_test_pattern_shows_matches_table():
     assert len(app.dataframe) == 1
 
 
-def test_invalid_pattern_shows_error():
+def test_invalid_pattern_shows_warning_status():
     app = AppTest.from_file(PAGE, default_timeout=30)
     app.run()
 
@@ -29,7 +29,7 @@ def test_invalid_pattern_shows_error():
     app.text_area[0].set_value("text")
     app.button[0].click().run()
     assert not app.exception
-    assert any("Invalid pattern" in e.value for e in app.error)
+    assert any("Pattern could not be evaluated" in block.value for block in app.markdown)
 
 
 def test_empty_state_shown_before_submit():

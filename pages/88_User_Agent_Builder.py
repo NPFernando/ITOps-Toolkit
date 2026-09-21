@@ -3,7 +3,7 @@ from __future__ import annotations
 import streamlit as st
 
 from utils.user_agent_builder import BROWSER_OPTIONS, OS_OPTIONS, build_user_agent
-from utils.ui import apply_app_shell, render_empty_state, render_form_intro, render_page_header, render_section_heading, tool_form_panel, tool_result_panel
+from utils.ui import apply_app_shell, render_empty_state, render_failure_note, render_form_intro, render_page_header, render_section_heading, tool_form_panel, tool_result_panel
 
 
 st.set_page_config(page_title="User-Agent Builder", layout="wide")
@@ -36,6 +36,6 @@ if result is not None:
     with tool_result_panel("user_agent_builder_result_panel", related_to="user_agent_builder"):
         render_section_heading("User-Agent string", eyebrow="Result")
         if not result["ok"]:
-            st.error(result["error"])
+            render_failure_note("User-agent building", result["error"])
         else:
             st.code(result["output"], language=None)

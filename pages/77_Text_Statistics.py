@@ -65,7 +65,6 @@ if result is not None:
     with tool_result_panel("text_stats_result_panel", related_to="text_stats"):
         render_section_heading("Statistics", eyebrow="Result")
         if not result["ok"]:
-            st.error(result["error"])
             render_failure_note(
                 "Text analysis",
                 result["error"],

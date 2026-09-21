@@ -6,6 +6,7 @@ from utils.regex_replace import FLAG_OPTIONS, MAX_PATTERN_LENGTH, MAX_REPLACEMEN
 from utils.ui import (
     apply_app_shell,
     render_empty_state,
+    render_failure_note,
     render_form_intro,
     render_page_header,
     render_section_heading,
@@ -46,7 +47,7 @@ if result is not None:
     with tool_result_panel("regex_replace_result_panel", related_to="regex_replace"):
         render_section_heading("Result", eyebrow="Result")
         if not result["ok"]:
-            st.error(result["error"])
+            render_failure_note("Regex replacement", result["error"])
         else:
             st.caption(f"{result['replacement_count']} replacement(s) made.")
             st.text_area("Output", value=result["output"], height=220)

@@ -14,6 +14,7 @@ from utils.password_tools import (
 from utils.ui import (
     apply_app_shell,
     render_empty_state,
+    render_failure_note,
     render_form_intro,
     render_page_header,
     render_section_heading,
@@ -75,7 +76,7 @@ if password_result is not None:
     with tool_result_panel("password_result", related_to="password_generator"):
         render_section_heading("Generated password", "Copy this now -- it is not stored or logged.")
         if not password_result["ok"]:
-            st.error(password_result["error"])
+            render_failure_note("Password generation", password_result["error"])
         else:
             st.code(password_result["password"], language=None)
             st.caption(f"~{password_result['entropy_bits']} bits of entropy from a {password_result['pool_size']}-character set.")
@@ -84,7 +85,7 @@ if passphrase_result is not None:
     with tool_result_panel("passphrase_result", related_to="password_generator"):
         render_section_heading("Generated passphrase", "Copy this now -- it is not stored or logged.")
         if not passphrase_result["ok"]:
-            st.error(passphrase_result["error"])
+            render_failure_note("Passphrase generation", passphrase_result["error"])
         else:
             st.code(passphrase_result["passphrase"], language=None)
             st.caption(f"~{passphrase_result['entropy_bits']} bits of entropy from a {len(WORDLIST)}-word list.")

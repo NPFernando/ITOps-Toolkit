@@ -3,7 +3,7 @@ from __future__ import annotations
 import streamlit as st
 
 from utils.http_header_parser import MAX_INPUT_LENGTH, parse_headers_block
-from utils.ui import apply_app_shell, render_empty_state, render_form_intro, render_page_header, render_section_heading, tool_form_panel, tool_result_panel
+from utils.ui import apply_app_shell, render_empty_state, render_failure_note, render_form_intro, render_page_header, render_section_heading, tool_form_panel, tool_result_panel
 
 
 st.set_page_config(page_title="HTTP Header Parser", layout="wide")
@@ -38,7 +38,7 @@ if result is not None:
     with tool_result_panel("http_header_parser_result_panel", related_to="http_header_parser"):
         render_section_heading("Parsed headers", eyebrow="Result")
         if not result["ok"]:
-            st.error(result["error"])
+            render_failure_note("HTTP header parsing", result["error"])
         else:
             if result["request_line"]:
                 st.caption(f"Request/status line: {result['request_line']}")

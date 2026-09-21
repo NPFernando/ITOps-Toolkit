@@ -3,7 +3,7 @@ from __future__ import annotations
 import streamlit as st
 
 from utils.file_integrity import find_matching_algorithm, hash_bytes
-from utils.ui import apply_app_shell, render_empty_state, render_form_intro, render_page_header, render_section_heading, tool_form_panel, tool_result_panel
+from utils.ui import apply_app_shell, render_empty_state, render_failure_note, render_form_intro, render_page_header, render_section_heading, tool_form_panel, tool_result_panel
 
 
 st.set_page_config(page_title="File Integrity Comparator", layout="wide")
@@ -49,11 +49,11 @@ if state is not None:
     with tool_result_panel("file_integrity_result", related_to="file_integrity"):
         render_section_heading("Result", "MD5, SHA-1, SHA-256, and SHA-512 digests.")
         if state.get("error"):
-            st.error(state["error"])
+            render_failure_note("File comparison", state["error"])
         else:
             result_a = state["result_a"]
             if not result_a["ok"]:
-                st.error(result_a["error"])
+                render_failure_note("File comparison", result_a["error"])
             else:
                 st.markdown(f"**{state['file_a_name']}** ({result_a['size_bytes']:,} bytes)")
                 for algo, digest in result_a["digests"].items():
@@ -63,17 +63,17 @@ if state is not None:
                     result_b = state["result_b"]
                     st.markdown(f"**{state['file_b_name']}** ({result_b.get('size_bytes', 0):,} bytes)")
                     if not result_b["ok"]:
-                        st.error(result_b["error"])
+                        render_failure_note("File comparison", result_b["error"])
                     else:
                         for algo, digest in result_b["digests"].items():
                             st.code(f"{algo}: {digest}", language=None)
                         if result_a["digests"] == result_b["digests"]:
                             st.success("Files are identical -- all digests match.")
                         else:
-                            st.error("Files differ -- digests do not match.")
+                            render_failure_note("File comparison", "Files differ -- digests do not match.")
 
                 if "expected_hash" in state:
                     if state["matched_algorithm"]:
                         st.success(f"Matches the expected hash ({state['matched_algorithm'].upper()}).")
                     else:
-                        st.error("Does not match the expected hash against any computed algorithm.")
+                        render_failure_note("Hash comparison", "Does not match the expected hash against any computed algorithm.")

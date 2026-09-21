@@ -3,7 +3,7 @@ from __future__ import annotations
 import streamlit as st
 
 from utils.config_format_converter import FORMATS, MAX_INPUT_LENGTH, convert_config
-from utils.ui import apply_app_shell, render_empty_state, render_form_intro, render_page_header, render_section_heading, render_status_note, tool_form_panel, tool_result_panel
+from utils.ui import apply_app_shell, render_empty_state, render_failure_note, render_form_intro, render_page_header, render_section_heading, render_status_note, tool_form_panel, tool_result_panel
 
 
 st.set_page_config(page_title="Config Format Converter", layout="wide")
@@ -53,7 +53,7 @@ if state is not None:
     with tool_result_panel("config_format_result", related_to="config_format_converter"):
         render_section_heading(f"{result_from} -> {result_to}", "Converted output.")
         if not result["ok"]:
-            st.error(result["error"])
+            render_failure_note("Configuration conversion", result["error"])
         else:
             st.code(result["output"], language=result_to.lower() if result_to != "TOML" else "toml")
             st.download_button(

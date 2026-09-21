@@ -7,6 +7,7 @@ from utils.tls_scanner import MAX_PORT, scan_tls
 from utils.ui import (
     apply_app_shell,
     render_empty_state,
+    render_failure_note,
     render_form_intro,
     render_page_header,
     render_section_heading,
@@ -67,13 +68,13 @@ if validation_error is None and stored is None:
     render_empty_state("Ready to scan", "Accepted, rejected, and untestable protocol versions appear here after a scan.")
 
 if validation_error is not None:
-    st.error(validation_error)
+    render_failure_note("TLS scan validation", validation_error)
 
 if stored is not None:
     with tool_result_panel("tls_scanner_result", related_to="tls_scanner"):
         render_section_heading(f"{stored['host']}:{stored['port']}", eyebrow="Result")
         if not stored["ok"]:
-            st.error(stored["error"])
+            render_failure_note("TLS scan", stored["error"])
         else:
             st.table(
                 [

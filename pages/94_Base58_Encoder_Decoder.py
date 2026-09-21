@@ -3,7 +3,7 @@ from __future__ import annotations
 import streamlit as st
 
 from utils.base58_tool import MAX_INPUT_LENGTH, decode_base58, encode_base58
-from utils.ui import apply_app_shell, render_empty_state, render_form_intro, render_page_header, render_section_heading, tool_form_panel, tool_result_panel
+from utils.ui import apply_app_shell, render_empty_state, render_failure_note, render_form_intro, render_page_header, render_section_heading, tool_form_panel, tool_result_panel
 
 
 st.set_page_config(page_title="Base58 Encoder/Decoder", layout="wide")
@@ -36,7 +36,7 @@ with encode_tab:
         with tool_result_panel("base58_encode_result_panel", related_to="base58_tool"):
             render_section_heading("Base58", eyebrow="Result")
             if not encode_result["ok"]:
-                st.error(encode_result["error"])
+                render_failure_note("Base58 encoding", encode_result["error"])
             else:
                 st.code(encode_result["output"], language=None)
 
@@ -59,6 +59,6 @@ with decode_tab:
         with tool_result_panel("base58_decode_result_panel", related_to="base58_tool"):
             render_section_heading("Decoded text", eyebrow="Result")
             if not decode_result["ok"]:
-                st.error(decode_result["error"])
+                render_failure_note("Base58 decoding", decode_result["error"])
             else:
                 st.code(decode_result["output"], language=None)

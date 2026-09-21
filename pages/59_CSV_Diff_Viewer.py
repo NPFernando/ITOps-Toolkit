@@ -7,6 +7,7 @@ from utils.csv_diff import MAX_INPUT_LENGTH, diff_csv
 from utils.ui import (
     apply_app_shell,
     render_empty_state,
+    render_failure_note,
     render_form_intro,
     render_page_header,
     render_section_heading,
@@ -74,7 +75,7 @@ if result is not None:
     with tool_result_panel("csv_diff_result_panel", related_to="csv_diff"):
         render_section_heading("Differences", "Added, removed, and changed rows, matched by key column.")
         if not result["ok"]:
-            st.error(result["error"])
+            render_failure_note("CSV comparison", result["error"])
             render_status_note(
                 "Comparison failed",
                 "Resolve the input error and run compare again.",

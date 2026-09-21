@@ -3,7 +3,7 @@ from __future__ import annotations
 import streamlit as st
 
 from utils.date_calculator import MAX_INPUT_LENGTH, UNITS, add_to_date, days_between
-from utils.ui import apply_app_shell, render_empty_state, render_form_intro, render_page_header, render_section_heading, tool_form_panel, tool_result_panel
+from utils.ui import apply_app_shell, render_empty_state, render_failure_note, render_form_intro, render_page_header, render_section_heading, tool_form_panel, tool_result_panel
 
 
 st.set_page_config(page_title="Date Calculator", layout="wide")
@@ -39,7 +39,7 @@ with add_tab:
         with tool_result_panel("date_add_result_panel", related_to="date_calculator"):
             render_section_heading("Result date", eyebrow="Result")
             if not add_result["ok"]:
-                st.error(add_result["error"])
+                render_failure_note("Date calculation", add_result["error"])
             else:
                 st.metric("Date", add_result["result_date"])
                 st.caption(f"Day of week: {add_result['weekday']}")
@@ -65,6 +65,6 @@ with between_tab:
         with tool_result_panel("date_between_result_panel", related_to="date_calculator"):
             render_section_heading("Days between", eyebrow="Result")
             if not between_result["ok"]:
-                st.error(between_result["error"])
+                render_failure_note("Date calculation", between_result["error"])
             else:
                 st.metric("Calendar days", between_result["days"])

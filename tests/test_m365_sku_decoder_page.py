@@ -21,7 +21,7 @@ def test_m365_sku_decoder_filters_to_matching_sku():
     assert frame.iloc[0]["SKU string"] == "SPE_E3"
 
 
-def test_m365_sku_decoder_shows_info_on_no_match():
+def test_m365_sku_decoder_shows_empty_state_on_no_match():
     app = AppTest.from_file(PAGE, default_timeout=30)
     app.run()
     assert not app.exception
@@ -29,7 +29,7 @@ def test_m365_sku_decoder_shows_info_on_no_match():
     app.text_input[0].set_value("not-a-real-sku-zzz").run()
     assert not app.exception
 
-    assert any("No SKUs matched that search." in info.value for info in app.info)
+    assert any("No matching SKUs" in block.value for block in app.markdown)
 
 
 def test_m365_sku_decoder_results_persist_after_sidebar_interaction():

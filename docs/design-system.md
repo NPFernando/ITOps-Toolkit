@@ -69,6 +69,7 @@ This guide documents the UI direction used for the Streamlit dashboard and tool 
   - Use `tool_result_panel` and `tool_download_panel` for framed result and export areas.
   - Use `display_rows_frame` for mixed field/value result tables before passing them to `st.dataframe`.
   - Use `render_status_note` for compact success, info, warning, neutral, or optional AI state messages.
+  - Keep direct `st.info`, `st.warning`, and `st.success` calls limited to semantic diagnostic findings or completion summaries already grouped as a list/table; new tool-page notices should use the shared status primitives.
 - Notices:
   - Use `render_important_notice` for the home-page sensitive-data message.
 - Roadmap board:
@@ -133,6 +134,7 @@ This guide documents the UI direction used for the Streamlit dashboard and tool 
 
 - Treat `docs/ui-consistency-audit-matrix-phase8.md` as the release baseline for header/form/empty-state/action-label/notice patterns.
 - Tool pages should converge on shared primitives (`render_page_header`, `render_form_intro`, `render_empty_state`, `render_section_heading`, shared status/failure notes).
+- The generated inventory currently reports zero direct errors, one informational diagnostic, and eleven retained warning/success surfaces as intentional semantic exceptions (such as certificate findings, duplicate-key diagnostics, and per-item health recommendations).
 - `Roadmap & Feedback` and `Health Diagnostics` are intentional non-tool exceptions; keep them documented when their layout differs.
 - For mobile QA, keep `<=720px` checks explicit: stacked page-header illustrations, full-width wrapped action buttons, and readable tap targets.
 
@@ -833,6 +835,7 @@ This guide documents the UI direction used for the Streamlit dashboard and tool 
 
 ## Maintenance Rules
 
+- `docs/ui-ux-audit-inventory.json` is the generated page-level audit baseline. Regenerate it with `make audit-ui` after adding or materially changing a page, then use its shared-pattern and direct-notice counts to prioritize migrations.
 - Do not duplicate tool titles, descriptions, paths, or accent colors outside `utils/ui.py`.
 - Do not add a separate navigation library unless Streamlit page links no longer support the required behavior.
 - Do not log or persist user-entered domains, URLs, logs, JWTs, JSON, or encoded text.

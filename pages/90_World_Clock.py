@@ -5,7 +5,7 @@ import streamlit as st
 
 from utils.timestamp_tools import COMMON_TIMEZONES
 from utils.world_clock import MAX_INPUT_LENGTH, world_clock
-from utils.ui import apply_app_shell, render_empty_state, render_form_intro, render_page_header, render_section_heading, tool_form_panel, tool_result_panel
+from utils.ui import apply_app_shell, render_empty_state, render_failure_note, render_form_intro, render_page_header, render_section_heading, tool_form_panel, tool_result_panel
 
 
 st.set_page_config(page_title="World Clock", layout="wide")
@@ -37,7 +37,7 @@ if result is not None:
     with tool_result_panel("world_clock_result_panel", related_to="world_clock"):
         render_section_heading("Local time by zone", eyebrow="Result")
         if not result["ok"]:
-            st.error(result["error"])
+            render_failure_note("World clock lookup", result["error"])
         else:
             st.dataframe(
                 pd.DataFrame(

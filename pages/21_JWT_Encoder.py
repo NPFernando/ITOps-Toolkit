@@ -6,6 +6,7 @@ from utils.text_tools import JWT_ENCODE_ALGORITHMS, MAX_JSON_LENGTH, encode_jwt
 from utils.ui import (
     apply_app_shell,
     render_empty_state,
+    render_failure_note,
     render_form_intro,
     render_page_header,
     render_section_heading,
@@ -54,6 +55,6 @@ if result is not None:
     with tool_result_panel("jwt_encode_result", related_to="jwt_encoder"):
         render_section_heading("Signed token", "Copy this now -- it is not stored or logged.")
         if not result["ok"]:
-            st.error(result["error"])
+            render_failure_note("JWT encoding", result["error"])
         else:
             st.code(result["token"], language=None)

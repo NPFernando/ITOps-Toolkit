@@ -3,7 +3,7 @@ from __future__ import annotations
 import streamlit as st
 
 from utils.semver_tools import MAX_INPUT_LENGTH, compare_versions, parse_semver, sort_versions
-from utils.ui import apply_app_shell, render_empty_state, render_form_intro, render_page_header, render_section_heading, tool_form_panel, tool_result_panel
+from utils.ui import apply_app_shell, render_empty_state, render_failure_note, render_form_intro, render_page_header, render_section_heading, tool_form_panel, tool_result_panel
 
 
 st.set_page_config(page_title="SemVer Comparator", layout="wide")
@@ -52,7 +52,7 @@ with compare_tab:
         with tool_result_panel("semver_compare_result_panel", related_to="semver_tools"):
             render_section_heading("Comparison", eyebrow="Result")
             if not compare_result["ok"]:
-                st.error(compare_result["error"])
+                render_failure_note("Version comparison", compare_result["error"])
             else:
                 st.success(compare_result["verdict"])
 
@@ -82,6 +82,6 @@ with sort_tab:
         with tool_result_panel("semver_sort_result_panel", related_to="semver_tools"):
             render_section_heading("Sorted versions", eyebrow="Result")
             if not sort_result["ok"]:
-                st.error(sort_result["error"])
+                render_failure_note("Version sorting", sort_result["error"])
             else:
                 st.code("\n".join(sort_result["sorted"]), language=None)

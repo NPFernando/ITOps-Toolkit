@@ -7,9 +7,11 @@ from utils.text_tools import cron_ics_export, explain_cron
 from utils.ui import (
     apply_app_shell,
     render_empty_state,
+    render_failure_note,
     render_form_intro,
     render_page_header,
     render_section_heading,
+    render_status_note,
     tool_download_panel,
     tool_form_panel,
     tool_result_panel,
@@ -48,10 +50,10 @@ if state is not None:
         if result["ok"]:
             st.success("Valid cron expression")
         else:
-            st.error(result["error"])
+            render_failure_note("Cron explanation", result["error"])
 
         render_section_heading("Readable explanation", eyebrow="Schedule")
-        st.info(result["description"])
+        render_status_note("Schedule explanation", result["description"], tone="neutral")
 
         render_section_heading("Next 5 run times", eyebrow="Schedule")
         if result["next_runs"]:

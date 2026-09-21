@@ -39,7 +39,7 @@ def test_empty_input_shows_error():
     app.text_area[0].set_value("")
     app.button[0].click().run()
     assert not app.exception
-    assert any("Paste text" in e.value for e in app.error)
+    assert any("needs attention" in m.value for m in app.markdown)
 
 
 def test_results_persist_after_sidebar_interaction():

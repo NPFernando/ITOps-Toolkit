@@ -30,7 +30,7 @@ def test_unparseable_timestamp_shows_error():
     app.text_input[1].set_value("2026-08-07T17:00:00Z")
     app.button[0].click().run()
     assert not app.exception
-    assert any("start timestamp" in e.value for e in app.error)
+    assert any("needs attention" in m.value for m in app.markdown)
 
 
 def test_empty_state_shown_before_submit():

@@ -4,7 +4,7 @@ import pandas as pd
 import streamlit as st
 
 from utils.cron_builder import FIELD_MODES, build_cron_expression
-from utils.ui import apply_app_shell, render_form_intro, render_page_header, render_section_heading, tool_form_panel, tool_result_panel
+from utils.ui import apply_app_shell, render_failure_note, render_form_intro, render_page_header, render_section_heading, render_status_note, tool_form_panel, tool_result_panel
 
 
 st.set_page_config(page_title="Cron Expression Builder", layout="wide")
@@ -61,9 +61,13 @@ result = build_cron_expression(
 with tool_result_panel("cron_builder_result", related_to="cron_builder"):
     render_section_heading("Result", "Resulting cron expression, readable description, and next run times.")
     if not result["ok"]:
-        st.error(result["error"])
+        render_failure_note(
+            "Cron expression",
+            result["error"],
+            remediation="Adjust the field modes or selected values, then try again.",
+        )
     else:
         st.code(result["expression"], language=None)
-        st.info(result["description"])
+        render_status_note("Schedule meaning", result["description"], tone="neutral")
         if result["next_runs"]:
             st.dataframe(pd.DataFrame({"run_time": result["next_runs"]}), width="stretch", hide_index=True)

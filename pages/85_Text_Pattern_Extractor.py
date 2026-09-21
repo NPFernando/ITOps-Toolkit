@@ -10,6 +10,7 @@ from utils.ui import (
     render_form_intro,
     render_page_header,
     render_section_heading,
+    render_status_note,
     tool_form_panel,
     tool_result_panel,
 )
@@ -46,9 +47,9 @@ if result is not None:
     with tool_result_panel("pattern_extractor_result_panel", related_to="pattern_extractor"):
         render_section_heading("Matching lines", f"{result['match_count']} line(s) matched.")
         if not result["ok"]:
-            st.error(result["error"])
+            render_status_note("Pattern could not be evaluated", result["error"], tone="warning")
         elif not result["matching_lines"]:
-            st.info("No matching lines found.")
+            render_empty_state("No matching lines", "Try a different pattern, input text, or flag selection.")
         else:
             rows = [
                 {
