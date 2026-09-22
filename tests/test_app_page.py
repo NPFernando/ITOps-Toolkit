@@ -33,6 +33,8 @@ def test_css_injects_before_sidebar_and_has_no_blocking_import():
     assert 'rel="stylesheet"' in ui_source, "no font stylesheet link found"
     assert "st.html(css)" in ui_source, "CSS should use raw HTML rendering"
     assert ui_source.index("_inject_global_css(\"dark\")") < ui_source.index("render_sidebar(active_page)")
+    assert "Safe input:" in ui_source
+    assert "public or synthetic data only" in ui_source
 
 
 def test_home_tool_card_rows_wrap_at_responsive_breakpoints():

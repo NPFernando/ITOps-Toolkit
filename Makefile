@@ -1,4 +1,4 @@
-.PHONY: help setup install install-dev run test compile audit-ui qa release-gates release-evidence pre-merge pre-release clean
+.PHONY: help setup install install-dev run test compile audit-ui dependency-check qa release-gates release-evidence pre-merge pre-release clean
 
 PYTHON ?= python3
 VENV ?= .venv
@@ -53,6 +53,10 @@ compile: ## Compile Python files
 audit-ui: ## Generate the static UI/UX page inventory
 	$(PYTHON) scripts/ui_audit_inventory.py
 
+dependency-check: ## Check installed dependency consistency and Python lint rules
+	$(VENV_PYTHON) -m pip check
+	$(VENV_PYTHON) -m ruff check app.py pages utils tests
+
 test: ## Run pytest
 	$(VENV_PYTHON) -m pytest
 
@@ -61,7 +65,7 @@ qa: compile test ## Run local quality checks
 release-gates: compile ## Run fast pre-merge reliability/release checks
 	$(VENV_PYTHON) -m pytest $(RELEASE_GATES_TESTS)
 
-release-evidence: audit-ui release-gates ## Generate the UI inventory and run release gates
+release-evidence: audit-ui release-gates dependency-check ## Generate inventory, release gates, and dependency evidence
 	@printf '%s\n' "Release evidence inputs refreshed: docs/ui-ux-audit-inventory.json"
 
 pre-merge: release-gates ## Alias: run pre-merge confidence gates

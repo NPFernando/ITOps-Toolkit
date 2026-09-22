@@ -2673,7 +2673,7 @@ def render_sidebar(active_page: str) -> None:
             """
             <div class="sidebar-info-card sidebar-safe-card">
                 <div class="sidebar-card-title">SAFE TO USE</div>
-                <p>This toolkit is public-safe. Do not paste passwords, private keys, tokens, or sensitive data.</p>
+                <p>Use public or synthetic examples only. Do not paste passwords, private keys, tokens, or sensitive customer data.</p>
             </div>
             <div class="sidebar-info-card">
                 <div class="sidebar-card-title">ABOUT</div>
@@ -2796,7 +2796,7 @@ def render_home_getting_started() -> None:
             ("3. Continue the workflow", "Use related tools, favorites, or recently used tools to move to the next diagnostic step."),
         )
         cols = st.columns(3, gap="large")
-        for column, (title, description) in zip(cols, steps):
+        for column, (title, description) in zip(cols, steps, strict=True):
             with column:
                 st.markdown(f"**{escape(title)}**")
                 st.caption(description)
@@ -2938,7 +2938,7 @@ def render_important_notice() -> None:
         """
         <div class="important-notice" role="note" aria-label="Public-safe usage notice">
             <div class="notice-icon" aria-hidden="true">i</div>
-            <div><strong>Important Notice</strong><p>Do not paste passwords, private keys, tokens, or any sensitive customer data. This toolkit is for educational and troubleshooting purposes only.</p></div>
+            <div><strong>Important Notice</strong><p>Use public or synthetic examples only. Do not paste passwords, private keys, tokens, or any sensitive customer data. This toolkit is for educational and troubleshooting purposes only.</p></div>
         </div>
         """,
         unsafe_allow_html=True,
@@ -3044,6 +3044,7 @@ def render_form_intro(title: str, description: str) -> None:
             <div class="tool-panel-eyebrow">Input</div>
             <h2 id="{intro_id}">{escape(title)}</h2>
             <p>{escape(description)}</p>
+            <p class="tool-form-safety-hint"><strong>Safe input:</strong> use public or synthetic data only; remove secrets and customer-identifying details.</p>
         </div>
         """,
         unsafe_allow_html=True,

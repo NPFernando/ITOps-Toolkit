@@ -32,6 +32,7 @@ changes. The full suite is required before release integration.
 make audit-ui
 make release-gates
 make release-evidence
+make dependency-check
 ```
 
 The generated inventory is stored at
@@ -39,7 +40,9 @@ The generated inventory is stored at
 pattern should be reviewed against `docs/design-system.md`.
 
 `make release-evidence` is the repeatable combined gate for refreshing the
-inventory and running the release-gate suite before branch integration.
+inventory, running release gates, and checking dependency/lint health before
+branch integration. `docs/release-operations.md` contains the deployment
+monitoring, authenticated smoke, and rollback checklist.
 
 ## Branch integration status
 

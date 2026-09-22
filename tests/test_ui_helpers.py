@@ -2545,6 +2545,12 @@ def test_every_tool_has_a_valid_sidebar_category():
         assert tool.category in SIDEBAR_CATEGORIES, f"{tool.slug} has unknown category {tool.category!r}"
 
 
+def test_every_tool_has_unique_slug_and_page_path():
+    assert len({tool.slug for tool in TOOLS}) == len(TOOLS)
+    assert len({tool.path for tool in TOOLS}) == len(TOOLS)
+    assert all(tool.path.startswith("pages/") and tool.path.endswith(".py") for tool in TOOLS)
+
+
 def test_sidebar_category_partition_matches_expected_grouping():
     by_category: dict[str, list[str]] = {category: [] for category in SIDEBAR_CATEGORIES}
     for tool in TOOLS:
