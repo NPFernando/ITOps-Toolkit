@@ -5,6 +5,7 @@ import streamlit as st
 from utils.dev_baseline import mark_page_baseline, render_page_baseline, start_page_baseline
 from utils.ui import (
     PROFESSIONS,
+    SIDEBAR_CATEGORIES,
     TOOLS,
     apply_app_shell,
     favorite_tools,
@@ -18,6 +19,8 @@ from utils.ui import (
     render_fragment,
     render_control_heading,
     render_home_hero,
+    render_home_getting_started,
+    render_home_quick_start_cards,
     render_important_notice,
     render_section_heading,
     render_status_note,
@@ -59,12 +62,22 @@ mark_page_baseline(_baseline, "wave49-shell-mobile")
 mark_page_baseline(_baseline, "wave50-shell-mobile")
 
 
+if st.session_state.pop("home_reset_filters", False):
+    st.session_state.pop("tool_search", None)
+    st.session_state.pop("home_profession_filter", None)
+    st.session_state.pop("home_tool_category_filter", None)
+    st.session_state.pop("home_navigation_mode", None)
+    st.session_state.pop("home_show_all", None)
+    st.session_state.pop("home_force_quick_access", None)
+
 repo_url = github_url()
 if repo_url:
     render_control_heading("Project")
     st.link_button("GitHub", repo_url, icon=":material/code:", width="stretch")
 
 search_query = render_home_hero()
+render_home_getting_started()
+render_home_quick_start_cards()
 
 shared_favorites = shared_favorite_tools()
 favorites = favorite_tools()
@@ -98,24 +111,43 @@ with tool_form_panel("home_navigation_controls"):
         key="home_profession_filter",
     )
 
+    render_control_heading("Category")
+    category_filter = st.pills(
+        "Browse by category",
+        options=("All categories", *SIDEBAR_CATEGORIES),
+        default="All categories",
+        required=True,
+        label_visibility="collapsed",
+        key="home_tool_category_filter",
+    )
+    category = "All" if category_filter == "All categories" else category_filter
+
     render_control_heading("Navigation")
     navigation_mode = st.pills(
         "Home navigation",
         options=("Quick access", "All tools"),
+        default="Quick access",
         required=True,
         label_visibility="collapsed",
         key="home_navigation_mode",
     )
 
+    if search_query.strip() or profession != "All" or category != "All" or navigation_mode == "All tools":
+        reset_cols = st.columns([1, 3])
+        with reset_cols[0]:
+            if st.button("Reset filters", icon=":material/filter_alt_off:", use_container_width=True):
+                st.session_state["home_reset_filters"] = True
+                st.rerun()
+
 show_all_flag = st.session_state.get("home_show_all", False)
-# `show_all` also factors in an active search/profession filter, which can
-# already be expanding the section independently of the flag -- label and
+# `show_all` also factors in an active search/profession/category filter, which
+# can already be expanding the section independently of the flag -- label and
 # toggle off of this combined state (not the raw flag) so the button doesn't
 # read "Show all tools" while the section is already expanded, and so
 # clicking it while a filter is doing the showing doesn't set a flag that
 # then outlives the filter (previously left the section stuck open after
 # clearing the filter).
-show_all = show_all_flag or bool(search_query.strip()) or profession != "All" or navigation_mode == "All tools"
+show_all = show_all_flag or bool(search_query.strip()) or profession != "All" or category != "All" or navigation_mode == "All tools"
 button_label = "Hide all tools" if show_all else "Show all tools"
 button_icon = ":material/expand_less:" if show_all else ":material/apps:"
 with tool_form_panel("home_primary_action"):
@@ -140,11 +172,15 @@ with tool_form_panel("home_primary_action"):
         st.rerun()
 
 if show_all:
-    filtered_tools = filter_tools(search_query, profession)
+    filtered_tools = filter_tools(search_query, profession, category)
     if search_query.strip():
         all_heading = "Matching Tools"
+    elif profession != "All" and category != "All":
+        all_heading = f"{profession} {category} Tools"
     elif profession != "All":
         all_heading = f"{profession} Tools"
+    elif category != "All":
+        all_heading = f"{category} Tools"
     else:
         all_heading = "All Tools"
     with tool_form_panel("home_sort_controls"):
@@ -191,8 +227,8 @@ else:
         tone="neutral",
     )
     st.caption("If you're new, begin in favorites/recent before opening the full catalog.")
-    searched_tools = filter_tools(search_query, profession) if search_query.strip() else ()
-    quick_access_tools = sort_tools(filter_tools("", profession), "default")
+    searched_tools = filter_tools(search_query, profession, category) if search_query.strip() else ()
+    quick_access_tools = sort_tools(filter_tools("", profession, category), "default")
     quick_access_slugs = {tool.slug for tool in quick_access_tools}
 
     def _scoped(items: tuple) -> tuple:
@@ -210,7 +246,7 @@ else:
     )
     render_fragment(
         "home_guided_workflows",
-        lambda: render_guided_workflows(query=search_query, profession=profession),
+        lambda: render_guided_workflows(query=search_query, profession=profession, category=category),
     )
     if favorites:
         scoped_favorites = _scoped(favorites)

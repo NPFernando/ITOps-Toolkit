@@ -13,6 +13,7 @@ This guide documents the UI direction used for the Streamlit dashboard and tool 
 - Use the shared shell from `utils/ui.py` for global CSS, sidebar navigation, tool metadata, page headers, cards, and notices.
 - Home page structure:
   - Hero section with product title, short value statement, search input, trust chips, and the IT/security visual.
+  - Collapsible **How to use ITOps Toolkit** panel with a three-step first-run path and public-safe reminder.
   - Home navigation mode switch: Quick access (personalized sections) and All tools (full catalog).
   - Guided **Start Here Workflows** section to route first-time users through common triage flows.
   - Quick access sections may include Your Favorites, Recently Used (or Popular to Start), Shared Favorites, and New & Noteworthy.
@@ -145,6 +146,19 @@ This guide documents the UI direction used for the Streamlit dashboard and tool 
 - **Visual mapping safety:** home hero, tool-card icon mappings, category fallbacks, and roadmap badges must degrade to readable text/glyph fallbacks when SVG assets are unavailable.
 - **Accessibility baseline:** preserve keyboard reachability for sidebar/filter/actions, keep `:focus-visible` contrast in dark/light surfaces, keep notice semantics (`role="note"`), and keep decorative SVGs non-semantic (`aria-hidden`, empty alt).
 - **Exception handling:** if a non-tool layout intentionally diverges (Roadmap/Health Diagnostics), keep the exception documented and readable on desktop/mobile.
+
+## Current documented UX exceptions
+
+- `pages/10_Roadmap_Feedback.py` is a board-style non-tool page and intentionally
+  does not use the tool-page empty-state/result-panel contract.
+- `pages/128_Health_Diagnostics.py` is an operational dashboard exception and
+  intentionally does not use a form intro or empty state.
+- `pages/46_Cron_Expression_Builder.py`, `pages/47_HTTP_Status_Reference.py`,
+  and `pages/52_SQL_Formatter.py` are reference/formatter surfaces whose
+  initial state is already explanatory; they do not require a separate empty
+  state.
+- Direct success/warning notices remain only for semantic diagnostic findings
+  or completion summaries, as recorded by the generated UI inventory.
 
 ### Wave 2 QA handoff guidance
 

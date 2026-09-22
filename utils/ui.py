@@ -2181,16 +2181,23 @@ def related_tools(slug: str) -> tuple[ToolMeta, ...]:
     return tuple(_resolve_slugs(TOOL_BUNDLES.get(slug, ())))
 
 
-def guided_workflows(query: str = "", profession: str = "All") -> tuple[GuidedWorkflow, ...]:
-    """Return guided workflow cards filtered by optional search/profession context."""
+def guided_workflows(
+    query: str = "",
+    profession: str = "All",
+    category: str = "All",
+) -> tuple[GuidedWorkflow, ...]:
+    """Return guided workflow cards filtered by the active Home context."""
     normalized_query = query.strip().lower()
     profession_filter = profession if profession in PROFESSIONS else "All"
+    category_filter = category if category in SIDEBAR_CATEGORIES else "All"
     selected: list[GuidedWorkflow] = []
     for workflow in GUIDED_WORKFLOWS:
         tools = tuple(_resolve_slugs(workflow.slugs))
         if not tools:
             continue
         if profession_filter != "All" and not any(profession_filter in tool.professions for tool in tools):
+            continue
+        if category_filter != "All" and not any(tool.category == category_filter for tool in tools):
             continue
         if normalized_query:
             haystack = " ".join(
@@ -2207,8 +2214,8 @@ def guided_workflows(query: str = "", profession: str = "All") -> tuple[GuidedWo
     return tuple(selected)
 
 
-def render_guided_workflows(query: str = "", profession: str = "All") -> None:
-    workflows = guided_workflows(query=query, profession=profession)
+def render_guided_workflows(query: str = "", profession: str = "All", category: str = "All") -> None:
+    workflows = guided_workflows(query=query, profession=profession, category=category)
     st.markdown(
         """
         <div class="section-heading">
@@ -2220,7 +2227,7 @@ def render_guided_workflows(query: str = "", profession: str = "All") -> None:
     if not workflows:
         render_status_note(
             "No workflow matches",
-            "Try a different search or profession filter to reveal guided troubleshooting paths.",
+            "Try a different search, profession, or category filter to reveal guided troubleshooting paths.",
             tone="neutral",
         )
         return
@@ -2714,6 +2721,92 @@ def render_home_hero() -> str:
     return query
 
 
+def render_home_quick_start_cards() -> None:
+    """Render curated starter packs for common troubleshooting journeys."""
+    quick_starts = (
+        (
+            "Diagnose a domain issue",
+            "Start with DNS, SSL, and HTTP checks when a site looks down or behaves oddly.",
+            ("domain_health", "dns_records", "http_status"),
+        ),
+        (
+            "Validate TLS and security",
+            "Check certificates, headers, and policy posture before you investigate deeper.",
+            ("ssl_certificate", "security_headers", "csp_builder"),
+        ),
+        (
+            "Inspect login or auth problems",
+            "Review JWTs, auth headers, and password policy before escalating an incident.",
+            ("jwt_decoder", "basic_auth_tool", "password_policy_checker"),
+        ),
+        (
+            "Review logs or incidents",
+            "Use the app’s guided checks to triage a report, confirm the health status, and prepare evidence.",
+            ("log_troubleshooting_assistant", "health_diagnostics", "roadmap_feedback"),
+        ),
+    )
+
+    st.markdown(
+        """
+        <div class="section-heading">
+            <div><span class="section-bolt">IT</span><h2>Popular starting points</h2></div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+    cols = st.columns(2, gap="large")
+    for index, (title, description, slugs) in enumerate(quick_starts):
+        with cols[index % 2]:
+            with st.container(key=f"quick_start_{index}"):
+                st.markdown(
+                    f"""
+                    <div class="tool-card-shell workflow-card-shell">
+                        <p class="tool-card-category">Quick start</p>
+                        <h3>{escape(title)}</h3>
+                        <p>{escape(description)}</p>
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
+                )
+                for step_index, slug in enumerate(slugs, start=1):
+                    tool = _resolve_slugs((slug,))
+                    if not tool:
+                        continue
+                    _safe_page_link(
+                        tool[0].path,
+                        label=f"{step_index}. {tool[0].short_title}",
+                        icon=_material_icon_for(tool[0].slug),
+                        stretch_width=True,
+                    )
+
+
+def render_home_getting_started() -> None:
+    """Explain the shortest safe path from the Home page to a useful result."""
+    with st.expander("How to use ITOps Toolkit", expanded=False):
+        st.markdown(
+            """
+            **Start with a small, synthetic example.** Choose a profession or
+            category, open a quick-start workflow, and run one tool before
+            exploring the full catalog.
+            """
+        )
+        steps = (
+            ("1. Choose a path", "Use Popular starting points for common incidents, or filter the catalog by profession and category."),
+            ("2. Run one check", "Enter only public or synthetic data, then review the result and any guidance below it."),
+            ("3. Continue the workflow", "Use related tools, favorites, or recently used tools to move to the next diagnostic step."),
+        )
+        cols = st.columns(3, gap="large")
+        for column, (title, description) in zip(cols, steps):
+            with column:
+                st.markdown(f"**{escape(title)}**")
+                st.caption(description)
+        st.info(
+            "Public-safe reminder: never paste passwords, private keys, tokens, "
+            "customer data, or other sensitive information into this app.",
+            icon=":material/shield:",
+        )
+
+
 def render_fragment(name: str, body: Callable[[], None]) -> None:
     """Render ``body`` inside ``st.fragment`` when available, else run inline."""
     fragment = getattr(st, "fragment", None)
@@ -3144,24 +3237,27 @@ def render_failure_note(
     )
 
 
-def filter_tools(query: str = "", profession: str = "All") -> tuple[ToolMeta, ...]:
-    """Return every tool matching both the search text and the profession filter."""
+def filter_tools(query: str = "", profession: str = "All", category: str = "All") -> tuple[ToolMeta, ...]:
+    """Return every tool matching the search text, profession, and category filters."""
     value = query.strip().lower()
     normalized_profession = profession if profession in PROFESSIONS else "All"
-    return _filter_tools_cached(value, normalized_profession)
+    normalized_category = category if category in SIDEBAR_CATEGORIES else "All"
+    return _filter_tools_cached(value, normalized_profession, normalized_category)
 
 
 @lru_cache(maxsize=512)
-def _filter_tools_cached(value: str, profession: str) -> tuple[ToolMeta, ...]:
+def _filter_tools_cached(value: str, profession: str, category: str) -> tuple[ToolMeta, ...]:
     matches_profession = (
         (lambda tool: True) if profession == "All" else (lambda tool: profession in tool.professions)
     )
+    matches_category = (lambda tool: True) if category == "All" else (lambda tool: tool.category == category)
     if not value:
-        return tuple(tool for tool in TOOLS if matches_profession(tool))
+        return tuple(tool for tool in TOOLS if matches_profession(tool) and matches_category(tool))
     return tuple(
         tool
         for tool in TOOLS
         if matches_profession(tool)
+        and matches_category(tool)
         and (
             value in tool.title.lower()
             or value in tool.short_title.lower()

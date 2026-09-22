@@ -2120,6 +2120,14 @@ def test_filter_tools_profession_narrows_results():
     assert len(results) < len(TOOLS)
 
 
+def test_filter_tools_category_narrows_results():
+    results = filter_tools(category="Security")
+
+    assert results
+    assert all(tool.category == "Security" for tool in results)
+    assert len(results) < len(TOOLS)
+
+
 def test_filter_tools_query_and_profession_combine_with_and():
     results = filter_tools(query="hash", profession="Network Engineer")
 
@@ -2168,6 +2176,16 @@ def test_guided_workflows_respect_search_and_profession_filters():
     network_engineer = guided_workflows(profession="Network Engineer")
     assert network_engineer
     assert any(workflow.title == "Domain incident triage" for workflow in network_engineer)
+
+
+def test_guided_workflows_respect_category_filters():
+    security_workflows = guided_workflows(category="Security")
+
+    assert security_workflows
+    assert all(
+        any(tool.category == "Security" for tool in ui._resolve_slugs(workflow.slugs))
+        for workflow in security_workflows
+    )
 
 
 def test_render_guided_workflows_renders_heading_and_numbered_safe_step_links(monkeypatch):
