@@ -19,6 +19,9 @@
   state.
 - Sanitized upstream exception details and closed response bodies in network
   adapters.
+- Standardized bounded retries, rate-limit classification, response cleanup,
+  and public-safe diagnostics across DNS, TLS, CVE, webhook, robots, and
+  GitHub providers.
 - Added catalog, alias, guided-workflow, and representative cross-page
   regression contracts.
 

@@ -16,6 +16,9 @@ tokens, credentials, or production payloads.
   responsive card behavior.
 - Structured, public-safe HTTP failure metadata for retry and operator
   diagnostics.
+- Shared adapter diagnostics and bounded resilience behavior across DNS, TLS,
+  CVE, webhook, robots, and GitHub providers.
+- Mobile touch-target, workflow-preview, and zero-result recovery polish.
 - Maintainer handoff, release notes, dependency follow-up, and deployment
   communication guidance.
 
@@ -86,3 +89,7 @@ Until that checklist is completed, production status remains **blocked**.
   procedure.
 - `docs/streamlit-performance-audit.md` records the current Streamlit pin and
   performance decisions.
+
+  The adapter contract and contributor workflow are documented in
+  `docs/adapter-reliability-contract.md` and
+  `docs/contributor-release-playbook.md`.

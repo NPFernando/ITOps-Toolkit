@@ -28,7 +28,15 @@ before marking production verification complete.
 ## Current evidence
 
 - Release branch: `release/itops-ui-release-readiness`
-- Validated commit: `dba7578`
+- Validated commit: `6972af3`
 - Local release evidence: passing
 - Working tree: clean
 - Production smoke: pending authenticated browser access
+
+## Latest resilience follow-up
+
+Commit `6972af3` adds the shared adapter reliability contract documented in
+`docs/adapter-reliability-contract.md`, bounded provider retries, response
+cleanup, and public-safe diagnostic metadata across the network-backed tools.
+The focused adapter/UI contract suite and `make release-evidence` pass for this
+head.
