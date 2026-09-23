@@ -211,7 +211,7 @@ if show_all:
     else:
         render_status_note(
             "Outcome: catalog filters need adjustment",
-            "No tools matched the active filters. Use Reset filters to return to Quick access, or broaden one filter at a time.",
+            "No tools matched the active filters. Clear or broaden filters, then try again. Use Reset filters to return to Quick access, or broaden one filter at a time.",
             tone="warning",
         )
         st.caption("Recovery path: reset first, then try a shorter search term or a broader category.")
