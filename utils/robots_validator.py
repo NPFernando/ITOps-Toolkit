@@ -53,24 +53,36 @@ def _parse_robots_txt(text: str) -> dict[str, Any]:
 
 
 def _validate_sitemap(url: str) -> dict[str, Any]:
+    response = None
     try:
         response = requests.get(url, headers=_HEADERS, timeout=10)
-    except requests.exceptions.RequestException as exc:
-        return {"url": url, "ok": False, "detail": f"Could not fetch: {exc}"}
-
-    if response.status_code >= 400:
-        return {"url": url, "ok": False, "detail": f"HTTP {response.status_code}."}
+    except requests.exceptions.Timeout:
+        return {"url": url, "ok": False, "detail": "Could not fetch: request timed out."}
+    except requests.exceptions.SSLError:
+        return {"url": url, "ok": False, "detail": "Could not fetch: TLS/SSL connection failed."}
+    except requests.exceptions.ConnectionError:
+        return {"url": url, "ok": False, "detail": "Could not fetch: connection failed."}
+    except requests.exceptions.RequestException:
+        return {"url": url, "ok": False, "detail": "Could not fetch: request failed."}
 
     try:
-        root = ET.fromstring(response.content)
-    except ET.ParseError as exc:
-        return {"url": url, "ok": False, "detail": f"Not well-formed XML: {exc}"}
+        if response.status_code >= 400:
+            return {"url": url, "ok": False, "detail": f"HTTP {response.status_code}."}
 
-    root_tag = root.tag.rsplit("}", 1)[-1]  # strip XML namespace, if present
-    if root_tag not in _SITEMAP_ROOT_TAGS:
-        return {"url": url, "ok": False, "detail": f"Unexpected root element '<{root_tag}>' -- expected <urlset> or <sitemapindex>."}
+        try:
+            root = ET.fromstring(response.content)
+        except ET.ParseError:
+            return {"url": url, "ok": False, "detail": "Not well-formed XML."}
 
-    return {"url": url, "ok": True, "detail": f"Valid <{root_tag}>."}
+        root_tag = root.tag.rsplit("}", 1)[-1]  # strip XML namespace, if present
+        if root_tag not in _SITEMAP_ROOT_TAGS:
+            return {"url": url, "ok": False, "detail": "Unexpected XML root element."}
+
+        return {"url": url, "ok": True, "detail": f"Valid <{root_tag}>."}
+    finally:
+        close = getattr(response, "close", None)
+        if close:
+            close()
 
 
 def validate_robots_txt(domain: str) -> dict[str, Any]:
@@ -86,30 +98,39 @@ def validate_robots_txt(domain: str) -> dict[str, Any]:
         return result
 
     url = f"https://{normalized}/robots.txt"
+    response = None
     try:
         response = requests.get(url, headers=_HEADERS, timeout=10)
-    except requests.exceptions.SSLError as exc:
-        result["error"] = f"TLS/SSL error: {exc}"
+    except requests.exceptions.SSLError:
+        result["error"] = "TLS/SSL error while connecting to robots.txt."
         return result
     except requests.exceptions.Timeout:
         result["error"] = "Request timed out."
         return result
-    except requests.exceptions.ConnectionError as exc:
-        result["error"] = f"Connection failed: {exc}"
+    except requests.exceptions.ConnectionError:
+        result["error"] = "Connection failed while reaching robots.txt."
         return result
-    except requests.exceptions.RequestException as exc:
-        result["error"] = f"Request failed: {exc}"
-        return result
-
-    if response.status_code == 404:
-        result["error"] = "No robots.txt found at this domain (404)."
-        return result
-    if response.status_code >= 400:
-        result["error"] = f"Could not fetch robots.txt: HTTP {response.status_code}."
+    except requests.exceptions.RequestException:
+        result["error"] = "Request failed before robots.txt was received."
         return result
 
-    parsed = _parse_robots_txt(response.text)
-    sitemap_results = [_validate_sitemap(sitemap_url) for sitemap_url in parsed["sitemaps"][:MAX_SITEMAPS_CHECKED]]
+    try:
+        if response.status_code == 404:
+            result["error"] = "No robots.txt found at this domain (404)."
+            return result
+        if response.status_code >= 400:
+            result["error"] = f"Could not fetch robots.txt: HTTP {response.status_code}."
+            return result
 
-    result.update({"ok": True, "issues": parsed["issues"], "sitemaps": sitemap_results})
-    return result
+        parsed = _parse_robots_txt(response.text)
+        sitemap_results = [
+            _validate_sitemap(sitemap_url)
+            for sitemap_url in parsed["sitemaps"][:MAX_SITEMAPS_CHECKED]
+        ]
+
+        result.update({"ok": True, "issues": parsed["issues"], "sitemaps": sitemap_results})
+        return result
+    finally:
+        close = getattr(response, "close", None)
+        if close:
+            close()

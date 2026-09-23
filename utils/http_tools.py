@@ -80,8 +80,8 @@ def check_http_status(url: str, timeout: int = DEFAULT_TIMEOUT_SECONDS) -> dict[
                 time.sleep(RETRY_BACKOFF_SECONDS * attempt)
                 continue
             break
-        except requests.exceptions.SSLError as exc:
-            result["error"] = f"TLS/SSL error: {exc}"
+        except requests.exceptions.SSLError:
+            result["error"] = "TLS/SSL error while connecting to the endpoint."
             result["recommendations"].append("Check the certificate chain and hostname match.")
             return result
         except requests.exceptions.Timeout:
@@ -91,15 +91,15 @@ def check_http_status(url: str, timeout: int = DEFAULT_TIMEOUT_SECONDS) -> dict[
             result["error"] = f"HTTP request timed out after {DEFAULT_RETRY_ATTEMPTS} attempts."
             result["recommendations"].append("Check network reachability and application response time.")
             return result
-        except requests.exceptions.ConnectionError as exc:
+        except requests.exceptions.ConnectionError:
             if attempt < DEFAULT_RETRY_ATTEMPTS:
                 time.sleep(RETRY_BACKOFF_SECONDS * attempt)
                 continue
-            result["error"] = f"Connection failed after {DEFAULT_RETRY_ATTEMPTS} attempts: {exc}"
+            result["error"] = f"Connection failed after {DEFAULT_RETRY_ATTEMPTS} attempts."
             result["recommendations"].append("Check DNS, firewall rules, listener ports, and service health.")
             return result
-        except requests.exceptions.RequestException as exc:
-            result["error"] = f"HTTP request failed: {exc}"
+        except requests.exceptions.RequestException:
+            result["error"] = "HTTP request failed before a response was received."
             return result
 
     if response is None:

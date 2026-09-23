@@ -46,17 +46,15 @@ monitoring, authenticated smoke, and rollback checklist.
 
 ## Branch integration status
 
-At the time of this handoff, local `main` and `origin/main` have equivalent
-trees but divergent commit history:
+The validated release commits are published on
+`release/itops-ui-release-readiness`, with pull request #188 open against
+`main`. All Python 3.11/3.12 and Socket Security checks passed. The pull
+request remains blocked only by the repository's required maintainer review;
+automatic merge is disabled. The working tree for the release branch is clean.
 
-- Local: ahead by one commit.
-- Remote: ahead by two commits.
-- Working tree: local Home/UI changes are not committed yet.
-
-Do not merge, rebase, or reset while these uncommitted changes are being
-reviewed. After validation, commit the intended local changes, fetch the remote
-branch again, and reconcile the duplicate/divergent history using the normal
-repository release procedure.
+After approval, merge PR #188 through the repository workflow and monitor the
+deployment against the resulting commit. Do not bypass the review requirement
+with an administrator merge.
 
 ## Production verification blocker
 
@@ -76,3 +74,10 @@ covering:
 6. No sensitive data is entered or recorded.
 
 Until that checklist is completed, production status remains **blocked**.
+
+## Maintenance references
+
+- `docs/dependency-maintenance.md` records the dependency review and upgrade
+  procedure.
+- `docs/streamlit-performance-audit.md` records the current Streamlit pin and
+  performance decisions.

@@ -2546,9 +2546,27 @@ def test_every_tool_has_a_valid_sidebar_category():
 
 
 def test_every_tool_has_unique_slug_and_page_path():
+    project_root = Path(__file__).resolve().parents[1]
     assert len({tool.slug for tool in TOOLS}) == len(TOOLS)
     assert len({tool.path for tool in TOOLS}) == len(TOOLS)
     assert all(tool.path.startswith("pages/") and tool.path.endswith(".py") for tool in TOOLS)
+    assert all((project_root / tool.path).is_file() for tool in TOOLS)
+
+
+def test_tool_aliases_are_unique_and_do_not_shadow_slugs():
+    slugs = {tool.slug for tool in TOOLS}
+    aliases = [alias.lower().strip() for tool in TOOLS for alias in tool.aliases]
+
+    assert all(alias for alias in aliases)
+    assert len(aliases) == len(set(aliases))
+    assert not slugs.intersection(aliases)
+
+
+def test_guided_workflows_reference_current_catalog_slugs():
+    known_slugs = {tool.slug for tool in TOOLS}
+
+    for workflow in ui.GUIDED_WORKFLOWS:
+        assert set(workflow.slugs).issubset(known_slugs), workflow.title
 
 
 def test_sidebar_category_partition_matches_expected_grouping():

@@ -10,6 +10,10 @@ class FakeResponse:
         self.status_code = status_code
         self.text = text
         self.content = content or text.encode("utf-8")
+        self.closed = False
+
+    def close(self):
+        self.closed = True
 
 
 ROBOTS_CLEAN = "User-agent: *\nDisallow: /admin\nSitemap: https://example.com/sitemap.xml\n"
@@ -18,10 +22,15 @@ SITEMAP_XML = '<?xml version="1.0"?><urlset><url><loc>https://example.com/</loc>
 
 
 def test_validate_robots_txt_clean_file(monkeypatch):
+    responses = []
+
     def fake_get(url, headers=None, timeout=None):
         if url.endswith("/robots.txt"):
-            return FakeResponse(200, ROBOTS_CLEAN)
-        return FakeResponse(200, content=SITEMAP_XML.encode())
+            response = FakeResponse(200, ROBOTS_CLEAN)
+        else:
+            response = FakeResponse(200, content=SITEMAP_XML.encode())
+        responses.append(response)
+        return response
 
     monkeypatch.setattr(robots_validator.requests, "get", fake_get)
 
@@ -30,6 +39,7 @@ def test_validate_robots_txt_clean_file(monkeypatch):
     assert result["ok"] is True
     assert result["issues"] == []
     assert result["sitemaps"] == [{"url": "https://example.com/sitemap.xml", "ok": True, "detail": "Valid <urlset>."}]
+    assert all(response.closed for response in responses)
 
 
 def test_validate_robots_txt_flags_directive_before_user_agent_and_unrecognized(monkeypatch):

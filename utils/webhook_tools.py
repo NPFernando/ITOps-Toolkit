@@ -84,6 +84,7 @@ def send_request(url: str, method: str, headers_text: str = "", body: str = "") 
     send_body = body if method_upper in {"POST", "PUT", "PATCH", "DELETE"} and body else None
 
     started = time.perf_counter()
+    response = None
     try:
         response = requests.request(
             method_upper,
@@ -96,29 +97,34 @@ def send_request(url: str, method: str, headers_text: str = "", body: str = "") 
     except requests.exceptions.Timeout:
         result["error"] = "Request timed out."
         return result
-    except requests.exceptions.SSLError as exc:
-        result["error"] = f"TLS/SSL error: {exc}"
+    except requests.exceptions.SSLError:
+        result["error"] = "TLS/SSL error while connecting to the endpoint."
         return result
-    except requests.exceptions.ConnectionError as exc:
-        result["error"] = f"Connection failed: {exc}"
+    except requests.exceptions.ConnectionError:
+        result["error"] = "Connection failed while reaching the endpoint."
         return result
-    except requests.exceptions.RequestException as exc:
-        result["error"] = f"Request failed: {exc}"
+    except requests.exceptions.RequestException:
+        result["error"] = "Request failed before a response was received."
         return result
 
-    elapsed_ms = round((time.perf_counter() - started) * 1000, 1)
-    body_text = response.text or ""
-    truncated = len(body_text) > MAX_RESPONSE_BODY_PREVIEW
+    try:
+        elapsed_ms = round((time.perf_counter() - started) * 1000, 1)
+        body_text = response.text or ""
+        truncated = len(body_text) > MAX_RESPONSE_BODY_PREVIEW
 
-    result.update(
-        {
-            "ok": response.status_code < 400,
-            "status_code": response.status_code,
-            "reason": response.reason,
-            "response_time_ms": elapsed_ms,
-            "response_headers": dict(response.headers),
-            "response_body": body_text[:MAX_RESPONSE_BODY_PREVIEW],
-            "response_body_truncated": truncated,
-        }
-    )
-    return result
+        result.update(
+            {
+                "ok": response.status_code < 400,
+                "status_code": response.status_code,
+                "reason": response.reason,
+                "response_time_ms": elapsed_ms,
+                "response_headers": dict(response.headers),
+                "response_body": body_text[:MAX_RESPONSE_BODY_PREVIEW],
+                "response_body_truncated": truncated,
+            }
+        )
+        return result
+    finally:
+        close = getattr(response, "close", None)
+        if close:
+            close()

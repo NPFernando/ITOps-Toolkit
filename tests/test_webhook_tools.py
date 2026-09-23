@@ -7,6 +7,10 @@ class FakeResponse:
         self.reason = reason
         self.headers = headers or {}
         self.text = text
+        self.closed = False
+
+    def close(self):
+        self.closed = True
 
 
 def test_parse_headers_valid_lines():
@@ -32,10 +36,16 @@ def test_parse_headers_rejects_missing_colon():
 
 def test_send_request_success(monkeypatch):
     captured = {}
+    response = FakeResponse(
+        status_code=201,
+        reason="Created",
+        headers={"Content-Type": "application/json"},
+        text='{"ok": true}',
+    )
 
     def fake_request(method, url, headers=None, data=None, timeout=None, allow_redirects=None):
         captured.update(method=method, url=url, headers=headers, data=data)
-        return FakeResponse(status_code=201, reason="Created", headers={"Content-Type": "application/json"}, text='{"ok": true}')
+        return response
 
     monkeypatch.setattr(webhook_tools.requests, "request", fake_request)
 
@@ -48,6 +58,7 @@ def test_send_request_success(monkeypatch):
     assert captured["url"] == "https://example.com/api"
     assert captured["data"] == '{"a": 1}'
     assert captured["headers"]["Content-Type"] == "application/json"
+    assert response.closed is True
 
 
 def test_send_request_get_ignores_body(monkeypatch):
@@ -97,6 +108,21 @@ def test_send_request_handles_connection_error(monkeypatch):
 
     assert result["ok"] is False
     assert "Connection failed" in result["error"]
+    assert "boom" not in result["error"]
+
+
+def test_send_request_closes_response_and_hides_upstream_error(monkeypatch):
+    response = FakeResponse()
+
+    def fake_request(method, url, headers=None, data=None, timeout=None, allow_redirects=None):
+        return response
+
+    monkeypatch.setattr(webhook_tools.requests, "request", fake_request)
+
+    result = webhook_tools.send_request("example.com", "GET")
+
+    assert result["ok"] is True
+    assert response.closed is True
 
 
 def test_send_request_truncates_large_response_body(monkeypatch):

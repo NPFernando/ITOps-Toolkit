@@ -166,6 +166,16 @@ This guide documents the UI direction used for the Streamlit dashboard and tool 
 - Capture only synthetic/sanitized evidence in release notes.
 - Treat shell/mobile/visual/a11y regressions as release blockers until resolved or explicitly documented.
 
+### Current accessibility and responsive audit
+
+- Representative Wave 22, Wave 25, and Wave 50 guardrails pass for keyboard,
+  focus, semantic notices, mobile wrapping, and touch-target behavior.
+- The shared CSS keeps visible `:focus-visible` styles and reduces motion when
+  users request reduced motion.
+- No new local accessibility or responsive defect was found in this audit;
+  future changes should extend the existing wave guardrails rather than add
+  page-specific CSS exceptions.
+
 ## Phase 10 Wave 3 Standards (Shell, Mobile, Visual, A11y + QA Gates)
 
 - **Shell clarity:** keep primary actions and warnings text-first and obvious even when decorative visuals fail to load.

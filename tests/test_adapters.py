@@ -316,6 +316,20 @@ def test_check_http_status_validation_and_timeout(monkeypatch):
     assert result["recommendations"] == ["Check network reachability and application response time."]
 
 
+def test_check_http_status_does_not_expose_connection_exception(monkeypatch):
+    def fake_connection_error(*args, **kwargs):
+        raise requests.exceptions.ConnectionError("https://internal.example/token=secret")
+
+    monkeypatch.setattr(http_tools.requests, "get", fake_connection_error)
+    monkeypatch.setattr(http_tools.time, "sleep", lambda *_: None)
+
+    result = http_tools.check_http_status("example.com")
+
+    assert result["error"] == "Connection failed after 3 attempts."
+    assert "internal.example" not in result["error"]
+    assert "secret" not in result["error"]
+
+
 def test_check_http_status_retries_retryable_status_and_uses_last_response(monkeypatch):
     calls = {"count": 0}
 
