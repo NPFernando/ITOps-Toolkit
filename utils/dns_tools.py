@@ -9,6 +9,8 @@ from urllib.parse import urlparse
 import dns.exception
 import dns.resolver
 
+from utils.reliability import diagnostics
+
 
 MAX_DOMAIN_LENGTH = 253
 DEFAULT_DNS_TIMEOUT_SECONDS = 3.0
@@ -44,6 +46,7 @@ def _base_result(domain: str, record_type: str, query_name: str | None = None) -
         "raw_values": [],
         "status": "Unknown",
         "error": None,
+        **diagnostics(),
     }
 
 
@@ -132,10 +135,12 @@ def resolve_records(domain: str, record_type: str) -> dict[str, Any]:
         query_type = "TXT"
 
     result = _base_result(normalized, requested_type, query_name)
+    result["attempts"] = 0
 
     try:
         answers = None
         for attempt in range(1, DEFAULT_DNS_RETRY_ATTEMPTS + 1):
+            result["attempts"] = attempt
             try:
                 answers = get_resolver().resolve(query_name, query_type)
                 break
@@ -143,32 +148,44 @@ def resolve_records(domain: str, record_type: str) -> dict[str, Any]:
                 if attempt < DEFAULT_DNS_RETRY_ATTEMPTS:
                     time.sleep(DNS_RETRY_BACKOFF_SECONDS * attempt)
                     continue
-                return _error_result(
+                error = _error_result(
                     normalized,
                     requested_type,
                     query_name,
                     "Timeout",
                     f"DNS lookup timed out after {DEFAULT_DNS_RETRY_ATTEMPTS} attempts.",
                 )
+                error.update(diagnostics(error_code="timeout", failure_mode="transient", attempts=attempt, retryable=True))
+                return error
             except dns.resolver.NoNameservers:
                 if attempt < DEFAULT_DNS_RETRY_ATTEMPTS:
                     time.sleep(DNS_RETRY_BACKOFF_SECONDS * attempt)
                     continue
-                return _error_result(
+                error = _error_result(
                     normalized,
                     requested_type,
                     query_name,
                     "Nameserver Error",
                     f"Nameservers could not answer this query after {DEFAULT_DNS_RETRY_ATTEMPTS} attempts.",
                 )
+                error.update(diagnostics(error_code="nameserver_error", failure_mode="transient", attempts=attempt, retryable=True))
+                return error
         if answers is None:
-            return _error_result(normalized, requested_type, query_name, "DNS Error", "DNS lookup failed unexpectedly.")
+            error = _error_result(normalized, requested_type, query_name, "DNS Error", "DNS lookup failed unexpectedly.")
+            error.update(diagnostics(error_code="dns_error", failure_mode="transient", attempts=result["attempts"], retryable=True))
+            return error
     except dns.resolver.NXDOMAIN:
-        return _error_result(normalized, requested_type, query_name, "NXDOMAIN", "Domain does not exist.")
+        error = _error_result(normalized, requested_type, query_name, "NXDOMAIN", "Domain does not exist.")
+        error.update(diagnostics(error_code="nxdomain", failure_mode="persistent", attempts=result["attempts"]))
+        return error
     except dns.resolver.NoAnswer:
-        return _error_result(normalized, requested_type, query_name, "No Answer", "No matching DNS records were found.")
-    except dns.exception.DNSException as exc:
-        return _error_result(normalized, requested_type, query_name, "DNS Error", str(exc))
+        error = _error_result(normalized, requested_type, query_name, "No Answer", "No matching DNS records were found.")
+        error.update(diagnostics(error_code="no_answer", failure_mode="persistent", attempts=result["attempts"]))
+        return error
+    except dns.exception.DNSException:
+        error = _error_result(normalized, requested_type, query_name, "DNS Error", "DNS lookup failed.")
+        error.update(diagnostics(error_code="dns_error", failure_mode="persistent", attempts=result["attempts"]))
+        return error
 
     records = [record_to_row(record, query_type) for record in answers]
     if requested_type == "SPF":
@@ -188,12 +205,15 @@ def resolve_records(domain: str, record_type: str) -> dict[str, Any]:
             "TLS_RPT": "TLS-RPT",
         }
         label = labels.get(requested_type, requested_type)
-        return _error_result(normalized, requested_type, query_name, "No Answer", f"No {label} record was found.")
+        error = _error_result(normalized, requested_type, query_name, "No Answer", f"No {label} record was found.")
+        error.update(diagnostics(error_code="no_answer", failure_mode="persistent", attempts=result["attempts"]))
+        return error
 
     result["ok"] = True
     result["records"] = records
     result["raw_values"] = [str(record.get("value", "")) for record in records]
     result["status"] = "Healthy"
+    result.update(diagnostics(attempts=result["attempts"]))
     return result
 
 

@@ -2245,6 +2245,7 @@ def render_guided_workflows(query: str = "", profession: str = "All", category: 
                         <p class="tool-card-category">{escape(workflow.badge)}</p>
                         <h3>{escape(workflow.title)}</h3>
                         <p>{escape(workflow.description)}</p>
+                        <p class="tool-card-category">{len(tools)}-step workflow</p>
                     </div>
                     """,
                     unsafe_allow_html=True,
@@ -5548,6 +5549,7 @@ def _inject_global_css(mode: str) -> None:
         .stFormSubmitButton button {
             border-radius: var(--card-radius) !important;
             font-weight: 800 !important;
+            min-height: 2.75rem !important;
         }
 
         .stDownloadButton button {
@@ -5679,6 +5681,26 @@ def _inject_global_css(mode: str) -> None:
             .stDownloadButton button,
             .stFormSubmitButton button {
                 width: 100%;
+            }
+
+            button[kind="primary"],
+            button[kind="secondary"],
+            [data-testid="stFormSubmitButton"] button,
+            [data-testid="stDownloadButton"] button,
+            a[role="button"] {
+                min-height: 2.875rem !important;
+                padding-inline: 0.9rem !important;
+            }
+
+            .workflow-card-shell,
+            .tool-card-shell {
+                overflow-wrap: anywhere;
+            }
+
+            [data-testid="stDataFrame"],
+            [data-testid="stTable"] {
+                max-width: 100%;
+                overflow-x: auto;
             }
 
             /* Multi-metric rows (4-6 st.metric columns) rely entirely on

@@ -54,6 +54,8 @@ def test_send_request_success(monkeypatch):
     assert result["ok"] is True
     assert result["status_code"] == 201
     assert result["response_body"] == '{"ok": true}'
+    assert result["attempts"] == 1
+    assert result["failure_mode"] is None
     assert captured["method"] == "POST"
     assert captured["url"] == "https://example.com/api"
     assert captured["data"] == '{"a": 1}'
@@ -109,6 +111,8 @@ def test_send_request_handles_connection_error(monkeypatch):
     assert result["ok"] is False
     assert "Connection failed" in result["error"]
     assert "boom" not in result["error"]
+    assert result["error_code"] == "connection_error"
+    assert result["retryable"] is True
 
 
 def test_send_request_closes_response_and_hides_upstream_error(monkeypatch):

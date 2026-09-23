@@ -9,12 +9,16 @@ from urllib.parse import urlparse
 import requests
 
 from utils.http_tools import MAX_URL_LENGTH, normalize_url
+from utils.reliability import classify_http_status, diagnostics
 
 ALLOWED_METHODS: tuple[str, ...] = ("GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS")
 MAX_HEADERS_LENGTH = 4000
 MAX_BODY_LENGTH = 20000
 MAX_RESPONSE_BODY_PREVIEW = 20000
 REQUEST_TIMEOUT = 15
+RETRY_ATTEMPTS = 3
+RETRY_BACKOFF_SECONDS = 0.3
+RETRYABLE_STATUS_CODES = {408, 429, 500, 502, 503, 504}
 
 
 def parse_headers(raw_text: str) -> tuple[dict[str, str], str | None]:
@@ -46,6 +50,7 @@ def _empty_result(url: str, method: str) -> dict[str, Any]:
         "response_body": None,
         "response_body_truncated": False,
         "error": None,
+        **diagnostics(),
     }
 
 
@@ -85,32 +90,57 @@ def send_request(url: str, method: str, headers_text: str = "", body: str = "") 
 
     started = time.perf_counter()
     response = None
-    try:
-        response = requests.request(
-            method_upper,
-            normalized_url,
-            headers=headers,
-            data=send_body,
-            timeout=REQUEST_TIMEOUT,
-            allow_redirects=True,
-        )
-    except requests.exceptions.Timeout:
-        result["error"] = "Request timed out."
-        return result
-    except requests.exceptions.SSLError:
-        result["error"] = "TLS/SSL error while connecting to the endpoint."
-        return result
-    except requests.exceptions.ConnectionError:
-        result["error"] = "Connection failed while reaching the endpoint."
-        return result
-    except requests.exceptions.RequestException:
+    for attempt in range(1, RETRY_ATTEMPTS + 1):
+        result["attempts"] = attempt
+        try:
+            response = requests.request(
+                method_upper,
+                normalized_url,
+                headers=headers,
+                data=send_body,
+                timeout=REQUEST_TIMEOUT,
+                allow_redirects=True,
+            )
+            if response.status_code in RETRYABLE_STATUS_CODES and attempt < RETRY_ATTEMPTS:
+                close = getattr(response, "close", None)
+                if close:
+                    close()
+                time.sleep(RETRY_BACKOFF_SECONDS * attempt)
+                continue
+            break
+        except requests.exceptions.Timeout:
+            if attempt < RETRY_ATTEMPTS:
+                time.sleep(RETRY_BACKOFF_SECONDS * attempt)
+                continue
+            result["error"] = "Request timed out."
+            result.update(diagnostics(error_code="timeout", failure_mode="transient", attempts=attempt, retryable=True))
+            return result
+        except requests.exceptions.SSLError:
+            result["error"] = "TLS/SSL error while connecting to the endpoint."
+            result.update(diagnostics(error_code="tls_error", failure_mode="persistent", attempts=attempt))
+            return result
+        except requests.exceptions.ConnectionError:
+            if attempt < RETRY_ATTEMPTS:
+                time.sleep(RETRY_BACKOFF_SECONDS * attempt)
+                continue
+            result["error"] = "Connection failed while reaching the endpoint."
+            result.update(diagnostics(error_code="connection_error", failure_mode="transient", attempts=attempt, retryable=True))
+            return result
+        except requests.exceptions.RequestException:
+            result["error"] = "Request failed before a response was received."
+            result.update(diagnostics(error_code="request_error", failure_mode="persistent", attempts=attempt))
+            return result
+
+    if response is None:
         result["error"] = "Request failed before a response was received."
+        result.update(diagnostics(error_code="request_error", failure_mode="persistent", attempts=result["attempts"]))
         return result
 
     try:
         elapsed_ms = round((time.perf_counter() - started) * 1000, 1)
         body_text = response.text or ""
         truncated = len(body_text) > MAX_RESPONSE_BODY_PREVIEW
+        error_code, failure_mode, retryable = classify_http_status(response.status_code, RETRYABLE_STATUS_CODES)
 
         result.update(
             {
@@ -121,6 +151,12 @@ def send_request(url: str, method: str, headers_text: str = "", body: str = "") 
                 "response_headers": dict(response.headers),
                 "response_body": body_text[:MAX_RESPONSE_BODY_PREVIEW],
                 "response_body_truncated": truncated,
+                **diagnostics(
+                    error_code=None if response.status_code < 400 else error_code,
+                    failure_mode=None if response.status_code < 400 else failure_mode,
+                    attempts=result["attempts"],
+                    retryable=retryable,
+                ),
             }
         )
         return result

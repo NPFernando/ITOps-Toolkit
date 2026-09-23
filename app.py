@@ -197,6 +197,10 @@ if show_all:
         )
     sort_mode = {"Default": "default", "A-Z": "az", "Z-A": "za"}[sort_mode_label]
     all_tools = sort_tools(filtered_tools, sort_mode)
+    if search_query.strip():
+        st.caption(
+            "Search ranking favors exact title matches first, then title terms, aliases, and broader descriptions."
+        )
     if all_tools:
         render_status_note(
             "Outcome: full catalog visible",
@@ -207,10 +211,10 @@ if show_all:
     else:
         render_status_note(
             "Outcome: catalog filters need adjustment",
-            "No tools matched the active filters. Clear or broaden filters, then try again. Search and profession settings can be adjusted independently.",
+            "No tools matched the active filters. Use Reset filters to return to Quick access, or broaden one filter at a time.",
             tone="warning",
         )
-        st.caption("Tip for beginners: clear filters, then apply search or profession one at a time.")
+        st.caption("Recovery path: reset first, then try a shorter search term or a broader category.")
     render_fragment(
         "home_all_tools",
         lambda: render_tool_section(

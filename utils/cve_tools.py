@@ -3,13 +3,18 @@
 from __future__ import annotations
 
 import re
+import time
 from typing import Any
 
 import requests
 
+from utils.reliability import diagnostics
+
 
 NVD_URL = "https://services.nvd.nist.gov/rest/json/cves/2.0"
 NVD_TIMEOUT = 10
+NVD_RETRY_ATTEMPTS = 3
+NVD_RETRY_BACKOFF_SECONDS = 0.4
 MAX_QUERY_LENGTH = 200
 MAX_KEYWORD_RESULTS = 10
 _HEADERS = {"User-Agent": "ITOpsToolkit/1.0 public-safe-checker"}
@@ -54,7 +59,7 @@ def _summarize_cve(cve: dict[str, Any]) -> dict[str, Any]:
 
 
 def _empty_result(query: str) -> dict[str, Any]:
-    return {"ok": False, "query": query, "results": [], "total_results": 0, "error": None}
+    return {"ok": False, "query": query, "results": [], "total_results": 0, "error": None, **diagnostics()}
 
 
 def lookup_cve(query: str) -> dict[str, Any]:
@@ -74,27 +79,50 @@ def lookup_cve(query: str) -> dict[str, Any]:
     else:
         params = {"keywordSearch": cleaned, "resultsPerPage": MAX_KEYWORD_RESULTS}
 
-    try:
-        response = requests.get(NVD_URL, params=params, headers=_HEADERS, timeout=NVD_TIMEOUT)
-    except requests.RequestException as exc:
-        result["error"] = f"CVE lookup failed: {exc}"
-        return result
+    response = None
+    payload = None
+    for attempt in range(1, NVD_RETRY_ATTEMPTS + 1):
+        result["attempts"] = attempt
+        try:
+            response = requests.get(NVD_URL, params=params, headers=_HEADERS, timeout=NVD_TIMEOUT)
+        except requests.RequestException:
+            if attempt < NVD_RETRY_ATTEMPTS:
+                time.sleep(NVD_RETRY_BACKOFF_SECONDS * attempt)
+                continue
+            result["error"] = "CVE lookup failed before a response was received."
+            result.update(diagnostics(error_code="request_error", failure_mode="transient", attempts=attempt, retryable=True))
+            return result
 
-    if response.status_code == 404:
-        result["error"] = "No matching CVE found."
-        return result
-    if response.status_code == 429:
-        result["error"] = "NVD rate limit reached. Wait a moment and try again."
-        return result
-    if response.status_code != 200:
-        result["error"] = f"CVE lookup failed with status {response.status_code}."
-        return result
+        try:
+            if response.status_code == 429:
+                if attempt < NVD_RETRY_ATTEMPTS:
+                    time.sleep(NVD_RETRY_BACKOFF_SECONDS * attempt)
+                    continue
+                result["error"] = "NVD rate limit reached. Wait a moment and try again."
+                result.update(diagnostics(error_code="rate_limited", failure_mode="transient", attempts=attempt, retryable=True))
+                return result
+            if response.status_code == 404:
+                result["error"] = "No matching CVE found."
+                result.update(diagnostics(error_code="not_found", failure_mode="persistent", attempts=attempt))
+                return result
+            if response.status_code != 200:
+                if response.status_code >= 500 and attempt < NVD_RETRY_ATTEMPTS:
+                    time.sleep(NVD_RETRY_BACKOFF_SECONDS * attempt)
+                    continue
+                result["error"] = f"CVE lookup failed with status {response.status_code}."
+                result.update(diagnostics(error_code=f"http_{response.status_code}", failure_mode="transient" if response.status_code >= 500 else "persistent", attempts=attempt, retryable=response.status_code >= 500))
+                return result
 
-    try:
-        payload = response.json()
-    except ValueError:
-        result["error"] = "CVE lookup returned an unexpected response."
-        return result
+            payload = response.json()
+            break
+        except ValueError:
+            result["error"] = "CVE lookup returned an unexpected response."
+            result.update(diagnostics(error_code="invalid_response", failure_mode="persistent", attempts=attempt))
+            return result
+        finally:
+            close = getattr(response, "close", None)
+            if close:
+                close()
 
     vulnerabilities = payload.get("vulnerabilities", [])
     if not vulnerabilities:
@@ -106,6 +134,7 @@ def lookup_cve(query: str) -> dict[str, Any]:
             "ok": True,
             "results": [_summarize_cve(v["cve"]) for v in vulnerabilities],
             "total_results": payload.get("totalResults", len(vulnerabilities)),
+            **diagnostics(attempts=result["attempts"]),
         }
     )
     return result

@@ -55,6 +55,8 @@ def test_resolve_records_uses_fake_resolver_for_a_records(monkeypatch):
     assert result["status"] == "Healthy"
     assert result["records"] == [{"type": "A", "value": "203.0.113.10"}]
     assert result["raw_values"] == ["203.0.113.10"]
+    assert result["attempts"] == 1
+    assert result["failure_mode"] is None
 
 
 def test_resolve_records_filters_spf_and_handles_timeouts(monkeypatch):
@@ -74,6 +76,8 @@ def test_resolve_records_filters_spf_and_handles_timeouts(monkeypatch):
     assert timeout["ok"] is False
     assert timeout["status"] == "Timeout"
     assert timeout["error"] == "DNS lookup timed out after 3 attempts."
+    assert timeout["error_code"] == "timeout"
+    assert timeout["retryable"] is True
 
 
 def test_resolve_records_retries_timeout_then_succeeds(monkeypatch):
@@ -459,7 +463,9 @@ def test_get_certificate_info_ssl_error(monkeypatch):
 
     assert result["ok"] is False
     assert result["tls_status"] == "Critical"
-    assert result["error"] == "TLS connection failed: ('handshake failed',)"
+    assert result["error"] == "TLS connection failed."
+    assert result["error_code"] == "tls_error"
+    assert result["failure_mode"] == "persistent"
 
 
 def test_get_certificate_info_retries_retryable_os_errors(monkeypatch):
