@@ -24,6 +24,8 @@ After the deployment starts, monitor:
 - Streamlit exceptions triggered by Home filters, tool forms, downloads, or
   sidebar interactions.
 - Readability of warning, empty, and failure states on desktop and mobile.
+- Structured adapter metadata such as `error_code`, `failure_mode`,
+  `attempts`, and `retryable` when reviewing sanitized diagnostics.
 
 Do not treat a successful unauthenticated redirect as proof that the toolkit
 UI is healthy. Production closeout requires an authenticated browser session.
@@ -50,3 +52,9 @@ appears:
 3. Compare the deployed commit with the last known-good commit.
 4. Revert or redeploy using the hosting platform's normal rollback process.
 5. Re-run the local release gates before attempting deployment again.
+
+## Maintainer communication
+
+Use `docs/pr-188-maintainer-handoff.md` for the review checklist and
+`docs/release-notes.md` for the concise change summary. Keep production
+evidence sanitized and record only pass/fail status plus actionable notes.

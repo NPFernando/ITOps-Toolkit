@@ -3254,7 +3254,7 @@ def _filter_tools_cached(value: str, profession: str, category: str) -> tuple[To
     matches_category = (lambda tool: True) if category == "All" else (lambda tool: tool.category == category)
     if not value:
         return tuple(tool for tool in TOOLS if matches_profession(tool) and matches_category(tool))
-    return tuple(
+    matches = tuple(
         tool
         for tool in TOOLS
         if matches_profession(tool)
@@ -3267,6 +3267,26 @@ def _filter_tools_cached(value: str, profession: str, category: str) -> tuple[To
             or any(value in alias.lower() for alias in tool.aliases)
         )
     )
+    return tuple(sorted(matches, key=lambda tool: _search_match_score(tool, value)))
+
+
+def _search_match_score(tool: ToolMeta, query: str) -> tuple[int, int, str]:
+    """Rank exact and title matches ahead of broad description matches."""
+    title = tool.title.lower()
+    short_title = tool.short_title.lower()
+    slug = tool.slug.replace("_", " ")
+    aliases = tuple(alias.lower() for alias in tool.aliases)
+    if query == title or query == short_title:
+        rank = 5
+    elif title.startswith(query) or short_title.startswith(query):
+        rank = 4
+    elif query == slug or query in aliases:
+        rank = 3
+    elif query in title or query in short_title:
+        rank = 2
+    else:
+        rank = 1
+    return -rank, len(title), title
 
 
 def _resolve_slugs(slugs: Iterable[str]) -> list[ToolMeta]:

@@ -2165,6 +2165,14 @@ def test_filter_tools_matches_on_geoip_alias():
     assert all(tool.slug == "ip_geolocation" for tool in results)
 
 
+def test_filter_tools_prioritizes_title_matches_over_description_matches():
+    results = filter_tools(query="json")
+
+    assert results
+    assert results[0].title == "JSON Formatter"
+    assert results[0].slug == "json_formatter"
+
+
 def test_guided_workflows_respect_search_and_profession_filters():
     all_workflows = guided_workflows()
     assert all_workflows

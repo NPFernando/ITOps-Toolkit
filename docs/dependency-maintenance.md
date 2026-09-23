@@ -37,3 +37,12 @@ The current Streamlit compatibility decision is documented in
 4. Run `make dependency-check`, focused affected tests, and the full suite.
 5. Confirm both Python CI matrix jobs and Socket Security checks pass.
 6. Record the resulting pin and any compatibility exception in this document.
+
+## Current follow-up
+
+The current release keeps the existing runtime pins, including
+`streamlit==1.61.0`, because no dependency upgrade is required to close the
+validated UI and reliability scope. Re-run `make dependency-check` before
+each release and review upstream advisories separately; do not convert an
+available-version report into an upgrade without compatibility tests and a
+documented reason.

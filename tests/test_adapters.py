@@ -298,6 +298,10 @@ def test_check_http_status_success_uses_fake_response(monkeypatch):
         {"status_code": 301, "url": "http://example.com", "location": "https://example.com"}
     ]
     assert result["recommendations"] == []
+    assert result["attempts"] == 1
+    assert result["error_code"] is None
+    assert result["failure_mode"] is None
+    assert result["retryable"] is False
 
 
 def test_check_http_status_validation_and_timeout(monkeypatch):
@@ -314,6 +318,10 @@ def test_check_http_status_validation_and_timeout(monkeypatch):
     assert result["ok"] is False
     assert result["error"] == "HTTP request timed out after 3 attempts."
     assert result["recommendations"] == ["Check network reachability and application response time."]
+    assert result["error_code"] == "timeout"
+    assert result["failure_mode"] == "transient"
+    assert result["attempts"] == 3
+    assert result["retryable"] is True
 
 
 def test_check_http_status_does_not_expose_connection_exception(monkeypatch):
@@ -328,6 +336,9 @@ def test_check_http_status_does_not_expose_connection_exception(monkeypatch):
     assert result["error"] == "Connection failed after 3 attempts."
     assert "internal.example" not in result["error"]
     assert "secret" not in result["error"]
+    assert result["error_code"] == "connection_error"
+    assert result["failure_mode"] == "transient"
+    assert result["retryable"] is True
 
 
 def test_check_http_status_retries_retryable_status_and_uses_last_response(monkeypatch):
