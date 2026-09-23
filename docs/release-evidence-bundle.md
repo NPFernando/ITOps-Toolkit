@@ -11,8 +11,13 @@ tokens, credentials, or production payloads.
 - Home first-run guidance explaining the safe path from browsing to a result.
 - Profession, category, search, and navigation-mode controls with one-click
   reset behavior.
+- Search relevance ranking that prioritizes exact and title matches.
 - Shared UI shell, notices, empty states, accessibility patterns, and
   responsive card behavior.
+- Structured, public-safe HTTP failure metadata for retry and operator
+  diagnostics.
+- Maintainer handoff, release notes, dependency follow-up, and deployment
+  communication guidance.
 
 ## Local validation
 
