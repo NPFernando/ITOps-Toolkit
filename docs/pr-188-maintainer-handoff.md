@@ -28,7 +28,7 @@ before marking production verification complete.
 ## Current evidence
 
 - Release branch: `release/itops-ui-release-readiness`
-- Validated commit: `3bc951d`
+- Validated commit: `9fb35da`
 - Local release evidence: passing
 - Working tree: clean
 - Production smoke: pending authenticated browser access
@@ -39,5 +39,6 @@ Commit `3bc951d` adds the shared adapter reliability contract documented in
 `docs/adapter-reliability-contract.md`, bounded provider retries, response
 cleanup, public-safe diagnostic metadata, operational readiness visibility,
 and release sign-off/feedback templates across the network-backed tools. The
-focused adapter/UI contract suite and `make release-evidence` pass for this
-head.
+focused adapter/UI/catalog contract suite and `make release-evidence` pass for
+this head. Commit `9fb35da` adds catalog metadata, alias, related-tool, and
+guided-workflow integrity contracts to the release gate.
