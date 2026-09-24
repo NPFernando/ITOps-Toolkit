@@ -59,7 +59,7 @@ def _summarize_cve(cve: dict[str, Any]) -> dict[str, Any]:
 
 
 def _empty_result(query: str) -> dict[str, Any]:
-    return {"ok": False, "query": query, "results": [], "total_results": 0, "error": None, **diagnostics()}
+    return {"ok": False, "query": query, "results": [], "total_results": 0, "error": None, **diagnostics(provider="nvd")}
 
 
 def lookup_cve(query: str) -> dict[str, Any]:
@@ -134,7 +134,7 @@ def lookup_cve(query: str) -> dict[str, Any]:
             "ok": True,
             "results": [_summarize_cve(v["cve"]) for v in vulnerabilities],
             "total_results": payload.get("totalResults", len(vulnerabilities)),
-            **diagnostics(attempts=result["attempts"]),
+            **diagnostics(attempts=result["attempts"], provider="nvd"),
         }
     )
     return result

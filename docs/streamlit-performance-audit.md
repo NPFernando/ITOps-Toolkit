@@ -144,3 +144,14 @@ Reference docs used:
 - **Caching (`st.cache_data`)**: apply to read-only data loaders/merge helpers with short TTL and shared `utils/cache_policy.py` controls (TTL tiers, stable cache keys, runtime test scope, freshness messaging).
 - **State (`st.session_state`)**: apply to page-level form/result UX state only; keep values session-local and non-persistent.
 - **Dev baseline instrumentation**: dev-only, local opt-in via `ITOPS_DEV_BASELINE=1`; current baseline surfaces are Home, Roadmap & Feedback, Domain Health Checker, DNS Record Checker, SSL Certificate Checker, and HTTP Status Checker.
+
+## Rerun review checklist
+
+- Keep expensive network calls behind bounded `st.cache_data` helpers with an
+  explicit TTL and a test-isolated cache key where needed.
+- Use fragments for result sections that can rerun independently, but keep
+  shared filter state and navigation orchestration at page scope.
+- Avoid creating new widgets inside conditional branches with unstable keys;
+  preserve stable keys so filter changes do not reset unrelated controls.
+- Use the Home performance baseline and representative AppTest flows before
+  changing fragment boundaries or cache policy.

@@ -84,7 +84,7 @@ def _empty_result(domain: str, port: int) -> dict[str, Any]:
         "valid_until": None,
         "days_remaining": None,
         "error": None,
-        **diagnostics(),
+        **diagnostics(provider="tls"),
     }
 
 
@@ -182,7 +182,7 @@ def get_certificate_info(domain: str, port: int = 443, timeout: int = DEFAULT_TL
             "valid_from": valid_from,
             "valid_until": valid_until,
             "days_remaining": days_remaining,
-            **diagnostics(attempts=result["attempts"]),
+            **diagnostics(attempts=result["attempts"], provider="tls"),
         }
     )
     return result

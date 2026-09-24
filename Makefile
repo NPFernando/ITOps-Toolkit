@@ -58,7 +58,7 @@ dependency-check: ## Check installed dependency consistency and Python lint rule
 	$(VENV_PYTHON) -m ruff check app.py pages utils tests
 
 contract-tests: ## Run adapter, UI, and external-provider contract tests
-	$(VENV_PYTHON) -m pytest -q tests/test_adapters.py tests/test_webhook_tools.py tests/test_robots_validator.py tests/test_cve_tools.py tests/test_github_issues.py tests/test_ui_helpers.py tests/test_app_page.py
+	$(VENV_PYTHON) -m pytest -q tests/test_reliability.py tests/test_adapters.py tests/test_webhook_tools.py tests/test_robots_validator.py tests/test_cve_tools.py tests/test_github_issues.py tests/test_ui_helpers.py tests/test_app_page.py
 
 test: ## Run pytest
 	$(VENV_PYTHON) -m pytest

@@ -50,7 +50,7 @@ def _empty_result(url: str, method: str) -> dict[str, Any]:
         "response_body": None,
         "response_body_truncated": False,
         "error": None,
-        **diagnostics(),
+        **diagnostics(provider="webhook"),
     }
 
 
@@ -156,6 +156,11 @@ def send_request(url: str, method: str, headers_text: str = "", body: str = "") 
                     failure_mode=None if response.status_code < 400 else failure_mode,
                     attempts=result["attempts"],
                     retryable=retryable,
+                    provider="webhook",
+                    duration_ms=elapsed_ms,
+                    rate_limit_remaining=int(response.headers["X-RateLimit-Remaining"])
+                    if response.headers.get("X-RateLimit-Remaining", "").isdigit()
+                    else None,
                 ),
             }
         )

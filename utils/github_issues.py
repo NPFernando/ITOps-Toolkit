@@ -25,6 +25,8 @@ class GitHubIssuesResult:
     failure_mode: str | None = None
     attempts: int = 0
     retryable: bool = False
+    provider: str = "github"
+    rate_limit_remaining: int | None = None
 
 
 def fetch_public_issues(
@@ -80,7 +82,16 @@ def fetch_public_issues(
 
     try:
         if response.status_code == 403 and response.headers.get("X-RateLimit-Remaining") == "0":
-            return GitHubIssuesResult((), "GitHub API rate limit reached. Showing seed roadmap data.", "rate_limited", "transient", attempt, True)
+            remaining = response.headers.get("X-RateLimit-Remaining")
+            return GitHubIssuesResult(
+                (),
+                "GitHub API rate limit reached. Showing seed roadmap data.",
+                "rate_limited",
+                "transient",
+                attempt,
+                True,
+                rate_limit_remaining=int(remaining) if remaining and remaining.isdigit() else 0,
+            )
         if response.status_code >= 400:
             return GitHubIssuesResult(
                 (),

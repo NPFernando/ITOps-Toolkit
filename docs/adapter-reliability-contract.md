@@ -13,6 +13,10 @@ results:
 | `failure_mode` | `healthy`, `transient`, or `persistent`. |
 | `attempts` | Number of network attempts made, including the final attempt. |
 | `retryable` | Whether a caller can reasonably retry the operation. |
+| `duration_ms` | Safe elapsed-time measurement when a request reached the adapter. |
+| `provider` | Low-cardinality adapter/provider identifier such as `http`, `nvd`, or `github`. |
+| `rate_limit_remaining` | Numeric remaining quota when the provider exposes it; never a token or credential. |
+| `rate_limit_reset_seconds` | Bounded seconds until a provider quota reset when available. |
 
 Adapters use bounded retries for timeouts, connection failures, rate limits,
 and common upstream 5xx responses. Every response object is closed after it is

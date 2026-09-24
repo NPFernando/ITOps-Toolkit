@@ -99,7 +99,7 @@ def validate_robots_txt(domain: str) -> dict[str, Any]:
         "domain": normalized,
         "issues": [],
         "sitemaps": [],
-        **diagnostics(),
+        **diagnostics(provider="robots"),
     }
 
     if not normalized:
@@ -161,7 +161,7 @@ def validate_robots_txt(domain: str) -> dict[str, Any]:
             for sitemap_url in parsed["sitemaps"][:MAX_SITEMAPS_CHECKED]
         ]
 
-        result.update({"ok": True, "issues": parsed["issues"], "sitemaps": sitemap_results, **diagnostics(attempts=result["attempts"])})
+        result.update({"ok": True, "issues": parsed["issues"], "sitemaps": sitemap_results, **diagnostics(attempts=result["attempts"], provider="robots")})
         return result
     finally:
         close = getattr(response, "close", None)

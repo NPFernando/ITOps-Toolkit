@@ -207,6 +207,22 @@ with tool_result_panel("health_diagnostics_adapter_capability"):
     capability_rows = _adapter_capability_rows()
     _rows_table(capability_rows)
 
+with tool_result_panel("health_diagnostics_provider_contract"):
+    render_section_heading(
+        "Provider diagnostics contract",
+        "Structured, public-safe fields available to operator-facing adapter results.",
+        eyebrow="Observability",
+    )
+    _rows_table(
+        [
+            {"Check": "Failure classification", "Status": "Available", "Details": "error_code, failure_mode, and retryable."},
+            {"Check": "Attempt tracking", "Status": "Available", "Details": "Bounded attempt count includes the final request."},
+            {"Check": "Latency measurement", "Status": "Available", "Details": "duration_ms is recorded when a request reaches the adapter."},
+            {"Check": "Provider identity", "Status": "Available", "Details": "Low-cardinality provider labels avoid exposing request details."},
+            {"Check": "Rate-limit metadata", "Status": "Available", "Details": "Numeric quota/reset fields are shown only when upstream exposes them."},
+        ]
+    )
+
 with tool_result_panel("health_diagnostics_reliability_score"):
     render_section_heading("Reliability score", "Pass/Warn/Fail summary from diagnostics checks.", eyebrow="Score")
     all_rows = [*runtime_rows, *integration_rows, *feature_rows, *smoke_rows, *capability_rows]

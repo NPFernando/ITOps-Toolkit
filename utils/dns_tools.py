@@ -46,7 +46,7 @@ def _base_result(domain: str, record_type: str, query_name: str | None = None) -
         "raw_values": [],
         "status": "Unknown",
         "error": None,
-        **diagnostics(),
+        **diagnostics(provider="dns"),
     }
 
 
@@ -213,7 +213,7 @@ def resolve_records(domain: str, record_type: str) -> dict[str, Any]:
     result["records"] = records
     result["raw_values"] = [str(record.get("value", "")) for record in records]
     result["status"] = "Healthy"
-    result.update(diagnostics(attempts=result["attempts"]))
+    result.update(diagnostics(attempts=result["attempts"], provider="dns"))
     return result
 
 

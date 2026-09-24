@@ -11,6 +11,10 @@ def diagnostics(
     failure_mode: str | None = None,
     attempts: int = 0,
     retryable: bool = False,
+    duration_ms: float | None = None,
+    provider: str | None = None,
+    rate_limit_remaining: int | None = None,
+    rate_limit_reset_seconds: int | None = None,
 ) -> dict[str, Any]:
     """Return the common diagnostic fields used by adapter result envelopes."""
     return {
@@ -18,6 +22,10 @@ def diagnostics(
         "failure_mode": failure_mode,
         "attempts": attempts,
         "retryable": retryable,
+        "duration_ms": duration_ms,
+        "provider": provider,
+        "rate_limit_remaining": rate_limit_remaining,
+        "rate_limit_reset_seconds": rate_limit_reset_seconds,
     }
 
 
@@ -28,6 +36,10 @@ def update_diagnostics(
     failure_mode: str | None = None,
     attempts: int = 0,
     retryable: bool = False,
+    duration_ms: float | None = None,
+    provider: str | None = None,
+    rate_limit_remaining: int | None = None,
+    rate_limit_reset_seconds: int | None = None,
 ) -> MutableMapping[str, Any]:
     """Add or replace common diagnostics without exposing upstream details."""
     result.update(
@@ -36,6 +48,10 @@ def update_diagnostics(
             failure_mode=failure_mode,
             attempts=attempts,
             retryable=retryable,
+            duration_ms=duration_ms,
+            provider=provider,
+            rate_limit_remaining=rate_limit_remaining,
+            rate_limit_reset_seconds=rate_limit_reset_seconds,
         )
     )
     return result
