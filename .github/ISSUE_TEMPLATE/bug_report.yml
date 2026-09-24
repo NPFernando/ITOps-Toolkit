@@ -1,0 +1,31 @@
+name: Bug report
+description: Report a reproducible public-safe problem with the toolkit.
+title: "[Bug] "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Do not include secrets, customer data, internal hostnames, tokens, keys, or private logs.
+  - type: textarea
+    id: summary
+    attributes:
+      label: What happened?
+      description: Describe the expected and observed behavior using synthetic/public-safe examples.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Reproduction steps
+      description: List the page, controls, and safe input needed to reproduce the issue.
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: Browser, operating system, and approximate date/time.
+    validations:
+      required: true

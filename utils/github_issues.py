@@ -21,6 +21,12 @@ RETRYABLE_GITHUB_STATUS_CODES = {408, 429, 500, 502, 503, 504}
 class GitHubIssuesResult:
     issues: tuple[dict[str, Any], ...]
     error: str | None = None
+    error_code: str | None = None
+    failure_mode: str | None = None
+    attempts: int = 0
+    retryable: bool = False
+    provider: str = "github"
+    rate_limit_remaining: int | None = None
 
 
 def fetch_public_issues(
@@ -33,7 +39,7 @@ def fetch_public_issues(
     repository_url = repo_url or github_repository_url()
     slug = github_repository_slug(repository_url)
     if slug is None:
-        return GitHubIssuesResult((), "GitHub repository URL is invalid. Showing seed roadmap data.")
+        return GitHubIssuesResult((), "GitHub repository URL is invalid. Showing seed roadmap data.", "invalid_repository", "persistent")
 
     owner, repo = slug
     api_url = f"https://api.github.com/repos/{owner}/{repo}/issues"
@@ -50,6 +56,9 @@ def fetch_public_issues(
                 timeout=timeout,
             )
             if response.status_code in RETRYABLE_GITHUB_STATUS_CODES and attempt < DEFAULT_GITHUB_RETRY_ATTEMPTS:
+                close = getattr(response, "close", None)
+                if close:
+                    close()
                 time.sleep(GITHUB_RETRY_BACKOFF_SECONDS * attempt)
                 continue
             break
@@ -60,31 +69,53 @@ def fetch_public_issues(
             return GitHubIssuesResult(
                 (),
                 f"GitHub issues timed out or could not connect after {DEFAULT_GITHUB_RETRY_ATTEMPTS} attempts. Showing seed roadmap data.",
+                "connection_error",
+                "transient",
+                attempt,
+                True,
             )
         except requests.RequestException:
-            return GitHubIssuesResult((), "GitHub issues are unavailable. Showing seed roadmap data.")
+            return GitHubIssuesResult((), "GitHub issues are unavailable. Showing seed roadmap data.", "request_error", "persistent", attempt)
 
     if response is None:
-        return GitHubIssuesResult((), "GitHub issues are unavailable. Showing seed roadmap data.")
-
-    if response.status_code == 403 and response.headers.get("X-RateLimit-Remaining") == "0":
-        return GitHubIssuesResult((), "GitHub API rate limit reached. Showing seed roadmap data.")
-    if response.status_code >= 400:
-        return GitHubIssuesResult(
-            (),
-            f"GitHub issues are unavailable (HTTP {response.status_code}). Showing seed roadmap data.",
-        )
+        return GitHubIssuesResult((), "GitHub issues are unavailable. Showing seed roadmap data.", "request_error", "persistent")
 
     try:
-        payload = response.json()
-    except ValueError:
-        return GitHubIssuesResult((), "GitHub issue response was invalid. Showing seed roadmap data.")
+        if response.status_code == 403 and response.headers.get("X-RateLimit-Remaining") == "0":
+            remaining = response.headers.get("X-RateLimit-Remaining")
+            return GitHubIssuesResult(
+                (),
+                "GitHub API rate limit reached. Showing seed roadmap data.",
+                "rate_limited",
+                "transient",
+                attempt,
+                True,
+                rate_limit_remaining=int(remaining) if remaining and remaining.isdigit() else 0,
+            )
+        if response.status_code >= 400:
+            return GitHubIssuesResult(
+                (),
+                f"GitHub issues are unavailable (HTTP {response.status_code}). Showing seed roadmap data.",
+                f"http_{response.status_code}",
+                "transient" if response.status_code in RETRYABLE_GITHUB_STATUS_CODES else "persistent",
+                attempt,
+                response.status_code in RETRYABLE_GITHUB_STATUS_CODES,
+            )
 
-    if not isinstance(payload, list):
-        return GitHubIssuesResult((), "GitHub issue response was invalid. Showing seed roadmap data.")
+        try:
+            payload = response.json()
+        except ValueError:
+            return GitHubIssuesResult((), "GitHub issue response was invalid. Showing seed roadmap data.", "invalid_response", "persistent", attempt)
 
-    issues = tuple(item for item in payload if isinstance(item, dict) and "pull_request" not in item)
-    return GitHubIssuesResult(issues)
+        if not isinstance(payload, list):
+            return GitHubIssuesResult((), "GitHub issue response was invalid. Showing seed roadmap data.", "invalid_response", "persistent", attempt)
+
+        issues = tuple(item for item in payload if isinstance(item, dict) and "pull_request" not in item)
+        return GitHubIssuesResult(issues, attempts=attempt)
+    finally:
+        close = getattr(response, "close", None)
+        if close:
+            close()
 
 
 __all__ = ["GitHubIssuesResult", "fetch_public_issues"]

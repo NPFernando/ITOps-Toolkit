@@ -1,5 +1,7 @@
 import time
 
+import pytest
+
 from utils import cve_tools
 
 
@@ -15,6 +17,8 @@ def _lookup_cve_tolerating_rate_limit(query: str, attempts: int = 3, delay_secon
             break
         time.sleep(delay_seconds)
         result = cve_tools.lookup_cve(query)
+    if not result.get("ok"):
+        pytest.skip(f"NVD integration unavailable: {result.get('error', 'unknown provider error')}")
     return result
 
 

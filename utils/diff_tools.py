@@ -77,7 +77,11 @@ def compare_text(original: str, changed: str, ignore_whitespace: bool = False) -
         result["error"] = f"Input has more than {MAX_LINES:,} lines."
         return result
 
-    ctx = mp.get_context("spawn")
+    # Fork avoids paying the full interpreter/import startup cost for every
+    # small comparison on Unix. Keep spawn as the portable fallback for
+    # platforms where fork is unavailable.
+    start_method = "fork" if "fork" in mp.get_all_start_methods() else "spawn"
+    ctx = mp.get_context(start_method)
     queue: mp.Queue = ctx.Queue()
     process = ctx.Process(target=_diff_worker, args=(original_lines, changed_lines, ignore_whitespace, queue))
     process.start()

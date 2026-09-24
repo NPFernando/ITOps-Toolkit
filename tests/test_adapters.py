@@ -55,6 +55,8 @@ def test_resolve_records_uses_fake_resolver_for_a_records(monkeypatch):
     assert result["status"] == "Healthy"
     assert result["records"] == [{"type": "A", "value": "203.0.113.10"}]
     assert result["raw_values"] == ["203.0.113.10"]
+    assert result["attempts"] == 1
+    assert result["failure_mode"] is None
 
 
 def test_resolve_records_filters_spf_and_handles_timeouts(monkeypatch):
@@ -74,6 +76,8 @@ def test_resolve_records_filters_spf_and_handles_timeouts(monkeypatch):
     assert timeout["ok"] is False
     assert timeout["status"] == "Timeout"
     assert timeout["error"] == "DNS lookup timed out after 3 attempts."
+    assert timeout["error_code"] == "timeout"
+    assert timeout["retryable"] is True
 
 
 def test_resolve_records_retries_timeout_then_succeeds(monkeypatch):
@@ -298,6 +302,10 @@ def test_check_http_status_success_uses_fake_response(monkeypatch):
         {"status_code": 301, "url": "http://example.com", "location": "https://example.com"}
     ]
     assert result["recommendations"] == []
+    assert result["attempts"] == 1
+    assert result["error_code"] is None
+    assert result["failure_mode"] is None
+    assert result["retryable"] is False
 
 
 def test_check_http_status_validation_and_timeout(monkeypatch):
@@ -314,6 +322,27 @@ def test_check_http_status_validation_and_timeout(monkeypatch):
     assert result["ok"] is False
     assert result["error"] == "HTTP request timed out after 3 attempts."
     assert result["recommendations"] == ["Check network reachability and application response time."]
+    assert result["error_code"] == "timeout"
+    assert result["failure_mode"] == "transient"
+    assert result["attempts"] == 3
+    assert result["retryable"] is True
+
+
+def test_check_http_status_does_not_expose_connection_exception(monkeypatch):
+    def fake_connection_error(*args, **kwargs):
+        raise requests.exceptions.ConnectionError("https://internal.example/token=secret")
+
+    monkeypatch.setattr(http_tools.requests, "get", fake_connection_error)
+    monkeypatch.setattr(http_tools.time, "sleep", lambda *_: None)
+
+    result = http_tools.check_http_status("example.com")
+
+    assert result["error"] == "Connection failed after 3 attempts."
+    assert "internal.example" not in result["error"]
+    assert "secret" not in result["error"]
+    assert result["error_code"] == "connection_error"
+    assert result["failure_mode"] == "transient"
+    assert result["retryable"] is True
 
 
 def test_check_http_status_retries_retryable_status_and_uses_last_response(monkeypatch):
@@ -434,7 +463,9 @@ def test_get_certificate_info_ssl_error(monkeypatch):
 
     assert result["ok"] is False
     assert result["tls_status"] == "Critical"
-    assert result["error"] == "TLS connection failed: ('handshake failed',)"
+    assert result["error"] == "TLS connection failed."
+    assert result["error_code"] == "tls_error"
+    assert result["failure_mode"] == "persistent"
 
 
 def test_get_certificate_info_retries_retryable_os_errors(monkeypatch):

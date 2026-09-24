@@ -34,6 +34,7 @@ def test_fetch_public_issues_filters_pull_requests(monkeypatch):
     result = github_issues.fetch_public_issues("https://github.com/NPFernando/ITOps-Toolkit")
 
     assert result.error is None
+    assert result.attempts == 1
     assert tuple(issue["number"] for issue in result.issues) == (1,)
     assert captured["url"] == "https://api.github.com/repos/NPFernando/ITOps-Toolkit/issues"
     assert captured["params"] == {"state": "all", "per_page": 100}

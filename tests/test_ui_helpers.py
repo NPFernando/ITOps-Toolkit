@@ -2120,6 +2120,14 @@ def test_filter_tools_profession_narrows_results():
     assert len(results) < len(TOOLS)
 
 
+def test_filter_tools_category_narrows_results():
+    results = filter_tools(category="Security")
+
+    assert results
+    assert all(tool.category == "Security" for tool in results)
+    assert len(results) < len(TOOLS)
+
+
 def test_filter_tools_query_and_profession_combine_with_and():
     results = filter_tools(query="hash", profession="Network Engineer")
 
@@ -2157,6 +2165,14 @@ def test_filter_tools_matches_on_geoip_alias():
     assert all(tool.slug == "ip_geolocation" for tool in results)
 
 
+def test_filter_tools_prioritizes_title_matches_over_description_matches():
+    results = filter_tools(query="json")
+
+    assert results
+    assert results[0].title == "JSON Formatter"
+    assert results[0].slug == "json_formatter"
+
+
 def test_guided_workflows_respect_search_and_profession_filters():
     all_workflows = guided_workflows()
     assert all_workflows
@@ -2168,6 +2184,16 @@ def test_guided_workflows_respect_search_and_profession_filters():
     network_engineer = guided_workflows(profession="Network Engineer")
     assert network_engineer
     assert any(workflow.title == "Domain incident triage" for workflow in network_engineer)
+
+
+def test_guided_workflows_respect_category_filters():
+    security_workflows = guided_workflows(category="Security")
+
+    assert security_workflows
+    assert all(
+        any(tool.category == "Security" for tool in ui._resolve_slugs(workflow.slugs))
+        for workflow in security_workflows
+    )
 
 
 def test_render_guided_workflows_renders_heading_and_numbered_safe_step_links(monkeypatch):
@@ -2525,6 +2551,30 @@ def test_all_tool_bundles_reference_known_slugs_and_never_self_reference():
 def test_every_tool_has_a_valid_sidebar_category():
     for tool in TOOLS:
         assert tool.category in SIDEBAR_CATEGORIES, f"{tool.slug} has unknown category {tool.category!r}"
+
+
+def test_every_tool_has_unique_slug_and_page_path():
+    project_root = Path(__file__).resolve().parents[1]
+    assert len({tool.slug for tool in TOOLS}) == len(TOOLS)
+    assert len({tool.path for tool in TOOLS}) == len(TOOLS)
+    assert all(tool.path.startswith("pages/") and tool.path.endswith(".py") for tool in TOOLS)
+    assert all((project_root / tool.path).is_file() for tool in TOOLS)
+
+
+def test_tool_aliases_are_unique_and_do_not_shadow_slugs():
+    slugs = {tool.slug for tool in TOOLS}
+    aliases = [alias.lower().strip() for tool in TOOLS for alias in tool.aliases]
+
+    assert all(alias for alias in aliases)
+    assert len(aliases) == len(set(aliases))
+    assert not slugs.intersection(aliases)
+
+
+def test_guided_workflows_reference_current_catalog_slugs():
+    known_slugs = {tool.slug for tool in TOOLS}
+
+    for workflow in ui.GUIDED_WORKFLOWS:
+        assert set(workflow.slugs).issubset(known_slugs), workflow.title
 
 
 def test_sidebar_category_partition_matches_expected_grouping():

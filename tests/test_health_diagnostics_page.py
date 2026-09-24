@@ -37,6 +37,7 @@ def test_health_diagnostics_page_renders_key_sections():
     assert "Feature flags" in page_markdown
     assert "Safe smoke checks" in page_markdown
     assert "Adapter capabilities" in page_markdown
+    assert "Provider diagnostics contract" in page_markdown
     assert "Reliability score" in page_markdown
     assert "Remediation hints" in page_markdown
     assert "Runbook guidance" in page_markdown
@@ -44,7 +45,7 @@ def test_health_diagnostics_page_renders_key_sections():
     assert "Outcome: diagnostics snapshot available" in page_markdown
     assert 'role="status"' in page_markdown
     assert "docs/ops-runbook.md" in captions
-    assert len(app.dataframe) >= 7
+    assert len(app.dataframe) >= 8
 
 
 def test_health_diagnostics_page_reflects_feature_and_integration_status(monkeypatch):

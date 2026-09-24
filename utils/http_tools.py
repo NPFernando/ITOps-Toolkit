@@ -8,6 +8,8 @@ from urllib.parse import urlparse
 
 import requests
 
+from utils.reliability import diagnostics
+
 
 MAX_URL_LENGTH = 2048
 DEFAULT_TIMEOUT_SECONDS = 10
@@ -44,6 +46,7 @@ def _empty_result(url: str) -> dict[str, Any]:
         "headers": {},
         "recommendations": [],
         "error": None,
+        **diagnostics(provider="http"),
     }
 
 
@@ -67,6 +70,7 @@ def check_http_status(url: str, timeout: int = DEFAULT_TIMEOUT_SECONDS) -> dict[
     started = time.perf_counter()
     response: requests.Response | None = None
     for attempt in range(1, DEFAULT_RETRY_ATTEMPTS + 1):
+        result["attempts"] = attempt
         try:
             response = requests.get(
                 normalized,
@@ -80,8 +84,11 @@ def check_http_status(url: str, timeout: int = DEFAULT_TIMEOUT_SECONDS) -> dict[
                 time.sleep(RETRY_BACKOFF_SECONDS * attempt)
                 continue
             break
-        except requests.exceptions.SSLError as exc:
-            result["error"] = f"TLS/SSL error: {exc}"
+        except requests.exceptions.SSLError:
+            result["error"] = "TLS/SSL error while connecting to the endpoint."
+            result["error_code"] = "tls_error"
+            result["failure_mode"] = "persistent"
+            result["duration_ms"] = round((time.perf_counter() - started) * 1000, 1)
             result["recommendations"].append("Check the certificate chain and hostname match.")
             return result
         except requests.exceptions.Timeout:
@@ -89,21 +96,35 @@ def check_http_status(url: str, timeout: int = DEFAULT_TIMEOUT_SECONDS) -> dict[
                 time.sleep(RETRY_BACKOFF_SECONDS * attempt)
                 continue
             result["error"] = f"HTTP request timed out after {DEFAULT_RETRY_ATTEMPTS} attempts."
+            result["error_code"] = "timeout"
+            result["failure_mode"] = "transient"
+            result["retryable"] = True
+            result["duration_ms"] = round((time.perf_counter() - started) * 1000, 1)
             result["recommendations"].append("Check network reachability and application response time.")
             return result
-        except requests.exceptions.ConnectionError as exc:
+        except requests.exceptions.ConnectionError:
             if attempt < DEFAULT_RETRY_ATTEMPTS:
                 time.sleep(RETRY_BACKOFF_SECONDS * attempt)
                 continue
-            result["error"] = f"Connection failed after {DEFAULT_RETRY_ATTEMPTS} attempts: {exc}"
+            result["error"] = f"Connection failed after {DEFAULT_RETRY_ATTEMPTS} attempts."
+            result["error_code"] = "connection_error"
+            result["failure_mode"] = "transient"
+            result["retryable"] = True
+            result["duration_ms"] = round((time.perf_counter() - started) * 1000, 1)
             result["recommendations"].append("Check DNS, firewall rules, listener ports, and service health.")
             return result
-        except requests.exceptions.RequestException as exc:
-            result["error"] = f"HTTP request failed: {exc}"
+        except requests.exceptions.RequestException:
+            result["error"] = "HTTP request failed before a response was received."
+            result["error_code"] = "request_error"
+            result["failure_mode"] = "persistent"
+            result["duration_ms"] = round((time.perf_counter() - started) * 1000, 1)
             return result
 
     if response is None:
         result["error"] = "HTTP request failed before a response was received."
+        result["error_code"] = "request_error"
+        result["failure_mode"] = "persistent"
+        result["duration_ms"] = round((time.perf_counter() - started) * 1000, 1)
         return result
 
     elapsed_ms = round((time.perf_counter() - started) * 1000, 1)
@@ -139,6 +160,15 @@ def check_http_status(url: str, timeout: int = DEFAULT_TIMEOUT_SECONDS) -> dict[
         recommendations.append("Confirm the URL path, authentication requirements, and routing.")
 
     try:
+        error_code = None
+        failure_mode = None
+        retryable = False
+        if response.status_code >= 400:
+            error_code = f"http_{response.status_code}"
+            failure_mode = "transient" if response.status_code in RETRYABLE_STATUS_CODES else "persistent"
+            retryable = response.status_code in RETRYABLE_STATUS_CODES
+        rate_limit_remaining = response.headers.get("X-RateLimit-Remaining")
+        rate_limit_reset = response.headers.get("X-RateLimit-Reset")
         result.update(
             {
                 "ok": response.status_code < 400,
@@ -150,6 +180,17 @@ def check_http_status(url: str, timeout: int = DEFAULT_TIMEOUT_SECONDS) -> dict[
                 "redirect_chain": redirect_chain,
                 "headers": selected_headers,
                 "recommendations": recommendations,
+                "error_code": error_code,
+                "failure_mode": failure_mode,
+                "retryable": retryable,
+                "duration_ms": elapsed_ms,
+                "provider": "http",
+                "rate_limit_remaining": int(rate_limit_remaining) if rate_limit_remaining and rate_limit_remaining.isdigit() else None,
+                "rate_limit_reset_seconds": (
+                    max(int(rate_limit_reset) - int(time.time()), 0)
+                    if rate_limit_reset and rate_limit_reset.isdigit()
+                    else None
+                ),
             }
         )
         return result

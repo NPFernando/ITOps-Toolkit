@@ -30,3 +30,25 @@ def test_ui_inventory_exposes_shared_pattern_and_notice_gaps():
     assert summary["pattern_counts"]["page_header"] > 0
     assert summary["direct_notice_counts"].get("error", 0) == 0
     assert summary["direct_notice_counts"]["warning"] > 0
+
+
+def test_representative_tool_pages_keep_the_shared_ux_contract():
+    inventory = load_inventory()
+    pages = {page["path"]: page for page in inventory["pages"]}
+
+    for path in (
+        "pages/1_Domain_Health_Checker.py",
+        "pages/5_JSON_Formatter.py",
+        "pages/20_Text_Diff_Checker.py",
+    ):
+        patterns = pages[path]["shared_patterns"]
+        assert patterns["shared_shell"] is True
+        assert patterns["page_header"] is True
+        assert patterns["form_intro"] is True
+        assert patterns["empty_state"] is True
+        assert patterns["result_panel"] is True
+
+    health_patterns = pages["pages/128_Health_Diagnostics.py"]["shared_patterns"]
+    assert health_patterns["shared_shell"] is True
+    assert health_patterns["page_header"] is True
+    assert health_patterns["result_panel"] is True

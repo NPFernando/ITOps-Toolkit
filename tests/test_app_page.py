@@ -33,6 +33,8 @@ def test_css_injects_before_sidebar_and_has_no_blocking_import():
     assert 'rel="stylesheet"' in ui_source, "no font stylesheet link found"
     assert "st.html(css)" in ui_source, "CSS should use raw HTML rendering"
     assert ui_source.index("_inject_global_css(\"dark\")") < ui_source.index("render_sidebar(active_page)")
+    assert "Safe input:" in ui_source
+    assert "public or synthetic data only" in ui_source
 
 
 def test_home_tool_card_rows_wrap_at_responsive_breakpoints():
@@ -54,6 +56,39 @@ def test_home_tool_card_rows_wrap_at_responsive_breakpoints():
     assert "flex-basis: 100% !important;" in ui_source
 
 
+def test_home_quick_start_cards_and_reset_button_are_visible():
+    """Home should offer guided first-steps for common incidents and a single
+    reset action when filters are active."""
+    at = AppTest.from_file(APP_PAGE, default_timeout=30).run()
+    assert not at.exception, at.exception
+    assert any("Popular starting points" in el.value for el in at.markdown)
+
+    profession_pill = next(p for p in at.pills if p.key == "home_profession_filter")
+    category_pill = next(p for p in at.pills if p.key == "home_tool_category_filter")
+    assert category_pill.value == "All categories"
+    profession_pill.set_value("Support Engineer").run(timeout=30)
+    category_pill.set_value("Security").run(timeout=30)
+    assert not at.exception, at.exception
+    assert "Reset filters" in [b.label for b in at.button]
+
+    next(b for b in at.button if b.label == "Reset filters").click().run(timeout=30)
+    assert not at.exception, at.exception
+    profession_pill_after = next(p for p in at.pills if p.key == "home_profession_filter")
+    category_pill_after = next(p for p in at.pills if p.key == "home_tool_category_filter")
+    nav_mode_after = next(p for p in at.pills if p.key == "home_navigation_mode")
+    assert profession_pill_after.value == "All"
+    assert category_pill_after.value == "All categories"
+    assert nav_mode_after.value == "Quick access"
+
+
+def test_home_getting_started_help_surface_is_available():
+    """Home should explain the safe first-run path without requiring signup."""
+    at = AppTest.from_file(APP_PAGE, default_timeout=30).run()
+    assert not at.exception, at.exception
+    assert any("How to use ITOps Toolkit" in el.label for el in at.expander)
+    assert any("Public-safe reminder" in el.value for el in at.info)
+
+
 def test_home_pills_are_required_and_cannot_deselect_to_none():
     """Regression: st.pills defaults to required=False, meaning a click on an
     already-selected pill deselects it to None. The sort pill's value used to
@@ -67,8 +102,10 @@ def test_home_pills_are_required_and_cannot_deselect_to_none():
     assert not at.exception, at.exception
 
     profession_pill = next(p for p in at.pills if p.key == "home_profession_filter")
+    category_pill = next(p for p in at.pills if p.key == "home_tool_category_filter")
     sort_pill = next(p for p in at.pills if p.key == "home_sort_mode")
     assert profession_pill.proto.required is True
+    assert category_pill.proto.required is True
     assert sort_pill.proto.required is True
 
 

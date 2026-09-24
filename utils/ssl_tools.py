@@ -10,6 +10,7 @@ from datetime import UTC, datetime
 from typing import Any
 
 from utils.dns_tools import MAX_DOMAIN_LENGTH, normalize_domain
+from utils.reliability import diagnostics
 
 # OpenSSL X509_V_ERR_* codes surfaced via ssl.SSLCertVerificationError.verify_code.
 # Python's ssl module can't enumerate the full leaf-to-root chain on 3.11/3.12
@@ -83,6 +84,7 @@ def _empty_result(domain: str, port: int) -> dict[str, Any]:
         "valid_until": None,
         "days_remaining": None,
         "error": None,
+        **diagnostics(provider="tls"),
     }
 
 
@@ -108,6 +110,7 @@ def get_certificate_info(domain: str, port: int = 443, timeout: int = DEFAULT_TL
     try:
         cert: dict[str, Any] | None = None
         for attempt in range(1, DEFAULT_TLS_RETRY_ATTEMPTS + 1):
+            result["attempts"] = attempt
             try:
                 with socket.create_connection((normalized, port), timeout=timeout) as sock:
                     with context.wrap_socket(sock, server_hostname=normalized) as tls_sock:
@@ -123,29 +126,33 @@ def get_certificate_info(domain: str, port: int = 443, timeout: int = DEFAULT_TL
                     continue
                 result["tls_status"] = "Unknown"
                 result["error"] = f"TLS connection timed out after {DEFAULT_TLS_RETRY_ATTEMPTS} attempts."
+                result.update(diagnostics(error_code="timeout", failure_mode="transient", attempts=attempt, retryable=True))
                 return result
             except OSError as exc:
                 if attempt < DEFAULT_TLS_RETRY_ATTEMPTS and _retryable_connection_error(exc):
                     time.sleep(TLS_RETRY_BACKOFF_SECONDS * attempt)
                     continue
                 result["tls_status"] = "Unknown"
-                result["error"] = f"Could not connect to TLS endpoint: {exc}"
+                result["error"] = "Could not connect to TLS endpoint."
+                result.update(diagnostics(error_code="connection_error", failure_mode="transient", attempts=attempt, retryable=_retryable_connection_error(exc)))
                 return result
         if cert is None:
             result["tls_status"] = "Unknown"
             result["error"] = "Could not read a certificate from the TLS endpoint."
             return result
     except ssl.SSLCertVerificationError as exc:
-        message = str(exc)
+        message = str(exc).lower()
         chain_status, chain_explanation = diagnose_chain(getattr(exc, "verify_code", None), getattr(exc, "verify_message", None))
-        result["tls_status"] = "Critical" if "expired" in message.lower() else "Warning"
+        result["tls_status"] = "Critical" if "expired" in message else "Warning"
         result["chain_status"] = chain_status
         result["chain_explanation"] = chain_explanation
-        result["error"] = f"Certificate verification failed: {message}"
+        result["error"] = "Certificate verification failed."
+        result.update(diagnostics(error_code="certificate_verification", failure_mode="persistent", attempts=result["attempts"]))
         return result
-    except ssl.SSLError as exc:
+    except ssl.SSLError:
         result["tls_status"] = "Critical"
-        result["error"] = f"TLS connection failed: {exc}"
+        result["error"] = "TLS connection failed."
+        result.update(diagnostics(error_code="tls_error", failure_mode="persistent", attempts=result["attempts"]))
         return result
 
     valid_from = _cert_time(cert.get("notBefore"))
@@ -175,6 +182,7 @@ def get_certificate_info(domain: str, port: int = 443, timeout: int = DEFAULT_TL
             "valid_from": valid_from,
             "valid_until": valid_until,
             "days_remaining": days_remaining,
+            **diagnostics(attempts=result["attempts"], provider="tls"),
         }
     )
     return result

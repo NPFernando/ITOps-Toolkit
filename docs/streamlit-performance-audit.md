@@ -5,8 +5,8 @@ Scope: architecture-level audit and recommendations only (no broad refactors)
 
 ## Phase 4: Streamlit pin compatibility decision (2026-08-15)
 
-- `requirements.txt` already pins `streamlit==1.61.1`.
-- Upstream latest stable is also `1.61.1` (PyPI + Streamlit release notes), so there is no newer stable target to safely bump to in this branch.
+- `requirements.txt` pins `streamlit==1.61.0`.
+- The installed/released dependency state should be reviewed against the repository pin before upgrades; this audit does not authorize speculative version changes.
 - Repo compatibility checks for known 1.61.x concerns are green:
   - no `st.image(..., use_column_width=...)` usage (removed in latest),
   - no local-path string calls to `st.html`/`st.iframe`,
@@ -14,12 +14,12 @@ Scope: architecture-level audit and recommendations only (no broad refactors)
 - Targeted validation passed on pinned version:
   - `.venv/bin/python -m pytest -q tests/test_app_page.py tests/test_cron_explainer_page.py tests/test_markdown_link_extractor_page.py`
 
-**Decision:** hold the pin at `1.61.1` (already latest stable; no safe bump available now).  
-**Next trigger:** re-open this item when Streamlit publishes `>1.61.1` stable, then run the same compatibility scan plus targeted AppTest suite before changing the pin.
+**Decision:** hold the repository pin at `1.61.0` until a compatibility-tested upgrade is selected.
+**Next trigger:** compare a proposed Streamlit release against the pinned runtime, then run the same compatibility scan plus targeted AppTest suite before changing the pin.
 
 ## Baseline
 
-- App stack pins `streamlit==1.61.1` (`requirements.txt`).
+- App stack pins `streamlit==1.61.0` (`requirements.txt`).
 - Multipage app uses `app.py` + `pages/` directory with custom shell navigation (`utils/ui.py`).
 - Native sidebar navigation is disabled (`.streamlit/config.toml`: `client.showSidebarNavigation = false`).
 
@@ -144,3 +144,14 @@ Reference docs used:
 - **Caching (`st.cache_data`)**: apply to read-only data loaders/merge helpers with short TTL and shared `utils/cache_policy.py` controls (TTL tiers, stable cache keys, runtime test scope, freshness messaging).
 - **State (`st.session_state`)**: apply to page-level form/result UX state only; keep values session-local and non-persistent.
 - **Dev baseline instrumentation**: dev-only, local opt-in via `ITOPS_DEV_BASELINE=1`; current baseline surfaces are Home, Roadmap & Feedback, Domain Health Checker, DNS Record Checker, SSL Certificate Checker, and HTTP Status Checker.
+
+## Rerun review checklist
+
+- Keep expensive network calls behind bounded `st.cache_data` helpers with an
+  explicit TTL and a test-isolated cache key where needed.
+- Use fragments for result sections that can rerun independently, but keep
+  shared filter state and navigation orchestration at page scope.
+- Avoid creating new widgets inside conditional branches with unstable keys;
+  preserve stable keys so filter changes do not reset unrelated controls.
+- Use the Home performance baseline and representative AppTest flows before
+  changing fragment boundaries or cache policy.
