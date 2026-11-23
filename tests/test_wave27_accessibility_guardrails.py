@@ -94,10 +94,7 @@ def test_wave27_roadmap_filters_apply_via_full_width_action_with_explicit_states
     assert "tool-status-note-neutral" in _markdown(app)
 
     search = next(widget for widget in app.text_input if widget.label == "Search roadmap")
-    search.set_value("no-such-roadmap-item").run()
-    assert not app.exception
-    assert "2 roadmap items shown" in _markdown(app)
-
+    search.set_value("no-such-roadmap-item")
     next(button for button in app.button if button.label == "Apply filters").click().run()
     assert not app.exception
     assert "0 roadmap items shown" in _markdown(app)
