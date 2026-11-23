@@ -56,7 +56,11 @@ def _set_azure_config(monkeypatch, configured: bool) -> None:
 
 def _submit_log(app: AppTest, use_ai_summary: bool) -> AppTest:
     app.text_area[0].set_value(SAMPLE_LOG)
-    app.checkbox[0].set_value(use_ai_summary)
+    # Streamlit 1.65 AppTest correctly prevents interaction with a disabled
+    # checkbox. The default is already False, so only set the value when the
+    # test explicitly opts into AI and configuration enables the control.
+    if use_ai_summary:
+        app.checkbox[0].set_value(True)
     app.button[0].click()
     app.run()
     assert not app.exception

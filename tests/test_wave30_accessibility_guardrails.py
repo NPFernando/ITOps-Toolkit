@@ -79,7 +79,7 @@ def test_wave30_home_and_roadmap_keep_explicit_outcome_semantics(monkeypatch):
     assert "tool-status-note-neutral" in markdown
 
     search = next(widget for widget in roadmap_app.text_input if widget.label == "Search roadmap")
-    search.set_value("no-such-roadmap-item").run()
+    search.set_value("no-such-roadmap-item")
     next(button for button in roadmap_app.button if button.label == "Apply filters").click().run()
     assert not roadmap_app.exception
     markdown = _markdown(roadmap_app)
