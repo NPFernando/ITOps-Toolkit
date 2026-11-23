@@ -17,6 +17,10 @@ import streamlit as st
 
 from utils.project_links import app_base_url, github_repository_url
 
+_STREAMLIT_PAGE_NOT_FOUND_ERROR = getattr(
+    getattr(st, "errors", None), "StreamlitPageNotFoundError", KeyError
+)
+
 
 MAX_RECENT_TOOLS = 5
 PERSISTED_LIST_PARAMS: tuple[str, ...] = ("recent", "fav")
@@ -3297,7 +3301,7 @@ def _safe_page_link(path: str, label: str, icon: str, stretch_width: bool = Fals
     try:
         width = "stretch" if stretch_width else "content"
         st.page_link(path, label=label, icon=icon, width=width)
-    except KeyError:
+    except (KeyError, _STREAMLIT_PAGE_NOT_FOUND_ERROR):
         st.markdown(
             f'<a class="fallback-page-link" href="{_fallback_href(path)}">{escape(label)}</a>',
             unsafe_allow_html=True,
